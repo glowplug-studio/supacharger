@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/** =========================================================================
+ *
+ *  Supacharger - Global Styles
+ *
+ *  Description: This file may be overwritten with future updates. Overrides should be made in src/styles/global.css
+ *
+ *  Author: J Sharp <j@glowplug.studio>
+ *
+ *  License: CC BY-NC-SA 4.0
+ *
+ * ========================================================================= */
+
+@layer base {
+  :root {
+    --background: 72 28% 99%;
+    --foreground: 60 0% 90%;
+
+    --muted: 240 5% 84%;
+    --muted-foreground: 240 5% 84%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 100%;
+
+    --primary: 146 100% 32%;
+    --primary-foreground: 146 100% 32%
+
+    --secondary: 146 61% 73%;
+    --secondary-foreground: 146 61% 73%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 210 40% 96.1%;
+
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 100% 50%;
+
+    --ring: 215 20.2% 65.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background:  221, 39%, 11%;
+    --foreground: 220, 14%, 96%;
+
+    --muted: 215, 28%, 17%;
+    --muted-foreground: 220, 9%, 46%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 220, 9%, 46%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --border: 217, 19%, 27%;
+    --input: 217, 19%, 27%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --primary: 146 100% 32%;
+    --primary-foreground: 220, 14%, 96%;
+
+    --secondary: 146 61% 73%;
+    --secondary-foreground: 215, 28%, 17%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+    
+    .btn {
+      @apply inline-flex;
+      @apply justify-between;
+      @apply items-center;
+      @apply rounded-md;
+      @apply px-5;
+      @apply py-3;
+      @apply focus-visible:outline-2;
+      @apply focus-visible:outline-offset-2;
+      @apply focus-visible:outline-indigo-600;
+      @apply hover:cursor-pointer;
+      @apply font-medium;
+      @apply h-10;
+      @apply capitalize;
+      @apply text-white;
+      @apply hover:text-gray-900;
+    }
+
+  }
+
+  ::selection {
+    @apply text-black;
+    @apply bg-cyan-400;
+  }
+
+  *:focus-visible {
+    @apply shadow-inner;
+    @apply transition;
+  }
+
+  * {
+    @apply border-border;
+    @apply min-w-0;
+  }
+
+  html {
+    @apply h-full;
+  }
+
+  body {
+    @apply h-full;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+    background: hsl(var(--background));
+  }
+
+  .input {
+    @apply block;
+    @apply w-full;
+    @apply rounded-md;
+    @apply py-3;
+    @apply px-4;
+    @apply outline;
+    @apply outline-1;
+    @apply outline-gray-300;
+    @apply placeholder:text-gray-400;
+    @apply focus:outline-2;
+    @apply focus:outline-secondary;
+    @apply text-sm;
+    @apply font-medium;
+  }
+
+  .sc_message {
+    @apply my-2;
+    @apply text-xs;
+    @apply rounded-md;
+    @apply py-4;
+    @apply px-4;
+  }
+
+  .sc_message-error {
+    @apply bg-red-100;
+    @apply dark:bg-red-200;
+    @apply text-gray-600;
+    @apply dark:text-gray-900;
+    @apply font-semibold;
+  }
+
+  .sc_message-attention {
+    background-color: #fffcde;
+    @apply font-bold;
+    @apply text-gray-600;
+  }
+
+  .sc_message-positive {
+    @apply border-green-300;
+    @apply border;
+    @apply font-bold;
+    @apply text-green-700;
+  }
+
+  /* Authenticated Header Dropdown Menu @todo this shouldnt be here! */
+  /* Dropdown behavior for user menu */
+  .dropdown-container {
+    .dropdown-content {
+      display: none;
+      z-index: 50;
+    }
+
+    &:hover .dropdown-content {
+      display: block;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      display: none;
+    }
+
+    &:hover::after {
+      display: block;
+    }
+  }
+
+  .dropdown-content:hover {
+    display: block;
+  }
+
+  /* Mobile menu behavior using checkbox hack */
+  .mobile-menu-dropdown {
+    display: none;
+  }
+
+  #menu-toggle:checked ~ .mobile-menu-dropdown {
+    display: block;
+  }
+
+  /* Burger menu animation */
+  #menu-toggle:checked ~ label {
+    span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+  }
+
+  #menu-toggle ~ label span {
+    transition: all 0.3s ease-in-out;
+  }
+}

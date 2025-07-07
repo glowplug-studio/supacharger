@@ -1,0 +1,137 @@
+{
+  "Global": {
+    "siteTitle": "Korunet",
+    "siteDescription": "Commencez votre prochain projet sans réinventer la roue",
+    "or": "ou"
+  },
+  "GlobalUI": {
+    "buttonSaveChanges": "Enregistrer les modifications",
+    "buttonSaving": "Enregistrement",
+    "buttonThinking": "Réflexion...",
+    "buttonSaved": "Terminé"
+  },
+  "PageMeta": {
+    "accountAccountSecuritySettingsSectionTitle": "Configuration du compte",
+    "accountAccountSecuritySettingsPageTitle": "Paramètres du compte et de sécurité"
+  },
+  "AuthTerms": {
+    "name": "Nom",
+    "username": "Nom d'utilisateur",
+    "emailAddress": "Adresse e-mail",
+    "password": "Mot de passe",
+    "oldPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "retypeNewPassword": "Retapez le nouveau mot de passe",
+    "setNewPassword": "Définir un nouveau mot de passe",
+    "forgotPassword": "Mot de passe oublié",
+    "loginSuccess": "Vous êtes connecté",
+    "logIn": "Se connecter",
+    "logOut": "Se déconnecter",
+    "createAnAccount": "Créer un compte",
+    "signUp": "S'inscrire",
+    "retypePassword": "Retapez le mot de passe",
+    "sendNewAuthEmailLabel": "Envoyer un autre e-mail de vérification",
+    "sendNewAuthEmailButtonLabel": "Renvoyer l'e-mail de vérification",
+    "accountEmailVerified": "E-mail vérifié",
+    "sendNewAuthEmailSendingButtonLabel": "Envoi en cours",
+    "sendNewAuthEmailSentButtonLabel": "Envoyé",
+    "resendConfirmationEmailSent": "Lien de confirmation renvoyé, vérifiez votre e-mail",
+    "resendConfirmationEmailFail": "Échec de l'envoi. Veuillez patienter et réessayer",
+    "passwordUpdated": "Votre mot de passe a été mis à jour",
+    "backToSignIn": "Retour à la page de connexion",
+    "backToRequestLink": "Obtenir un autre lien",
+    "createAccountWithEmail": "Continuer avec l'e-mail",
+    "createAccountSuccess": "Compte créé avec succès",
+    "accountAlreadyExists": "Le compte existe déjà, connectez-vous à la place"
+  },
+  "evaluatePasswordStrengthErrorCodes": {
+    "oldPasswordIncorrect": "Mot de passe actuel incorrect",
+    "oldPasswordRequired": "Vous devez saisir le mot de passe actuel",
+    "provided_password_mismatch": "Les mots de passe fournis ne correspondent pas",
+    "passwordTooShort": "Le mot de passe fourni est trop court",
+    "password_failed_regex_evaluation": "Le mot de passe fourni n'est pas assez fort",
+    "mustContainLetterDigit": "Le mot de passe doit contenir au moins une lettre et au moins un chiffre",
+    "mustContainLowerLetterUpperLetterDigit": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule et un chiffre",
+    "mustContainLowerLetterUpperLetterDigitSymbol": "Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial"
+  },
+  "evaluatePasswordStrengthComponent": {
+    "passwordLetter": "Contient une lettre (Aa-Zz)",
+    "passwordDigit": "Contient un chiffre (0-9)",
+    "passwordLowercase": "Contient une lettre minuscule (a-z)",
+    "passwordUppercase": "Contient une lettre majuscule (A-Z)",
+    "passwordSymbol": "Contient un caractère spécial ex. (%@$^£)",
+    "passwordRequirementsLabel": "Exigences",
+    "passwordMinLength": "Caractères minimum",
+    "passwordCustomRegexDescription": "REMPLACER_MOI",
+    "passwordNotStrongEnough": "Mot de passe pas assez fort"
+  },
+  "SupabaseErrorCodes": {
+    "invalidCredentials": "Échec de la connexion. Veuillez vérifier votre e-mail et votre mot de passe et réessayer",
+    "emailNotConfirmed": "Oups, e-mail non vérifié",
+    "invalidEmail": "Adresse e-mail invalide. Veuillez utiliser une adresse e-mail valide",
+    "userNotFound": "Compte introuvable. Veuillez vérifier votre e-mail et votre mot de passe et réessayer",
+    "overLimit": "Trop de requêtes. Veuillez patienter quelques minutes et réessayer",
+    "userBanned": "Ce compte a été suspendu",
+    "genericError": "Un problème inattendu est survenu",
+    "otpExpired": "Le code à usage unique a expiré ou est invalide",
+    "samePassword": "Le nouveau mot de passe doit être différent de l'ancien",
+    "tokenAuthApiError": "Le jeton a expiré ou est invalide",
+    "signupApiAuthError": "L'adresse e-mail et le mot de passe ne répondent pas aux exigences de sécurité"
+  },
+  "Toasts": {
+    "logoutFailed": "Un problème est survenu lors de la déconnexion",
+    "logoutSucceeded": "À bientôt !"
+  },
+  "Billing": {
+    "title": "Facturation"
+  },
+  "LoginPage": {
+    "title": "Se connecter",
+    "newTo": "Nouveau sur"
+  },
+  "PasswordResetPage": {
+    "title": "Réinitialisez votre mot de passe",
+    "redirectingIn": "Succès. Redirection dans",
+    "description": "Nous vous enverrons un lien de réinitialisation du mot de passe par e-mail",
+    "expiredCode": "Le code de réinitialisation est invalide ou expiré",
+    "verifyingCode": "Vérification du code...",
+    "noCode": "Le lien de vérification a expiré ou le code est invalide",
+    "getResetLink": "Envoyer le lien",
+    "emailSent": "Lien envoyé, vérifiez votre boîte de réception",
+    "enterEmailPlaceholder": "Entrez votre e-mail"
+  },
+  "CreateAccountPage": {
+    "title": "Créer un compte",
+    "iAlreadyHaveAnAccount": "J'ai déjà un compte"
+  },
+  "CreateAccountFormComponent": {
+    "title": "Créer un compte",
+    "orCreateAccountWithEmail": "Ou créer un compte avec l'e-mail",
+    "iAlreadyHaveAnAccount": "J'ai déjà un compte",
+    "invalidEmail": "Entrez un e-mail valide",
+    "missingEmail": "L'e-mail est requis",
+    "missingPassword": "Le mot de passe est requis",
+    "missingRetypePassword": "La confirmation du mot de passe est requise",
+    "passwordMismatch": "Les mots de passe ne correspondent pas"
+  },
+  "OTPFormComponent": {
+    "title": "Code de vérification",
+    "description": "Entrez le code que nous vous avons envoyé ou cliquez sur le bouton de vérification dans l'e-mail.",
+    "fieldLabel": "Entrez le code",
+    "invalidEmail": "Entrez un e-mail valide avant de vérifier le code"
+  },
+  "PasswordUpdateFormComponent": {
+    "title": "Mettez à jour votre mot de passe"
+  },
+  "AccountDropdownMenu": {
+    "accountSettings": "Paramètres du compte",
+    "billing": "Facturation",
+    "myProfile": "Mon profil"
+  },
+  "ThemeChangerMenu": {
+    "title": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  }
+}

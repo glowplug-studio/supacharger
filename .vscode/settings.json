@@ -1,0 +1,25 @@
+{
+    "folder-color.pathColors": [
+        {
+            "folderPath": "supacharger/src/supacharger/components/buttons/logoutButton.tsx/",
+            "color": "foldercolorizer.color_00cccc"
+        },
+        {
+            "folderPath": "supacharger/src/app/(supacharger)/(authenticated)/account/(auth)/logout/route.ts/",
+            "color": "foldercolorizer.color_00cccc"
+        },
+        {
+            "folderPath": "supacharger/src/app/(supacharger)/(unauthenticated)/account/logout/route.ts/",
+            "color": "foldercolorizer.color_00cccc"
+        },
+        {
+            "folderPath": "supacharger/"
+        }
+    ],
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/.next": true,
+        ".vscode": true
+    },
+    "search.useIgnoreFiles": true
+}
