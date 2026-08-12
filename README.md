@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">Supacharger</h1>
+  <h1 align="center">Supacharger Demo</h1>
   <p align="center">
     <a href="https://supacharger.dev"><img src="/docs/gh-banner.jpg"/></a>
   </p>
@@ -250,4 +250,4 @@ PRs are always welcome.
 
 ---
 
-This project was inspired by Vercel's [nextjs-subscription-payments](https://github.com/vercel/nextjs-subscription-payments).
+This project was inspired by Kolby Sisk's [next-supabase-stripe-starter]([https://github.com/vercel/nextjs-subscription-payments](https://github.com/KolbySisk/next-supabase-stripe-starter/tree/main)).

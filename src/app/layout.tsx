@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
 import { ToastContainer } from 'react-toastify';
+import Script from 'next/script';
 
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
@@ -34,6 +35,21 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <html lang={currentLocale} suppressHydrationWarning>
+      <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-T44MSEP2WQ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-T44MSEP2WQ');
+          `}
+        </Script>
+      </head>
       <body className={cn('font-sans antialiased', plusJakartaSans.variable)}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider attribute='class' defaultTheme='system' enableSystem>

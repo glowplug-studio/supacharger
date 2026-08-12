@@ -178,5 +178,10 @@ export const SC_CONFIG = {
     theme: 'dark',
     transition: Flip,
   },
-
+  /**
+   * ==========
+   * CLI - do not edit
+   * ==========
+   */
+  CLI_INSTALL_HASH: 'c4bcd3fda8b7e68c5b33708930c62a626971f51c',
 };
