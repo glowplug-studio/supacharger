@@ -4,7 +4,7 @@ import SCSiteLogo from './sc_site-logo';
 
 export default function SCAccountLoginLeft() {
   return (
-    //@TODO handle session state - of theres a sesson then switch this href value based on the src/supacharger/supacharger-config.ts SC_CONFIG.NO_SESSION_HOME_PATH and SC_CONFIG.USER_REDIRECTS.AUTHED_USER.HOME_PATH
+    //@TODO handle session state - switch this href using values from src/supacharger.config.ts.
     <div
       className='relative hidden flex-1 flex-col bg-cover bg-center bg-no-repeat lg:flex'
       style={{

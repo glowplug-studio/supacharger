@@ -17,7 +17,7 @@ function pathMatches(path: string, patterns: string[]) {
   });
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // 1. Update session (get user info)
   const response = await updateSession(request);
 

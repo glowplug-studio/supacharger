@@ -16,17 +16,20 @@ This is a SaaS starter built with modern technologies.
 
 ### What's included
 
-- Next.js 15
+- Next.js 16.3
 - [Supabase](https://supabase.com) - Postgres database & user authentication
 - [Stripe](https://stripe.com) - [Checkout](https://stripe.com/docs/payments/checkout), [subscriptions](https://stripe.com/docs/billing/subscriptions/overview), and [customer portal](https://stripe.com/docs/customer-management)
 - [Brevo](https://brevo.com) - Marketing and transactional emails
-- [Tailwindcss](https://tailwindcss.com/) - CSS framework
+- [Tailwind CSS 4.3](https://tailwindcss.com/) - CSS framework
+- [Lucide React 1.31](https://lucide.dev/) - Icon library
 - [shadcn/ui](https://ui.shadcn.com) - Prebuilt accessible components
 - Webhooks to automatically synchronize Stripe with Supabase
 - Stripe fixture to bootstrap product data
 - Supabase migrations to bootstrap and manage your db schema
 - Responsive, performant, and accessible prebuilt pages
 - Brevo email integration for welcome emails and payment receipts
+
+Shared runtime and tooling dependencies are exact-pinned in `package.json`. Consuming applications should use the same pinned version for every dependency they inherit from the Supacharger core; application-only packages remain independently managed.
 
 ## Live Demo
 
@@ -42,7 +45,7 @@ The demo includes:
 ## Quick Start for Development
 
 ### Prerequisites
-- Node.js 20.0.0+
+- Node.js 22.0.0+
 - Supabase account
 - Stripe account (test mode at least)
 - Brevo account
@@ -73,15 +76,15 @@ The demo includes:
 
 ### Node.js Version Management
 
-This project requires Node.js 20.0.0+. We've included version management files to ensure consistency:
+This project requires Node.js 22.0.0+. We've included version management files to ensure consistency:
 
 #### Using nvm (recommended)
 ```bash
 # Install and use the correct Node version
 nvm use
 
-# Or install if you don't have Node 20
-nvm install
+# Or install if you don't have Node 22
+nvm install 22
 ```
 
 #### Using other version managers
@@ -90,7 +93,7 @@ nvm install
 - **volta**: Volta will automatically use the correct version
 
 #### Manual installation
-If you don't use a version manager, ensure you have Node.js 20.0.0+ installed:
+If you don't use a version manager, ensure you have Node.js 22.0.0+ installed:
 ```bash
 node --version  # Should show v20.x.x
 ```
@@ -116,7 +119,7 @@ node --version  # Should show v20.x.x
 
 ### 4. Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fglowplug-studio%2Fsupacharger&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,SUPABASE_DB_PASSWORD,NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,BREVO_API_KEY,NEXT_PUBLIC_SITE_URL&demo-title=Supacharger%20SaaS%20Starter&demo-url=https%3A%2F%2Fdemo.supacharger.dev&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fglowplug-studio%2Fsupacharger&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,SUPABASE_SERVICE_ROLE_KEY,SUPABASE_DB_PASSWORD,NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,BREVO_API_KEY,NEXT_PUBLIC_SITE_URL&demo-title=Supacharger%20SaaS%20Starter&demo-url=https%3A%2F%2Fdemo.supacharger.dev&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
 
 1. Click the deploy button ⬆️
 1. On the form create a new repo and add the Supabase integration

@@ -8,7 +8,7 @@ import { evaluatePasswordStrength } from '@/supacharger/utils/helpers';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
 
 export async function POST(request: NextRequest) {
   // Parse the request body
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
   // Use the access token to make the client
   const supabase = createClient(
     supabaseUrl,
-    supabaseAnonKey,
+    supabasePublishableKey,
     {
       global: {
         headers: {

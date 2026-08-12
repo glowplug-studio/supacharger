@@ -43,3 +43,4 @@ supabase/config.toml
 # cli
 .sc-core-update/
 .sc-core-install/
+tools/supacharger-mcp/node_modules

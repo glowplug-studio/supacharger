@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config '../../../tailwind.config.ts';
 
 /** =========================================================================
  *
@@ -32,7 +31,7 @@
     --card-foreground: 0 0% 100%;
 
     --primary: 146 100% 32%;
-    --primary-foreground: 146 100% 32%
+    --primary-foreground: 146 100% 32%;
 
     --secondary: 146 61% 73%;
     --secondary-foreground: 146 61% 73%;

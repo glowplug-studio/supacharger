@@ -10,7 +10,7 @@ interface LogoProps {
 
 export default function SCSiteLogo({ showSiteTitle, darkMode }: LogoProps) {
   return (
-    //@TODO handle session state - if theres a sesson then switch this href value based on the src/supacharger/supacharger-config.ts SC_CONFIG.NO_SESSION_HOME_PATH and SC_CONFIG.USER_REDIRECTS.AUTHED_USER.HOME_PATH
+    //@TODO handle session state - switch this href using values from src/supacharger.config.ts.
     <Link href='/' className='flex w-fit items-center gap-2  hover:no-underline'>
       <SiteLogoSVG></SiteLogoSVG>
       {showSiteTitle ? (

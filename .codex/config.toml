@@ -1,0 +1,5 @@
+[mcp_servers.supacharger]
+command = "npm"
+args = ["--prefix", "tools/supacharger-mcp", "start"]
+cwd = "."
+startup_timeout_sec = 30.0

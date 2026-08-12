@@ -2,17 +2,17 @@ import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { cookies } from 'next/headers';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider } from 'next-themes';
 import { ToastContainer } from 'react-toastify';
-import Script from 'next/script';
 
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 import { Analytics } from '@vercel/analytics/react';
 
-import '@/supacharger/styles/globals.scss';
-import '@/styles/globals.scss';
+import '@/supacharger/styles/globals.css';
+import '@/styles/globals.css';
 
 export const dynamic = 'force-dynamic';
 
