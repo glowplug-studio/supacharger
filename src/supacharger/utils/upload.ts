@@ -153,7 +153,9 @@ export async function saveToDatabase<T extends DatabaseRecord>(
   try {
     const { data, error } = await supabase
       .from(tableName)
-      .insert([record])
+      // This extension point accepts application-owned tables that are not part
+      // of the core's generated Database type.
+      .insert(record as any)
       .select()
       .single();
 
@@ -258,4 +260,4 @@ export function validateFile(
   }
   
   return { valid: true };
-} 
+}

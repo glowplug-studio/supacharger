@@ -1,9 +1,9 @@
 import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
-import { cookies } from 'next/headers';
 import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import { ThemeProvider } from 'next-themes';
 import { ToastContainer } from 'react-toastify';
 
@@ -12,7 +12,6 @@ import { cn } from '@/utils/cn';
 import { Analytics } from '@vercel/analytics/react';
 
 import '@/supacharger/styles/globals.css';
-import '@/styles/globals.css';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,14 +26,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  // Get the current locale from cookies
-  const cookieStore = await cookies();
-  const currentLocale = cookieStore.get('supacharger_locale')?.value || 'en'; // Default to 'en' if not set
-  // Load translations for the current locale
-  const messages = await import(`../../messages/${currentLocale}.json`).then((module) => module.default);
+  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
 
   return (
-    <html lang={currentLocale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         {/* Google Analytics */}
         <Script
@@ -51,7 +46,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         </Script>
       </head>
       <body className={cn('font-sans antialiased', plusJakartaSans.variable)}>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
             {children}
             <Analytics />

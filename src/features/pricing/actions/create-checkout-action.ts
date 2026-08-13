@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { getOrCreateCustomer } from '@/features/account/controllers/get-or-create-customer';
 import { Price } from '@/features/pricing/types';
-import { stripeAdmin } from '@/lib/stripe/stripe-admin';
+import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
 import { getUser } from '@/lib/supabase/supacharger/supabase-auth';
 import { getURL } from '@/supacharger/utils/helpers';
 
@@ -21,8 +21,16 @@ export async function createCheckoutAction({ price }: { price: Price }) {
 
 
 
+  // Resolve the client-provided identifier against this Stripe account. The
+  // client cannot select payment mode or make an inactive/one-time price valid.
+  const stripe = getStripeAdmin();
+  const stripePrice = await stripe.prices.retrieve(price.id);
+  if (!stripePrice.active || stripePrice.type !== 'recurring') {
+    throw new Error('Only active recurring Stripe prices are supported.');
+  }
+
   // 3. Create a checkout session in Stripe
-  const checkoutSession = await stripeAdmin.checkout.sessions.create({
+  const checkoutSession = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     billing_address_collection: 'required',
     customer,
@@ -31,11 +39,11 @@ export async function createCheckoutAction({ price }: { price: Price }) {
     },
     line_items: [
       {
-        price: price.id,
+        price: stripePrice.id,
         quantity: 1,
       },
     ],
-    mode: price.type === 'recurring' ? 'subscription' : 'payment',
+    mode: 'subscription',
     allow_promotion_codes: true,
     success_url: `${getURL()}/account`,
     cancel_url: `${getURL()}/`,

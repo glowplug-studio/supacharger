@@ -1,0 +1,20 @@
+/**
+ * Project: Your Project Name
+ *
+ * CLI-managed reference for src/styles/project.css. This file is not imported.
+ */
+
+@layer base {
+  :root {
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+  }
+
+  body {
+    /* Add project-wide element defaults only when utilities are not suitable. */
+  }
+}
+
+@layer components {
+  /* Add project-owned semantic component classes here when needed. */
+}

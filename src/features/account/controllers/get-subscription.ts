@@ -4,6 +4,7 @@ export async function getSubscription() {
   const supabase = await createClient();
 
   const { data, error } = await supabase
+    .schema('app')
     .from('subscriptions')
     .select('*, prices(*, products(*))')
     .in('status', ['trialing', 'active'])

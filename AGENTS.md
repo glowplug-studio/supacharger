@@ -24,10 +24,20 @@ Application developers should consume these modules through their documented int
 ### Developer-owned extension points
 
 - `src/supacharger.config.ts` contains application settings and must survive every CLI update.
+- `src/i18n/config.ts`, `src/i18n/request.ts`, and `messages/` contain the application's locale policy and translations. The CLI installs starters for a new application but must preserve these paths during core updates.
+- `src/styles/project.css` contains application theme tokens, global defaults, overrides, and product-specific styles. Keep its `Project: ...` header accurate and preserve it during every CLI update.
 - `src/components/sc_demo/` contains replaceable example presentation code.
 - Application-specific routes, features, assets, and presentation outside protected paths belong to the consuming application unless explicitly designated as shared.
 
 `src/supacharger/supacharger-config.ts` is a protected compatibility interface that re-exports the developer configuration. Never move application values back into that protected module.
+
+### Styling boundary
+
+- `src/supacharger/styles/globals.css` is the single Tailwind entrypoint. It imports Tailwind once, then the shared core stylesheet, then the developer stylesheet.
+- `src/supacharger/styles/supacharger.css` contains CLI-managed rules shared by every Supacharger application.
+- `src/supacharger/styles/project.example.css` is a CLI-managed, unimported reference for the developer-owned stylesheet.
+- Prefer Tailwind utilities in markup. Put custom element defaults in `@layer base`, semantic classes in `@layer components`, and narrowly scoped utilities in `@layer utilities`.
+- Do not place product tokens, branding, or application-specific selectors in the CLI-managed styles, and do not import Tailwind again from `src/styles/project.css`.
 
 Do not infer ownership solely from an import path. Protected modules currently consume some files outside protected directories; treat those dependencies as architecture to clarify, not permission for the CLI to overwrite every outside file.
 
@@ -51,6 +61,7 @@ Do not copy or adapt licence-restricted Untitled UI source from Specdrive into S
 ## CLI compatibility
 
 - Keep application settings outside CLI-managed directories.
+- Preserve `src/styles/project.css` as a developer-owned extension point and install its starter only when the file is absent.
 - Store CLI version and installation metadata in `.supacharger/core-lock.json`, never in application configuration.
 - Treat overwrite safety, conflict detection, migrations, dependency changes, and removal of obsolete managed files as part of the public upgrade contract.
 - Do not introduce a new developer-editable file inside a protected directory without first defining how CLI updates preserve it.
@@ -59,6 +70,7 @@ Do not copy or adapt licence-restricted Untitled UI source from Specdrive into S
 ## Documentation and verification
 
 - Keep code, `README.md`, repository agent guidance, MCP guidance, and `supacharger-docs` consistent with actual behaviour.
+- Interpret an unqualified request to "update the docs" as requiring the repository `README.md`, the Docusaurus documentation in `../supacharger-docs/`, and the agent-facing guidance/resources in `docs/agents/` and `tools/supacharger-mcp/` to be reviewed and updated together. Explicitly state when one of these surfaces is unaffected.
 - Prefer focused checks during implementation and run the relevant lint, type, test, or build commands before reporting completion.
 - Report all affected repositories and any verification that could not be run.
 - Preserve unrelated worktree changes in this repository and every consuming application.

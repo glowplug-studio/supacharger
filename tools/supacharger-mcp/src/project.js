@@ -20,6 +20,8 @@ const ignoredTreeNames = new Set([
 const guidanceFiles = {
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
+  localisation: 'docs/agents/localisation.md',
+  billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
   instructions: 'AGENTS.md',
 };
@@ -58,10 +60,50 @@ export function resolveRepositoryPath(inputPath = '.') {
 export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
 
+  if (
+    relativePath === 'src/lib/stripe' ||
+    relativePath.startsWith('src/lib/stripe/') ||
+    relativePath === 'src/features/pricing' ||
+    relativePath.startsWith('src/features/pricing/') ||
+    relativePath === 'supabase/migrations' ||
+    relativePath.startsWith('supabase/migrations/') ||
+    relativePath === 'src/lib/supabase/types.ts' ||
+    [
+      'get-customer-id.ts',
+      'get-or-create-customer.ts',
+      'get-subscription.ts',
+      'upsert-user-subscription.ts',
+    ].some((file) => relativePath === `src/features/account/controllers/${file}`)
+  ) {
+    return {
+      ownership: 'cli-managed-core',
+      guidance: 'Canonical billing implementation or schema. Follow the billing guidance, land changes in core first, and propagate them through the CLI.',
+    };
+  }
+
   if (relativePath === 'src/supacharger.config.ts') {
     return {
       ownership: 'developer-owned',
       guidance: 'Application configuration seam. CLI updates must preserve this file.',
+    };
+  }
+
+  if (
+    relativePath === 'src/i18n/config.ts' ||
+    relativePath === 'src/i18n/request.ts' ||
+    relativePath === 'messages' ||
+    relativePath.startsWith('messages/')
+  ) {
+    return {
+      ownership: 'developer-owned',
+      guidance: 'Application localisation seam. The CLI installs starters, then preserves locale configuration and the complete messages directory.',
+    };
+  }
+
+  if (relativePath === 'src/styles/project.css') {
+    return {
+      ownership: 'developer-owned',
+      guidance: 'Application styling seam. Keep the project name accurate; CLI updates must preserve this file.',
     };
   }
 

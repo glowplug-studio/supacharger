@@ -7,25 +7,31 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import { Button } from '../ui/button';
+import {
+  type AppLocale,
+  DEFAULT_LOCALE,
+  resolveLocale,
+} from '@/i18n/config';
 
 export default function LocaleSwitcher() {
-  const handleLocaleChange = (locale: string) => {
-    document.cookie = `supacharger_locale=${locale}; path=/`;
-    window.location.reload(); // Reload to apply new locale
+  const handleLocaleChange = async (locale: AppLocale) => {
+    const response = await fetch('/api/intl', {
+      body: JSON.stringify({ locale }),
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    });
+
+    if (response.ok) window.location.reload();
   };
 
-  const [locale, setLocale] = useState('en');
+  const [locale, setLocale] = useState<AppLocale>(DEFAULT_LOCALE);
 
   useEffect(() => {
     fetch('/api/intl')
       .then((res) => res.json())
-      .then((data) => setLocale(data.locale));
+      .then((data) => setLocale(resolveLocale(data.locale)));
   }, []);
 
   const currentLocale = locale;

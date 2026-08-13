@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 import type { Database } from '@/lib/supabase/types';
 
-type Product = Database['public']['Tables']['products']['Row'];
+type Product = Database['app']['Tables']['products']['Row'];
 
 export async function upsertProduct(product: Stripe.Product) {
   const productData: Product = {
@@ -15,7 +15,7 @@ export async function upsertProduct(product: Stripe.Product) {
     metadata: product.metadata,
   };
 
-  const { error } = await supabaseAdminClient.from('products').upsert([productData]);
+  const { error } = await supabaseAdminClient.schema('app').from('products').upsert([productData]);
 
   if (error) {
     throw error;

@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+type BillingDatabase = {
   public: {
     Tables: {
       customers: {
@@ -30,12 +30,12 @@ export type Database = {
           currency: string | null
           description: string | null
           id: string
-          interval: Database["public"]["Enums"]["pricing_plan_interval"] | null
+          interval: BillingDatabase["public"]["Enums"]["pricing_plan_interval"] | null
           interval_count: number | null
           metadata: Json | null
           product_id: string | null
           trial_period_days: number | null
-          type: Database["public"]["Enums"]["pricing_type"] | null
+          type: BillingDatabase["public"]["Enums"]["pricing_type"] | null
           unit_amount: number | null
         }
         Insert: {
@@ -43,12 +43,12 @@ export type Database = {
           currency?: string | null
           description?: string | null
           id: string
-          interval?: Database["public"]["Enums"]["pricing_plan_interval"] | null
+          interval?: BillingDatabase["public"]["Enums"]["pricing_plan_interval"] | null
           interval_count?: number | null
           metadata?: Json | null
           product_id?: string | null
           trial_period_days?: number | null
-          type?: Database["public"]["Enums"]["pricing_type"] | null
+          type?: BillingDatabase["public"]["Enums"]["pricing_type"] | null
           unit_amount?: number | null
         }
         Update: {
@@ -56,12 +56,12 @@ export type Database = {
           currency?: string | null
           description?: string | null
           id?: string
-          interval?: Database["public"]["Enums"]["pricing_plan_interval"] | null
+          interval?: BillingDatabase["public"]["Enums"]["pricing_plan_interval"] | null
           interval_count?: number | null
           metadata?: Json | null
           product_id?: string | null
           trial_period_days?: number | null
-          type?: Database["public"]["Enums"]["pricing_type"] | null
+          type?: BillingDatabase["public"]["Enums"]["pricing_type"] | null
           unit_amount?: number | null
         }
         Relationships: [
@@ -114,7 +114,7 @@ export type Database = {
           metadata: Json | null
           price_id: string | null
           quantity: number | null
-          status: Database["public"]["Enums"]["subscription_status"] | null
+          status: BillingDatabase["public"]["Enums"]["subscription_status"] | null
           trial_end: string | null
           trial_start: string | null
           user_id: string
@@ -131,7 +131,7 @@ export type Database = {
           metadata?: Json | null
           price_id?: string | null
           quantity?: number | null
-          status?: Database["public"]["Enums"]["subscription_status"] | null
+          status?: BillingDatabase["public"]["Enums"]["subscription_status"] | null
           trial_end?: string | null
           trial_start?: string | null
           user_id: string
@@ -148,7 +148,7 @@ export type Database = {
           metadata?: Json | null
           price_id?: string | null
           quantity?: number | null
-          status?: Database["public"]["Enums"]["subscription_status"] | null
+          status?: BillingDatabase["public"]["Enums"]["subscription_status"] | null
           trial_end?: string | null
           trial_start?: string | null
           user_id?: string
@@ -160,6 +160,77 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "prices"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      stripe_events: {
+        Row: {
+          api_version: string | null
+          attempt_count: number
+          event_id: string
+          event_type: string
+          last_error: string | null
+          livemode: boolean
+          next_attempt_at: string
+          object_id: string | null
+          processed_at: string | null
+          processing_started_at: string | null
+          received_at: string
+          status: string
+        }
+        Insert: {
+          api_version?: string | null
+          attempt_count?: number
+          event_id: string
+          event_type: string
+          last_error?: string | null
+          livemode: boolean
+          next_attempt_at?: string
+          object_id?: string | null
+          processed_at?: string | null
+          processing_started_at?: string | null
+          received_at?: string
+          status?: string
+        }
+        Update: {
+          api_version?: string | null
+          attempt_count?: number
+          event_id?: string
+          event_type?: string
+          last_error?: string | null
+          livemode?: boolean
+          next_attempt_at?: string
+          object_id?: string | null
+          processed_at?: string | null
+          processing_started_at?: string | null
+          received_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      stripe_event_payloads: {
+        Row: {
+          event_id: string
+          expires_at: string
+          payload: Json
+        }
+        Insert: {
+          event_id: string
+          expires_at?: string
+          payload: Json
+        }
+        Update: {
+          event_id?: string
+          expires_at?: string
+          payload?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_event_payloads_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "stripe_events"
+            referencedColumns: ["event_id"]
           },
         ]
       }
@@ -192,7 +263,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      accept_stripe_event: {
+        Args: {
+          p_api_version: string | null
+          p_event_id: string
+          p_event_type: string
+          p_livemode: boolean
+          p_object_id: string | null
+          p_payload: Json
+        }
+        Returns: boolean
+      }
+      claim_stripe_event: {
+        Args: { p_event_id: string }
+        Returns: boolean
+      }
+      list_claimable_stripe_events: {
+        Args: { p_limit?: number }
+        Returns: { event_id: string }[]
+      }
     }
     Enums: {
       pricing_plan_interval: "day" | "week" | "month" | "year"
@@ -211,6 +300,17 @@ export type Database = {
       [_ in never]: never
     }
   }
+}
+
+export type Database = {
+  public: {
+    Tables: { [_ in never]: never }
+    Views: { [_ in never]: never }
+    Functions: { [_ in never]: never }
+    Enums: { [_ in never]: never }
+    CompositeTypes: { [_ in never]: never }
+  }
+  app: BillingDatabase["public"]
 }
 
 type PublicSchema = Database[Extract<keyof Database, "public">]

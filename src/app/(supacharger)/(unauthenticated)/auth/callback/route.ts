@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
 
     // Check if user is subscribed, if not redirect to pricing page
     const { data: userSubscription } = await supabase
+      .schema('app')
       .from('subscriptions')
       .select('*, prices(*, products(*))')
       .in('status', ['trialing', 'active'])

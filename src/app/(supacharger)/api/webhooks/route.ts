@@ -1,27 +1,11 @@
+import { after } from 'next/server';
 import Stripe from 'stripe';
 
-import { upsertUserSubscription } from '@/features/account/controllers/upsert-user-subscription';
-import { upsertPrice } from '@/features/pricing/controllers/upsert-price';
-import { upsertProduct } from '@/features/pricing/controllers/upsert-product';
-import { stripeAdmin } from '@/lib/stripe/stripe-admin';
+import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
+import { acceptStripeEvent, processStripeEvent } from '@/lib/stripe/stripe-events';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 
-export const config = {
-  api: {
-    bodyParser: false, // Disable body parsing
-  },
-};
-
-const relevantEvents = new Set([
-  'product.created',
-  'product.updated',
-  'price.created',
-  'price.updated',
-  'checkout.session.completed',
-  'customer.subscription.created',
-  'customer.subscription.updated',
-  'customer.subscription.deleted',
-]);
+export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   const arrayBuffer = await req.arrayBuffer();
@@ -37,49 +21,19 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripeAdmin.webhooks.constructEvent(rawBody, sig, webhookSecret);
+    event = getStripeAdmin().webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err: any) {
     return new Response(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
-  if (relevantEvents.has(event.type)) {
-    try {
-      switch (event.type) {
-        case 'product.created':
-        case 'product.updated':
-          await upsertProduct(event.data.object as Stripe.Product);
-          break;
-        case 'price.created':
-        case 'price.updated':
-          await upsertPrice(event.data.object as Stripe.Price);
-          break;
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
-          const subscription = event.data.object as Stripe.Subscription;
-          await upsertUserSubscription({
-            subscriptionId: subscription.id,
-            customerId: subscription.customer as string,
-            isCreateAction: false,
-          });
-          break;
-        case 'checkout.session.completed':
-          const checkoutSession = event.data.object as Stripe.Checkout.Session;
-          if (checkoutSession.mode === 'subscription') {
-            await upsertUserSubscription({
-              subscriptionId: checkoutSession.subscription as string,
-              customerId: checkoutSession.customer as string,
-              isCreateAction: true,
-            });
-          }
-          break;
-        default:
-          throw new Error('Unhandled relevant event!');
-      }
-    } catch (error) {
-      console.error(error);
-      return new Response('Webhook handler failed. Check logs.', { status: 400 });
+  try {
+    const accepted = await acceptStripeEvent(event);
+    if (accepted) {
+      after(() => processStripeEvent(event.id));
     }
+  } catch (error) {
+    console.error('Stripe webhook event could not be durably accepted', { eventId: event.id, error });
+    return new Response('Webhook event was not accepted.', { status: 500 });
   }
 
   return new Response(JSON.stringify({ received: true }), {

@@ -11,9 +11,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test:stripe": "node --experimental-strip-types --test test/stripe-time.test.mjs",
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=default",
-    "generate-types": "npx supabase gen types typescript --project-id vdytepbsknevxtcfzvpp --schema public > src/libs/supabase/types.ts",
-    "supabase:link": "env-cmd -f ./.env.local supabase link --project-ref vdytepbsknevxtcfzvpp",
+    "generate-types": "npx supabase gen types typescript --project-id lubojzqjhvjoextyhfqn --schema public,app > src/lib/supabase/types.ts",
+    "supabase:link": "env-cmd -f ./.env.local supabase link --project-ref lubojzqjhvjoextyhfqn",
     "migration:new": "supabase migration new",
     "migration:up": "supabase migration up --linked --debug && npm run generate-types",
     "migration:squash": "supabase migration squash --linked"
@@ -47,7 +48,6 @@
     "@radix-ui/react-toggle": "1.1.13",
     "@radix-ui/react-toggle-group": "1.1.14",
     "@radix-ui/react-tooltip": "1.2.11",
-    "@stripe/stripe-js": "7.9.0",
     "@supabase/ssr": "0.12.0",
     "@supabase/supabase-js": "2.110.0",
     "@vercel/analytics": "1.6.1",
@@ -75,12 +75,12 @@
     "recharts": "2.15.4",
     "sass": "1.101.0",
     "sonner": "2.0.7",
-    "stripe": "18.5.0",
+    "stripe": "22.5.0",
     "tailwind-merge": "3.6.0",
     "tailwindcss": "4.3.3",
     "tailwindcss-animate": "1.0.7",
     "vaul": "1.1.2",
-    "zod": "3.25.76"
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",

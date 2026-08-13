@@ -2,6 +2,17 @@ import Stripe from 'stripe';
 
 import { getEnvVar } from '@/supacharger/utils/helpers';
 
-export const stripeAdmin = new Stripe(getEnvVar(process.env.STRIPE_SECRET_KEY, 'STRIPE_SECRET_KEY'), {
-  apiVersion: '2025-04-30.basil',
-});
+import 'server-only';
+
+export const STRIPE_API_VERSION: Stripe.LatestApiVersion = '2026-07-29.dahlia';
+
+let stripeAdmin: Stripe | undefined;
+
+export function getStripeAdmin(): Stripe {
+  stripeAdmin ??= new Stripe(getEnvVar(process.env.STRIPE_SECRET_KEY, 'STRIPE_SECRET_KEY'), {
+    apiVersion: STRIPE_API_VERSION,
+    maxNetworkRetries: 2,
+  });
+
+  return stripeAdmin;
+}

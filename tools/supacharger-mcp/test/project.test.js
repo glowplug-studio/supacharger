@@ -6,7 +6,18 @@ import { classifyPath, projectTree, resolveRepositoryPath, searchGuidance } from
 test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/supacharger/components/forms').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/supacharger.config.ts').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/i18n/request.ts').ownership, 'developer-owned');
+  assert.equal(classifyPath('messages/en.json').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
+  assert.equal(
+    classifyPath('src/supacharger/styles/supacharger.css').ownership,
+    'cli-managed-core'
+  );
   assert.equal(classifyPath('src/components/sc_demo/header.tsx').ownership, 'developer-owned-example');
+  assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('src/features/pricing/controllers/upsert-price.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('src/lib/supabase/types.ts').ownership, 'cli-managed-core');
 });
 
 test('rejects paths outside the repository and sensitive paths', () => {
@@ -24,4 +35,14 @@ test('searches curated guidance', async () => {
   const matches = await searchGuidance('clean-room');
   assert.ok(matches.length > 0);
   assert.ok(matches.every((match) => match.path === 'AGENTS.md' || match.path.startsWith('docs/agents/')));
+});
+
+test('searches the localisation guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('locale-based routing');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/localisation.md'));
+});
+
+test('searches the billing guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('STRIPE_EVENT_PROCESSOR_SECRET');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/billing.md'));
 });

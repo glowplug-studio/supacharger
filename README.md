@@ -22,6 +22,7 @@ This is a SaaS starter built with modern technologies.
 - [Brevo](https://brevo.com) - Marketing and transactional emails
 - [Tailwind CSS 4.3](https://tailwindcss.com/) - CSS framework
 - [Lucide React 1.31](https://lucide.dev/) - Icon library
+- [Zod 4.4](https://zod.dev/) - Runtime validation and typed schemas
 - [shadcn/ui](https://ui.shadcn.com) - Prebuilt accessible components
 - Webhooks to automatically synchronize Stripe with Supabase
 - Stripe fixture to bootstrap product data
@@ -30,6 +31,18 @@ This is a SaaS starter built with modern technologies.
 - Brevo email integration for welcome emails and payment receipts
 
 Shared runtime and tooling dependencies are exact-pinned in `package.json`. Consuming applications should use the same pinned version for every dependency they inherit from the Supacharger core; application-only packages remain independently managed.
+
+### Localisation
+
+Supacharger uses `next-intl` with locale-neutral routes. A signed-in page keeps the same URL in every language—for example, `/account` never becomes `/en/account`. The request locale comes from the validated `supacharger_locale` cookie and falls back to English.
+
+Applications own their locale policy and translations:
+
+- `src/i18n/config.ts` declares supported and default locales;
+- `src/i18n/request.ts` loads the request catalogue; and
+- `messages/<locale>.json` contains application translations.
+
+The Supacharger CLI installs starter files for a new application, then preserves all of these paths during `coreupdate`. Core releases may introduce new translation keys, so review release notes and add required keys to each application-owned catalogue when upgrading. See the [localisation guide](https://supacharger.dev/docs/Application%20Development/localisation) for setup and extension details.
 
 ## Live Demo
 
@@ -119,7 +132,7 @@ node --version  # Should show v20.x.x
 
 ### 4. Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fglowplug-studio%2Fsupacharger&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,SUPABASE_SERVICE_ROLE_KEY,SUPABASE_DB_PASSWORD,NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,BREVO_API_KEY,NEXT_PUBLIC_SITE_URL&demo-title=Supacharger%20SaaS%20Starter&demo-url=https%3A%2F%2Fdemo.supacharger.dev&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fglowplug-studio%2Fsupacharger&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,SUPABASE_SECRET_KEY,SUPABASE_DB_PASSWORD,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,STRIPE_EVENT_PROCESSOR_SECRET,BREVO_API_KEY,NEXT_PUBLIC_SITE_URL&demo-title=Supacharger%20SaaS%20Starter&demo-url=https%3A%2F%2Fdemo.supacharger.dev&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
 
 1. Click the deploy button ⬆️
 1. On the form create a new repo and add the Supabase integration
@@ -130,10 +143,9 @@ node --version  # Should show v20.x.x
 ### 5. Stripe Webhook
 
 1. After deploying go to your Vercel dashboard and find your Vercel URL
-1. Next go to your Stripe dashboard, click `Developers` in the top nav, and then the `Webhooks` tab
-1. Add an endpoint. Enter your Vercel URL followed by `/api/webhooks`
-1. Click `Select events`
-1. Check `Select all events`
+1. In Stripe Workbench, create a Sandbox event destination using API version `2026-07-29.dahlia`
+1. Enter your Vercel URL followed by `/api/webhooks`
+1. Select only `product.created`, `product.updated`, `product.deleted`, `price.created`, `price.updated`, `price.deleted`, `checkout.session.completed`, and the implemented `customer.subscription.*` lifecycle events
 1. Scroll to the bottom of the page and click `Add endpoint`
 1. Click to `Reveal` signing secret and copy it
 1. Go to your `Vercel project settings` → `Environment Variables`
@@ -208,9 +220,19 @@ There are many auth providers you can choose from. [See the Supabase docs](https
 
 ### Styling
 
+The application imports Tailwind once through `src/supacharger/styles/globals.css`. Styling is split by ownership:
+
+- `src/supacharger/styles/globals.css` is the CLI-managed Tailwind entrypoint.
+- `src/supacharger/styles/supacharger.css` contains reusable, CLI-managed Supacharger rules.
+- `src/supacharger/styles/project.example.css` is the CLI-managed reference file and is not imported.
+- `src/styles/project.css` is developer-owned. Put the named project's theme tokens, global defaults, product-specific classes, and overrides there; CLI updates preserve it.
+
+Prefer Tailwind utilities in components. When custom CSS is needed, use `@layer base` for element defaults and theme tokens, `@layer components` for semantic classes, and `@layer utilities` for narrowly scoped utilities. Do not import Tailwind again from `project.css`.
+
 - [Learn more about shadcn/ui components](https://ui.shadcn.com/docs)
 - [Learn more about theming with shadcn/ui](https://ui.shadcn.com/docs/theming)
-- [Learn more about the Tailwindcss theme config](https://tailwindcss.com/docs/theme)
+- [Learn more about the Tailwind CSS theme config](https://tailwindcss.com/docs/theme)
+- [Learn more about adding custom Tailwind styles](https://tailwindcss.com/docs/adding-custom-styles)
 
 ### Emails
 

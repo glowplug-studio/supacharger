@@ -1,7 +1,8 @@
-import { McpServer } from '@modelcontextprotocol/server';
-import { serveStdio } from '@modelcontextprotocol/server/stdio';
 import { pathToFileURL } from 'node:url';
 import { z } from 'zod';
+
+import { McpServer } from '@modelcontextprotocol/server';
+import { serveStdio } from '@modelcontextprotocol/server/stdio';
 
 import {
   classifyPath,
@@ -12,7 +13,7 @@ import {
   searchGuidance,
 } from './project.js';
 
-const guidanceTopics = ['mission', 'ownership', 'workflow', 'instructions'];
+const guidanceTopics = ['mission', 'ownership', 'localisation', 'billing', 'workflow', 'instructions'];
 
 function textResult(text) {
   return { content: [{ type: 'text', text }] };
@@ -52,7 +53,7 @@ export function createServer() {
     'supacharger_get_guidance',
     {
       title: 'Get Supacharger guidance',
-      description: 'Read the canonical mission, ownership model, workflow, or complete repository agent instructions.',
+      description: 'Read the canonical mission, ownership model, localisation, billing contract, workflow, or complete repository agent instructions.',
       inputSchema: {
         topic: z.enum(guidanceTopics).describe('Guidance topic to read.'),
       },

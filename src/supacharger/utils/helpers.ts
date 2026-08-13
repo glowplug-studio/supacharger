@@ -1,5 +1,6 @@
 import * as EmailValidator from 'email-validator';
 
+export { stripeUnixToDate as toDateTime } from '@/lib/stripe/stripe-time';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 /** ==========
@@ -18,18 +19,10 @@ export function getURL(path = '') {
   return cleanPath ? `${formattedURL}/${cleanPath}` : formattedURL;
 }
 
-/**
- * @todo write this
- */
-export function toDateTime(secs: number) {
-  var t = new Date('1970-01-01T00:30:00Z'); // Unix epoch start.
-  t.setSeconds(secs);
-  return t;
-}
-
 export function getEnvVar(varValue: string | undefined, varName: string): string {
-  if (varValue === undefined) throw new ReferenceError(`Reference to undefined env var: ${varName}`);
-  return varValue;
+  const value = varValue?.trim();
+  if (!value) throw new ReferenceError(`Reference to undefined or empty env var: ${varName}`);
+  return value;
 }
 
 /**

@@ -4,6 +4,7 @@ export async function getProducts() {
   const supabase = await createClient()
 
   const { data, error } = await supabase
+    .schema('app')
     .from('products')
     .select('*, prices(*)')
     .eq('active', true)
