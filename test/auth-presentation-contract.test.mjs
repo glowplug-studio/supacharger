@@ -66,8 +66,12 @@ test('matching password confirmation shows a green tick', async () => {
   for (const form of [journey, embeddedSignup]) {
     assert.match(form, /passwordsMatch/);
     assert.match(form, /retypePassword\.length > 0|passwordAgain\.length > 0/);
-    assert.match(form, /text-emerald-400/);
+    assert.match(form, /left-\[calc\(100%\+0\.5rem\)\]/);
+    assert.match(form, /text-green-500/);
+    assert.match(form, /size=\{17\}/);
+    assert.match(form, /strokeWidth=\{2\.5\}/);
     assert.match(form, /<Check/);
+    assert.doesNotMatch(form, /text-emerald-400/);
   }
 });
 

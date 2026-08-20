@@ -1,6 +1,7 @@
 import { Flip, type ToastPosition } from 'react-toastify';
 
 import type { SupachargerConfig } from '@/supacharger/supacharger-config-contract';
+import { getSiteUrl } from '@/supacharger/utils/site-url';
 /**
  * ==========
  *    ___
@@ -30,7 +31,7 @@ export const SC_CONFIG: SupachargerConfig = {
   SITE_LOGO: null,
   MARKETING_SITE_URL: null,
   METADATA: {
-    SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    SITE_URL: getSiteUrl(),
     TITLE_TEMPLATE: '%s | Korunet',
     INDEXING_ENABLED: process.env.VERCEL_ENV
       ? process.env.VERCEL_ENV === 'production'

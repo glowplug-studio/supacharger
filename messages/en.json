@@ -36,6 +36,8 @@
     "accountEmailVerified": "Email Verified",
     "sendNewAuthEmailSendingButtonLabel": "Sending",
     "sendNewAuthEmailSentButtonLabel": "Sent",
+    "confirmationLinkAlreadyUsedSignedIn": "This confirmation link has expired or was already used. You are already signed in.",
+    "confirmationLinkAlreadyUsedSignIn": "This confirmation link has expired or was already used. If your account is already activated, sign in below.",
     "resendConfirmationEmailSent": "Confirm email link resent, check your email",
     "resendConfirmationEmailFail": "Failed to send. Wait and retry",
     "passwordUpdated": "Your password has been updated",

@@ -35,6 +35,8 @@
     "accountEmailVerified": "E-mail vérifié",
     "sendNewAuthEmailSendingButtonLabel": "Envoi en cours",
     "sendNewAuthEmailSentButtonLabel": "Envoyé",
+    "confirmationLinkAlreadyUsedSignedIn": "Ce lien de confirmation a expiré ou a déjà été utilisé. Vous êtes déjà connecté.",
+    "confirmationLinkAlreadyUsedSignIn": "Ce lien de confirmation a expiré ou a déjà été utilisé. Si votre compte est déjà activé, connectez-vous ci-dessous.",
     "resendConfirmationEmailSent": "Lien de confirmation renvoyé, vérifiez votre e-mail",
     "resendConfirmationEmailFail": "Échec de l'envoi. Veuillez patienter et réessayer",
     "passwordUpdated": "Votre mot de passe a été mis à jour",

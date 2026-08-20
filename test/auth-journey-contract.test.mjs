@@ -66,6 +66,26 @@ test('configuration exposes the canonical authentication and onboarding policies
   assert.match(contract, /SHA256_CERT_FINGERPRINTS:\s*readonly string\[\]/);
 });
 
+test('the application origin comes only from NEXT_PUBLIC_SITE_URL', async () => {
+  const [siteUrl, config, helpers, auth] = await Promise.all([
+    read('src/supacharger/utils/site-url.ts'),
+    read('src/supacharger.config.ts'),
+    read('src/supacharger/utils/helpers.ts'),
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
+  ]);
+
+  assert.match(siteUrl, /process\.env\.NEXT_PUBLIC_SITE_URL/);
+  assert.match(config, /SITE_URL:\s*getSiteUrl\(\)/);
+  assert.match(helpers, /export \{ getSiteUrl, getURL \}/);
+  assert.match(auth, /redirectTo:\s*getURL\('\/account\/reset-password\/new'\)/);
+
+  for (const source of [siteUrl, helpers, auth]) {
+    assert.doesNotMatch(source, /https?:\/\/localhost:\d+/);
+    assert.doesNotMatch(source, /process\.env\.NEXT_PUBLIC_SITE_URL\s*\|\|/);
+  }
+  assert.doesNotMatch(config, /SITE_URL:\s*process\.env\.NEXT_PUBLIC_SITE_URL/);
+});
+
 test('social OAuth provider configuration, buttons, guards, and assets stay aligned', async () => {
   const [contract, buttons, auth] = await Promise.all([
     read('src/supacharger/supacharger-config-contract.ts'),
@@ -98,6 +118,23 @@ test('auth operations enforce config and align signup confirmation redirects', a
   assert.match(auth, /function getSignUpConfirmationRedirect/);
   assert.equal((auth.match(/emailRedirectTo:\s*getSignUpConfirmationRedirect\(\)/g) ?? []).length, 2);
   assert.match(auth, /verifyOtp\([\s\S]*?type:\s*'signup'/);
+});
+
+test('consumed confirmation links recover through session-aware app or login notices', async () => {
+  const [route, layout, notice, messages] = await Promise.all([
+    read('src/app/(supacharger)/(unauthenticated)/auth/confirm/route.ts'),
+    read('src/app/layout.tsx'),
+    read('src/supacharger/components/auth/auth-confirmation-notice.tsx'),
+    read('messages/en.json'),
+  ]);
+
+  assert.match(route, /supabase\.auth\.getUser\(\)/);
+  assert.match(route, /user\?\.email_confirmed_at\s*\?\s*'already-authenticated'\s*:\s*'invalid'/);
+  assert.doesNotMatch(route, /redirectTo\.pathname\s*=\s*'\/error'/);
+  assert.match(layout, /<AuthConfirmationNotice\s*\/>/);
+  assert.match(notice, /confirmationLinkAlreadyUsedSignedIn/);
+  assert.match(notice, /confirmationLinkAlreadyUsedSignIn/);
+  assert.match(messages, /"confirmationLinkAlreadyUsedSignIn"/);
 });
 
 test('client-facing auth operations return safe serialisable error codes', async () => {

@@ -275,28 +275,27 @@ export function CreateAccountForm() {
                 <label htmlFor='retypePassword' className='text-md block px-1'>
                   {tAuthTerms('retypePassword')}
                 </label>
-                <div className='relative mt-2 px-1'>
-                  <Input
-                    className='pr-12'
-                    id='retypePassword'
-                    type='password'
-                    maxLength={30}
-                    required={!showPassword}
-                    disabled={showPassword}
-                    autoComplete='new-password'
-                    aria-invalid={!!formError && formError.toLowerCase().includes("retype")}
-                    aria-describedby={getAriaError("retypePassword")}
-                    {...register('retypePassword', {
-                      onChange: handleRetypePasswordChange,
-                    })}
-                  />
-                  {passwordsMatch ? (
-                    <Check
-                      aria-hidden='true'
-                      className='pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-emerald-400'
-                      size={20}
+                <div className='mt-2 px-1'>
+                  <div className='relative'>
+                    <Input
+                      id='retypePassword'
+                      type='password'
+                      maxLength={30}
+                      required={!showPassword}
+                      disabled={showPassword}
+                      autoComplete='new-password'
+                      aria-invalid={!!formError && formError.toLowerCase().includes("retype")}
+                      aria-describedby={getAriaError("retypePassword")}
+                      {...register('retypePassword', {
+                        onChange: handleRetypePasswordChange,
+                      })}
                     />
-                  ) : null}
+                    {passwordsMatch ? (
+                      <span className='pointer-events-none absolute left-[calc(100%+0.5rem)] top-1/2 flex -translate-y-1/2 items-center'>
+                        <Check aria-hidden='true' className='text-green-500' size={17} strokeWidth={2.5} />
+                      </span>
+                    ) : null}
+                  </div>
                   {formError && formError.toLowerCase().includes("retype") && (
                     <div id="retypePassword-error" className="sc_message sc_message-error">{formError}</div>
                   )}

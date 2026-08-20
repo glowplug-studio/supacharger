@@ -135,14 +135,8 @@ export async function resendAccountConfirmEmail(email: string) {
 export async function sendPasswordReset(email: string) {
   const supabase = await createClient();
 
-  // Get the site URL from env
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-
-  // Ensure no double slashes
-  const redirectTo = `${siteUrl.replace(/\/$/, "")}/account/reset-password/new`;
-
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo,
+    redirectTo: getURL('/account/reset-password/new'),
   });
 
   return error ? authActionFailure(error) : authActionSuccess(null);

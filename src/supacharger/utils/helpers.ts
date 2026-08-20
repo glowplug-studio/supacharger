@@ -3,21 +3,13 @@ import * as EmailValidator from 'email-validator';
 export { stripeUnixToDate as toDateTime } from '@/lib/stripe/stripe-time';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
+export { getSiteUrl, getURL } from '@/supacharger/utils/site-url';
+
 /** ==========
  *
  * Supacharger Helpers
  *
  * ========== */
-
-/**
- *  Returns the full URL by appending the provided path to the base URL.
- * */
-export function getURL(path = '') {
-  const baseURL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, '') || 'http://localhost:3000';
-  const formattedURL = baseURL.startsWith('http') ? baseURL : `https://${baseURL}`;
-  const cleanPath = path.replace(/^\/+/, '');
-  return cleanPath ? `${formattedURL}/${cleanPath}` : formattedURL;
-}
 
 export function getEnvVar(varValue: string | undefined, varName: string): string {
   const value = varValue?.trim();

@@ -1,10 +1,11 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 import { Host_Grotesk } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { ThemeProvider } from 'next-themes';
 import { ToastContainer } from 'react-toastify';
 
+import { AuthConfirmationNotice } from '@/supacharger/components/auth/auth-confirmation-notice';
 import { SmoothAnchorNavigation } from '@/supacharger/components/layout/smooth-anchor-navigation';
 import {
   createSupachargerMetadata,
@@ -28,12 +29,20 @@ export const viewport = createSupachargerViewport(SC_CONFIG);
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  const applicationContent = (
+    <>
+      <Suspense fallback={null}>
+        <AuthConfirmationNotice />
+      </Suspense>
+      {children}
+    </>
+  );
   const themedContent = SC_CONFIG.ROOT_PROVIDERS.THEME ? (
     <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-      {children}
+      {applicationContent}
     </ThemeProvider>
   ) : (
-    children
+    applicationContent
   );
   const content = SC_CONFIG.ROOT_PROVIDERS.INTERNATIONALISATION ? (
     <NextIntlClientProvider locale={locale} messages={messages}>

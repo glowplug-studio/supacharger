@@ -434,24 +434,24 @@ export function LoginUserForm({
                 height={showPassword ? 0 : 'auto'}
                 animateOpacity
               >
-                <div className='relative pt-4'>
-                  <Input
-                    className='sc-auth-input pr-12'
-                    type='password'
-                    autoComplete='new-password'
-                    placeholder={t('repeatPassword')}
-                    value={passwordAgain}
-                    onChange={(event) => setPasswordAgain(event.target.value)}
-                    required={passwordConfirmationRequired}
-                    disabled={showPassword}
-                  />
-                  {passwordsMatch ? (
-                    <Check
-                      aria-hidden='true'
-                      className='pointer-events-none absolute right-4 top-[calc(50%+0.5rem)] -translate-y-1/2 text-emerald-400'
-                      size={20}
+                <div className='pt-4'>
+                  <div className='relative'>
+                    <Input
+                      className='sc-auth-input'
+                      type='password'
+                      autoComplete='new-password'
+                      placeholder={t('repeatPassword')}
+                      value={passwordAgain}
+                      onChange={(event) => setPasswordAgain(event.target.value)}
+                      required={passwordConfirmationRequired}
+                      disabled={showPassword}
                     />
-                  ) : null}
+                    {passwordsMatch ? (
+                      <span className='pointer-events-none absolute left-[calc(100%+0.5rem)] top-1/2 flex -translate-y-1/2 items-center'>
+                        <Check aria-hidden='true' className='text-green-500' size={17} strokeWidth={2.5} />
+                      </span>
+                    ) : null}
+                  </div>
                 </div>
               </AnimateHeight>
             </div>

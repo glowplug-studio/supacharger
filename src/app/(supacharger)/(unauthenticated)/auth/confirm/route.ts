@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
+import { resolveAuthConfirmationRedirect } from '@/supacharger/auth/confirmation-redirect';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { type EmailOtpType } from '@supabase/supabase-js';
 
@@ -10,29 +11,34 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
   const requestedNext = searchParams.get('next');
-  const next = requestedNext?.startsWith('/') && !requestedNext.startsWith('//')
-    ? requestedNext
-    : SC_CONFIG.ACCOUNT_CONFIRMED_PATH;
-
-  // Create redirect link without the secret token
-  const redirectTo = new URL(next, request.url);
-  redirectTo.searchParams.delete('token_hash');
-  redirectTo.searchParams.delete('type');
+  const supabase = await createClient();
 
   if (token_hash && type) {
-    const supabase = await createClient();
-
     const { error } = await supabase.auth.verifyOtp({
       type,
       token_hash,
     });
     if (!error) {
-      redirectTo.searchParams.delete('next');
-      return NextResponse.redirect(redirectTo);
+      return NextResponse.redirect(resolveAuthConfirmationRedirect({
+        requestUrl: request.url,
+        requestedNext,
+        fallbackNext: SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+        loginPath: SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION,
+        outcome: 'verified',
+      }));
     }
   }
 
-  // return the user to an error page with some instructions
-  redirectTo.pathname = '/error';
-  return NextResponse.redirect(redirectTo);
+  // A signup OTP and its email link represent the same one-time verification.
+  // If the OTP was used first, the link is expected to fail even though the
+  // current browser may already hold the newly confirmed session.
+  const { data: { user } } = await supabase.auth.getUser();
+
+  return NextResponse.redirect(resolveAuthConfirmationRedirect({
+    requestUrl: request.url,
+    requestedNext,
+    fallbackNext: SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+    loginPath: SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION,
+    outcome: user?.email_confirmed_at ? 'already-authenticated' : 'invalid',
+  }));
 }

@@ -21,7 +21,9 @@
     "supabase/migrations",
     "supabase/templates",
     "test/auth-action-result.test.mjs",
+    "test/auth-confirmation-redirect.test.mjs",
     "test/auth-journey-contract.test.mjs",
+    "test/site-url.test.mjs",
     "test/image-transform-contract.test.mjs",
     "test/billing-schema-contract.test.mjs",
     "test/tooling-contract.test.mjs"
