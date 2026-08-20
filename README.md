@@ -24,7 +24,7 @@ This is a SaaS starter built with modern technologies.
 - [Lucide React 1.31](https://lucide.dev/) - Icon library
 - [Zod 4.4](https://zod.dev/) - Runtime validation and typed schemas
 - [shadcn/ui](https://ui.shadcn.com) - Prebuilt accessible components
-- Webhooks to automatically synchronize Stripe with Supabase
+- Durable Stripe event processing, scheduled reconciliation, multi-item subscriptions, and entitlement projection
 - Stripe fixture to bootstrap product data
 - Supabase migrations to bootstrap and manage your db schema
 - Responsive, performant, and accessible prebuilt pages
@@ -32,9 +32,94 @@ This is a SaaS starter built with modern technologies.
 
 Shared runtime and tooling dependencies are exact-pinned in `package.json`. Consuming applications should use the same pinned version for every dependency they inherit from the Supacharger core; application-only packages remain independently managed.
 
+### Application configuration
+
+Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
+
+Authentication uses one request-scoped SSR client and one verification call. The core defaults to verified JWT claims and excludes anonymous Auth users; an application can deliberately choose strict Auth-server verification:
+
+```ts
+AUTH_SESSION: {
+  VERIFICATION_MODE: 'claims', // or 'user' for strict/fresh Auth validation
+  ALLOW_ANONYMOUS_USERS: false,
+},
+```
+
+Every Proxy redirect preserves refreshed cookies and Supabase's auth anti-cache headers. Proxy is an optimistic navigation layer only; server code and RLS remain authoritative.
+
+Authentication, identity, onboarding, and organisations are application policy behind one shared contract:
+
+```ts
+AUTHENTICATION: {
+  EMAIL_PASSWORD: { SIGN_IN: true, SIGN_UP: true },
+  MAGIC_LINK: { ENABLED: true, ALLOW_SIGN_UP: true },
+  SIGN_UP_EMAIL_VERIFICATION: 'otp', // 'disabled' | 'link' | 'otp'
+  MFA_TOTP: { ENABLED: false },
+},
+PROFILE_IDENTITY: {
+  USERNAME: 'disabled', // 'disabled' | 'optional' | 'required'
+},
+POST_SIGN_IN_ONBOARDING: {
+  REQUIRED: true,
+  REDIRECT_PATH: '/account/setup-profile',
+},
+ORGANISATIONS: {
+  ENABLED: false,
+  AUTHENTICATION_HANDLE: 'disabled', // 'disabled' | 'optional' | 'required'
+},
+```
+
+The canonical login journey preserves SnapScreen's approved progressive visual structure across Core, SnapScreen, and Wakekeeper: strong headings, provider-to-email transitions, dark auth surfaces, branded actions, and matching password-reset screens. It exposes only enabled methods and supports password sign-in/sign-up, magic links, six-digit sign-up OTP verification, and resend cooldown. Project copy, colour, imagery, and adapters remain developer-owned; Specdrive retains its separate presentation. Supabase Auth settings and email templates must match the selected verification mode. When onboarding is required, callbacks and Proxy call `api.is_profile_complete_by_current_user(p_username_required)` and redirect to the real developer-owned route. The starter supplies `/account/setup-profile`; applications may preserve a product-specific form at the configured path.
+
+### Mobile login verification and deep links
+
+Supacharger can publish the verified HTTPS association files used by iOS Universal Links and Android App Links. This lets a magic link, link-based email confirmation, or password-reset link open an installed mobile app while retaining the same web URL as a browser fallback. A six-digit email OTP is entered directly and does not itself require a deep link.
+
+Configure native identifiers in the developer-owned settings file; never copy another application's identifiers:
+
+```ts
+MOBILE_DEEP_LINKING: {
+  ENABLED: true,
+  ASSOCIATED_PATHS: [
+    '/auth/callback',
+    '/auth/confirm',
+    '/account/reset-password/new',
+  ],
+  IOS: {
+    // <Apple App ID prefix>.<bundle identifier>; not the numeric App Store ID.
+    APP_IDS: ['ABCDE12345.com.example.myapp'],
+  },
+  ANDROID: {
+    APPS: [{
+      PACKAGE_NAME: 'com.example.myapp',
+      SHA256_CERT_FINGERPRINTS: ['<PLAY_APP_SIGNING_SHA256_FINGERPRINT>'],
+    }],
+  },
+},
+```
+
+When enabled for a configured platform, the protected core serves:
+
+- `/.well-known/apple-app-site-association` for iOS; and
+- `/.well-known/assetlinks.json` for Android.
+
+Both must be available on the exact production HTTPS host with a `200` response, `application/json`, and no redirect. Add the exact production `/auth/callback`, `/auth/confirm`, and reset URLs to Supabase's redirect allow-list. For a wrapped web application, pass an incoming verified URL back into the same persistent web view that initiated the PKCE flow; a fully native application must initiate and exchange the code through the same native Supabase client instead. See the [mobile authentication deep-linking guide](https://supacharger.dev/docs/Application%20Development/mobile-auth-deep-linking) for Xcode, Android manifest, callback, and verification examples.
+
+Username and organisation storage are always installed. A disabled policy leaves those nullable tables/fields dormant: forms, public username routes, and identity display must not expose them. Identity display falls back from name, to an enabled populated username, to owner-only email, to `Account`. Organisation creation and selection run only through authenticated, service-owned adapters and session context; handles are not arbitrary Auth metadata.
+
+### Database and profile foundation
+
+The canonical private user row is `app.profiles`. Shared fields use `first_name`, `last_name`, `username`, `email`, `avatar_path`, `header_image_path`, and `language_code`; product-specific fields may extend the row without introducing a second user table. Browser code uses the `api` RPC surface, while trusted Stripe and maintenance code uses `api_edge`.
+
+Profile media lives in the private `user-avatars` bucket. Store paths using `<user-id>/avatar-…` and `<user-id>/headers/header-…`, then render short-lived signed URLs. The general profile lookup intentionally excludes email and complete profile rows. The optional `app.organisations`, `app.organisation_members`, and `app.user_session_contexts` foundation is private and dormant when disabled. See `docs/agents/database-foundation.md` for the full contract.
+
+The private `app.user_roles` table and custom access-token hook add a compact `user_role` claim to newly issued or refreshed JWTs. Organisation and project roles remain membership data enforced through RLS; they are not flattened into the global role. See `docs/agents/authentication-and-claims.md` and the [human roles guide](https://supacharger.dev/docs/Application%20Development/roles-and-custom-claims).
+
 ### Localisation
 
-Supacharger uses `next-intl` with locale-neutral routes. A signed-in page keeps the same URL in every language—for example, `/account` never becomes `/en/account`. The request locale comes from the validated `supacharger_locale` cookie and falls back to English.
+Supacharger uses `next-intl` with locale-neutral routes. A signed-in page keeps the same URL in every language—for example, `/account` never becomes `/en/account`. The request locale comes from the validated `supacharger_locale` cookie, then the signed-in user's saved profile preference, and finally English.
+
+A separate marketing site can hand off a language by linking to the SaaS with a standard query parameter such as `https://app.example.com/login?lang=fr`. Supacharger accepts only a locale listed in `SUPPORTED_LOCALES`, stores it as the active preference, synchronises the lowercase two-letter code to `app.profiles.language_code` when the user is signed in, and redirects to the same URL without `lang`. If the visitor signs in later, the cookie preference is synchronised after authentication. Other query parameters are preserved.
 
 Applications own their locale policy and translations:
 
@@ -42,7 +127,9 @@ Applications own their locale policy and translations:
 - `src/i18n/request.ts` loads the request catalogue; and
 - `messages/<locale>.json` contains application translations.
 
-The Supacharger CLI installs starter files for a new application, then preserves all of these paths during `coreupdate`. Core releases may introduce new translation keys, so review release notes and add required keys to each application-owned catalogue when upgrading. See the [localisation guide](https://supacharger.dev/docs/Application%20Development/localisation) for setup and extension details.
+The protected `/api/intl` endpoint also persists authenticated language changes to `app.profiles.language_code`. The field accepts lowercase two-letter codes; application support remains controlled by `SUPPORTED_LOCALES`. The Supacharger CLI installs starter files for a new application, then preserves all of these paths during `coreupdate`. Core releases may introduce new translation keys, so review release notes and add required keys to each application-owned catalogue when upgrading. See the [localisation guide](https://supacharger.dev/docs/Application%20Development/localisation) for setup and extension details.
+
+Canonical client-callable database RPC examples live in the Supacharger-only Bruno collection at `docs/bruno/supacharger-rpc/`. Run `npm run check:bruno-rpcs` after an `api` RPC migration; consumer-specific endpoints do not belong in this collection.
 
 ## Live Demo
 
@@ -132,7 +219,7 @@ node --version  # Should show v20.x.x
 
 ### 4. Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fglowplug-studio%2Fsupacharger&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,SUPABASE_SECRET_KEY,SUPABASE_DB_PASSWORD,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,STRIPE_EVENT_PROCESSOR_SECRET,BREVO_API_KEY,NEXT_PUBLIC_SITE_URL&demo-title=Supacharger%20SaaS%20Starter&demo-url=https%3A%2F%2Fdemo.supacharger.dev&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fglowplug-studio%2Fsupacharger&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,SUPABASE_SECRET_KEY,SUPABASE_DB_PASSWORD,STRIPE_SECRET_KEY,STRIPE_WEBHOOK_SECRET,STRIPE_EVENT_PROCESSOR_SECRET,STRIPE_RECONCILIATION_SECRET,BREVO_API_KEY,NEXT_PUBLIC_SITE_URL&demo-title=Supacharger%20SaaS%20Starter&demo-url=https%3A%2F%2Fdemo.supacharger.dev&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
 
 1. Click the deploy button ⬆️
 1. On the form create a new repo and add the Supabase integration
@@ -145,11 +232,12 @@ node --version  # Should show v20.x.x
 1. After deploying go to your Vercel dashboard and find your Vercel URL
 1. In Stripe Workbench, create a Sandbox event destination using API version `2026-07-29.dahlia`
 1. Enter your Vercel URL followed by `/api/webhooks`
-1. Select only `product.created`, `product.updated`, `product.deleted`, `price.created`, `price.updated`, `price.deleted`, `checkout.session.completed`, and the implemented `customer.subscription.*` lifecycle events
+1. Select only `product.created`, `product.updated`, `product.deleted`, `price.created`, `price.updated`, `price.deleted`, `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, the implemented `customer.subscription.*` lifecycle events, and `entitlements.active_entitlement_summary.updated`
 1. Scroll to the bottom of the page and click `Add endpoint`
 1. Click to `Reveal` signing secret and copy it
 1. Go to your `Vercel project settings` → `Environment Variables`
 1. Update the value of the `STRIPE_WEBHOOK_SECRET` env with your newly acquired webhook secret. Press `Save`
+1. Configure scheduled authenticated POST requests to `/api/(supacharger)/stripe/process-events` and `/api/(supacharger)/stripe/reconcile` using the distinct processor and reconciliation secrets. Adapt the route-group URL to the deployed path emitted by Next.js (`/api/stripe/...` where route groups are omitted).
 
 ### 6. Run Supabase Migration
 
@@ -170,9 +258,11 @@ node --version  # Should show v20.x.x
 1. Run `npm run dev`
 1. Go to the app and test the complete user flow:
    - Sign up with email
-   - Subscribe to a plan
+   - Subscribe with one and multiple recurring Prices
+   - Verify that eligible local payment methods come from Stripe Dashboard configuration
    - Check for welcome and receipt emails
-   - Manage subscription
+   - Manage each authorised billing account in Customer Portal
+   - Run event processing and reconciliation, then verify subscription Items and entitlements in Supabase
 
 
 **That's the end of the setup. The following are guides to help you code in your new codebase.**
@@ -183,16 +273,24 @@ node --version  # Should show v20.x.x
 
 ### Managing products
 
-Your products and prices are managed via the `stripe-fixtures.json` file. You can delete your test data in Stripe on the [Developers page](https://dashboard.stripe.com/test/developers), make the changes you'd like, and then run the fixture command from above. When changes are made in Stripe the webhook hits the api route at `src/app/api/webhooks`. The handler will synchronize the data sent from Stripe to your Supabase database.
+Products and Prices are managed in Stripe and can be bootstrapped in a Sandbox with `stripe-fixtures.json`. Stripe is authoritative; webhook processing and scheduled reconciliation maintain the Supabase projection.
 
-The `metadata` field in your fixture is where we can store info about the product that can be used in your app. For example, say you have a basic product, and one of the features of the product includes a max number of team invites. You can add a field to the metadata like `team_invites`. Then update the Zod schema in `src/features/pricing/models/product-metadata.ts`
+Supacharger does not equate a login user with a Stripe Customer. `app.billing_accounts` represents the billable party, `app.billing_account_members` authorises users, and `app.stripe_customers` maps each account to the appropriate Stripe live/test Customer. A Customer may have multiple Subscriptions and every Subscription may have multiple rows in `app.subscription_items`. New application code must not authorise from the deprecated single `subscriptions.price_id` alias.
+
+Checkout uses flexible billing mode and Stripe Dynamic Payment Methods. `payment_method_types` is intentionally omitted: enable eligible cards, wallets, bank debits, and local methods in Stripe Dashboard. Configure Automatic Tax, address collection, and promotion codes under `SC_CONFIG.BILLING`; Stripe tax registrations and Product tax codes are still required outside the application.
+
+Use `createCheckoutAction({ items, billingAccountId })` for multi-item Checkout. The server resolves every Price directly from Stripe, requires active recurring Prices, validates positive quantities and one currency, and verifies that the current user can manage the billing account.
+
+Do not use Price IDs or unvalidated Product metadata directly as access control. Define stable feature lookup keys and map Stripe Products through Stripe Entitlements or `app.product_features`. Stripe grants are projected into `app.entitlement_grants`; manual and promotional grants use the same read model and survive Stripe refreshes. Set `SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY` to require a feature, or leave it `null` for the compatibility policy of any active/trialling Subscription.
 
 Then you can make use of it like this:
 
 ```ts
 const products = await getProducts();
-const productMetadata = productMetadataSchema.parse(products[0].metadata); // Now it's typesafe 🙌!
-productMetadata.teamInvites; // The value you set in the fixture
+const billingAccounts = await getBillingOverview();
+const featureKeys = billingAccounts.flatMap((account) =>
+  account.entitlements.map((grant) => grant.feature_lookup_key),
+);
 ```
 
 ### Managing your database schema

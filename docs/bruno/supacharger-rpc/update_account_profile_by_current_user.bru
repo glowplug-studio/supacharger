@@ -1,0 +1,31 @@
+meta {
+  name: update account profile by current user
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/update_account_profile_by_current_user
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "p_first_name": "Sam",
+    "p_last_name": "Example",
+    "p_username": null
+  }
+}
+
+docs {
+  Updates the signed-in user's canonical name and nullable username fields. Supply a valid username only when the configured policy enables it.
+}

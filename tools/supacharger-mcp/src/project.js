@@ -6,21 +6,16 @@ const sourceDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export const repositoryRoot = path.resolve(sourceDirectory, '../../..');
 
-const ignoredTreeNames = new Set([
-  '.git',
-  '.next',
-  '.turbo',
-  '.vercel',
-  'build',
-  'coverage',
-  'node_modules',
-  'out',
-]);
+const ignoredTreeNames = new Set(['.git', '.next', '.turbo', '.vercel', 'build', 'coverage', 'node_modules', 'out']);
 
 const guidanceFiles = {
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
   localisation: 'docs/agents/localisation.md',
+  authentication: 'docs/agents/authentication-and-claims.md',
+  mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
+  database: 'docs/agents/database-foundation.md',
+  profile: 'docs/agents/profile-identity-and-onboarding.md',
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
   instructions: 'AGENTS.md',
@@ -48,7 +43,7 @@ export function resolveRepositoryPath(inputPath = '.') {
         segment === '.next' ||
         segment === '.vercel' ||
         segment === '.temp' ||
-        segment.startsWith('.env')
+        segment.startsWith('.env'),
     )
   ) {
     throw new Error('That path is excluded from the repository knowledge MCP.');
@@ -61,6 +56,9 @@ export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
 
   if (
+    relativePath === 'src/proxy.ts' ||
+    relativePath === 'src/lib/supabase/middleware.ts' ||
+    relativePath === 'supabase/config.toml' ||
     relativePath === 'src/lib/stripe' ||
     relativePath.startsWith('src/lib/stripe/') ||
     relativePath === 'src/features/pricing' ||
@@ -70,14 +68,18 @@ export function classifyPath(inputPath) {
     relativePath === 'src/lib/supabase/types.ts' ||
     [
       'get-customer-id.ts',
+      'billing-account.ts',
+      'get-billing-overview.ts',
       'get-or-create-customer.ts',
       'get-subscription.ts',
+      'sync-entitlements.ts',
       'upsert-user-subscription.ts',
     ].some((file) => relativePath === `src/features/account/controllers/${file}`)
   ) {
     return {
       ownership: 'cli-managed-core',
-      guidance: 'Canonical billing implementation or schema. Follow the billing guidance, land changes in core first, and propagate them through the CLI.',
+      guidance:
+        'Canonical shared implementation or schema. Follow the matching authentication, database, or billing guidance, land changes in core first, and propagate them through the CLI.',
     };
   }
 
@@ -85,6 +87,13 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'developer-owned',
       guidance: 'Application configuration seam. CLI updates must preserve this file.',
+    };
+  }
+
+  if (relativePath === 'src/supacharger.adapters' || relativePath.startsWith('src/supacharger.adapters/')) {
+    return {
+      ownership: 'developer-owned',
+      guidance: 'Application authentication and post-sign-in onboarding adapters. CLI updates must preserve this path.',
     };
   }
 
@@ -96,7 +105,8 @@ export function classifyPath(inputPath) {
   ) {
     return {
       ownership: 'developer-owned',
-      guidance: 'Application localisation seam. The CLI installs starters, then preserves locale configuration and the complete messages directory.',
+      guidance:
+        'Application localisation seam. The CLI installs starters, then preserves locale configuration and the complete messages directory.',
     };
   }
 
@@ -124,7 +134,8 @@ export function classifyPath(inputPath) {
   ) {
     return {
       ownership: 'cli-managed-core',
-      guidance: 'Protected core implementation. Change it here as a core maintainer; consumers receive it through the CLI.',
+      guidance:
+        'Protected core implementation. Change it here as a core maintainer; consumers receive it through the CLI.',
     };
   }
 
@@ -151,7 +162,8 @@ export function classifyPath(inputPath) {
 
   return {
     ownership: 'unclassified-shared-or-application',
-    guidance: 'Not automatically CLI-owned. Inspect its callers and document an explicit seam before treating it as managed core.',
+    guidance:
+      'Not automatically CLI-owned. Inspect its callers and document an explicit seam before treating it as managed core.',
   };
 }
 
@@ -175,13 +187,7 @@ async function renderDirectory(absoluteDirectory, relativeDirectory, depth, maxD
     lines.push(`${'  '.repeat(depth)}${entry.isDirectory() ? '📁' : '📄'} ${displayPath}`);
 
     if (entry.isDirectory() && depth < maxDepth) {
-      await renderDirectory(
-        path.join(absoluteDirectory, entry.name),
-        relativePath,
-        depth + 1,
-        maxDepth,
-        lines
-      );
+      await renderDirectory(path.join(absoluteDirectory, entry.name), relativePath, depth + 1, maxDepth, lines);
     }
   }
 }

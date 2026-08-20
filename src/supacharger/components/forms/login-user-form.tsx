@@ -1,207 +1,417 @@
 'use client';
 
-/** =========================================================================
- *
- *  Supacharger - Login User Form Component
- *
- *  Description: Login form functionality along with activation link request UI
- *
- *  Author: J Sharp <j@glowplug.studio>
- *
- *  License: CC BY-NC-SA 4.0
- *
- * ========================================================================= */
-
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { toast } from 'react-toastify';
+import { ArrowLeft, Eye, EyeOff, LogIn, Mail, UserPlus, WandSparkles } from 'lucide-react';
+import AnimateHeight from 'react-animate-height';
+import { z } from 'zod';
 
 import InlineLoader from '@/assets/images/ui/InlineLoader.svg';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { loginUser } from '@/lib/supabase/supacharger/supabase-auth';
-import SaveButton from '@/supacharger/components/buttons/form-save-button';
+import OTPField from '@/components/ui/otp-field';
+import {
+  createUserByEmailPassword,
+  loginUser,
+  signInWithEmail,
+  verifyOtp,
+} from '@/lib/supabase/supacharger/supabase-auth';
+import AuthProviderButtons from '@/supacharger/components/buttons/auth-provider-buttons';
+import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
+import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
+import { UIDivider } from '@/supacharger/components/ui/divider';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { isValidEmail, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
 
-export function LoginUserForm() {
-  // Translations
-  const tAuthTerms = useTranslations('AuthTerms');
-  const tGlobal = useTranslations('Global');
-  const tLoginPage = useTranslations('LoginPage');
-  const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
+export type AuthMode = 'signin' | 'signup';
+type AuthStep = 'choose' | 'email' | 'verify-email' | 'check-email';
 
-  // State
-  const [isLoading, setIsLoading] = useState(false);
+interface LoginUserFormProps {
+  initialMode?: AuthMode;
+  onFormHeadingChange?: (heading: string) => void;
+  showProvidersInEmailMode?: boolean;
+}
+
+const emailSchema = z.string().trim().pipe(z.email());
+
+export function LoginUserForm({
+  initialMode = 'signin',
+  onFormHeadingChange,
+  showProvidersInEmailMode = false,
+}: LoginUserFormProps) {
+  const t = useTranslations('AuthJourney');
+  const router = useRouter();
+  const [step, setStep] = useState<AuthStep>(initialMode === 'signup' ? 'email' : 'choose');
+  const [choicePanelMounted, setChoicePanelMounted] = useState(initialMode !== 'signup');
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showEmailNotConfirmed, setShowEmailNotConfirmed] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
-  const [resendSuccess, setResendSuccess] = useState(false);
-  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordAgain, setPasswordAgain] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
+  const [organisationHandle, setOrganisationHandle] = useState('');
+  const [otp, setOtp] = useState('');
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const parsedEmail = emailSchema.safeParse(email);
+  const normalisedEmail = parsedEmail.success ? parsedEmail.data : email.trim();
+  const passwordModeAvailable =
+    mode === 'signin'
+      ? SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN
+      : SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
+  const magicLinkAvailable =
+    SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED &&
+    (mode === 'signin' || SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ALLOW_SIGN_UP);
+  const emailJourneyAvailable = passwordModeAvailable || magicLinkAvailable;
 
-  // Submit handler
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsLoading(true);
-    setShowEmailNotConfirmed(false);
+  function pushAuthRoute(nextMode: AuthMode) {
+    window.history.pushState(null, '', nextMode === 'signup' ? '/account/create' : '/account/login');
+  }
 
-    const formData = new FormData(e.currentTarget);
-    const result = await loginUser(formData);
+  function clearSensitiveFields() {
+    setPassword('');
+    setPasswordAgain('');
+    setOtp('');
+    setShowPassword(false);
+    setError(null);
+  }
 
-    setIsLoading(false);
+  function resetToChoose() {
+    setChoicePanelMounted(true);
+    setStep('choose');
+    setMode('signin');
+    pushAuthRoute('signin');
+    onFormHeadingChange?.(`${t('signIn')} / ${t('signUp')}`);
+    clearSensitiveFields();
+  }
+
+  function switchAuthMode(nextMode: AuthMode) {
+    setMode(nextMode);
+    setStep('email');
+    pushAuthRoute(nextMode);
+    onFormHeadingChange?.(nextMode === 'signup' ? t('signUp') : t('signIn'));
+    clearSensitiveFields();
+  }
+
+  function validateEmail() {
+    if (!parsedEmail.success) {
+      setError(t('validEmail'));
+      return false;
+    }
+    return true;
+  }
+
+  async function submitPassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    if (!validateEmail()) return;
+    if (!password) return setError(t('enterPassword'));
+    if (mode === 'signup' && (!passwordIsValid || password !== passwordAgain)) {
+      return setError(password !== passwordAgain ? t('passwordMismatch') : t('strongerPassword'));
+    }
+
+    setPending(true);
+    const formData = new FormData();
+    formData.set('email', normalisedEmail);
+    formData.set('password', password);
+    const result = mode === 'signup'
+      ? await createUserByEmailPassword(formData)
+      : await loginUser(formData);
+    setPending(false);
 
     if (result?.error) {
-      const localisedCode = supabaseErrorCodeLocalisation(result.error);
-      if (result.error === 'email_not_confirmed') {
-        setShowEmailNotConfirmed(true);
-      }
-      toast.error(tSupabaseErrorCodes(localisedCode), SC_CONFIG.TOAST_CONFIG);
+      setError(t('authenticationFailed'));
       return;
     }
 
-    toast.success(tAuthTerms('loginSuccess'), SC_CONFIG.TOAST_CONFIG);
-  }
-
-  // Resend activation email handler
-  async function handleResendActivation(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    if (!isValidEmail(email)) {
-      toast.error(tAuthTerms('resendConfirmationEmailFail'));
+    if (mode === 'signin') {
+      if (SC_CONFIG.ORGANISATIONS.ENABLED && organisationHandle.trim()) {
+        const contextResponse = await fetch('/api/organisations/context', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'select', handle: organisationHandle.trim() }),
+        });
+        if (!contextResponse.ok) {
+          setError(t('organisationFailed'));
+          return;
+        }
+      }
+      router.replace(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATON);
+      router.refresh();
       return;
     }
 
-    setResendLoading(true);
-    setResendSuccess(false);
-
-    try {
-      const response = await fetch('/api/account/resend-activation-link', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const result = await response.json();
-      setResendLoading(false);
-
-      if (result?.error || !response.ok) {
-        toast.error(tAuthTerms('resendConfirmationEmailFail'));
-        return;
-      }
-
-      setResendSuccess(true);
-      toast.success(tAuthTerms('resendConfirmationEmailSent'));
-      setTimeout(() => setResendSuccess(false), 1500);
-    } catch {
-      setResendLoading(false);
-      toast.error(tAuthTerms('resendConfirmationEmailFail'));
+    if (SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION === 'otp') {
+      setStep('verify-email');
+      onFormHeadingChange?.(t('enterCode'));
+    } else if (SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION === 'link') {
+      setStep('check-email');
+      onFormHeadingChange?.(t('checkEmail'));
+    } else {
+      router.replace(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATON);
+      router.refresh();
     }
   }
 
-  // Handler for email field
-  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setEmail(e.target.value);
-    if (!emailTouched) setEmailTouched(true);
+  async function sendMagicLink() {
+    setError(null);
+    if (!validateEmail()) return;
+    setPending(true);
+    const result = await signInWithEmail(normalisedEmail);
+    setPending(false);
+    if (result?.error) return setError(t('emailSendFailed'));
+    setStep('check-email');
+    onFormHeadingChange?.(t('checkEmail'));
   }
 
-  const showLoginFields = emailTouched && email;
+  async function submitOtp(value = otp) {
+    if (!/^\d{6}$/.test(value)) return;
+    setPending(true);
+    setError(null);
+    const result = await verifyOtp(normalisedEmail, value);
+    setPending(false);
+    if (result?.error) {
+      setOtp('');
+      setError(t('invalidCode'));
+      return;
+    }
+    router.replace(SC_CONFIG.ACCOUNT_CONFIRMED_PATH);
+    router.refresh();
+  }
+
+  const backButton = (
+    <button
+      type='button'
+      className='inline-flex items-center gap-2 text-sm font-semibold text-white/60 transition-colors hover:text-white'
+      onClick={resetToChoose}
+    >
+      <ArrowLeft className='h-4 w-4' />
+      {t('back')}
+    </button>
+  );
+
+  function renderChooseOptions(includeEmailButton: boolean) {
+    return (
+      <div className='space-y-3'>
+        <AuthProviderButtons />
+        {includeEmailButton && emailJourneyAvailable ? (
+          <>
+            <UIDivider text='or' className='py-1' />
+            <Button
+              type='button'
+              variant='ghost'
+              className='sc-auth-surface-button grid w-full grid-cols-[1.75rem_1fr_1.75rem]'
+              onClick={() => {
+                setMode('signin');
+                setStep('email');
+                onFormHeadingChange?.(t('signIn'));
+              }}
+            >
+              <Mail className='h-5 w-5 justify-self-start' />
+              <span className='justify-self-center'>{t('continueEmail')}</span>
+              <span aria-hidden='true' />
+            </Button>
+          </>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (step === 'verify-email') {
+    return (
+      <div className='space-y-5 text-white'>
+        {backButton}
+        <div className='space-y-2'>
+          <h2 className='text-xl font-semibold'>{t('enterCode')}</h2>
+          <p className='text-sm text-white/60'>{t('codeSent', { email: normalisedEmail })}</p>
+        </div>
+        <div className='sc-auth-surface flex min-h-24 items-center justify-center p-4'>
+          {pending ? (
+            <InlineLoader className='h-6 w-6 animate-spin [&_circle]:stroke-white' aria-label={t('verifyingCode')} />
+          ) : (
+            <OTPField
+              className='sc-auth-otp'
+              length={6}
+              value={otp}
+              onValueChange={(value) => {
+                const digits = value.replace(/\D/g, '').slice(0, 6);
+                setOtp(digits);
+                if (digits.length === 6) void submitOtp(digits);
+              }}
+              autoFocus
+              autoComplete='one-time-code'
+            />
+          )}
+        </div>
+        {error ? <p className='sc_message sc_message-error' role='alert'>{error}</p> : null}
+        <ResendVerificationEmail email={normalisedEmail} />
+      </div>
+    );
+  }
+
+  if (step === 'check-email') {
+    return (
+      <div className='space-y-5 text-white'>
+        {backButton}
+        <div className='sc-auth-surface space-y-2 p-5'>
+          <h2 className='text-xl font-semibold'>{t('checkEmail')}</h2>
+          <p className='text-sm text-white/60'>{t('linkSent', { email: normalisedEmail })}</p>
+        </div>
+        {mode === 'signup' ? <ResendVerificationEmail email={normalisedEmail} /> : null}
+      </div>
+    );
+  }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-3'>
-      {/* Email */}
-      <div>
-        <label htmlFor='email' className='text-md block px-1'>
-          {tAuthTerms('emailAddress')}
-        </label>
-        <div className='mt-2 px-1'>
+    <>
+      {choicePanelMounted ? (
+        <AnimateHeight
+          duration={260}
+          height={step === 'choose' ? 'auto' : 0}
+          onHeightAnimationEnd={(height) => {
+            if (height === 0 && step === 'email') setChoicePanelMounted(false);
+          }}
+        >
+          {renderChooseOptions(true)}
+        </AnimateHeight>
+      ) : null}
+
+      <AnimateHeight duration={260} height={step === 'email' ? 'auto' : 0}>
+        <form onSubmit={submitPassword} className='space-y-4'>
+          {showProvidersInEmailMode ? (
+            <div className='mb-6'>
+              {renderChooseOptions(false)}
+              <UIDivider text='or' className='mt-5 mb-1' />
+            </div>
+          ) : null}
+
+          <div className='mb-4 flex items-center justify-between gap-4'>
+            {backButton}
+            <button
+              type='button'
+              className='text-primary inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:text-primary/80'
+              onClick={() => switchAuthMode(mode === 'signin' ? 'signup' : 'signin')}
+            >
+              {mode === 'signin' ? <UserPlus className='h-4 w-4' /> : <LogIn className='h-4 w-4' />}
+              {mode === 'signin' ? t('createAccount') : t('signIn')}
+            </button>
+          </div>
+
           <Input
             id='email'
+            className='sc-auth-input'
             type='email'
             name='email'
-            maxLength={40}
+            maxLength={80}
             required
             autoComplete='email'
-            placeholder='me@example.com'
+            placeholder={t('email')}
             value={email}
-            onChange={handleEmailChange}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setError(null);
+            }}
           />
-        </div>
-      </div>
 
-      {/* Password and Submit Button: Slide Down on Email Change */}
-      <div
-        className={`overflow-hidden px-1 transition-all duration-300 ease-in-out ${
-          showLoginFields ? 'mt-0 max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-        }`}
-      >
-        {/* Password */}
-        <div>
-          <label htmlFor='password' className='mb-2 block text-sm font-medium'>
-            {tAuthTerms('password')}
-          </label>
-          <div>
-            <Input
-              id='password'
-              name='password'
-              maxLength={40}
-              type='password'
-              placeholder={`${'•'.repeat(SC_CONFIG.PASSWORD_MINIMUM_LENGTH)}`}
-              required
-              autoComplete='current-password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-        </div>
-
-        {/* Resend Activation */}
-        {showEmailNotConfirmed && (
-          <div className='sc_message sc_message-attention mt-4'>
-            {tAuthTerms('sendNewAuthEmailLabel')}
-            <div className='mt-3'>
-              <SaveButton
-                type='button'
-                onClick={handleResendActivation}
-                isLoading={resendLoading}
-                isSuccess={resendSuccess}
-                initialLabel={tAuthTerms('sendNewAuthEmailButtonLabel')}
-                savingLabel={tAuthTerms('sendNewAuthEmailSendingButtonLabel')}
-                completeLabel={tAuthTerms('sendNewAuthEmailSentButtonLabel')}
+          {passwordModeAvailable && mode === 'signin' ? (
+            <>
+              <Input
+                id='password'
+                className='sc-auth-input'
+                name='password'
+                maxLength={80}
+                type='password'
+                placeholder={t('password')}
+                required
+                autoComplete='current-password'
+                value={password}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  setError(null);
+                }}
               />
-            </div>
-          </div>
-        )}
+              {SC_CONFIG.ORGANISATIONS.ENABLED && SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE !== 'disabled' ? (
+                <Input
+                  className='sc-auth-input'
+                  type='text'
+                  autoComplete='organization'
+                  placeholder={SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required' ? t('organisationHandle') : t('organisationHandleOptional')}
+                  value={organisationHandle}
+                  onChange={(event) => setOrganisationHandle(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  required={SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'}
+                />
+              ) : null}
+            </>
+          ) : passwordModeAvailable ? (
+            <>
+              <div className='relative w-full'>
+                <PasswordValidationIndicator
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  name='password'
+                  id='password'
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t('password')}
+                  onValidationChange={setPasswordIsValid}
+                />
+                <button
+                  type='button'
+                  className='absolute top-7 right-5 -translate-y-1/2 text-gray-400 hover:text-white'
+                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
+                  onClick={() => setShowPassword((value) => !value)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              <Input
+                className='sc-auth-input'
+                type={showPassword ? 'text' : 'password'}
+                autoComplete='new-password'
+                placeholder={t('repeatPassword')}
+                value={passwordAgain}
+                onChange={(event) => setPasswordAgain(event.target.value)}
+                required
+              />
+            </>
+          ) : null}
 
-        {/* Submit */}
-        <div className='mt-4'>
-          <button
-            type='submit'
-            disabled={isLoading}
-            className='btn flex h-12 w-full justify-center rounded-md bg-primary text-white'
-          >
-            {isLoading ? <InlineLoader className='-ml-1 mr-3 h-4 w-4 animate-spin text-white' /> : tAuthTerms('logIn')}
-          </button>
-        </div>
-      </div>
+          {error ? <p className='sc_message sc_message-error' role='alert'>{error}</p> : null}
 
-      {/* Links */}
-      <div className='flex flex-col gap-2 px-1 md:flex-row md:items-center md:justify-between md:gap-0'>
-        <div>
-          <span className='text-sm font-normal'>
-            {tLoginPage('newTo')} {tGlobal('siteTitle')}?{' '}
-          </span>
-          <Link href='/account/create' className='text-sm font-normal'>
-            <span className='font-semibold'>{tAuthTerms('createAnAccount')}</span>
-          </Link>
-        </div>
-        <Link
-          href={`/account/reset-password${email ? `?email=${encodeURIComponent(email)}` : ''}`}
-          title={tAuthTerms('forgotPassword')}
-          className='text-sm font-semibold hover:text-indigo-500'
-        >
-          {tAuthTerms('forgotPassword')}
-        </Link>
-      </div>
-    </form>
+          {passwordModeAvailable ? (
+            <Button
+              type='submit'
+              className='sc-auth-primary-button w-full gap-3'
+              disabled={pending || !parsedEmail.success || !password || (mode === 'signup' && (!passwordIsValid || password !== passwordAgain))}
+            >
+              {pending ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : mode === 'signin' ? <LogIn className='h-4 w-4' /> : <UserPlus className='h-4 w-4' />}
+              {mode === 'signin' ? t('signIn') : t('signUp')}
+            </Button>
+          ) : null}
+
+          {passwordModeAvailable && mode === 'signin' ? (
+            <Link href='/account/reset-password' className='block text-center text-sm font-semibold text-white/70 transition-colors hover:text-white'>
+              {t('forgotPassword')}
+            </Link>
+          ) : null}
+
+          {magicLinkAvailable ? (
+            <>
+              {passwordModeAvailable ? <UIDivider text='or' className='my-5' /> : null}
+              <Button
+                type='button'
+                className='sc-auth-primary-button w-full gap-3'
+                disabled={pending || !parsedEmail.success}
+                onClick={sendMagicLink}
+              >
+                {pending ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : <WandSparkles className='h-4 w-4' />}
+                {t('magicLink')}
+              </Button>
+            </>
+          ) : null}
+        </form>
+      </AnimateHeight>
+    </>
   );
 }

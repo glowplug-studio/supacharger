@@ -26,6 +26,8 @@ Never solve updateability by overwriting the complete application. CLI changes m
 
 Configuration schema evolution should provide defaults or an explicit migration. It must not silently replace `src/supacharger.config.ts`.
 
+The Bruno collection at `docs/bruno/supacharger-rpc/` must remain in parity with the canonical client-callable `api` RPCs. Every RPC migration must update its request example and pass `npm run check:bruno-rpcs`. Consumer-only RPCs remain in their owning application and must not be copied into the core collection.
+
 ## Verify
 
 Run the narrowest relevant checks first. For cross-project interface changes, verify each affected application independently and report pre-existing failures separately from regressions introduced by the change.

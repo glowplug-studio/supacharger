@@ -37,7 +37,7 @@ next-env.d.ts
 
 # supabase
 /supabase/.temp/
-supabase/config.toml
+/supabase/.branches/
 
 
 # cli

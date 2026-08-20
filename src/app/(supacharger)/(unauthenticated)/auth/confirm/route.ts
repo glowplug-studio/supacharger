@@ -9,11 +9,13 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
-  const next = SC_CONFIG.ACCOUNT_CONFIRMED_PATH;
+  const requestedNext = searchParams.get('next');
+  const next = requestedNext?.startsWith('/') && !requestedNext.startsWith('//')
+    ? requestedNext
+    : SC_CONFIG.ACCOUNT_CONFIRMED_PATH;
 
   // Create redirect link without the secret token
-  const redirectTo = request.nextUrl.clone();
-  redirectTo.pathname = next;
+  const redirectTo = new URL(next, request.url);
   redirectTo.searchParams.delete('token_hash');
   redirectTo.searchParams.delete('type');
 

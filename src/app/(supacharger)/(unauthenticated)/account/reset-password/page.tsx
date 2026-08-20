@@ -21,14 +21,14 @@ export default function ResetPasswordRequestEmailPage() {
   const tPasswordResetPage = useTranslations('PasswordResetPage');
 
   return (
-    <main id='sc_account-password-reset-page'>
+    <main id='sc_account-password-reset-page' className='w-full max-w-md text-white'>
       <div className='flex items-center gap-2 lg:hidden'>
-        <div className='mb-6 w-6'>
-          <SCSiteLogo showSiteTitle={true} darkMode={false} />
+        <div className='mb-6 w-40'>
+          <SCSiteLogo showSiteTitle={true} darkMode={true} />
         </div>
       </div>
       <div className='flex flex-col gap-2 px-1'>
-        <h1 className='mb-6 text-2xl/9 font-bold tracking-tight'>{tPasswordResetPage('title')}</h1>
+        <h1 className='mb-6 text-3xl font-semibold tracking-tight text-white'>{tPasswordResetPage('title')}</h1>
       </div>
       <ResetPasswordForm></ResetPasswordForm>
     </main>

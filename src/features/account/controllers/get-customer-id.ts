@@ -1,11 +1,17 @@
+import { getStripeLivemode } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 
-export async function getCustomerId({ userId }: { userId: string }) {
+import { assertUserCanManageBillingAccount, getOrCreateUserBillingAccount } from './billing-account';
+
+export async function getCustomerId({ userId, billingAccountId }: { userId: string; billingAccountId?: string }) {
+  const accountId = billingAccountId ?? (await getOrCreateUserBillingAccount(userId));
+  await assertUserCanManageBillingAccount({ billingAccountId: accountId, userId });
   const { data, error } = await supabaseAdminClient
-    .schema('app')
-    .from('customers')
-    .select('stripe_customer_id')
-    .eq('id', userId)
+    .schema('api_edge')
+    .rpc('billing_get_customer_for_account', {
+      p_billing_account_id: accountId,
+      p_livemode: getStripeLivemode(),
+    })
     .single();
 
   if (error) {

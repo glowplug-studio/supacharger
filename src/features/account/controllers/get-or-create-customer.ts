@@ -1,33 +1,44 @@
-import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
+import {
+  assertUserCanManageBillingAccount,
+  getOrCreateUserBillingAccount,
+} from '@/features/account/controllers/billing-account';
+import { getStripeAdmin, getStripeLivemode } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 
-export async function getOrCreateCustomer({ userId, email }: { userId: string; email: string }) {
+export async function getOrCreateCustomer({
+  userId,
+  email,
+  billingAccountId,
+}: {
+  userId: string;
+  email: string;
+  billingAccountId?: string;
+}) {
+  const accountId = billingAccountId ?? (await getOrCreateUserBillingAccount(userId));
+  await assertUserCanManageBillingAccount({ billingAccountId: accountId, userId });
+
   const { data, error } = await supabaseAdminClient
-    .schema('app')
-    .from('customers')
-    .select('stripe_customer_id')
-    .eq('id', userId)
+    .schema('api_edge')
+    .rpc('billing_get_customer_for_account', {
+      p_billing_account_id: accountId,
+      p_livemode: getStripeLivemode(),
+    })
     .maybeSingle();
   if (error) throw error;
   if (data?.stripe_customer_id) return data.stripe_customer_id;
 
   const customer = await getStripeAdmin().customers.create(
-    { email, metadata: { userId } },
-    { idempotencyKey: `supacharger-customer-${userId}` },
+    { email, metadata: { supachargerBillingAccountId: accountId } },
+    { idempotencyKey: `supacharger-customer-${accountId}-${getStripeLivemode() ? 'live' : 'test'}` },
   );
-  const { error: insertError } = await supabaseAdminClient
-    .schema('app')
-    .from('customers')
-    .upsert({ id: userId, stripe_customer_id: customer.id }, { onConflict: 'id', ignoreDuplicates: true });
+  const { data: mapping, error: insertError } = await supabaseAdminClient
+    .schema('api_edge')
+    .rpc('billing_put_customer_for_account', {
+      p_billing_account_id: accountId,
+      p_stripe_customer_id: customer.id,
+      p_livemode: customer.livemode,
+    });
   if (insertError) throw insertError;
-
-  const { data: mapping, error: mappingError } = await supabaseAdminClient
-    .schema('app')
-    .from('customers')
-    .select('stripe_customer_id')
-    .eq('id', userId)
-    .single();
-  if (mappingError) throw mappingError;
-  if (!mapping.stripe_customer_id) throw new Error('Stripe customer mapping is empty.');
-  return mapping.stripe_customer_id;
+  if (!mapping) throw new Error('Stripe customer mapping is empty.');
+  return mapping;
 }

@@ -8,13 +8,14 @@ import { getURL } from '@/supacharger/utils/helpers';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
   // Use try/catch for your logic, but NOT for redirect()
   let url: string | null = null;
 
   try {
     // 1. Get the user from session
     const supaUser = await getUser();
+    const billingAccountId = new URL(request.url).searchParams.get('billing_account_id') ?? undefined;
 
     if (!('user' in supaUser) || !supaUser.user.id) {
       throw new Error('User not found or missing user ID.');
@@ -23,6 +24,7 @@ export async function GET() {
     // 2. Retrieve or create the customer in Stripe
     const customer = await getCustomerId({
       userId: supaUser.user.id,
+      billingAccountId,
     });
 
     if (!customer) {

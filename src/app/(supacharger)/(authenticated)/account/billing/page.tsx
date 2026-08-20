@@ -1,42 +1,12 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { CreditCard } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/seperator';
-import { getSession } from '@/features/account/controllers/get-session';
-import { getSubscription } from '@/features/account/controllers/get-subscription';
-import { PricingCard } from '@/features/pricing/components/price-card';
-import { getProducts } from '@/features/pricing/controllers/get-products';
-import { Price, ProductWithPrices } from '@/features/pricing/types';
+import { getBillingOverview } from '@/features/account/controllers/get-billing-overview';
 
 export default async function BillingPage() {
-  const [session, subscription, products] = await Promise.all([getSession(), getSubscription(), getProducts()]);
-
-  let userProduct: ProductWithPrices | undefined;
-  let userPrice: Price | undefined;
-
-  if (subscription) {
-    for (const product of products) {
-      for (const price of product.prices) {
-        if (price.id === subscription.price_id) {
-          userProduct = product;
-          userPrice = price;
-        }
-      }
-    }
-  }
-
-  const navigation = [
-    { name: 'Account Settings', href: '/account', current: false },
-    { name: 'Edit Profile', href: '/account/profile', current: false },
-    { name: 'Billing', href: '/account/billing', current: true },
-  ];
-
-  function classNames(...classes: string[]): string {
-    return classes.filter(Boolean).join(' ');
-  }
+  const billingAccounts = await getBillingOverview();
 
   return (
     <section className=''>
@@ -47,45 +17,57 @@ export default async function BillingPage() {
             <Separator className='my-4' />
           </div>
 
-          <div className='container mx-auto flex flex-col gap-6 px-4 py-8 md:flex-row'>
-            {/* Left column */}
-            <div className='flex-1'>
-              <h2 className='mb-4 text-2xl font-semibold'>Subscriptions</h2>
-              <Link href='billing/portal'>Manage your subscription</Link>{' '}
+          <div className='container mx-auto space-y-6 px-4 py-8'>
+            {billingAccounts.length === 0 ? (
               <Card
-                title='Your Plan'
+                title='No billing account'
                 footer={
-                  subscription ? (
-                    <Button size='sm' variant='secondary' asChild>
-                      {/** Must stay as an anchor to resolvve CORS issues with stripe */}
-                      <a href='billing/portal'>Manage your subscription</a>
-                      {/** / Anchor */}
-                    </Button>
-                  ) : (
-                    <Button size='sm' variant='secondary' asChild>
-                      <Link href='/account/billing/subscribe'>Start a subscription</Link>
-                    </Button>
-                  )
+                  <Button size='sm' variant='secondary' asChild>
+                    <Link href='/account/billing/subscribe'>Start a subscription</Link>
+                  </Button>
                 }
               >
-                {userProduct && userPrice ? (
-                  <PricingCard product={userProduct} price={userPrice} />
-                ) : (
-                  <p>You don&apos;t have an active subscription</p>
-                )}
+                <p>Create a billing account when you start Checkout.</p>
               </Card>
-            </div>
-            {/* Right column */}
-            <div className='flex-1'>
-              <h2 className='mb-4 text-2xl font-semibold'>PTEst</h2>
-              {/* Additional right column content can go here */}
-            </div>
-          </div>
-
-          {/* Billing History Section */}
-          <div className='container mx-auto px-4 py-8'>
-            <h2 className='mb-4 text-2xl font-semibold'>Billing History</h2>
-            {/* Billing history content goes here */}
+            ) : (
+              billingAccounts.map((account) => (
+                <Card
+                  key={account.id}
+                  title={account.display_name || `${account.subject_type} billing`}
+                  footer={
+                    account.member_role !== 'member' ? (
+                      <Button size='sm' variant='secondary' asChild>
+                        <a href={`billing/portal?billing_account_id=${account.id}`}>Manage billing</a>
+                      </Button>
+                    ) : undefined
+                  }
+                >
+                  {account.subscriptions.length === 0 ? (
+                    <p>No subscriptions are attached to this billing account.</p>
+                  ) : (
+                    <div className='space-y-4'>
+                      {account.subscriptions.map((subscription) => (
+                        <div key={subscription.id} className='rounded border border-zinc-800 p-3'>
+                          <p className='font-medium'>Status: {subscription.status}</p>
+                          <ul className='mt-2 space-y-1 text-sm text-zinc-300'>
+                            {subscription.items.map((item) => (
+                              <li key={item.id}>
+                                {item.price.product?.name || item.price.id} × {item.quantity ?? 1}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {account.entitlements.length > 0 && (
+                    <p className='mt-4 text-sm text-zinc-400'>
+                      Features: {account.entitlements.map((item) => item.feature_lookup_key).join(', ')}
+                    </p>
+                  )}
+                </Card>
+              ))
+            )}
           </div>
         </section>
       </div>

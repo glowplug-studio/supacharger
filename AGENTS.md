@@ -58,6 +58,8 @@ When a task affects reusable behaviour:
 
 Do not copy or adapt licence-restricted Untitled UI source from Specdrive into Supacharger. Restricted implementations must be replaced with independently designed, clean-room code based on required behaviour, interaction states, and accessibility requirements. MIT-licensed material may be used only under its applicable terms and notices. Flag uncertain provenance before promotion.
 
+SnapScreen is the approved visual and interaction basis for the shared authentication journey. Preserve its progressive provider-to-email transition, heading treatment, dark auth surfaces, branded actions, and matching password-reset presentation in Core, SnapScreen, and Wakekeeper. Keep project copy, colours, imagery, enabled methods, and adapters outside the protected implementation. Shared OTP and resend states must extend this presentation rather than replace it with a generic form. Specdrive retains its separate Untitled UI presentation.
+
 ## CLI compatibility
 
 - Keep application settings outside CLI-managed directories.
@@ -67,6 +69,17 @@ Do not copy or adapt licence-restricted Untitled UI source from Specdrive into S
 - Do not introduce a new developer-editable file inside a protected directory without first defining how CLI updates preserve it.
 - When changing a protected interface, document the consumer migration and update the CLI in the same coordinated change when necessary.
 
+## Canonical database foundation
+
+- `app.profiles` is the single shared user-profile table. Its canonical reusable fields are `id`, `first_name`, `last_name`, `username`, `email`, `avatar_path`, `header_image_path`, `language_code`, `created_at`, and `updated_at`. Consumers may add product fields to this row or a one-to-one extension, but must not create a second shared user record.
+- Auth insert and email-update triggers always create or synchronise the profile row. `POST_SIGN_IN_ONBOARDING.REQUIRED` controls routing only; it never disables profile creation. The shared completion contract always requires non-empty `first_name` and `last_name`, and requires `username` only when `PROFILE_IDENTITY.USERNAME` is `required`.
+- `POST_SIGN_IN_ONBOARDING.REDIRECT_PATH` is developer-owned and must resolve to that application's setup flow. The callback and protected-route guard must both pass the configured username policy to `api.is_profile_complete_by_current_user(p_username_required)` rather than infer completion from session metadata.
+- `PROFILE_IDENTITY.USERNAME` is `disabled`, `optional`, or `required`. Storage remains nullable and installed in every mode; forms, routes, and identity projections must obey the configured policy.
+- Organisation tables and service adapters remain installed when `ORGANISATIONS.ENABLED` is false. Disabled applications must not expose organisation fields or invoke organisation context operations.
+- Profile images live in the private `user-avatars` bucket. Store object paths, not public URLs: `<user-id>/avatar-<name>` for avatars and `<user-id>/headers/header-<name>` for headers. Render them through short-lived signed URLs.
+- `api.get_user_profiles_by_identifiers` is the general identity projection. It may return names, username, and media paths to verified authenticated users, but must never return email or unrestricted profile rows.
+- Internal tables live in `app`; browser RPCs live in `api`; trusted service-only RPCs live in `api_edge`. Expose `api` and `api_edge` through PostgREST, not `app`.
+
 ## Documentation and verification
 
 - Keep code, `README.md`, repository agent guidance, MCP guidance, and `supacharger-docs` consistent with actual behaviour.
@@ -74,6 +87,15 @@ Do not copy or adapt licence-restricted Untitled UI source from Specdrive into S
 - Prefer focused checks during implementation and run the relevant lint, type, test, or build commands before reporting completion.
 - Report all affected repositories and any verification that could not be run.
 - Preserve unrelated worktree changes in this repository and every consuming application.
+- Read `docs/agents/authentication-and-claims.md` before changing Proxy, SSR cookies, Auth Hooks, roles, custom claims, or JWT-based RLS. Preserve the one-verification response-state invariant and keep resource authorisation authoritative in current database state.
+
+### Bruno RPC parity
+
+- `docs/bruno/supacharger-rpc/` is the canonical Supacharger-only Bruno collection for client-callable functions in the `api` schema.
+- Add, update, rename, or remove the matching Bruno request in the same change as every Supacharger `api` RPC contract change. Run `npm run check:bruno-rpcs` before reporting completion.
+- Keep request bodies, schema profile headers, authentication requirements, examples, and explanatory docs aligned with the current migration and generated API contract.
+- Do not add Specdrive, SnapScreen, Wakekeeper, or other consumer-specific endpoints to this collection. Promote a reusable contract into Supacharger first.
+- Do not put real access tokens, service-role keys, secret keys, or customer data in Bruno files or environments. The default collection excludes privileged `api_edge` mutation workflows.
 
 ## Repository knowledge MCP
 

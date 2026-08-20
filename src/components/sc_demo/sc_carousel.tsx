@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef,useState } from 'react';
-import { AnimatePresence,motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 
 export type Slide = {
   id: number;

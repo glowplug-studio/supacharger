@@ -11,6 +11,53 @@
 }
 
 @layer components {
+  .auth-panel-background {
+    background: var(--auth-panel-background, #101010);
+  }
+
+  .sc-auth-surface {
+    background: var(--auth-surface-background, #1a1919);
+    border-radius: 16px;
+  }
+
+  .sc-auth-surface-button {
+    @apply h-14 rounded-[10px] px-5 py-3 text-sm font-semibold text-white transition-colors;
+    background: var(--auth-surface-background, #1a1919) !important;
+  }
+
+  .sc-auth-surface-button:hover {
+    background: var(--auth-surface-background-hover, #232222) !important;
+    color: white !important;
+  }
+
+  .sc-auth-primary-button {
+    @apply h-14 rounded-[10px] px-5 py-3 text-sm font-semibold transition-colors;
+    background: hsl(var(--primary)) !important;
+    color: var(--auth-primary-foreground, #080808) !important;
+  }
+
+  .sc-auth-primary-button:hover {
+    filter: brightness(0.94);
+  }
+
+  .sc-auth-input {
+    @apply h-14 w-full rounded-[10px] px-5 py-3 text-[15px] font-normal text-white shadow-none placeholder:text-white/50;
+    box-sizing: border-box;
+    background: var(--auth-input-background, #202024) !important;
+    border: 1px solid var(--auth-input-border, #46484f) !important;
+  }
+
+  .sc-auth-otp input {
+    @apply mx-1 h-12 w-10 rounded-md text-center text-xl font-semibold text-white;
+    background: var(--auth-input-background, #202024);
+    border: 1px solid var(--auth-input-border, #46484f);
+  }
+
+  .sc-auth-resend {
+    @apply space-y-3 rounded-2xl p-4 text-white;
+    background: var(--auth-surface-background, #1a1919);
+  }
+
   .btn {
     @apply inline-flex h-10 items-center justify-between rounded-md px-5 py-3 font-medium capitalize text-white hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
   }

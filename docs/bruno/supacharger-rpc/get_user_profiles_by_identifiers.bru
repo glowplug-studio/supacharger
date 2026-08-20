@@ -1,0 +1,29 @@
+meta {
+  name: get user profiles by identifiers
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/get_user_profiles_by_identifiers
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "p_identifiers": ["sam_example"]
+  }
+}
+
+docs {
+  Returns the limited public profile projection for requested IDs or usernames.
+}

@@ -1,4 +1,6 @@
 import { Flip, type ToastPosition } from 'react-toastify';
+
+import type { SupachargerConfig } from '@/supacharger/supacharger-config-contract';
 /**
  * ==========
  *    ___
@@ -15,7 +17,7 @@ import { Flip, type ToastPosition } from 'react-toastify';
  * Supacharger Configuration
  * ==========
  */
-export const SC_CONFIG = {
+export const SC_CONFIG: SupachargerConfig = {
   /**
    * ==========
    * STRINGS
@@ -25,6 +27,43 @@ export const SC_CONFIG = {
   //@toto this should be translatable! this has been done using en.json Global and in  src/app/(supacharger)/(unauthenticated)/account/login/page.tsx
   SITE_TITLE: 'Korunet',
   SITE_DESCRIPTION: 'Start your next project without reinventing the wheel.',
+  SITE_LOGO: null,
+  MARKETING_SITE_URL: null,
+
+  // Supabase recommends getClaims for normal SSR identity verification. Use
+  // "user" only when every matched request needs a fresh Auth-server check.
+  AUTH_SESSION: {
+    VERIFICATION_MODE: 'claims',
+    ALLOW_ANONYMOUS_USERS: false,
+  },
+  AUTHENTICATION: {
+    EMAIL_PASSWORD: {
+      SIGN_IN: true,
+      SIGN_UP: true,
+    },
+    MAGIC_LINK: {
+      ENABLED: true,
+      ALLOW_SIGN_UP: true,
+    },
+    // Keep this aligned with Supabase Auth email-confirmation settings and templates.
+    SIGN_UP_EMAIL_VERIFICATION: 'otp',
+    MFA_TOTP: {
+      ENABLED: false,
+    },
+  },
+  // Enable this only after the production HTTPS domain and native identifiers
+  // are ready. The shared routes then publish both platform association files.
+  MOBILE_DEEP_LINKING: {
+    ENABLED: false,
+    ASSOCIATED_PATHS: ['/auth/callback', '/auth/confirm', '/account/reset-password/new'],
+    IOS: {
+      // Each value is <Apple App ID prefix>.<bundle identifier>.
+      APP_IDS: [],
+    },
+    ANDROID: {
+      APPS: [],
+    },
+  },
 
   /**
    * ==========
@@ -37,7 +76,7 @@ export const SC_CONFIG = {
   // protect all routes except the exceptions in NO_SESSION_USER_ALLOWED_PATHS
   AUTH_ONLY_APP: true,
 
-  PATH_AUTH_GARD: {
+  PATH_AUTH_GUARD: {
       UNAUTHED_USER: {
          // Users without auth sessions can acess
         ALLOWED: [
@@ -105,12 +144,35 @@ export const SC_CONFIG = {
   // an example handler is in src/components/sc_demo/sc_user-dash.tsx
   ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
 
-  // are there steps a user must go through before they can access the application
-  // null to disable
-  ACCOUNT_CREATION_STEPS_URL: '/account/setup/1',
-      // Is a valid subscription required to use the authed area?
+  // Username storage remains installed and nullable in every project. This policy
+  // controls whether the application requests, displays, or requires the value.
+  PROFILE_IDENTITY: {
+    USERNAME: 'disabled',
+  },
+
+  // The route belongs to the application. Supacharger only decides whether an
+  // authenticated account must visit it before entering protected product routes.
+  POST_SIGN_IN_ONBOARDING: {
+    REQUIRED: true,
+    REDIRECT_PATH: '/account/setup-profile',
+  },
+
+  // Organisation tables are always installed. Disabled applications do not expose
+  // organisation fields or invoke organisation onboarding adapters.
+  ORGANISATIONS: {
+    ENABLED: false,
+    AUTHENTICATION_HANDLE: 'disabled',
+  },
+  BILLING_ACCESS: {
+    REQUIRED: true,
+    // null means any active/trialling subscription. Set a feature lookup key
+    // to authorise from the entitlement projection instead.
+    FEATURE_LOOKUP_KEY: null as string | null,
+    REDIRECT_PATH: '/account/billing/subscribe?full=1',
+  },
+  /** @deprecated Use BILLING_ACCESS.REQUIRED. */
   ACCOUNT_FORCE_SUBSCRIPTION: true,
-  // Where to send authed users who haven't got a subscription
+  /** @deprecated Use BILLING_ACCESS.REDIRECT_PATH. */
   ACCOUNT_ENFORCE_SUBSCRIPTION_PATH: '/account/billing/subscribe?full=1',
     // Is there a required terms checkbox? null if not needed
   ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH: null,
@@ -123,6 +185,8 @@ export const SC_CONFIG = {
 
   // Allow emails with a + in them eg test+1@gmail.com
   EMAIL_ALLOW_PLUSADDRESSING: true,
+  // Must match Supabase `auth.email.max_frequency`.
+  EMAIL_RESEND_COOLDOWN_SECONDS: 60,
   /**
    *
    * Password Strength Settings
@@ -135,7 +199,7 @@ export const SC_CONFIG = {
     lower_upper_letters_digits
     lower_upper_letters_digits_symbols
   */
-  PASSWORD_REQUIREMENTS: 'lower_upper_letters_digits',
+  PASSWORD_REQUIREMENTS: 'lower_upper_letters_digits' as SupachargerConfig['PASSWORD_REQUIREMENTS'],
   // minimum length
   PASSWORD_MINIMUM_LENGTH: 8,
   // if set the above two will be ignored. A generic failed message will be returned without reason if criteria not met.
@@ -160,6 +224,12 @@ export const SC_CONFIG = {
    */
   // where does the 
   STRIPE_PORTAL_LOGO_RETURN_PATH: 'account/billing',
+  BILLING: {
+    // Stripe chooses eligible local methods dynamically from Dashboard settings.
+    AUTOMATIC_TAX: false,
+    BILLING_ADDRESS_COLLECTION: 'auto' as 'auto' | 'required',
+    ALLOW_PROMOTION_CODES: true,
+  },
 
   /**
    * ==========

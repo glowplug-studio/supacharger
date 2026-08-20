@@ -16,3 +16,7 @@ export function getStripeAdmin(): Stripe {
 
   return stripeAdmin;
 }
+
+export function getStripeLivemode(): boolean {
+  return getEnvVar(process.env.STRIPE_SECRET_KEY, 'STRIPE_SECRET_KEY').startsWith('sk_live_');
+}

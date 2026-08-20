@@ -3,12 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 export async function getSubscription() {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .schema('app')
-    .from('subscriptions')
-    .select('*, prices(*, products(*))')
-    .in('status', ['trialing', 'active'])
-    .maybeSingle();
+  const { data, error } = await supabase.schema('api').rpc('get_active_subscription_by_current_user');
 
   if (error) {
     console.error(error);

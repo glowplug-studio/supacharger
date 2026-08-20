@@ -1,5 +1,6 @@
 import type Stripe from 'stripe';
 
+import { syncStripeEntitlements } from '@/features/account/controllers/sync-entitlements';
 import { upsertUserSubscription } from '@/features/account/controllers/upsert-user-subscription';
 import { upsertPrice } from '@/features/pricing/controllers/upsert-price';
 import { upsertProduct } from '@/features/pricing/controllers/upsert-product';
@@ -16,11 +17,14 @@ const relevantEvents = new Set([
   'price.updated',
   'price.deleted',
   'checkout.session.completed',
+  'checkout.session.async_payment_succeeded',
+  'checkout.session.async_payment_failed',
   'customer.subscription.created',
   'customer.subscription.updated',
   'customer.subscription.deleted',
   'customer.subscription.paused',
   'customer.subscription.resumed',
+  'entitlements.active_entitlement_summary.updated',
 ]);
 
 function eventObjectId(event: Stripe.Event): string | null {
@@ -32,12 +36,12 @@ export async function acceptStripeEvent(event: Stripe.Event): Promise<boolean> {
   if (!relevantEvents.has(event.type)) return false;
 
   const { data, error } = await getSupabaseAdminClient()
-    .schema('app')
+    .schema('api_edge')
     .rpc('accept_stripe_event', {
       p_event_id: event.id,
       p_event_type: event.type,
-      p_object_id: eventObjectId(event),
-      p_api_version: event.api_version,
+      p_object_id: eventObjectId(event) ?? '',
+      p_api_version: event.api_version ?? 'unknown',
       p_livemode: event.livemode,
       p_payload: event as unknown as Json,
     });
@@ -47,39 +51,21 @@ export async function acceptStripeEvent(event: Stripe.Event): Promise<boolean> {
 
 async function markProcessed(eventId: string) {
   const { error } = await getSupabaseAdminClient()
-    .schema('app')
-    .from('stripe_events')
-    .update({
-      status: 'processed',
-      processed_at: new Date().toISOString(),
-      processing_started_at: null,
-      last_error: null,
-    })
-    .eq('event_id', eventId);
+    .schema('api_edge')
+    .rpc('complete_stripe_event', { p_event_id: eventId });
 
   if (error) throw error;
 }
 
 async function markFailed(eventId: string, error: unknown) {
   const message = error instanceof Error ? error.message : 'Unknown Stripe event processing error';
-  const { data: row } = await getSupabaseAdminClient()
-    .schema('app')
-    .from('stripe_events')
-    .select('attempt_count')
-    .eq('event_id', eventId)
-    .single();
-  const delayMinutes = Math.min(2 ** Math.max((row?.attempt_count ?? 1) - 1, 0), 60);
-
   const { error: updateError } = await getSupabaseAdminClient()
-    .schema('app')
-    .from('stripe_events')
-    .update({
-      status: 'failed',
-      processing_started_at: null,
-      next_attempt_at: new Date(Date.now() + delayMinutes * 60_000).toISOString(),
-      last_error: message.slice(0, 1_000),
-    })
-    .eq('event_id', eventId);
+    .schema('api_edge')
+    .rpc('complete_stripe_event', {
+      p_event_id: eventId,
+      p_error: message.slice(0, 1_000),
+      p_retry_at: new Date(Date.now() + 60_000).toISOString(),
+    });
 
   if (updateError) throw updateError;
 }
@@ -93,10 +79,8 @@ async function processEvent(event: Stripe.Event) {
     case 'product.deleted': {
       const product = event.data.object as Stripe.Product;
       const { error } = await getSupabaseAdminClient()
-        .schema('app')
-        .from('products')
-        .update({ active: false })
-        .eq('id', product.id);
+        .schema('api_edge')
+        .rpc('billing_set_catalogue_item_inactive', { p_kind: 'product', p_id: product.id });
       if (error) throw error;
       return;
     }
@@ -107,10 +91,8 @@ async function processEvent(event: Stripe.Event) {
     case 'price.deleted': {
       const price = event.data.object as Stripe.Price;
       const { error } = await getSupabaseAdminClient()
-        .schema('app')
-        .from('prices')
-        .update({ active: false })
-        .eq('id', price.id);
+        .schema('api_edge')
+        .rpc('billing_set_catalogue_item_inactive', { p_kind: 'price', p_id: price.id });
       if (error) throw error;
       return;
     }
@@ -127,7 +109,9 @@ async function processEvent(event: Stripe.Event) {
       });
       return;
     }
-    case 'checkout.session.completed': {
+    case 'checkout.session.completed':
+    case 'checkout.session.async_payment_succeeded':
+    case 'checkout.session.async_payment_failed': {
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.mode !== 'subscription') return;
       if (typeof session.subscription !== 'string' || typeof session.customer !== 'string') {
@@ -140,25 +124,23 @@ async function processEvent(event: Stripe.Event) {
       });
       return;
     }
+    case 'entitlements.active_entitlement_summary.updated': {
+      const summary = event.data.object as Stripe.Entitlements.ActiveEntitlementSummary;
+      await syncStripeEntitlements(summary.customer);
+      return;
+    }
   }
 }
 
 export async function processStripeEvent(eventId: string): Promise<boolean> {
   const { data: claimed, error: claimError } = await getSupabaseAdminClient()
-    .schema('app')
+    .schema('api_edge')
     .rpc('claim_stripe_event', { p_event_id: eventId });
   if (claimError) throw claimError;
   if (!claimed) return false;
 
   try {
-    const { data: payloadRow, error: payloadError } = await getSupabaseAdminClient()
-      .schema('app')
-      .from('stripe_event_payloads')
-      .select('payload')
-      .eq('event_id', eventId)
-      .single();
-    if (payloadError) throw payloadError;
-    const event = payloadRow.payload as unknown as Stripe.Event;
+    const event = claimed as unknown as Stripe.Event;
     await processEvent(event);
     await markProcessed(eventId);
     return true;
@@ -170,7 +152,7 @@ export async function processStripeEvent(eventId: string): Promise<boolean> {
 
 export async function processPendingStripeEvents(limit = 20): Promise<number> {
   const { data, error } = await getSupabaseAdminClient()
-    .schema('app')
+    .schema('api_edge')
     .rpc('list_claimable_stripe_events', { p_limit: limit });
   if (error) throw error;
 

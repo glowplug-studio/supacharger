@@ -1,0 +1,29 @@
+meta {
+  name: check account username available
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/check_account_username_available
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "p_username": "sam_example"
+  }
+}
+
+docs {
+  Checks a canonical 3-40 character username for the signed-in account.
+}

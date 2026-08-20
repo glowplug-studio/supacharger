@@ -1,41 +1,18 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-/** =========================================================================
- *
- *  Supacharger - Account Login Page
- *
- *  Description: User can sign in here with SOME social accounts or email.
- *
- *  Author: J Sharp <j@glowplug.studio>
- *
- *  License: CC BY-NC-SA 4.0
- *
- * ========================================================================= */
+import { AuthEntry } from '@/supacharger/components/forms/auth-entry';
 
-import { useTranslations } from 'next-intl';
+interface SignInPageProps {
+  searchParams?: Promise<{ mode?: string }>;
+}
 
-import SCSiteLogo from '@/components/sc_demo/sc_site-logo';
-import AuthProviderButtons from '@/supacharger/components/buttons/auth-provider-buttons';
-import { LoginUserForm } from '@/supacharger/components/forms/login-user-form';
-import { UIDivider } from '@/supacharger/components/ui/divider';
-
-export default function SignInPage() {
-  const tLoginPage = useTranslations('LoginPage');
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const params = await searchParams;
+  if (params?.mode === 'signup') redirect('/account/create');
 
   return (
-    <main id='sc_login-page'>
-      {/* Mobile only logo */}
-      <div className='flex items-center gap-2 lg:hidden'>
-          <div className='mb-6 w-6'>
-            <SCSiteLogo showSiteTitle={true} darkMode={false} />
-          </div>
-        </div>
-        <div className='flex flex-col gap-2 px-1'>
-          <h1 className='mb-6 text-2xl/9 font-bold tracking-tight'>{tLoginPage('title')}</h1>
-        </div>
-        {/* Social Buttons */}
-      <AuthProviderButtons />
-      <LoginUserForm />
+    <main id='sc_login-page' className='w-full max-w-md'>
+      <AuthEntry initialMode='signin' />
     </main>
   );
 }

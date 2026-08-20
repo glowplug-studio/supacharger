@@ -27,6 +27,7 @@ interface PasswordValidationIndicatorProps {
   name?: string;
   id?: string;
   type?: string;
+  placeholder?: string;
   onValidationChange?: (isValid: boolean, details?: { [key: string]: boolean }) => void;
 }
 
@@ -36,12 +37,13 @@ export default function PasswordValidationIndicator({
   name = "newPassword",
   id = "newPassword",
   type = "password",
+  placeholder,
   onValidationChange,
 }: PasswordValidationIndicatorProps) {
   const tStrengthComponent = useTranslations("evaluatePasswordStrengthComponent");
-  const tAuthTerms = useTranslations("AuthTerms");
 
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
   // Use central validation function for overall result
   const validationResult = evaluatePasswordStrength(value);
@@ -139,6 +141,7 @@ export default function PasswordValidationIndicator({
   const validationItems = getValidationItems();
   const validations = validationItems.map((item) => item.test(value));
   const allValid = validationResult.valid;
+  const showCriteria = !allValid && (isFocused || value.length > 0);
 
   // Notify parent of validation state
   useEffect(() => {
@@ -154,53 +157,58 @@ export default function PasswordValidationIndicator({
 
   return (
     <div className="space-y-2 relative">
-      {/* Label */}
-      <label htmlFor={id} className="text-md block px-1">
-        {tAuthTerms("newPassword")}
-      </label>
-
       {/* Password Input */}
-      <div className="relative px-1">
+      <div className="relative">
         <Input
           id={id}
           name={name}
           type={type}
+          autoComplete='new-password'
           value={value}
           onChange={onChange}
           maxLength={30}
-          onFocus={() => setShowTooltip(true)}
-          onBlur={() => setShowTooltip(false)}
+          placeholder={placeholder}
+          className="sc-auth-input pr-16"
+          onFocus={() => {
+            setIsFocused(true);
+            setShowTooltip(true);
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+            setShowTooltip(false);
+          }}
         />
         {allValid && value.length > 0 && (
-          <span className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-            <span className="bg-green-100 rounded-full p-1 flex items-center justify-center">
-              <Check className="text-green-600" size={18} />
-            </span>
+          <span className="pointer-events-none absolute left-[calc(100%+0.5rem)] top-1/2 flex -translate-y-1/2 items-center">
+            <Check className="text-green-500" size={17} strokeWidth={2.5} />
           </span>
         )}
-      </div>
 
-      {/* Requirements bar (bars under input) */}
-      <div
-        className="flex w-full gap-2 mt-2 hover:cursor-pointer px-4"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        aria-label={tStrengthComponent("passwordRequirementsLabel")}
-      >
-        {validations.map((isValid, idx) => (
-          <div
-            key={validationItems[idx].key}
-            className={`
-              flex-1 h-2 rounded-full transition-colors duration-300
-              ${isValid ? "bg-green-500" : "bg-gray-300"}
-            `}
-          />
-        ))}
+        {/* Requirements bar (bars inside input) */}
+        <div
+          className={`absolute inset-x-5 bottom-2 flex gap-2 transition-opacity duration-200 ${
+            showCriteria ? "opacity-100" : "pointer-events-none opacity-0"
+          }`}
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+          aria-label={tStrengthComponent("passwordRequirementsLabel")}
+          aria-hidden={!showCriteria}
+        >
+          {validations.map((isValid, idx) => (
+            <div
+              key={validationItems[idx].key}
+              className={`
+                h-1 flex-1 rounded-full transition-colors duration-300
+                ${isValid ? "bg-green-500" : "bg-gray-300"}
+              `}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Tooltip */}
-      {showTooltip && (
-        <div className="absolute z-50 mt-2 w-72 p-3 bg-white rounded-md shadow-lg border border-gray-200 text-sm">
+      {showTooltip && showCriteria && (
+        <div className="absolute z-50 mt-2 w-72 rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-900 shadow-lg dark:border-white/10 dark:bg-[#1a1919] dark:text-white">
           <ul className="space-y-1">
             {validationItems.map((item, idx) => (
               <li key={item.key} className="flex items-center">

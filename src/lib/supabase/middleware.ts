@@ -1,69 +1,70 @@
 // Ref: https://supabase.com/docs/guides/auth/server-side/nextjs
-import { type NextRequest,NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server';
 
+import type { Database } from '@/lib/supabase/types';
+import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 import { createServerClient } from '@supabase/ssr';
+import type { User } from '@supabase/supabase-js';
+
+export type VerifiedAuthClaims = {
+  is_anonymous?: boolean;
+  role?: string;
+  sub?: string;
+  [claim: string]: unknown;
+};
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  });
+  let response = NextResponse.next({ request });
 
-  const supabase = createServerClient(
+  const supabase = createServerClient<Database>(
     getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL, 'NEXT_PUBLIC_SUPABASE_URL'),
-    getEnvVar(
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-      'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'
-    ),
+    getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'),
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+        setAll(cookiesToSet, headers) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+          Object.entries(headers).forEach(([name, value]) => response.headers.set(name, value));
         },
       },
-    }
+    },
   );
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
+  let claims: VerifiedAuthClaims | null = null;
+  let user: User | null = null;
+  let verificationError: unknown = null;
+  const verificationMode = SC_CONFIG.AUTH_SESSION.VERIFICATION_MODE as 'claims' | 'user';
 
-  // IMPORTANT: DO NOT REMOVE auth.getUser()
+  if (verificationMode === 'user') {
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+    verificationError = result.error;
+  } else {
+    const result = await supabase.auth.getClaims();
+    claims = result.data?.claims ?? null;
+    verificationError = result.error;
+  }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const isAnonymous = claims?.is_anonymous === true || user?.is_anonymous === true;
+  const hasAuthenticatedIdentity = claims
+    ? Boolean(claims.sub && claims.role === 'authenticated')
+    : Boolean(user?.id && user.aud === 'authenticated');
+  const isAuthenticated =
+    !verificationError &&
+    hasAuthenticatedIdentity &&
+    (SC_CONFIG.AUTH_SESSION.ALLOW_ANONYMOUS_USERS || !isAnonymous);
 
-  // Add route guards here
-  // const guardedRoutes = ['/dashboard'];
-  // if (!user && guardedRoutes.includes(request.nextUrl.pathname)) {
-  //   // no user, potentially respond by redirecting the user to the login page
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = /account/login;
-  //   return NextResponse.redirect(url);
-  // }
-
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
-
-  return supabaseResponse;
+  return {
+    claims,
+    isAuthenticated,
+    response,
+    supabase,
+    user,
+    verificationError,
+  };
 }

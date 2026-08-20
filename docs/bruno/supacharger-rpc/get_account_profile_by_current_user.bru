@@ -1,0 +1,27 @@
+meta {
+  name: get account profile by current user
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/get_account_profile_by_current_user
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {}
+}
+
+docs {
+  Returns the signed-in user's canonical profile, including language_code.
+}

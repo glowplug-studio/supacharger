@@ -6,4 +6,5 @@
  * public configuration interface can evolve without moving developer values
  * back into CLI-managed files.
  */
+export type { SupachargerConfig } from './supacharger-config-contract';
 export { SC_CONFIG } from '@/supacharger.config';

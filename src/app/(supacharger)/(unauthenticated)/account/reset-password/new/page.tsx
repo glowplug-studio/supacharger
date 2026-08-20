@@ -32,11 +32,11 @@ export default function ResetPasswordFormPage() {
   const [isCodeValid, setIsCodeValid] = useState(true);
 
   const code = searchParams.get('code');
+  const isPending = Boolean(code) && pending;
 
   // Only exchange code if user is NOT authenticated
   useEffect(() => {
     if (!code) {
-      setPending(false); // stop loader if no code
       return;
     }
     (async () => {
@@ -100,18 +100,18 @@ export default function ResetPasswordFormPage() {
 
   return (
     <>
-      <main id='sc_account-password-reset-page'>
+      <main id='sc_account-password-reset-page' className='w-full max-w-md text-white'>
         <div className='flex items-center gap-2 lg:hidden'>
-          <div className='mb-6 w-6'>
-            <SCSiteLogo showSiteTitle={true} darkMode={false} />
+          <div className='mb-6 w-40'>
+            <SCSiteLogo showSiteTitle={true} darkMode={true} />
           </div>
         </div>
         <div className='flex flex-col gap-2 px-1'>
-          <h1 className='mb-6 text-2xl/9 font-bold tracking-tight'>{tPasswordResetPage('title')}</h1>
+          <h1 className='mb-6 text-3xl font-semibold tracking-tight text-white'>{tPasswordResetPage('title')}</h1>
         </div>
 
         <div>
-          {pending && (
+          {isPending && (
             <div className='flex items-center gap-3 rounded bg-gray-100 px-4 py-3'>
               <InlineLoader className='h-5 w-5 animate-spin text-gray-500' />
               <span className='text-gray-600'>{tPasswordResetPage('verifyingCode') || 'Verifying code...'}</span>
@@ -119,7 +119,7 @@ export default function ResetPasswordFormPage() {
           )}
 
           {/* If there is no code and not pending, show message and link */}
-          {!pending && !code && (
+          {!isPending && !code && (
             <div className='sc_message sc_message-error flex flex-col gap-2'>
               <span className='text-sm'>
                 {tPasswordResetPage('noCode') || 'No reset code found. Please request a new password reset link.'}
@@ -131,7 +131,7 @@ export default function ResetPasswordFormPage() {
           )}
 
           {/* Only show the rest if not pending and code exists */}
-          {!pending && code && (
+          {!isPending && code && (
             <div className='space-y-4'>
               {!isCodeValid && status && (
                 <div className='sc_message sc_message-error flex flex-col gap-2'>
@@ -148,7 +148,7 @@ export default function ResetPasswordFormPage() {
                     type='password'
                     required
                     minLength={8}
-                    className='input w-full'
+                    className='sc-auth-input'
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     disabled={isLoading}
@@ -159,6 +159,7 @@ export default function ResetPasswordFormPage() {
                     initialLabel={tGlobalUI('buttonSaveChanges')}
                     savingLabel={tGlobalUI('buttonSaving')}
                     completeLabel={tGlobalUI('buttonSaved')}
+                    className='sc-auth-primary-button w-full'
                   />
                 </form>
               )}

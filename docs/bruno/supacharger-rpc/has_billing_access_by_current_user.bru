@@ -1,0 +1,29 @@
+meta {
+  name: has billing access by current user
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/has_billing_access_by_current_user
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "p_feature_lookup_key": null
+  }
+}
+
+docs {
+  Checks general subscription access, or a specific Stripe entitlement when a feature lookup key is supplied.
+}

@@ -4,6 +4,7 @@
  * CLI-managed: do not add project styles here. Edit src/styles/project.css.
  */
 @import 'tailwindcss';
+@import 'tw-animate-css';
 @import './supacharger.css';
 @import '../../styles/project.css';
 

@@ -1,0 +1,29 @@
+meta {
+  name: update account language by current user
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/update_account_language_by_current_user
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "p_language_code": "fr"
+  }
+}
+
+docs {
+  Stores the signed-in user's lowercase two-letter language preference.
+}

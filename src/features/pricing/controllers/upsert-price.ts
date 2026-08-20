@@ -37,7 +37,9 @@ export async function upsertPrice(price: Stripe.Price) {
     metadata: price.metadata,
   };
 
-  const { error } = await supabaseAdminClient.schema('app').from('prices').upsert([priceData]);
+  const { error } = await supabaseAdminClient
+    .schema('api_edge')
+    .rpc('billing_upsert_price', { p_price: priceData });
 
   if (error) {
     throw error;

@@ -79,11 +79,12 @@ export default function ResetPasswordForm() {
           ${hideEmailField ? 'max-h-0 opacity-0' : 'max-h-32 space-y-2 px-1 pb-6 opacity-100'}
         `}
       >
-        <label htmlFor='email' className='text-md block'>
+        <label htmlFor='email' className='text-md block text-white/80'>
           {tPasswordResetPage('description')}
         </label>
         <div className='mt-2'>
           <Input
+            className='sc-auth-input'
             type='email'
             name='email'
             placeholder={tPasswordResetPage('enterEmailPlaceholder')}
@@ -103,8 +104,9 @@ export default function ResetPasswordForm() {
           savingLabel={tAuthTerms('sendNewAuthEmailSendingButtonLabel')}
           completeLabel={tAuthTerms('sendNewAuthEmailSentButtonLabel')}
           disabled={isSuccess || isLoading}
+          className='sc-auth-primary-button'
         />
-        <Link className='text-sm font-semibold' href='/account/login'>
+        <Link className='text-primary text-sm font-semibold hover:text-primary/80' href='/account/login'>
           {tAuthTerms('backToSignIn')}
         </Link>
       </div>

@@ -13,7 +13,18 @@ import {
   searchGuidance,
 } from './project.js';
 
-const guidanceTopics = ['mission', 'ownership', 'localisation', 'billing', 'workflow', 'instructions'];
+const guidanceTopics = [
+  'mission',
+  'ownership',
+  'localisation',
+  'authentication',
+  'mobile_auth',
+  'database',
+  'profile',
+  'billing',
+  'workflow',
+  'instructions',
+];
 
 function textResult(text) {
   return { content: [{ type: 'text', text }] };
@@ -25,7 +36,7 @@ export function createServer() {
     {
       instructions:
         'Use supacharger_get_guidance before changing shared behaviour. Classify affected paths before editing. This server is read-only; AGENTS.md and the repository implementation remain authoritative.',
-    }
+    },
   );
 
   for (const topic of guidanceTopics) {
@@ -45,7 +56,7 @@ export function createServer() {
             text: await readGuidance(topic),
           },
         ],
-      })
+      }),
     );
   }
 
@@ -53,19 +64,21 @@ export function createServer() {
     'supacharger_get_guidance',
     {
       title: 'Get Supacharger guidance',
-      description: 'Read the canonical mission, ownership model, localisation, billing contract, workflow, or complete repository agent instructions.',
+      description:
+        'Read the canonical mission, ownership, localisation, authentication, mobile deep-linking, database, profile, billing, workflow, or complete repository guidance.',
       inputSchema: {
         topic: z.enum(guidanceTopics).describe('Guidance topic to read.'),
       },
     },
-    async ({ topic }) => textResult(await readGuidance(topic))
+    async ({ topic }) => textResult(await readGuidance(topic)),
   );
 
   server.registerTool(
     'supacharger_classify_path',
     {
       title: 'Classify Supacharger path ownership',
-      description: 'Determine whether a repository path is CLI-managed, developer-owned, guidance, tooling, or unresolved shared code.',
+      description:
+        'Determine whether a repository path is CLI-managed, developer-owned, guidance, tooling, or unresolved shared code.',
       inputSchema: {
         path: z.string().min(1).describe('Repository-relative path to classify.'),
       },
@@ -86,10 +99,10 @@ export function createServer() {
             ...classifyPath(inputPath),
           },
           null,
-          2
-        )
+          2,
+        ),
       );
-    }
+    },
   );
 
   server.registerTool(
@@ -102,19 +115,20 @@ export function createServer() {
         depth: z.number().int().min(0).max(5).default(3).describe('Maximum recursion depth.'),
       },
     },
-    async ({ area, depth }) => textResult(await projectTree(area, depth))
+    async ({ area, depth }) => textResult(await projectTree(area, depth)),
   );
 
   server.registerTool(
     'supacharger_search_guidance',
     {
       title: 'Search Supacharger guidance',
-      description: 'Search curated repository and agent guidance. This does not search environment files or arbitrary source content.',
+      description:
+        'Search curated repository and agent guidance. This does not search environment files or arbitrary source content.',
       inputSchema: {
         query: z.string().min(1).describe('Case-insensitive text to search for.'),
       },
     },
-    async ({ query }) => textResult(JSON.stringify(await searchGuidance(query), null, 2))
+    async ({ query }) => textResult(JSON.stringify(await searchGuidance(query), null, 2)),
   );
 
   return server;

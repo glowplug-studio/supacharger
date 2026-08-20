@@ -25,30 +25,30 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect( getURL(SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION) );
     }
 
-    // if theres a wizard - 
-    // @todo - check if the user has done this with claims
-    if(SC_CONFIG.ACCOUNT_CREATION_STEPS_URL !== null){
-      return NextResponse.redirect(siteUrl+SC_CONFIG.ACCOUNT_CREATION_STEPS_URL);
+    if (SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED) {
+      const { data: profileComplete } = await supabase
+        .schema('api')
+        .rpc('is_profile_complete_by_current_user', {
+          p_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
+        });
+
+      if (profileComplete === false) {
+        return NextResponse.redirect(siteUrl + SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH);
+      }
     }
 
 
 
 
-    // Check if user is subscribed, if not redirect to pricing page
-    const { data: userSubscription } = await supabase
-      .schema('app')
-      .from('subscriptions')
-      .select('*, prices(*, products(*))')
-      .in('status', ['trialing', 'active'])
-      .maybeSingle();
-
-      //@ TODO Config settings and how to handle what happens to accounts after link confirm? - do they need to add more info? a password? do they need to get a subscription?
-
-    if (!userSubscription) {
-      return NextResponse.redirect(`${siteUrl}/pricing`);
-    } else {
-      return NextResponse.redirect(`${siteUrl}`);
+    if (SC_CONFIG.BILLING_ACCESS.REQUIRED) {
+      const { data: hasBillingAccess } = await supabase.schema('api').rpc('has_billing_access_by_current_user', {
+        p_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY,
+      });
+      if (!hasBillingAccess) {
+        return NextResponse.redirect(siteUrl + SC_CONFIG.BILLING_ACCESS.REDIRECT_PATH);
+      }
     }
+    return NextResponse.redirect(siteUrl);
   }
 
   return NextResponse.redirect(siteUrl);

@@ -34,6 +34,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --auth-panel-background: #101010;
+    --auth-surface-background: #1a1919;
+    --auth-surface-background-hover: #232222;
+    --auth-input-background: #202024;
+    --auth-input-border: #46484f;
     --radius: 0.5rem;
   }
 

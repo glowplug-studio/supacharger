@@ -11,9 +11,9 @@ export function UIDivider({ text, className }: UIDividerProps) {
 
   return (
     <div className={`flex items-center gap-4${className ? ` ${className}` : ''}`}>
-      <hr className='flex-1 border-gray-300' />
-      <span className='text-gray-400 text-sm'>{displayText}</span>
-      <hr className='flex-1 border-gray-300' />
+      <hr className='flex-1 border-white/20' />
+      <span className='text-sm text-white/60'>{displayText}</span>
+      <hr className='flex-1 border-white/20' />
     </div>
   );
 }

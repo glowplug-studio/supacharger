@@ -1,78 +1,75 @@
 # Billing and Stripe contract
 
-## Ownership
+## Domain model
 
-Supacharger owns the reusable user-billing implementation. The canonical managed paths are:
+Supacharger billing is account-based, not user-owned. A `billing_account` is the billable party and can represent a user, organisation, team, tenant, or application-defined subject. Users gain visibility and management authority through `billing_account_members`; never use the current user's ID as a substitute for a billing-account ID.
 
-- `src/lib/stripe/`
-- `src/features/pricing/`
-- the billing controllers in `src/features/account/controllers/`
-- `src/app/(supacharger)/api/webhooks/`
-- `src/app/(supacharger)/api/(supacharger)/stripe/`
-- `src/app/(supacharger)/(authenticated)/account/billing/`
-- billing objects in `src/lib/supabase/types.ts` and `supabase/migrations/`
+One billing account maps to one Stripe Customer per Stripe account and mode. A Customer may have multiple independent Subscriptions, and every Subscription may have multiple Subscription Items. Do not add code that selects `items.data[0]` as the complete plan. The legacy `subscriptions.user_id`, `price_id`, and `quantity` fields are compatibility aliases for one release only; new reads use `billing_account_id` and `app.subscription_items`.
 
-Consumers receive approved changes through the Supacharger CLI. Product-specific prices, copy, branding, tax settings, and organisation-billing rules remain application decisions. Specdrive uses organisation ownership and must not receive the user-owned contract without a separate design decision.
+Stripe remains authoritative for Customers, Products, Prices, Subscriptions, Subscription Items, and Stripe Entitlements. Supabase stores a query-efficient projection and application-owned manual/promotional entitlements; it is not an editable Stripe source of truth.
 
-## Supported contract
+## Canonical implementation
 
-- Stripe Node `22.5.0` with API `2026-07-29.dahlia` is the tested tuple for this release.
-- Stripe is authoritative for customers, products, prices, subscriptions, and their lifecycle state.
-- Supabase stores an application projection in `app`; it is not an editable billing source of truth.
-- Hosted Checkout and the Billing Portal are the browser-facing Stripe surfaces.
-- The canonical implemented payment mode is subscriptions. One-time fulfilment is not part of the reliable event projection yet.
-- The current owner is one authenticated Supabase user. Organisation billing is an extension, not an alias for a user ID.
+Supacharger owns the reusable billing implementation under:
 
-## Webhook processing
+- `src/lib/stripe/`;
+- `src/features/pricing/`;
+- the named billing controllers in `src/features/account/controllers/`;
+- `src/app/(supacharger)/api/webhooks/` and the protected Stripe processor/reconciliation routes;
+- `src/app/(supacharger)/(authenticated)/account/billing/`;
+- billing objects in `src/lib/supabase/types.ts` and `supabase/migrations/`.
 
-The public webhook route must:
+Product catalogue content, tax registrations, payment-method Dashboard settings, entitlement definitions, copy, branding, account-subject provisioning, and organisation membership remain developer-owned policy. Consumers must adapt their product model to `billing_accounts`; they must not fork the core back to user-owned subscriptions.
 
-1. read the unmodified request body;
-2. verify `stripe-signature` with `STRIPE_WEBHOOK_SECRET`;
-3. insert the event metadata and versioned payload durably;
-4. acknowledge duplicate event IDs without repeating side effects; and
-5. return `2xx` after durable acceptance, scheduling immediate processing outside the response.
+## Checkout and lifecycle
 
-`app.stripe_events` is the claim, lease, retry, and status ledger. `app.stripe_event_payloads` retains the signed snapshot payload for 30 days by default so processing remains compatible with the event's API version. The retry route is authenticated with `STRIPE_EVENT_PROCESSOR_SECRET`; deploy it behind the platform scheduler. Processing is idempotent by event ID and refreshes current subscription state from Stripe where ordering matters.
+- Stripe Node `22.5.0` and API `2026-07-29.dahlia` are the supported tuple.
+- Checkout accepts 1–20 active recurring Prices in one currency and creates flexible-billing-mode subscriptions.
+- Omit `payment_method_types` so Stripe Dynamic Payment Methods can select eligible local methods from Dashboard configuration. A product may explicitly restrict methods only through a documented application policy.
+- `SC_CONFIG.BILLING` owns Automatic Tax, address collection, and promotion-code switches. Enabling Automatic Tax also requires correct Stripe registrations and product tax codes.
+- Checkout metadata carries `supachargerBillingAccountId`; it never treats a user ID as the billing owner.
+- The Billing Portal is appropriate for ordinary self-service. Complex seat allocation, organisation membership, multi-subscription changes, quotes, or scheduled transitions belong behind separately authorised application services.
+- `SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY` selects entitlement-based access. A `null` key retains the broad “any active/trialling subscription” compatibility policy.
 
-Subscribe only to the implemented events:
+Flexible billing mode is the default for new subscriptions. Before enabling a Stripe feature that is incompatible with flexible mode, document the limitation and add an explicit capability/configuration decision; never silently fall back to classic mode.
 
-- `product.created`, `product.updated`, `product.deleted`
-- `price.created`, `price.updated`, `price.deleted`
-- `checkout.session.completed`
-- `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`
-- `customer.subscription.paused`, `customer.subscription.resumed`
+## Entitlements
 
-Do not select all Stripe events. Add an event only with a handler, idempotency rule, test fixture, retry behaviour, and documentation.
+Application access is separate from Price IDs. `app.billing_features`, `app.product_features`, and `app.entitlement_grants` form the access projection. Grants can originate from Stripe Entitlements, an active subscription mapping, an administrator, or a promotion. Runtime authorisation reads the local entitlement projection rather than making a live Stripe call.
 
-## Database security
+`entitlements.active_entitlement_summary.updated` triggers a complete refresh from Stripe's paginated Active Entitlements API. The summary event itself is not assumed to contain every entitlement. Manual and promotional grants must survive a Stripe refresh.
 
-- Billing objects use the `app` schema with explicit grants and RLS.
-- Only server-side secret/service-role clients may mutate Stripe projections or event tables.
-- `anon` and `authenticated` may read the catalogue where the application's exposed-schema policy permits it.
-- Authenticated users may read only their subscription and profile rows.
-- User profile updates are restricted to `full_name` and `avatar_url`; Stripe-sourced billing/payment fields remain server-owned.
-- `stripe_customer_id` is non-null and unique.
-- Nullable lifecycle timestamps have no fabricated `now()` defaults.
-- Full event payloads must never be returned through the Data API or logged.
+## Durable events and reconciliation
 
-## Secrets and version upgrades
+The public webhook route reads the raw body, verifies `stripe-signature`, stores the event and versioned payload durably, acknowledges duplicate IDs, and returns `2xx` after acceptance. `app.stripe_events` provides claims, leases, bounded retry state, and processing status; payloads expire after 30 days by default.
 
-`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `STRIPE_EVENT_PROCESSOR_SECRET` are server-only and distinct per environment. The hosted Checkout flow does not currently use Stripe.js, so there is no publishable Stripe browser key.
+Subscribe only to implemented events:
 
-Upgrade the Node SDK, explicit API version, Stripe event destination version, fixtures, types, and documentation together. Test in a Stripe Sandbox before changing a production event destination. Never select a preview API implicitly.
+- `product.created`, `product.updated`, `product.deleted`;
+- `price.created`, `price.updated`, `price.deleted`;
+- `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`;
+- `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`;
+- `customer.subscription.paused`, `customer.subscription.resumed`;
+- `entitlements.active_entitlement_summary.updated`.
+
+Stripe events can be duplicated and delivered out of order. Subscription handlers retrieve the current object and atomically replace its complete item set. The processor route uses `STRIPE_EVENT_PROCESSOR_SECRET`. The independently scheduled reconciliation route uses `STRIPE_RECONCILIATION_SECRET`, refreshes every mapped Customer's subscriptions and entitlements, and reports per-Customer failures. Configure both routes in the deployment scheduler.
+
+Do not select all events. Add an event only with a handler, idempotency rule, retry behaviour, fixture, tests, and matching human/agent documentation.
+
+## Database and security
+
+Billing storage lives in the internal `app` schema. Browser access is through narrowly scoped `api` functions. Stripe ingestion and reconciliation use service-only `api_edge` functions. Both schemas have explicit grants; all tables have RLS enabled as defence in depth. Never grant browser roles direct mutation access to projections, Stripe mappings, payment summaries, entitlements, or event payloads.
+
+`app.stripe_customers` keys mappings by billing account, Stripe account, and live/test mode. Legacy mappings with unknown mode remain nullable until reconciliation verifies them. Never expose secret/service-role keys, full event payloads, or raw billing records to browser clients or logs.
 
 ## Required verification
 
-- TypeScript compilation and timestamp regression tests.
-- Fresh and upgrade migration execution, generated types, database advisors, explicit grant checks, and RLS tests.
-- Valid/invalid signatures, duplicate delivery, reverse ordering, retry leases, poison events, and replay.
-- Stripe Sandbox Checkout, subscription changes, cancellation, pause/resume, and portal return.
-- CLI dependency installation, migration dry run, explicit apply confirmation, and migration-list verification.
+- Execute both fresh and upgrade migrations; regenerate types from the resulting schema.
+- Run database advisors plus explicit `anon`, `authenticated`, and `service_role` grant/RLS tests.
+- Test multiple accounts per user, multiple members per account, multiple subscriptions, multiple items, quantities, mixed intervals, and independent cancellation dates.
+- Test Dynamic Payment Methods in a Stripe Sandbox, including delayed/async methods where enabled.
+- Test duplicate and reverse-order events, processing leases, poison events, replay, entitlement replacement, and scheduled reconciliation.
+- Test Customer Portal authorisation so ordinary members cannot open a management session.
+- Upgrade SDK, API/event-destination version, fixtures, types, tests, README, Docusaurus, and this guidance together.
 
-The Supacharger repository MCP is descriptive and read-only. It must not accept Stripe secrets, call a live Stripe account, apply migrations, or expose billing records.
-
-Stripe Sync Engine is not the canonical default. Its upstream repository warns that
-it lacks tight access controls and should be deployed only internally. Treat any
-future adoption as a separately approved architecture and security migration, not
-as a drop-in replacement for this contract.
+Stripe Sync Engine is not the canonical default. Treat it only as a separately approved architecture and security migration. The repository MCP remains descriptive and read-only: it must not receive Stripe secrets, call Stripe, expose records, or apply migrations.

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "managedPaths": [
+    ".supacharger/managed-files.json",
+    "components.json",
+    "package-lock.json",
+    "package.json",
+    "src/app/(supacharger)",
+    "src/assets",
+    "src/lib/supabase/middleware.ts",
+    "src/lib/supabase/supacharger",
+    "src/proxy.ts",
+    "src/supacharger",
+    "tailwind.config.ts",
+    "tsconfig.json",
+    "supabase/config.toml",
+    "supabase/migrations",
+    "supabase/templates",
+    "test/auth-journey-contract.test.mjs"
+  ],
+  "developerOwnedPaths": [
+    ".supacharger/core-lock.json",
+    "messages",
+    "src/app/(project)",
+    "src/components/sc_demo",
+    "src/i18n/config.ts",
+    "src/i18n/request.ts",
+    "src/styles/project.css",
+    "src/supacharger.adapters",
+    "src/supacharger.config.ts"
+  ],
+  "postUpdateChecks": [
+    "lint",
+    "typecheck",
+    "test:auth-proxy",
+    "test:auth-journey",
+    "check:bruno-rpcs"
+  ]
+}

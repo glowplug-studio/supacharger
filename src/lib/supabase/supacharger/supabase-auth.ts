@@ -1,14 +1,12 @@
 'use server';
 
+import { redirect } from 'next/navigation';
+
 /** ==========
  *
  * Supacharger - Supabase Auth wrappers.
  *
  * ========== */
-
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getURL } from '@/supacharger/utils/helpers';
 import { ActionResponse } from '@/types/action-response';
@@ -29,6 +27,9 @@ export async function logoutUser(): Promise<{ success: boolean }> {
  * Login user with email and password
  */
 export async function loginUser(formData: FormData) {
+  if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN) {
+    return { error: 'email_password_sign_in_disabled' };
+  }
   const supabase = await createClient();
 
   const data = {
@@ -42,20 +43,23 @@ export async function loginUser(formData: FormData) {
     return { error: error.code };
   }
 
-  revalidatePath('/', 'layout');
-  redirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATON);
+  return { success: true };
 }
 
 /**
  * Sign / Sign Up wth Magic Link to email
  */
 export async function signInWithEmail(email: string): Promise<ActionResponse> {
+  if (!SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED) {
+    return { data: null, error: new Error('Magic-link sign-in is disabled') };
+  }
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: getURL('/auth/callback'),
+      shouldCreateUser: SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ALLOW_SIGN_UP,
     },
   });
 
@@ -70,6 +74,9 @@ export async function signInWithEmail(email: string): Promise<ActionResponse> {
  * Create a new user with email password combo
  */
 export async function createUserByEmailPassword(formData: FormData) {
+  if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP) {
+    return { data: null, error: new Error('Email and password sign-up is disabled') };
+  }
   const supabase = await createClient();
 
   const email = formData.get('email') as string;
@@ -78,6 +85,9 @@ export async function createUserByEmailPassword(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     email: email,
     password: password,
+    options: {
+      emailRedirectTo: getURL(`/auth/confirm?next=${encodeURIComponent(SC_CONFIG.ACCOUNT_CONFIRMED_PATH)}`),
+    },
   });
 
   if (error) {
@@ -97,7 +107,7 @@ export async function resendAccountConfirmEmail(email: string) {
     type: 'signup',
     email: email,
     options: {
-      emailRedirectTo: SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+      emailRedirectTo: getURL(SC_CONFIG.ACCOUNT_CONFIRMED_PATH),
     },
   });
 
@@ -227,7 +237,7 @@ export async function verifyOtp(email: string, token: string): Promise<ActionRes
   const { data, error } = await supabase.auth.verifyOtp({
     email,
     token,
-    type: 'email'
+    type: 'signup'
   });
 
   if (error) {
@@ -236,4 +246,3 @@ export async function verifyOtp(email: string, token: string): Promise<ActionRes
 
   return { data, error: null };
 }
-
