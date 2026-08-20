@@ -14,13 +14,21 @@
     "tailwind.config.ts",
     "tsconfig.json",
     "supabase/config.toml",
+    "supabase/functions/_shared/image-target-contract.ts",
+    "supabase/functions/_shared/image-transform-runtime.test.ts",
+    "supabase/functions/_shared/image-transform.ts",
+    "supabase/functions/process-image-upload",
     "supabase/migrations",
     "supabase/templates",
-    "test/auth-journey-contract.test.mjs"
+    "test/auth-journey-contract.test.mjs",
+    "test/image-transform-contract.test.mjs",
+    "test/tooling-contract.test.mjs"
   ],
   "developerOwnedPaths": [
     ".supacharger/core-lock.json",
     "messages",
+    "supabase/functions/_shared/image-targets.ts",
+    "src/app/layout.tsx",
     "src/app/(project)",
     "src/components/sc_demo",
     "src/i18n/config.ts",
@@ -34,6 +42,9 @@
     "typecheck",
     "test:auth-proxy",
     "test:auth-journey",
+    "test:image-transform",
+    "test:image-transform-runtime",
+    "test:tooling",
     "check:bruno-rpcs"
   ]
 }

@@ -87,7 +87,7 @@
     "title": "Billing"
   },
   "AuthJourney": {
-    "heroTitle": "Start building your next idea",
+    "heroTitle": "Grow your own community",
     "welcomeBack": "Welcome back",
     "createAccountTitle": "Create your account",
     "chooseStart": "Choose how you want to get started.",
@@ -109,6 +109,7 @@
     "checkEmail": "Check your email",
     "linkSent": "We sent a secure link to {email}.",
     "continueEmail": "Continue with email",
+    "useSocialAuth": "Use social auth",
     "needAccount": "Need an account?",
     "alreadyAccount": "Already have an account?",
     "signUp": "Sign up",

@@ -41,6 +41,8 @@ The `user-avatars` bucket is private and accepts JPEG, PNG, and WebP files up to
 
 Only the owner may insert, update, or delete within those prefixes. Verified authenticated users may read allowed profile objects from the private bucket and clients render them with signed URLs. A consumer may add a server-side signing proxy for intentionally public product profiles, but must not make the bucket public or store permanent public URLs.
 
+Use the authenticated `process-image-upload` Edge Function for shared resizing/re-encoding. Its `profile_avatar` and `profile_header` targets generate these canonical paths with the caller's RLS-scoped Storage client. The request never supplies a bucket or path. See `docs/agents/image-transformation.md` for the target and extension contract.
+
 ## Migration verification
 
 Create migrations with `supabase migration new`, rebuild a clean local database, run `supabase db lint --local`, and regenerate TypeScript types from `public,api,api_edge,app`. Update current-user callers, general profile callers, storage upload paths, route guards, Bruno requests, and human documentation in the same change.

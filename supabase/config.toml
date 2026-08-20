@@ -212,9 +212,9 @@ max_frequency = "5s"
 # enroll_enabled = true
 # verify_enabled = true
 
-# Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
-# `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
-# `twitter`, `slack`, `spotify`, `workos`, `zoom`.
+# Use an external OAuth provider. Supacharger's UI supports: `apple`, `azure`, `bitbucket`, `discord`,
+# `facebook`, `figma`, `github`, `gitlab`, `google`, `kakao`, `keycloak`, `linkedin_oidc`, `notion`,
+# `twitch`, `x`, `twitter`, `slack_oidc`, `slack`, `spotify`, `workos`, and `zoom`.
 [auth.external.apple]
 enabled = false
 client_id = ""
@@ -264,6 +264,9 @@ inspector_port = 8083
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/MY_FUNCTION_NAME/*.html" ]
+
+[functions.process-image-upload]
+verify_jwt = true
 
 [analytics]
 enabled = true

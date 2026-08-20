@@ -86,7 +86,7 @@
     "title": "Facturation"
   },
   "AuthJourney": {
-    "heroTitle": "Commencez à créer votre prochaine idée",
+    "heroTitle": "Faites grandir votre communauté",
     "welcomeBack": "Bon retour",
     "createAccountTitle": "Créez votre compte",
     "chooseStart": "Choisissez comment commencer.",
@@ -108,6 +108,7 @@
     "checkEmail": "Consultez votre e-mail",
     "linkSent": "Nous avons envoyé un lien sécurisé à {email}.",
     "continueEmail": "Continuer avec l’e-mail",
+    "useSocialAuth": "Utiliser l’authentification sociale",
     "needAccount": "Besoin d’un compte ?",
     "alreadyAccount": "Vous avez déjà un compte ?",
     "signUp": "S’inscrire",

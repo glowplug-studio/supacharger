@@ -102,10 +102,10 @@ export default function SCAccountMenu() {
           </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogOut size={14} />
-          <LogoutButton className='m-0 bg-transparent p-0 text-xs transition-colors'>
-          {tAuthTerms('logOut')}
+        <DropdownMenuItem asChild>
+          <LogoutButton className='flex w-full items-center gap-2 px-2 py-1.5 text-left text-xs transition-colors'>
+            <LogOut size={14} />
+            {tAuthTerms('logOut')}
           </LogoutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>

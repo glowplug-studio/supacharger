@@ -8,10 +8,15 @@ import { redirect } from 'next/navigation';
  *
  * ========== */
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
+import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 import { getURL } from '@/supacharger/utils/helpers';
 import { ActionResponse } from '@/types/action-response';
 
 import { createClient } from '../server';
+
+function getSignUpConfirmationRedirect() {
+  return getURL(`/auth/confirm?next=${encodeURIComponent(SC_CONFIG.ACCOUNT_CONFIRMED_PATH)}`);
+}
 
 /**
  * Logout user
@@ -86,7 +91,7 @@ export async function createUserByEmailPassword(formData: FormData) {
     email: email,
     password: password,
     options: {
-      emailRedirectTo: getURL(`/auth/confirm?next=${encodeURIComponent(SC_CONFIG.ACCOUNT_CONFIRMED_PATH)}`),
+      emailRedirectTo: getSignUpConfirmationRedirect(),
     },
   });
 
@@ -107,7 +112,7 @@ export async function resendAccountConfirmEmail(email: string) {
     type: 'signup',
     email: email,
     options: {
-      emailRedirectTo: getURL(SC_CONFIG.ACCOUNT_CONFIRMED_PATH),
+      emailRedirectTo: getSignUpConfirmationRedirect(),
     },
   });
 
@@ -136,26 +141,13 @@ export async function sendPasswordReset(email: string) {
 
 //// @TODO the rest is questionable
 
-export type SupabaseOAuthProvider =
-  | 'apple'
-  | 'azure'
-  | 'bitbucket'
-  | 'discord'
-  | 'facebook'
-  | 'github'
-  | 'gitlab'
-  | 'google'
-  | 'keycloak'
-  | 'linkedin'
-  | 'notion'
-  | 'slack'
-  | 'spotify'
-  | 'twitch'
-  | 'twitter'
-  | 'workos'
-  | 'zoom';
+export type SupabaseOAuthProvider = SupachargerOAuthProvider;
 
 export async function signInWithOAuth(provider: SupabaseOAuthProvider): Promise<ActionResponse> {
+  if (!SC_CONFIG.AUTH_PROVDERS_ENABLED[provider]) {
+    return { data: null, error: new Error(`OAuth provider "${provider}" is disabled`) };
+  }
+
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -217,12 +209,11 @@ export async function isLoggedIn() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
-  if (error) {
-    console.log(error);
+  if (error || !data.user) {
     return false;
   }
 
-  return data.user.aud == 'authenticated' ? true : false; // (data == 'authenticated')? true : false;
+  return data.user.aud === 'authenticated';
 }
 
 /**
@@ -237,7 +228,7 @@ export async function verifyOtp(email: string, token: string): Promise<ActionRes
   const { data, error } = await supabase.auth.verifyOtp({
     email,
     token,
-    type: 'signup'
+    type: 'signup',
   });
 
   if (error) {

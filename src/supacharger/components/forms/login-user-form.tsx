@@ -18,7 +18,9 @@ import {
   signInWithEmail,
   verifyOtp,
 } from '@/lib/supabase/supacharger/supabase-auth';
-import AuthProviderButtons from '@/supacharger/components/buttons/auth-provider-buttons';
+import AuthProviderButtons, {
+  EnabledAuthProviderIcons,
+} from '@/supacharger/components/buttons/auth-provider-buttons';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
 import { UIDivider } from '@/supacharger/components/ui/divider';
@@ -26,24 +28,45 @@ import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export type AuthMode = 'signin' | 'signup';
 type AuthStep = 'choose' | 'email' | 'verify-email' | 'check-email';
+type PendingAction = 'password' | 'magic-link' | 'otp' | null;
 
 interface LoginUserFormProps {
   initialMode?: AuthMode;
   onFormHeadingChange?: (heading: string) => void;
-  showProvidersInEmailMode?: boolean;
 }
 
 const emailSchema = z.string().trim().pipe(z.email());
 
+function isPasswordModeAvailable(mode: AuthMode) {
+  return mode === 'signin'
+    ? SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN
+    : SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
+}
+
+function isMagicLinkAvailable(mode: AuthMode) {
+  return (
+    SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED &&
+    (mode === 'signin' || SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ALLOW_SIGN_UP)
+  );
+}
+
+export function shouldStartInEmailMode(initialMode: AuthMode) {
+  const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
+  const emailJourneyAvailable =
+    isPasswordModeAvailable(initialMode) || isMagicLinkAvailable(initialMode);
+
+  return emailJourneyAvailable && !providerJourneyAvailable;
+}
+
 export function LoginUserForm({
   initialMode = 'signin',
   onFormHeadingChange,
-  showProvidersInEmailMode = false,
 }: LoginUserFormProps) {
   const t = useTranslations('AuthJourney');
   const router = useRouter();
-  const [step, setStep] = useState<AuthStep>(initialMode === 'signup' ? 'email' : 'choose');
-  const [choicePanelMounted, setChoicePanelMounted] = useState(initialMode !== 'signup');
+  const startsInEmailMode = shouldStartInEmailMode(initialMode);
+  const [step, setStep] = useState<AuthStep>(startsInEmailMode ? 'email' : 'choose');
+  const [choicePanelMounted, setChoicePanelMounted] = useState(!startsInEmailMode);
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,18 +75,15 @@ export function LoginUserForm({
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [organisationHandle, setOrganisationHandle] = useState('');
   const [otp, setOtp] = useState('');
-  const [pending, setPending] = useState(false);
+  const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [error, setError] = useState<string | null>(null);
   const parsedEmail = emailSchema.safeParse(email);
   const normalisedEmail = parsedEmail.success ? parsedEmail.data : email.trim();
-  const passwordModeAvailable =
-    mode === 'signin'
-      ? SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN
-      : SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
-  const magicLinkAvailable =
-    SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED &&
-    (mode === 'signin' || SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ALLOW_SIGN_UP);
+  const passwordModeAvailable = isPasswordModeAvailable(mode);
+  const magicLinkAvailable = isMagicLinkAvailable(mode);
   const emailJourneyAvailable = passwordModeAvailable || magicLinkAvailable;
+  const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
+  const useSocialAuthLabel = t.has('useSocialAuth') ? t('useSocialAuth') : 'Use social auth';
 
   function pushAuthRoute(nextMode: AuthMode) {
     window.history.pushState(null, '', nextMode === 'signup' ? '/account/create' : '/account/login');
@@ -77,12 +97,16 @@ export function LoginUserForm({
     setError(null);
   }
 
-  function resetToChoose() {
+  function showProviderChoices() {
     setChoicePanelMounted(true);
     setStep('choose');
-    setMode('signin');
-    pushAuthRoute('signin');
     onFormHeadingChange?.(`${t('signIn')} / ${t('signUp')}`);
+    clearSensitiveFields();
+  }
+
+  function returnToEmail() {
+    setStep('email');
+    onFormHeadingChange?.(mode === 'signup' ? t('signUp') : t('signIn'));
     clearSensitiveFields();
   }
 
@@ -111,14 +135,14 @@ export function LoginUserForm({
       return setError(password !== passwordAgain ? t('passwordMismatch') : t('strongerPassword'));
     }
 
-    setPending(true);
+    setPendingAction('password');
     const formData = new FormData();
     formData.set('email', normalisedEmail);
     formData.set('password', password);
     const result = mode === 'signup'
       ? await createUserByEmailPassword(formData)
       : await loginUser(formData);
-    setPending(false);
+    setPendingAction(null);
 
     if (result?.error) {
       setError(t('authenticationFailed'));
@@ -157,9 +181,9 @@ export function LoginUserForm({
   async function sendMagicLink() {
     setError(null);
     if (!validateEmail()) return;
-    setPending(true);
+    setPendingAction('magic-link');
     const result = await signInWithEmail(normalisedEmail);
-    setPending(false);
+    setPendingAction(null);
     if (result?.error) return setError(t('emailSendFailed'));
     setStep('check-email');
     onFormHeadingChange?.(t('checkEmail'));
@@ -167,10 +191,10 @@ export function LoginUserForm({
 
   async function submitOtp(value = otp) {
     if (!/^\d{6}$/.test(value)) return;
-    setPending(true);
+    setPendingAction('otp');
     setError(null);
     const result = await verifyOtp(normalisedEmail, value);
-    setPending(false);
+    setPendingAction(null);
     if (result?.error) {
       setOtp('');
       setError(t('invalidCode'));
@@ -184,7 +208,7 @@ export function LoginUserForm({
     <button
       type='button'
       className='inline-flex items-center gap-2 text-sm font-semibold text-white/60 transition-colors hover:text-white'
-      onClick={resetToChoose}
+      onClick={returnToEmail}
     >
       <ArrowLeft className='h-4 w-4' />
       {t('back')}
@@ -197,15 +221,14 @@ export function LoginUserForm({
         <AuthProviderButtons />
         {includeEmailButton && emailJourneyAvailable ? (
           <>
-            <UIDivider text='or' className='py-1' />
+            {providerJourneyAvailable ? <UIDivider text='or' className='py-1' /> : null}
             <Button
               type='button'
               variant='ghost'
               className='sc-auth-surface-button grid w-full grid-cols-[1.75rem_1fr_1.75rem]'
               onClick={() => {
-                setMode('signin');
                 setStep('email');
-                onFormHeadingChange?.(t('signIn'));
+                onFormHeadingChange?.(mode === 'signup' ? t('signUp') : t('signIn'));
               }}
             >
               <Mail className='h-5 w-5 justify-self-start' />
@@ -227,7 +250,7 @@ export function LoginUserForm({
           <p className='text-sm text-white/60'>{t('codeSent', { email: normalisedEmail })}</p>
         </div>
         <div className='sc-auth-surface flex min-h-24 items-center justify-center p-4'>
-          {pending ? (
+          {pendingAction === 'otp' ? (
             <InlineLoader className='h-6 w-6 animate-spin [&_circle]:stroke-white' aria-label={t('verifyingCode')} />
           ) : (
             <OTPField
@@ -279,15 +302,19 @@ export function LoginUserForm({
 
       <AnimateHeight duration={260} height={step === 'email' ? 'auto' : 0}>
         <form onSubmit={submitPassword} className='space-y-4'>
-          {showProvidersInEmailMode ? (
-            <div className='mb-6'>
-              {renderChooseOptions(false)}
-              <UIDivider text='or' className='mt-5 mb-1' />
-            </div>
+          {providerJourneyAvailable ? (
+            <Button
+              type='button'
+              variant='ghost'
+              className='sc-auth-surface-button mb-6 flex w-full items-center justify-center gap-3'
+              onClick={showProviderChoices}
+            >
+              <EnabledAuthProviderIcons limit={3} />
+              <span>{useSocialAuthLabel}</span>
+            </Button>
           ) : null}
 
-          <div className='mb-4 flex items-center justify-between gap-4'>
-            {backButton}
+          <div className='mb-4 flex items-center justify-end gap-4'>
             <button
               type='button'
               className='text-primary inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:text-primary/80'
@@ -383,9 +410,9 @@ export function LoginUserForm({
             <Button
               type='submit'
               className='sc-auth-primary-button w-full gap-3'
-              disabled={pending || !parsedEmail.success || !password || (mode === 'signup' && (!passwordIsValid || password !== passwordAgain))}
+              disabled={pendingAction !== null || !parsedEmail.success || !password || (mode === 'signup' && (!passwordIsValid || password !== passwordAgain))}
             >
-              {pending ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : mode === 'signin' ? <LogIn className='h-4 w-4' /> : <UserPlus className='h-4 w-4' />}
+              {pendingAction === 'password' ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : mode === 'signin' ? <LogIn className='h-4 w-4' /> : <UserPlus className='h-4 w-4' />}
               {mode === 'signin' ? t('signIn') : t('signUp')}
             </Button>
           ) : null}
@@ -402,10 +429,10 @@ export function LoginUserForm({
               <Button
                 type='button'
                 className='sc-auth-primary-button w-full gap-3'
-                disabled={pending || !parsedEmail.success}
+                disabled={pendingAction !== null || !parsedEmail.success}
                 onClick={sendMagicLink}
               >
-                {pending ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : <WandSparkles className='h-4 w-4' />}
+                {pendingAction === 'magic-link' ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : <WandSparkles className='h-4 w-4' />}
                 {t('magicLink')}
               </Button>
             </>

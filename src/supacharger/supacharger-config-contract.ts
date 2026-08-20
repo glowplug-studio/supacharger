@@ -1,5 +1,28 @@
 import type { ToastTransition } from 'react-toastify';
 
+export type SupachargerOAuthProvider =
+  | 'apple'
+  | 'azure'
+  | 'bitbucket'
+  | 'discord'
+  | 'facebook'
+  | 'figma'
+  | 'github'
+  | 'gitlab'
+  | 'google'
+  | 'kakao'
+  | 'keycloak'
+  | 'linkedin_oidc'
+  | 'notion'
+  | 'twitch'
+  | 'x'
+  | 'twitter'
+  | 'slack_oidc'
+  | 'slack'
+  | 'spotify'
+  | 'workos'
+  | 'zoom';
+
 export type SupachargerConfig = {
   SITE_TITLE: string;
   SITE_DESCRIPTION: string;
@@ -10,6 +33,35 @@ export type SupachargerConfig = {
     HEIGHT: number;
   } | null;
   MARKETING_SITE_URL: string | null;
+  METADATA: {
+    SITE_URL: string;
+    TITLE_TEMPLATE: string;
+    INDEXING_ENABLED: boolean;
+    FAVICON_SET_ENABLED: boolean;
+    SOCIAL_IMAGE: {
+      URL: string;
+      ALT: string;
+      WIDTH: number;
+      HEIGHT: number;
+    } | null;
+    COLOR_SCHEME: 'normal' | 'light' | 'dark' | 'light dark';
+    THEME_COLOR:
+      | string
+      | {
+          LIGHT: string;
+          DARK: string;
+        }
+      | null;
+  };
+  ROOT_PROVIDERS: {
+    INTERNATIONALISATION: boolean;
+    THEME: boolean;
+    TOASTS: boolean;
+  };
+  ANALYTICS: {
+    GOOGLE_ANALYTICS_ID: string | null;
+    VERCEL_ANALYTICS_ENABLED: boolean;
+  };
   AUTH_SESSION: {
     VERIFICATION_MODE: 'claims' | 'user';
     ALLOW_ANONYMOUS_USERS: boolean;
@@ -92,10 +144,7 @@ export type SupachargerConfig = {
     | 'lower_upper_letters_digits_symbols';
   PASSWORD_MINIMUM_LENGTH: number;
   PASSWORD_CUSTOM_REGEX: string | null;
-  AUTH_PROVDERS_ENABLED: {
-    google: boolean;
-    facebook: boolean;
-  };
+  AUTH_PROVDERS_ENABLED: Readonly<Record<SupachargerOAuthProvider, boolean>>;
   STRIPE_PORTAL_LOGO_RETURN_PATH: string;
   BILLING: {
     AUTOMATIC_TAX: boolean;

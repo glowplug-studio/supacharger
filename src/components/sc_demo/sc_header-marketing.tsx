@@ -1,238 +1,177 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {  Calendar, Component, Landmark, Menu, Trees, Warehouse } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+} from '@/components/ui/navigation-menu';
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { cn } from '@/utils/cn';
 
 import LocaleSwitcher from './sc_locale-switcher';
 import SCSiteLogo from './sc_site-logo';
 
-// MenuItem and Navbar1Props interfaces
-interface MenuItem {
-  title: string;
-  url: string;
-  description?: string;
-  icon?: React.ReactNode;
-  items?: MenuItem[];
-}
-
-interface Navbar1Props {
-  logo?: {
-    url: string;
-    src: string;
-    alt: string;
-    title: string;
-  };
-  menu?: MenuItem[];
-  auth?: {
-    login: {
-      title: string;
-      url: string;
-    };
-    signup: {
-      title: string;
-      url: string;
-    };
-  };
-}
-
-// Example menu data
-const menu: MenuItem[] = [
-  {
-    title: "Use Cases",
-    url: "#",
-    items: [
-      {
-        title: "Advocacy Groups",
-        description: "Mobilize members and campaigns",
-        icon: <Component className="size-6 shrink-0 text-secondary mt-2" />,
-        url: "#",
-      },
-      {
-        title: "Interest Meetups",
-        description: "Organize and grow your community",
-        icon: <Calendar className="size-6 shrink-0 text-secondary mt-2" />,
-        url: "#",
-      },
-      {
-        title: "Aligned Businesses",
-        description: "Connect with like-minded partners",
-        icon: <Landmark className="size-6 shrink-0 text-secondary mt-2" />,
-        url: "#",
-      },
-      {
-        title: "Retail Owners",
-        description: "Engage local customers and networks",
-        icon: <Warehouse className="size-6 shrink-0 text-secondary mt-2" />,
-        url: "#",
-      },
-    ],
-  },
-  { title: "About", url: "/about" },
-  { title: "Pricing", url: "/pricing" }
-  
+const marketingNavigation = [
+  { href: '/#overview', label: 'Overview' },
+  { href: '/#features', label: 'Features' },
+  { href: '/#integrations', label: 'Integrations' },
+  { href: '/#benefits', label: 'Benefits' },
+  { href: '/#reviews', label: 'Reviews' },
+  { href: '/#pricing', label: 'Pricing' },
 ];
 
-const SubMenuLink = ({ item }: { item: MenuItem }) => {
-  return (
-    <Link
-      className="flex flex-row gap-6 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-muted hover:text-accent-foreground"
-      href={item.url}
-    >
-      <div className="text-foreground mr-1">{item.icon}</div>
-      <div>
-        <div className="text-sm font-semibold">{item.title}</div>
-        {item.description && (
-          <p className="text-sm leading-snug text-muted-foreground">
-            {item.description}
-          </p>
-        )}
-      </div>
-    </Link>
-  );
-};
-
-const renderMenuItem = (item: MenuItem) => {
-  if (item.items) {
-    return (
-      <NavigationMenuItem key={item.title}>
-        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
-        <NavigationMenuContent className="bg-popover text-popover-foreground">
-          {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title} className="w-80">
-              <SubMenuLink item={subItem} />
-            </NavigationMenuLink>
-          ))}
-        </NavigationMenuContent>
-      </NavigationMenuItem>
-    );
-  }
-
-  return (
-    <NavigationMenuItem key={item.title}>
-      <NavigationMenuLink
-        href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center p-1 font-medium transition-colors hover:text-primary"
-      >
-        {item.title}
-      </NavigationMenuLink>
-    </NavigationMenuItem>
-  );
-};
-
-const renderMobileMenuItem = (item: MenuItem) => {
-  if (item.items) {
-    return (
-      <AccordionItem key={item.title} value={item.title} className="border-b-0">
-        <AccordionTrigger className="text-md py-0 font-semibold hover:no-underline">
-          {item.title}
-        </AccordionTrigger>
-        <AccordionContent className="mt-2">
-          {item.items.map((subItem) => (
-            <SubMenuLink key={subItem.title} item={subItem} />
-          ))}
-        </AccordionContent>
-      </AccordionItem>
-    );
-  }
-
-  return (
-    <Link key={item.title} href={item.url} className="text-md font-semibold">
-      {item.title}
-    </Link>
-  );
-};
+const navigationLinkClassName =
+  'inline-flex h-9 items-center rounded-sm px-3 text-sm font-medium text-white/65 transition-colors hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400';
+const authControlClassName = 'h-auto rounded-sm px-5 py-3 text-sm';
 
 export function SCMarketingMenu() {
+  const [activeHref, setActiveHref] = useState<string | null>(null);
+
+  useEffect(() => {
+    const updateFromHash = () => {
+      if (!window.location.hash) {
+        setActiveHref(null);
+        return;
+      }
+
+      const matchingItem = marketingNavigation.find(({ href }) => href.endsWith(window.location.hash));
+      setActiveHref(matchingItem?.href ?? null);
+    };
+
+    updateFromHash();
+    window.addEventListener('hashchange', updateFromHash);
+
+    const sections = marketingNavigation
+      .map(({ href }) => document.getElementById(href.slice(2)))
+      .filter((section): section is HTMLElement => section !== null);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const activeSection = entries.find((entry) => entry.isIntersecting);
+
+        if (activeSection) setActiveHref(`/#${activeSection.target.id}`);
+      },
+      { rootMargin: '-64px 0px -75% 0px' },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('hashchange', updateFromHash);
+    };
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 border-border shadow-slate-400/10 shadow-lg bg-white/80 dark:shadow-slate-800/40 dark:bg-gray-900/90 backdrop-blur-lg">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 py-6">
-        {/* Desktop Menu */}
-        <nav className="hidden justify-between lg:flex">
-          <div className="flex items-center gap-10">
-            {/* Logo */}
-            <SCSiteLogo showSiteTitle={true}></SCSiteLogo>
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link href="account/login">Login</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="account/create">Create Account</Link>
-            </Button>
-            <LocaleSwitcher />
-          </div>
-        </nav>
+    <header className='fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-[#080a09]/90 text-white backdrop-blur-xl'>
+      <div className='mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8 xl:grid xl:grid-cols-[1fr_auto_1fr]'>
+        <SCSiteLogo darkMode={true} showSiteTitle={true} />
 
-        {/* Mobile Menu */}
-        <div className="block lg:hidden">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <SCSiteLogo showSiteTitle={false}></SCSiteLogo>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <SCSiteLogo showSiteTitle={true}></SCSiteLogo>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
+        <NavigationMenu className='hidden xl:flex'>
+          <NavigationMenuList className='space-x-1'>
+            {marketingNavigation.map((item) => {
+              const isActive = activeHref === item.href;
+
+              return (
+                <NavigationMenuItem key={item.href}>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      aria-current={isActive ? 'location' : undefined}
+                      className={cn(navigationLinkClassName, isActive && 'bg-white/10 text-white hover:bg-white/15')}
+                      href={item.href}
+                      onClick={() => setActiveHref(item.href)}
+                    >
+                      {item.label}
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              );
+            })}
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        <div className='hidden items-center gap-3 justify-self-end xl:flex'>
+          <Link
+            className='inline-flex items-center rounded-sm px-5 py-3 text-sm font-medium text-white/70 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none'
+            href='/account/login'
+          >
+            Login
+          </Link>
+          <Button
+            asChild
+            className={`${authControlClassName} bg-white text-[#080a09] shadow-none hover:bg-white/90`}
+            size='sm'
+          >
+            <Link href='/account/create'>Create account</Link>
+          </Button>
+          <LocaleSwitcher appearance='marketing' className={authControlClassName} />
+        </div>
+
+        <div className='ml-auto flex items-center gap-2 xl:hidden'>
+          <LocaleSwitcher appearance='marketing' className={authControlClassName} />
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                aria-label='Open navigation'
+                className='size-11 rounded-sm border-white/15 bg-transparent text-white shadow-none hover:bg-white/10 hover:text-white'
+                size='icon'
+                variant='outline'
+              >
+                <Menu aria-hidden='true' />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className='border-white/10 bg-[#101211] text-white'>
+              <SheetHeader>
+                <SheetTitle className='text-white'>
+                  <SCSiteLogo darkMode={true} showSiteTitle={true} />
+                </SheetTitle>
+              </SheetHeader>
+              <nav aria-label='Mobile navigation' className='flex flex-col gap-1'>
+                {marketingNavigation.map((item) => {
+                  const isActive = activeHref === item.href;
+
+                  return (
+                    <SheetClose asChild key={item.href}>
+                      <Link
+                        aria-current={isActive ? 'location' : undefined}
+                        className={cn(
+                          'rounded-sm px-3 py-3 text-base font-medium text-white/75 transition-colors hover:bg-white/5 hover:text-white',
+                          isActive && 'bg-white/10 text-white hover:bg-white/15',
+                        )}
+                        href={item.href}
+                        onClick={() => setActiveHref(item.href)}
+                      >
+                        {item.label}
+                      </Link>
+                    </SheetClose>
+                  );
+                })}
+              </nav>
+              <div className='mt-8 grid gap-3 border-t border-white/10 pt-6'>
+                <SheetClose asChild>
+                  <Link
+                    className='rounded-sm px-5 py-3 text-sm font-medium text-white/70 hover:text-white'
+                    href='/account/login'
                   >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
-
-                  <div className="flex flex-col gap-3">
-                    <Button asChild variant="outline">
-                    <Link href="account/login">Login</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href="account/create">Create Account</Link>
-                    </Button>
-                    <LocaleSwitcher />
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+                    Login
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Button
+                    asChild
+                    className='h-auto rounded-sm bg-white px-5 py-3 text-sm text-[#080a09] hover:bg-white/90'
+                  >
+                    <Link href='/account/create'>Create account</Link>
+                  </Button>
+                </SheetClose>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

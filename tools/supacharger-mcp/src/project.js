@@ -15,6 +15,7 @@ const guidanceFiles = {
   authentication: 'docs/agents/authentication-and-claims.md',
   mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
   database: 'docs/agents/database-foundation.md',
+  image_transforms: 'docs/agents/image-transformation.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
@@ -59,6 +60,11 @@ export function classifyPath(inputPath) {
     relativePath === 'src/proxy.ts' ||
     relativePath === 'src/lib/supabase/middleware.ts' ||
     relativePath === 'supabase/config.toml' ||
+    relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
+    relativePath === 'supabase/functions/_shared/image-transform-runtime.test.ts' ||
+    relativePath === 'supabase/functions/_shared/image-transform.ts' ||
+    relativePath === 'supabase/functions/process-image-upload' ||
+    relativePath.startsWith('supabase/functions/process-image-upload/') ||
     relativePath === 'src/lib/stripe' ||
     relativePath.startsWith('src/lib/stripe/') ||
     relativePath === 'src/features/pricing' ||
@@ -87,6 +93,22 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'developer-owned',
       guidance: 'Application configuration seam. CLI updates must preserve this file.',
+    };
+  }
+
+  if (relativePath === 'supabase/functions/_shared/image-targets.ts') {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Application image-target policy. Keep destinations and transform settings in this file; CLI updates must preserve it.',
+    };
+  }
+
+  if (relativePath === 'src/app/layout.tsx') {
+    return {
+      ownership: 'developer-owned-template',
+      guidance:
+        'Installed root-layout template. Keep it wired to the protected root-document helper, but preserve application fonts, providers, body classes, and intentional head additions during CLI updates.',
     };
   }
 

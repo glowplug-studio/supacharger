@@ -1,167 +1,80 @@
-'use client';
 import Link from 'next/link';
 
-import FacebookLogo from '@/assets/images/socialAuthIcons/FacebookLogo.svg';
-import GoogleLogo from '@/assets/images/socialAuthIcons/GoogleLogo.svg';
-import LinkedinLogo from '@/assets/images/socialAuthIcons/LinkedinLogo.svg';
-import ModeToggle from '@/supacharger/components/buttons/mode-toggle-button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import LocaleSwitcher from './sc_locale-switcher';
 import SCSiteLogo from './sc_site-logo';
 
+const footerGroups = [
+  {
+    label: 'Navigation',
+    links: [
+      { href: '/#overview', label: 'Overview' },
+      { href: '/#features', label: 'Features' },
+      { href: '/#integrations', label: 'Integrations' },
+      { href: '/#benefits', label: 'Benefits' },
+      { href: '/#reviews', label: 'Reviews' },
+      { href: '/#pricing', label: 'Pricing' },
+    ],
+  },
+  {
+    label: 'Information',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/#faq', label: 'FAQ' },
+      { href: '/legal', label: 'Terms of use' },
+      { href: '/account/login', label: 'Login' },
+      { href: '/account/create', label: 'Create account' },
+    ],
+  },
+  {
+    label: 'Socials',
+    links: [
+      { href: 'https://x.com', label: 'Twitter (X)' },
+      { href: 'https://www.instagram.com', label: 'Instagram' },
+      { href: 'https://www.linkedin.com', label: 'LinkedIn' },
+    ],
+  },
+];
+
 export default function SCFooter() {
   return (
-    <footer className='bg-gray-100 dark:bg-muted'>
-      <div className='mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32'>
-        <div className='xl:grid xl:grid-cols-3 xl:gap-8'>
-          <div className='space-y-8'>
-            <div className='items-cente flex'>
-              <SCSiteLogo showSiteTitle={true} />
+    <footer className='border-t border-white/10 bg-[#121413] text-white'>
+      <div className='mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8'>
+        <div className='grid gap-12 lg:grid-cols-[1.35fr_2fr] lg:gap-20'>
+          <div className='max-w-sm'>
+            <SCSiteLogo darkMode={true} showSiteTitle={true} />
+            <p className='mt-6 text-sm leading-6 text-white/60'>
+              A shared community platform for conversations, groups, events, and the people nearby.
+            </p>
+            <div className='mt-8'>
+              <LocaleSwitcher appearance='marketing' />
             </div>
-            {/* Social Links */}
-            <div className='flex gap-x-6'>
-              <Link href='#' className=''>
-                <span className='sr-only'>Facebook</span>
-                <FacebookLogo height='22' width='22' />
-              </Link>
-              <Link href='#' className=''>
-                <span className='sr-only'>Google</span>
-                <GoogleLogo height='22' width='22' />
-              </Link>
-              <Link href='#' className=''>
-                <span className='sr-only'>LinkedIn</span>
-                <LinkedinLogo height='26' width='26' />
-              </Link>
-            </div>
-            <Link className="mt-6 block" href="/legal">Terms of Use</Link>
           </div>
-          <div className='mt-16 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4 xl:col-span-2 xl:mt-0'>
-            {/* Applications */}
-            <div>
-              <h3 className='text-sm/6 font-semibold text-gray-900 dark:text-white'>Applications</h3>
-              <ul role='list' className='mt-6 space-y-4'>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Advocacy Groups
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Interest Meetups
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Aligned Businesses
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Retail Owners
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* Support */}
-            <div>
-              <h3 className='text-sm/6 font-semibold text-gray-900 dark:text-white'>Support</h3>
-              <ul role='list' className='mt-6 space-y-4'>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Contact Form
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Guides
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* Company */}
-            <div>
-              <h3 className='text-sm/6 font-semibold text-gray-900 dark:text-white'>Company</h3>
-              <ul role='list' className='mt-6 space-y-4'>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href='#'
-                    className='text-sm/6 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-                  >
-                    Press
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* Legal */}
-            <div>
-              <div className='flex flex-col gap-2'>
-                <div className='flex items-center justify-between'>
-                  <span>Language</span>
-                  <LocaleSwitcher />
-                </div>
-                <div className='flex items-center justify-between'>
-                  <span>Theme</span>
-                  <ModeToggle />
-                </div>
+
+          <div className='grid grid-cols-2 gap-10 sm:grid-cols-3'>
+            {footerGroups.map((group) => (
+              <div key={group.label}>
+                <h2 className='text-sm font-medium text-white'>{group.label}</h2>
+                <ul className='mt-5 space-y-3' role='list'>
+                  {group.links.map((link) => (
+                    <li key={link.label}>
+                      <Link className='text-sm text-white/55 transition-colors hover:text-white' href={link.href}>
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            ))}
           </div>
         </div>
-        <div className='mt-16 border-t border-gray-900/10 pt-8 sm:mt-20 lg:mt-24'>
-          <p className='text-xs/6 text-gray-600'>
-            &copy; {SC_CONFIG.SITE_TITLE} {new Date().getFullYear()}, All rights reserved. 
+
+        <div className='mt-16 flex flex-col gap-3 border-t border-white/10 pt-7 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between'>
+          <p>
+            © {new Date().getFullYear()} {SC_CONFIG.SITE_TITLE}. All rights reserved.
           </p>
+          <p>Built for stronger local connections.</p>
         </div>
       </div>
     </footer>

@@ -9,14 +9,14 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/i18n/request.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('messages/en.json').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
-  assert.equal(
-    classifyPath('src/supacharger/styles/supacharger.css').ownership,
-    'cli-managed-core'
-  );
+  assert.equal(classifyPath('src/supacharger/styles/supacharger.css').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/components/sc_demo/header.tsx').ownership, 'developer-owned-example');
   assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/features/pricing/controllers/upsert-price.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('supabase/functions/process-image-upload/index.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('supabase/functions/_shared/image-transform.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('supabase/functions/_shared/image-targets.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('src/lib/supabase/types.ts').ownership, 'cli-managed-core');
 });
 
@@ -45,4 +45,9 @@ test('searches the localisation guidance exposed to the MCP', async () => {
 test('searches the billing guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('STRIPE_EVENT_PROCESSOR_SECRET');
   assert.ok(matches.some((match) => match.path === 'docs/agents/billing.md'));
+});
+
+test('searches the image transformation guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('request never supplies a bucket or path');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/image-transformation.md'));
 });

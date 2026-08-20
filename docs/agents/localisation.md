@@ -10,7 +10,7 @@ Supacharger uses `next-intl` without locale-based routing. Route paths are langu
 
 The CLI installs these starter paths for a new application. After installation, `coreupdate` must ignore them during integrity checks and preserve them byte-for-byte. When `messages/` already exists, an update must not add, replace, or remove any catalogue within it.
 
-The protected root layout obtains locale and messages from `next-intl/server`; it must not import a catalogue directly. The protected `/api/intl` endpoint validates requested locales against the developer-owned configuration, stores the choice in an HTTP-only, same-site cookie, and writes the two-letter code to the authenticated user's `app.profiles.language_code` profile field.
+The developer-owned root-layout template obtains locale and messages from `next-intl/server`; it must not import a catalogue directly. `ROOT_PROVIDERS.INTERNATIONALISATION` controls whether the template mounts `NextIntlClientProvider`. The protected `/api/intl` endpoint validates requested locales against the developer-owned configuration, stores the choice in an HTTP-only, same-site cookie, and writes the two-letter code to the authenticated user's `app.profiles.language_code` profile field.
 
 ## Marketing-site handoff and persistence
 

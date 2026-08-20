@@ -1,59 +1,56 @@
 import { PropsWithChildren } from 'react';
-import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
-import Script from 'next/script';
+import { Host_Grotesk } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { ThemeProvider } from 'next-themes';
 import { ToastContainer } from 'react-toastify';
 
+import { SmoothAnchorNavigation } from '@/supacharger/components/layout/smooth-anchor-navigation';
+import {
+  createSupachargerMetadata,
+  createSupachargerViewport,
+  SupachargerAnalytics,
+} from '@/supacharger/root-document';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
-import { Analytics } from '@vercel/analytics/react';
 
 import '@/supacharger/styles/globals.css';
 
 export const dynamic = 'force-dynamic';
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: '--font-plusJakartaSans',
+const hostGrotesk = Host_Grotesk({
+  variable: '--font-host-grotesk',
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: SC_CONFIG.SITE_TITLE,
-  description: SC_CONFIG.SITE_DESCRIPTION,
-};
+export const metadata = createSupachargerMetadata(SC_CONFIG);
+export const viewport = createSupachargerViewport(SC_CONFIG);
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  const themedContent = SC_CONFIG.ROOT_PROVIDERS.THEME ? (
+    <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+      {children}
+    </ThemeProvider>
+  ) : (
+    children
+  );
+  const content = SC_CONFIG.ROOT_PROVIDERS.INTERNATIONALISATION ? (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {themedContent}
+    </NextIntlClientProvider>
+  ) : (
+    themedContent
+  );
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-T44MSEP2WQ"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-T44MSEP2WQ');
-          `}
-        </Script>
-      </head>
-      <body className={cn('font-sans antialiased', plusJakartaSans.variable)}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-            {children}
-            <Analytics />
-          </ThemeProvider>
-        </NextIntlClientProvider>
-        <ToastContainer position='bottom-right' autoClose={3000} hideProgressBar={true} />
+      <body className={cn('font-sans antialiased', hostGrotesk.variable)}>
+        <SmoothAnchorNavigation />
+        {content}
+        {SC_CONFIG.ROOT_PROVIDERS.TOASTS ? <ToastContainer {...SC_CONFIG.TOAST_CONFIG} /> : null}
       </body>
+      <SupachargerAnalytics config={SC_CONFIG} />
     </html>
   );
 }

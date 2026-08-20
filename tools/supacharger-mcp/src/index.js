@@ -20,6 +20,7 @@ const guidanceTopics = [
   'authentication',
   'mobile_auth',
   'database',
+  'image_transforms',
   'profile',
   'billing',
   'workflow',
@@ -65,7 +66,7 @@ export function createServer() {
     {
       title: 'Get Supacharger guidance',
       description:
-        'Read the canonical mission, ownership, localisation, authentication, mobile deep-linking, database, profile, billing, workflow, or complete repository guidance.',
+        'Read the canonical mission, ownership, localisation, authentication, mobile deep-linking, database, image transformation, profile, billing, workflow, or complete repository guidance.',
       inputSchema: {
         topic: z.enum(guidanceTopics).describe('Guidance topic to read.'),
       },

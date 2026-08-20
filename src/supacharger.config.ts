@@ -29,6 +29,26 @@ export const SC_CONFIG: SupachargerConfig = {
   SITE_DESCRIPTION: 'Start your next project without reinventing the wheel.',
   SITE_LOGO: null,
   MARKETING_SITE_URL: null,
+  METADATA: {
+    SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    TITLE_TEMPLATE: '%s | Korunet',
+    INDEXING_ENABLED: process.env.VERCEL_ENV
+      ? process.env.VERCEL_ENV === 'production'
+      : process.env.NODE_ENV === 'production',
+    FAVICON_SET_ENABLED: false,
+    SOCIAL_IMAGE: null,
+    COLOR_SCHEME: 'light dark',
+    THEME_COLOR: null,
+  },
+  ROOT_PROVIDERS: {
+    INTERNATIONALISATION: true,
+    THEME: true,
+    TOASTS: true,
+  },
+  ANALYTICS: {
+    GOOGLE_ANALYTICS_ID: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || null,
+    VERCEL_ANALYTICS_ENABLED: true,
+  },
 
   // Supabase recommends getClaims for normal SSR identity verification. Use
   // "user" only when every matched request needs a fresh Auth-server check.
@@ -209,12 +229,30 @@ export const SC_CONFIG: SupachargerConfig = {
    * ==========
    * AUTHENTICATION Providers
    * ==========
-   *
-   * Only the providers listed here are supported at this point in time.
+   * Enable the matching provider and callback URL in Supabase before exposing it here.
    */
   AUTH_PROVDERS_ENABLED: {
-    google: true,
+    apple: false,
+    azure: false,
+    bitbucket: false,
+    discord: false,
     facebook: true,
+    figma: false,
+    github: false,
+    gitlab: false,
+    google: true,
+    kakao: false,
+    keycloak: false,
+    linkedin_oidc: false,
+    notion: false,
+    twitch: false,
+    x: false,
+    twitter: false,
+    slack_oidc: false,
+    slack: false,
+    spotify: false,
+    workos: false,
+    zoom: false,
   },
 
     /**

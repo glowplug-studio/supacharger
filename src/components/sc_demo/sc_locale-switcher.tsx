@@ -1,21 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Globe } from 'lucide-react';
+import { Check, Globe } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  type AppLocale,
-  DEFAULT_LOCALE,
-  resolveLocale,
-} from '@/i18n/config';
+import { type AppLocale, DEFAULT_LOCALE, resolveLocale } from '@/i18n/config';
+import { cn } from '@/utils/cn';
 
-export default function LocaleSwitcher() {
+interface LocaleSwitcherProps {
+  appearance?: 'default' | 'marketing';
+  className?: string;
+}
+
+export default function LocaleSwitcher({ appearance = 'default', className }: LocaleSwitcherProps) {
   const handleLocaleChange = async (locale: AppLocale) => {
     const response = await fetch('/api/intl', {
       body: JSON.stringify({ locale }),
@@ -38,21 +41,35 @@ export default function LocaleSwitcher() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className='inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors 
-      focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none 
-      disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-neutral-300 
-      border border-neutral-200 hover:bg-neutral-100 hover:text-neutral-900 dark:border-gray-600 dark:hover:bg-neutral-800 
-      dark:hover:text-neutral-50 h-9 px-3 bg-white dark:bg-slate-800'>
-
-        <Globe size={16} className='inline-block' /> {currentLocale === 'en' ? 'EN' : 'FR'}
-
+      <DropdownMenuTrigger asChild>
+        <Button
+          aria-label='Change language'
+          className={cn(
+            'gap-2',
+            appearance === 'marketing' &&
+              'h-auto rounded-sm border-white/15 bg-transparent px-5 py-3 text-sm text-white shadow-none hover:bg-white/10 hover:text-white',
+            className,
+          )}
+          size='sm'
+          variant='outline'
+        >
+          <Globe aria-hidden='true' />
+          {currentLocale.toUpperCase()}
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent
+        align='end'
+        className={cn(
+          appearance === 'marketing' && 'rounded-sm border-white/10 bg-[#151716] text-white shadow-2xl shadow-black/30',
+        )}
+      >
         <DropdownMenuItem onClick={() => handleLocaleChange('en')}>
-          <span className='mr-2'>&#x1F1EC;&#x1F1E7;</span> English
+          <span className='flex-1'>English</span>
+          {currentLocale === 'en' ? <Check aria-hidden='true' /> : null}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleLocaleChange('fr')}>
-          <span className='mr-2'>&#x1F1EB;&#x1F1F7;</span> Français
+          <span className='flex-1'>Français</span>
+          {currentLocale === 'fr' ? <Check aria-hidden='true' /> : null}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

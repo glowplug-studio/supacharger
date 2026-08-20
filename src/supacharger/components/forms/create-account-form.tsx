@@ -42,6 +42,7 @@ const BrevoNewsletterRegistrationCheckbox = SCP_REGISTRY.BREVO.ENABLED
 export function CreateAccountForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [accountCreated, setAccountCreated] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState('');
   const [passwordSectionOpen, setPasswordSectionOpen] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,7 +72,6 @@ export function CreateAccountForm() {
     },
   });
 
-  const email = watch('email');
   const password = watch('password');
 
   // Open password section when email is typed
@@ -170,6 +170,7 @@ export function CreateAccountForm() {
           toast.warning(tAuthTerms('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
         } else {
           toast.success(tAuthTerms('createAccountSuccess'), SC_CONFIG.TOAST_CONFIG);
+          setVerificationEmail(data.email);
           setAccountCreated(true);
           setIsSubmitSuccess(true);
           reset();
@@ -292,7 +293,7 @@ export function CreateAccountForm() {
 
       {accountCreated && (
         <div id='sc_otp-fields'>
-          <OtpFieldsForm email={email} />
+          <OtpFieldsForm email={verificationEmail} />
         </div>
       )}
 

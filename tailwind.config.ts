@@ -1,8 +1,7 @@
-import type { Config } from 'tailwindcss';
-import defaultTheme from 'tailwindcss/defaultTheme';
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
-const config: Config = {
+const config = {
   darkMode: 'class',
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
@@ -68,8 +67,8 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: ['var(--font-plusJakartaSans)', ...defaultTheme.fontFamily.sans],
-        alt: ['var(--font-plusJakartaSans-alternates)'],
+        sans: ['var(--font-host-grotesk)', ...defaultTheme.fontFamily.sans],
+        alt: ['var(--font-host-grotesk)', ...defaultTheme.fontFamily.sans],
       },
       keyframes: {
         'accordion-down': {
@@ -107,4 +106,4 @@ const config: Config = {
   plugins: [],
 };
 
-export default config;
+module.exports = config;

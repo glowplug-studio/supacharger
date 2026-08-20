@@ -5,14 +5,19 @@ import test from 'node:test';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('auth journey retains the promoted SnapScreen presentation', async () => {
-  const [entry, form, styles] = await Promise.all([
+  const [entry, form, styles, leftPanel] = await Promise.all([
     read('src/supacharger/components/forms/auth-entry.tsx'),
     read('src/supacharger/components/forms/login-user-form.tsx'),
     read('src/supacharger/styles/supacharger.css'),
+    read('src/components/sc_demo/sc_account-login-left.tsx'),
   ]);
 
   assert.match(entry, /Typewriter/);
   assert.match(entry, /space-y-10 px-2 pt-8/);
+  assert.match(entry, /SCSiteLogo/);
+  assert.match(entry, /justify-center px-2 lg:hidden/);
+  assert.match(entry, /showSiteTitle=\{true\} darkMode=\{true\}/);
+  assert.match(leftPanel, /hidden[\s\S]*?lg:flex/);
   assert.match(form, /AnimateHeight/);
   assert.match(form, /sc-auth-surface-button/);
   assert.match(form, /sc-auth-primary-button/);
@@ -32,4 +37,14 @@ test('password reset uses the same auth presentation without replacing its logic
   assert.match(page, /sc-auth-input/);
   assert.match(form, /request-password-reset/);
   assert.match(form, /sc-auth-primary-button/);
+});
+
+test('shared interactive controls consistently advertise pointer interaction', async () => {
+  const styles = await read('src/supacharger/styles/supacharger.css');
+
+  assert.match(styles, /a\[href\]/);
+  assert.match(styles, /button:not\(:disabled\)/);
+  assert.match(styles, /\[role='button'\]:not\(\[aria-disabled='true'\]\)/);
+  assert.match(styles, /input\[type='submit'\]:not\(:disabled\)/);
+  assert.match(styles, /cursor:\s*pointer\s*!important/);
 });

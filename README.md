@@ -36,6 +36,52 @@ Shared runtime and tooling dependencies are exact-pinned in `package.json`. Cons
 
 Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
 
+### Document metadata, providers, and analytics
+
+New projects receive `src/app/layout.tsx` as an editable template. It is explicitly developer-owned after installation, so `supacharger coreupdate` does not overwrite fonts, body classes, product providers, or extra head content. The protected `src/supacharger/root-document.tsx` helper remains CLI-managed and supplies consistent metadata, viewport, favicon, SEO, and analytics behaviour.
+
+Configure global defaults in `src/supacharger.config.ts`:
+
+```ts
+METADATA: {
+  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  TITLE_TEMPLATE: '%s | My Product',
+  INDEXING_ENABLED: process.env.VERCEL_ENV
+    ? process.env.VERCEL_ENV === 'production'
+    : process.env.NODE_ENV === 'production',
+  FAVICON_SET_ENABLED: true,
+  SOCIAL_IMAGE: null,
+  COLOR_SCHEME: 'light dark',
+  THEME_COLOR: null,
+},
+ROOT_PROVIDERS: {
+  INTERNATIONALISATION: true,
+  THEME: true,
+  TOASTS: true,
+},
+ANALYTICS: {
+  GOOGLE_ANALYTICS_ID: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || null,
+  VERCEL_ANALYTICS_ENABLED: true,
+},
+```
+
+Set `NEXT_PUBLIC_SITE_URL` to the stable canonical production origin; do not use a preview deployment URL as the canonical base. `INDEXING_ENABLED` prevents development and Vercel preview deployments from being indexed by default. Enable `FAVICON_SET_ENABLED` only when `public/favicon.ico` and the standard files under `public/favicons/` exist, and set `SOCIAL_IMAGE` when the application has an appropriate Open Graph image.
+
+Child pages can export a normal Next.js `metadata` object to receive the configured title template, or use the protected helper when they also need consistent canonical and social metadata:
+
+```ts
+import { SC_CONFIG } from '@/supacharger/supacharger-config';
+import { createSupachargerPageMetadata } from '@/supacharger/root-document';
+
+export const metadata = createSupachargerPageMetadata(SC_CONFIG, {
+  title: 'Pricing',
+  description: 'Compare plans for My Product.',
+  canonicalPath: '/pricing',
+});
+```
+
+A page can use Next.js `title.absolute` when it deliberately needs to bypass the global template. Google Analytics is disabled when `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` is empty and is loaded through Next.js's `@next/third-parties/google` integration when configured. A GA4 measurement ID is public configuration, not a secret; use a different value per deployment where required.
+
 Authentication uses one request-scoped SSR client and one verification call. The core defaults to verified JWT claims and excludes anonymous Auth users; an application can deliberately choose strict Auth-server verification:
 
 ```ts
@@ -69,7 +115,7 @@ ORGANISATIONS: {
 },
 ```
 
-The canonical login journey preserves SnapScreen's approved progressive visual structure across Core, SnapScreen, and Wakekeeper: strong headings, provider-to-email transitions, dark auth surfaces, branded actions, and matching password-reset screens. It exposes only enabled methods and supports password sign-in/sign-up, magic links, six-digit sign-up OTP verification, and resend cooldown. Project copy, colour, imagery, and adapters remain developer-owned; Specdrive retains its separate presentation. Supabase Auth settings and email templates must match the selected verification mode. When onboarding is required, callbacks and Proxy call `api.is_profile_complete_by_current_user(p_username_required)` and redirect to the real developer-owned route. The starter supplies `/account/setup-profile`; applications may preserve a product-specific form at the configured path.
+The canonical login journey preserves SnapScreen's approved progressive visual structure across Core, SnapScreen, and Wakekeeper: strong headings, provider-to-email transitions, dark auth surfaces, branded actions, and matching password-reset screens. Auth buttons and input fields share a 56 px control height and 20 px by 12 px internal padding. When the split layout's left panel is hidden below the `lg` breakpoint, the site logo appears once above the login or signup content; at `lg` and wider, that fallback is hidden and the left-panel logo remains. It exposes only enabled methods and supports password sign-in/sign-up, magic links, link or six-digit OTP sign-up verification, and resend cooldown. When social providers are enabled, direct visits to `/account/login` and `/account/create` open the provider chooser with “Continue with email”; the selected route determines whether that action opens sign-in or signup. Email mode shows a “Use social auth” control above the form with at most three overlapping enabled-provider icons. Selecting it collapses email and restores the full provider chooser without changing the route mode. When no social provider is enabled, the available email journey opens immediately and no provider switcher, divider, or redundant Back control is rendered. `MAGIC_LINK.ENABLED: false` removes the magic-link action, while `ALLOW_SIGN_UP` additionally controls whether it appears during signup and whether passwordless email may create a user. Password, magic-link, and OTP requests expose independent busy indicators. Signup is handled by the configured journey and its server action; the starter does not publish a redundant JSON create-account route. Logout is submitted once through the server logout route so SSR auth cookies are cleared before redirecting. Project copy, colour, imagery, and adapters remain developer-owned; `AuthJourney.useSocialAuth` can localise the compact switcher and safely falls back to English for preserved catalogues created before the key existed. Specdrive retains its separate presentation. `SIGN_UP_EMAIL_VERIFICATION` accepts `disabled`, `link`, or `otp`; Supabase Auth confirmations and its hosted confirmation template must match the selection. Link mode uses a token-hash template built from `{{ .RedirectTo }}` and `{{ .TokenHash }}`. Both initial and resent confirmations return through `/auth/confirm`, which verifies the token before continuing to the configured account-confirmed path. A checked-in local template does not update the hosted project. When onboarding is required, callbacks and Proxy call `api.is_profile_complete_by_current_user(p_username_required)` and redirect to the real developer-owned route. The starter supplies `/account/setup-profile`; applications may preserve a product-specific form at the configured path.
 
 ### Mobile login verification and deep links
 
@@ -112,6 +158,8 @@ Username and organisation storage are always installed. A disabled policy leaves
 The canonical private user row is `app.profiles`. Shared fields use `first_name`, `last_name`, `username`, `email`, `avatar_path`, `header_image_path`, and `language_code`; product-specific fields may extend the row without introducing a second user table. Browser code uses the `api` RPC surface, while trusted Stripe and maintenance code uses `api_edge`.
 
 Profile media lives in the private `user-avatars` bucket. Store paths using `<user-id>/avatar-…` and `<user-id>/headers/header-…`, then render short-lived signed URLs. The general profile lookup intentionally excludes email and complete profile rows. The optional `app.organisations`, `app.organisation_members`, and `app.user_session_contexts` foundation is private and dormant when disabled. See `docs/agents/database-foundation.md` for the full contract.
+
+The globally deployed `process-image-upload` Edge Function provides reusable image resizing and re-encoding. It requires a signed-in user and accepts only multipart `file` plus a named `target`; callers cannot supply a Storage bucket, destination folder, filename prefix, output format, dimensions, or compression value. Those values live in the developer-owned `supabase/functions/_shared/image-targets.ts` policy, while the transformer and HTTP boundary are CLI-managed. Uploads use the caller's JWT and Storage RLS, never a service-role client. The starter targets create a 300×300 JPEG avatar or a 1600×600 JPEG header; target policy can also select lossless PNG output, inside/cover resizing, JPEG quality, PNG compression effort, input byte/pixel limits, cache policy, and private signed or public URLs. See `docs/agents/image-transformation.md` and the [Edge Functions guide](https://supacharger.dev/docs/Application%20Development/edge).
 
 The private `app.user_roles` table and custom access-token hook add a compact `user_role` claim to newly issued or refreshed JWTs. Organisation and project roles remain membership data enforced through RLS; they are not flattened into the global role. See `docs/agents/authentication-and-claims.md` and the [human roles guide](https://supacharger.dev/docs/Application%20Development/roles-and-custom-claims).
 
@@ -312,9 +360,15 @@ alter table invites enable row level security;
 
 Then run `npm run migration:up` and your table will be added.
 
-### Configuring auth providers
+### Supported third-party authentication
 
-There are many auth providers you can choose from. [See the Supabase docs](https://supabase.com/docs/guides/auth#providers) for the full the list and their respective guides to configure them.
+Supacharger supports Apple (`apple`), Microsoft Azure (`azure`), Bitbucket (`bitbucket`), Discord (`discord`), Facebook (`facebook`), Figma (`figma`), GitHub (`github`), GitLab (`gitlab`), Google (`google`), Kakao (`kakao`), Keycloak (`keycloak`), LinkedIn OIDC (`linkedin_oidc`), Notion (`notion`), Twitch (`twitch`), X/Twitter OAuth 2.0 (`x`), Twitter OAuth 1.0a compatibility (`twitter`), Slack OIDC (`slack_oidc`), legacy Slack compatibility (`slack`), Spotify (`spotify`), WorkOS (`workos`), and Zoom (`zoom`).
+
+Set a provider to `true` in the typed `AUTH_PROVDERS_ENABLED` map to render its login/signup button and permit the shared OAuth server action; disabled providers are rejected by that action. Configure the same provider in Supabase and allow the application's exact `/auth/callback` URL before enabling its UI flag. Prefer the OIDC and OAuth 2.0 options for new LinkedIn, Slack, and Twitter/X integrations.
+
+The downloaded Supabase SVG set lives in `src/assets/images/authProviderIcons/`. It also contains Email, Phone, SAML, and Web3 artwork for future method-specific journeys; those methods are not interchangeable with `signInWithOAuth`.
+
+Follow the [Supabase social login guides](https://supabase.com/docs/guides/auth/social-login) for provider credentials and callback configuration.
 
 ### Styling
 
@@ -326,6 +380,12 @@ The application imports Tailwind once through `src/supacharger/styles/globals.cs
 - `src/styles/project.css` is developer-owned. Put the named project's theme tokens, global defaults, product-specific classes, and overrides there; CLI updates preserve it.
 
 Prefer Tailwind utilities in components. When custom CSS is needed, use `@layer base` for element defaults and theme tokens, `@layer components` for semantic classes, and `@layer utilities` for narrowly scoped utilities. Do not import Tailwind again from `project.css`.
+
+The shared base layer gives enabled interactive controls—including links, buttons, form actions, selects, summaries, and ARIA button/menu/tab controls—a pointer cursor on hover. Disabled controls are deliberately excluded, so ordinary components should not repeat `cursor-pointer` utilities.
+
+The same base layer supplies native smooth scrolling, while the root layout mounts the protected `SmoothAnchorNavigation` helper so Next.js `<Link>` fragment navigation behaves identically. Every same-page link such as `href='#features'` works automatically, including clicks on nested link content and `/#features` links. Modified clicks, downloads, external targets, and missing fragments retain their normal browser behaviour. Set `data-smooth-scroll='false'` on an exceptional link to opt out. Visitors who prefer reduced motion receive immediate scrolling.
+
+`tailwind.config.ts` deliberately uses CommonJS `require`/`module.exports` syntax because the root Next.js, PostCSS, and Prettier configuration boundary is CommonJS. Keep the managed filename and the `@config` reference unchanged; do not add a package-wide `"type": "module"` merely to load Tailwind configuration.
 
 - [Learn more about shadcn/ui components](https://ui.shadcn.com/docs)
 - [Learn more about theming with shadcn/ui](https://ui.shadcn.com/docs/theming)

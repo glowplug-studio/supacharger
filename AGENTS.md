@@ -77,6 +77,7 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 - `PROFILE_IDENTITY.USERNAME` is `disabled`, `optional`, or `required`. Storage remains nullable and installed in every mode; forms, routes, and identity projections must obey the configured policy.
 - Organisation tables and service adapters remain installed when `ORGANISATIONS.ENABLED` is false. Disabled applications must not expose organisation fields or invoke organisation context operations.
 - Profile images live in the private `user-avatars` bucket. Store object paths, not public URLs: `<user-id>/avatar-<name>` for avatars and `<user-id>/headers/header-<name>` for headers. Render them through short-lived signed URLs.
+- `process-image-upload` is the canonical authenticated image-resize boundary. Requests contain only `file` and a named `target`; bucket, destination path, output format, dimensions, and encoding settings come from developer-owned `supabase/functions/_shared/image-targets.ts`. Keep the transformer and endpoint CLI-managed, use the caller's RLS-scoped Storage client, and never introduce caller-supplied destinations or service-role uploads.
 - `api.get_user_profiles_by_identifiers` is the general identity projection. It may return names, username, and media paths to verified authenticated users, but must never return email or unrestricted profile rows.
 - Internal tables live in `app`; browser RPCs live in `api`; trusted service-only RPCs live in `api_edge`. Expose `api` and `api_edge` through PostgREST, not `app`.
 
@@ -102,3 +103,13 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 `tools/supacharger-mcp/` contains a read-only, repository-scoped MCP server for agent orientation. Its curated guidance lives in `docs/agents/`.
 
 Keep the MCP descriptive rather than authoritative: `AGENTS.md` and the implementation remain the source of truth. Update MCP resources and ownership classification whenever the repository structure or principles change materially. Never add tools that expose secrets or mutate the repository without a separate, explicit design and approval.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

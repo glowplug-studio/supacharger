@@ -7,7 +7,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "NODE_OPTIONS='--trace-deprecation' next dev",
+    "dev": "NODE_OPTIONS='--trace-deprecation --max-http-header-size=32768' next dev --port 3400",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
@@ -15,6 +15,9 @@
     "test:stripe": "node --experimental-strip-types --test test/stripe-time.test.mjs",
     "test:auth-proxy": "node --experimental-strip-types --test test/auth-proxy-contract.test.mjs",
     "test:auth-journey": "node --test test/auth-journey-contract.test.mjs test/auth-presentation-contract.test.mjs",
+    "test:image-transform": "node --no-warnings --experimental-strip-types --test test/image-transform-contract.test.mjs",
+    "test:image-transform-runtime": "npx -y deno@2.9.5 test --no-lock --node-modules-dir=auto --allow-read supabase/functions/_shared/image-transform-runtime.test.ts",
+    "test:tooling": "node --test test/tooling-contract.test.mjs",
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=default",
     "generate-types": "supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres --schema public,api,api_edge,app > src/lib/supabase/types.ts",
     "supabase:link": "supabase link",
@@ -26,6 +29,7 @@
     "db:push:linked": "supabase db push --linked"
   },
   "dependencies": {
+    "@next/third-parties": "16.3.0",
     "@radix-ui/react-accordion": "1.2.20",
     "@radix-ui/react-alert-dialog": "1.1.23",
     "@radix-ui/react-aspect-ratio": "1.1.15",
