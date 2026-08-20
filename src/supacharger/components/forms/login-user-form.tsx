@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Eye, EyeOff, LogIn, Mail, UserPlus, WandSparkles } from 'lucide-react';
+import { ArrowLeft, Check, Eye, EyeOff, LogIn, Mail, UserPlus, WandSparkles } from 'lucide-react';
 import AnimateHeight from 'react-animate-height';
 import { z } from 'zod';
 
@@ -25,6 +25,10 @@ import PasswordValidationIndicator from '@/supacharger/components/forms/password
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
 import { UIDivider } from '@/supacharger/components/ui/divider';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
+import {
+  supabaseErrorCodeFallback,
+  supabaseErrorCodeLocalisation,
+} from '@/supacharger/utils/helpers';
 
 export type AuthMode = 'signin' | 'signup';
 type AuthStep = 'choose' | 'email' | 'verify-email' | 'check-email';
@@ -63,6 +67,7 @@ export function LoginUserForm({
   onFormHeadingChange,
 }: LoginUserFormProps) {
   const t = useTranslations('AuthJourney');
+  const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const router = useRouter();
   const startsInEmailMode = shouldStartInEmailMode(initialMode);
   const [step, setStep] = useState<AuthStep>(startsInEmailMode ? 'email' : 'choose');
@@ -83,6 +88,8 @@ export function LoginUserForm({
   const magicLinkAvailable = isMagicLinkAvailable(mode);
   const emailJourneyAvailable = passwordModeAvailable || magicLinkAvailable;
   const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
+  const passwordConfirmationRequired = mode === 'signup' && !showPassword;
+  const passwordsMatch = passwordAgain.length > 0 && password === passwordAgain;
   const useSocialAuthLabel = t.has('useSocialAuth') ? t('useSocialAuth') : 'Use social auth';
 
   function pushAuthRoute(nextMode: AuthMode) {
@@ -95,6 +102,15 @@ export function LoginUserForm({
     setOtp('');
     setShowPassword(false);
     setError(null);
+  }
+
+  function togglePasswordVisibility() {
+    const nextShowPassword = !showPassword;
+    if (nextShowPassword) {
+      setPasswordAgain('');
+      setError(null);
+    }
+    setShowPassword(nextShowPassword);
   }
 
   function showProviderChoices() {
@@ -126,13 +142,31 @@ export function LoginUserForm({
     return true;
   }
 
+  function getAuthErrorMessage(
+    authError: { code: string; status: number | null },
+    fallback: 'authenticationFailed' | 'emailSendFailed' | 'invalidCode',
+  ) {
+    const messageKey = supabaseErrorCodeLocalisation(authError.code, authError.status);
+    if (messageKey === 'genericError') return t(fallback);
+    return tSupabaseErrorCodes.has(messageKey)
+      ? tSupabaseErrorCodes(messageKey)
+      : supabaseErrorCodeFallback(messageKey);
+  }
+
   async function submitPassword(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     if (!validateEmail()) return;
     if (!password) return setError(t('enterPassword'));
-    if (mode === 'signup' && (!passwordIsValid || password !== passwordAgain)) {
-      return setError(password !== passwordAgain ? t('passwordMismatch') : t('strongerPassword'));
+    if (
+      mode === 'signup' &&
+      (!passwordIsValid || (passwordConfirmationRequired && password !== passwordAgain))
+    ) {
+      return setError(
+        passwordConfirmationRequired && password !== passwordAgain
+          ? t('passwordMismatch')
+          : t('strongerPassword'),
+      );
     }
 
     setPendingAction('password');
@@ -145,7 +179,7 @@ export function LoginUserForm({
     setPendingAction(null);
 
     if (result?.error) {
-      setError(t('authenticationFailed'));
+      setError(getAuthErrorMessage(result.error, 'authenticationFailed'));
       return;
     }
 
@@ -184,7 +218,7 @@ export function LoginUserForm({
     setPendingAction('magic-link');
     const result = await signInWithEmail(normalisedEmail);
     setPendingAction(null);
-    if (result?.error) return setError(t('emailSendFailed'));
+    if (result?.error) return setError(getAuthErrorMessage(result.error, 'emailSendFailed'));
     setStep('check-email');
     onFormHeadingChange?.(t('checkEmail'));
   }
@@ -197,7 +231,7 @@ export function LoginUserForm({
     setPendingAction(null);
     if (result?.error) {
       setOtp('');
-      setError(t('invalidCode'));
+      setError(getAuthErrorMessage(result.error, 'invalidCode'));
       return;
     }
     router.replace(SC_CONFIG.ACCOUNT_CONFIRMED_PATH);
@@ -371,7 +405,7 @@ export function LoginUserForm({
               ) : null}
             </>
           ) : passwordModeAvailable ? (
-            <>
+            <div>
               <div className='relative w-full'>
                 <PasswordValidationIndicator
                   value={password}
@@ -386,22 +420,41 @@ export function LoginUserForm({
                   type='button'
                   className='absolute top-7 right-5 -translate-y-1/2 text-gray-400 hover:text-white'
                   aria-label={showPassword ? t('hidePassword') : t('showPassword')}
-                  onClick={() => setShowPassword((value) => !value)}
+                  aria-expanded={!showPassword}
+                  aria-controls='signup-password-confirmation'
+                  onClick={togglePasswordVisibility}
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
-              <Input
-                className='sc-auth-input'
-                type={showPassword ? 'text' : 'password'}
-                autoComplete='new-password'
-                placeholder={t('repeatPassword')}
-                value={passwordAgain}
-                onChange={(event) => setPasswordAgain(event.target.value)}
-                required
-              />
-            </>
+              <AnimateHeight
+                id='signup-password-confirmation'
+                duration={260}
+                height={showPassword ? 0 : 'auto'}
+                animateOpacity
+              >
+                <div className='relative pt-4'>
+                  <Input
+                    className='sc-auth-input pr-12'
+                    type='password'
+                    autoComplete='new-password'
+                    placeholder={t('repeatPassword')}
+                    value={passwordAgain}
+                    onChange={(event) => setPasswordAgain(event.target.value)}
+                    required={passwordConfirmationRequired}
+                    disabled={showPassword}
+                  />
+                  {passwordsMatch ? (
+                    <Check
+                      aria-hidden='true'
+                      className='pointer-events-none absolute right-4 top-[calc(50%+0.5rem)] -translate-y-1/2 text-emerald-400'
+                      size={20}
+                    />
+                  ) : null}
+                </div>
+              </AnimateHeight>
+            </div>
           ) : null}
 
           {error ? <p className='sc_message sc_message-error' role='alert'>{error}</p> : null}
@@ -410,7 +463,14 @@ export function LoginUserForm({
             <Button
               type='submit'
               className='sc-auth-primary-button w-full gap-3'
-              disabled={pendingAction !== null || !parsedEmail.success || !password || (mode === 'signup' && (!passwordIsValid || password !== passwordAgain))}
+              disabled={
+                pendingAction !== null ||
+                !parsedEmail.success ||
+                !password ||
+                (mode === 'signup' &&
+                  (!passwordIsValid ||
+                    (passwordConfirmationRequired && password !== passwordAgain)))
+              }
             >
               {pendingAction === 'password' ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : mode === 'signin' ? <LogIn className='h-4 w-4' /> : <UserPlus className='h-4 w-4' />}
               {mode === 'signin' ? t('signIn') : t('signUp')}

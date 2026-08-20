@@ -39,6 +39,38 @@ test('password reset uses the same auth presentation without replacing its logic
   assert.match(form, /sc-auth-primary-button/);
 });
 
+test('revealing a signup password clears and collapses password confirmation', async () => {
+  const [journey, embeddedSignup] = await Promise.all([
+    read('src/supacharger/components/forms/login-user-form.tsx'),
+    read('src/supacharger/components/forms/create-account-form.tsx'),
+  ]);
+
+  for (const form of [journey, embeddedSignup]) {
+    assert.match(form, /height=\{showPassword \? 0 : 'auto'\}/);
+    assert.match(form, /animateOpacity/);
+    assert.match(form, /disabled=\{showPassword\}/);
+  }
+
+  assert.match(journey, /setPasswordAgain\(''\)/);
+  assert.match(journey, /passwordConfirmationRequired && password !== passwordAgain/);
+  assert.match(embeddedSignup, /setValue\('retypePassword', ''\)/);
+  assert.match(embeddedSignup, /if \(!showPassword && data\.password !== data\.retypePassword\)/);
+});
+
+test('matching password confirmation shows a green tick', async () => {
+  const [journey, embeddedSignup] = await Promise.all([
+    read('src/supacharger/components/forms/login-user-form.tsx'),
+    read('src/supacharger/components/forms/create-account-form.tsx'),
+  ]);
+
+  for (const form of [journey, embeddedSignup]) {
+    assert.match(form, /passwordsMatch/);
+    assert.match(form, /retypePassword\.length > 0|passwordAgain\.length > 0/);
+    assert.match(form, /text-emerald-400/);
+    assert.match(form, /<Check/);
+  }
+});
+
 test('shared interactive controls consistently advertise pointer interaction', async () => {
   const styles = await read('src/supacharger/styles/supacharger.css');
 

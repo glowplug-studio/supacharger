@@ -16,7 +16,8 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Eye, EyeOff } from 'lucide-react';
+import { Check, Eye, EyeOff } from 'lucide-react';
+import AnimateHeight from 'react-animate-height';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
@@ -26,7 +27,11 @@ import SaveButton from '@/supacharger/components/buttons/form-save-button';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { SCP_REGISTRY } from '@/supacharger/plugins/registry';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { isValidEmail, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
+import {
+  isValidEmail,
+  supabaseErrorCodeFallback,
+  supabaseErrorCodeLocalisation,
+} from '@/supacharger/utils/helpers';
 
 import { OtpFieldsForm } from './otp-fields-verify-form';
 
@@ -73,6 +78,8 @@ export function CreateAccountForm() {
   });
 
   const password = watch('password');
+  const retypePassword = watch('retypePassword');
+  const passwordsMatch = retypePassword.length > 0 && password === retypePassword;
 
   // Open password section when email is typed
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +95,15 @@ export function CreateAccountForm() {
 
   const handleRetypePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue('retypePassword', e.target.value);
+  };
+
+  const togglePasswordVisibility = () => {
+    const nextShowPassword = !showPassword;
+    if (nextShowPassword) {
+      setValue('retypePassword', '');
+      setFormError(null);
+    }
+    setShowPassword(nextShowPassword);
   };
 
   // Helper: which field is in error? (for aria-describedby)
@@ -155,18 +171,18 @@ export function CreateAccountForm() {
       setIsSubmitting(false);
 
       if (result?.error) {
-        setFormError(tSupabaseErrorCodes(supabaseErrorCodeLocalisation('signup_auth_api_error')));
-        toast.error(
-          tSupabaseErrorCodes(supabaseErrorCodeLocalisation('signup_auth_api_error')),
-          SC_CONFIG.TOAST_CONFIG
+        const messageKey = supabaseErrorCodeLocalisation(
+          result.error.code,
+          result.error.status,
         );
+        const errorMessage = tSupabaseErrorCodes.has(messageKey)
+          ? tSupabaseErrorCodes(messageKey)
+          : supabaseErrorCodeFallback(messageKey);
+        setFormError(errorMessage);
+        toast.error(errorMessage, SC_CONFIG.TOAST_CONFIG);
         setIsSubmitSuccess(false);
       } else {
-        if (
-          result?.data?.user?.id &&
-          Array.isArray(result.data.user.identities) &&
-          result.data.user.identities.length === 0
-        ) {
+        if (result.data.userId && result.data.identityCount === 0) {
           toast.warning(tAuthTerms('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
         } else {
           toast.success(tAuthTerms('createAccountSuccess'), SC_CONFIG.TOAST_CONFIG);
@@ -240,24 +256,33 @@ export function CreateAccountForm() {
                   type='button'
                   className='ml-2 mt-4 text-gray-400 hover:text-slate-800'
                   aria-label='Show password'
-                  onClick={() => setShowPassword((v) => !v)}
+                  aria-expanded={!showPassword}
+                  aria-controls='embedded-signup-password-confirmation'
+                  onClick={togglePasswordVisibility}
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
-            {!showPassword && (
+            <AnimateHeight
+              id='embedded-signup-password-confirmation'
+              duration={260}
+              height={showPassword ? 0 : 'auto'}
+              animateOpacity
+            >
               <div className='my-2'>
                 <label htmlFor='retypePassword' className='text-md block px-1'>
                   {tAuthTerms('retypePassword')}
                 </label>
-                <div className='mt-2 px-1'>
+                <div className='relative mt-2 px-1'>
                   <Input
+                    className='pr-12'
                     id='retypePassword'
                     type='password'
                     maxLength={30}
-                    required
+                    required={!showPassword}
+                    disabled={showPassword}
                     autoComplete='new-password'
                     aria-invalid={!!formError && formError.toLowerCase().includes("retype")}
                     aria-describedby={getAriaError("retypePassword")}
@@ -265,12 +290,19 @@ export function CreateAccountForm() {
                       onChange: handleRetypePasswordChange,
                     })}
                   />
+                  {passwordsMatch ? (
+                    <Check
+                      aria-hidden='true'
+                      className='pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-emerald-400'
+                      size={20}
+                    />
+                  ) : null}
                   {formError && formError.toLowerCase().includes("retype") && (
                     <div id="retypePassword-error" className="sc_message sc_message-error">{formError}</div>
                   )}
                 </div>
               </div>
-            )}
+            </AnimateHeight>
             {BrevoNewsletterRegistrationCheckbox && <BrevoNewsletterRegistrationCheckbox />}
             {/* General password errors */}
             {formError && formError.toLowerCase().includes("password") && !formError.toLowerCase().includes("retype") && (

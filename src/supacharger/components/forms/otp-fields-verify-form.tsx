@@ -9,7 +9,11 @@ import InlineLoaderDark from '@/assets/images/ui/InlineLoaderDark.svg';
 import OTPField from '@/components/ui/otp-field';
 import { verifyOtp } from '@/lib/supabase/supacharger/supabase-auth';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { isValidEmail, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
+import {
+  isValidEmail,
+  supabaseErrorCodeFallback,
+  supabaseErrorCodeLocalisation,
+} from '@/supacharger/utils/helpers';
 import * as LabelPrimitive from '@radix-ui/react-label';
 
 export function OtpFieldsForm({ email }: { email: string }) {
@@ -45,7 +49,11 @@ export function OtpFieldsForm({ email }: { email: string }) {
         return;
       }
       if (result.error) {
-        toast.error(tSupabaseErrorCodes(supabaseErrorCodeLocalisation('AuthApiError')), SC_CONFIG.TOAST_CONFIG);
+        const messageKey = supabaseErrorCodeLocalisation(result.error.code, result.error.status);
+        const errorMessage = tSupabaseErrorCodes.has(messageKey)
+          ? tSupabaseErrorCodes(messageKey)
+          : supabaseErrorCodeFallback(messageKey);
+        toast.error(errorMessage, SC_CONFIG.TOAST_CONFIG);
         setLoading(false); // Show form again
       } else {
         toast.success(tAuthTerms('accountEmailVerified'), SC_CONFIG.TOAST_CONFIG);

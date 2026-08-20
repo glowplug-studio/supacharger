@@ -14,7 +14,9 @@ export async function POST(req: NextRequest) {
 
   try {
     const result = await resendAccountConfirmEmail(email);
-    return NextResponse.json(result);
+    return NextResponse.json(result, {
+      status: result.error?.status ?? (result.error ? 400 : 200),
+    });
   } catch (err) {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }

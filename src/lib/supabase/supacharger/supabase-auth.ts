@@ -7,10 +7,14 @@ import { redirect } from 'next/navigation';
  * Supacharger - Supabase Auth wrappers.
  *
  * ========== */
+import {
+  authActionFailure,
+  type AuthActionResult,
+  authActionSuccess,
+} from '@/supacharger/auth/auth-action-result';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 import { getURL } from '@/supacharger/utils/helpers';
-import { ActionResponse } from '@/types/action-response';
 
 import { createClient } from '../server';
 
@@ -33,7 +37,7 @@ export async function logoutUser(): Promise<{ success: boolean }> {
  */
 export async function loginUser(formData: FormData) {
   if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN) {
-    return { error: 'email_password_sign_in_disabled' };
+    return authActionFailure('email_password_sign_in_disabled');
   }
   const supabase = await createClient();
 
@@ -45,22 +49,22 @@ export async function loginUser(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    return { error: error.code };
+    return authActionFailure(error);
   }
 
-  return { success: true };
+  return authActionSuccess(null);
 }
 
 /**
  * Sign / Sign Up wth Magic Link to email
  */
-export async function signInWithEmail(email: string): Promise<ActionResponse> {
+export async function signInWithEmail(email: string): Promise<AuthActionResult> {
   if (!SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED) {
-    return { data: null, error: new Error('Magic-link sign-in is disabled') };
+    return authActionFailure('magic_link_disabled');
   }
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.signInWithOtp({
+  const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: getURL('/auth/callback'),
@@ -69,18 +73,20 @@ export async function signInWithEmail(email: string): Promise<ActionResponse> {
   });
 
   if (error) {
-    return { data: null, error: error };
+    return authActionFailure(error);
   }
 
-  return { data: data, error: null };
+  return authActionSuccess(null);
 }
 
 /**
  * Create a new user with email password combo
  */
-export async function createUserByEmailPassword(formData: FormData) {
+export async function createUserByEmailPassword(
+  formData: FormData,
+): Promise<AuthActionResult<{ userId: string | null; identityCount: number | null }>> {
   if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP) {
-    return { data: null, error: new Error('Email and password sign-up is disabled') };
+    return authActionFailure('email_password_sign_up_disabled');
   }
   const supabase = await createClient();
 
@@ -96,10 +102,13 @@ export async function createUserByEmailPassword(formData: FormData) {
   });
 
   if (error) {
-    return { data: null, error: error };
+    return authActionFailure(error);
   }
 
-  return { data: data, error: null };
+  return authActionSuccess({
+    userId: data.user?.id ?? null,
+    identityCount: Array.isArray(data.user?.identities) ? data.user.identities.length : null,
+  });
 }
 
 /**
@@ -108,7 +117,7 @@ export async function createUserByEmailPassword(formData: FormData) {
 export async function resendAccountConfirmEmail(email: string) {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.resend({
+  const { error } = await supabase.auth.resend({
     type: 'signup',
     email: email,
     options: {
@@ -116,7 +125,7 @@ export async function resendAccountConfirmEmail(email: string) {
     },
   });
 
-  return { data, error };
+  return error ? authActionFailure(error) : authActionSuccess(null);
 }
 
 /**
@@ -132,20 +141,20 @@ export async function sendPasswordReset(email: string) {
   // Ensure no double slashes
   const redirectTo = `${siteUrl.replace(/\/$/, "")}/account/reset-password/new`;
 
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo,
   });
 
-  return { data, error };
+  return error ? authActionFailure(error) : authActionSuccess(null);
 }
 
 //// @TODO the rest is questionable
 
 export type SupabaseOAuthProvider = SupachargerOAuthProvider;
 
-export async function signInWithOAuth(provider: SupabaseOAuthProvider): Promise<ActionResponse> {
+export async function signInWithOAuth(provider: SupabaseOAuthProvider) {
   if (!SC_CONFIG.AUTH_PROVDERS_ENABLED[provider]) {
-    return { data: null, error: new Error(`OAuth provider "${provider}" is disabled`) };
+    return authActionFailure('oauth_provider_disabled');
   }
 
   const supabase = await createClient();
@@ -158,8 +167,7 @@ export async function signInWithOAuth(provider: SupabaseOAuthProvider): Promise<
   });
 
   if (error) {
-    console.error(error);
-    return { data: null, error: error };
+    return authActionFailure(error);
   }
 
   return redirect(data.url);
@@ -220,20 +228,20 @@ export async function isLoggedIn() {
  * Verify OTP (One-Time Password) for email verification
  * @param {string} email - The email address to verify
  * @param {string} token - The OTP token received via email
- * @returns {Promise<ActionResponse>} The verification response
+ * @returns {Promise<AuthActionResult>} The safe serialisable verification response
  */
-export async function verifyOtp(email: string, token: string): Promise<ActionResponse> {
+export async function verifyOtp(email: string, token: string): Promise<AuthActionResult> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase.auth.verifyOtp({
+  const { error } = await supabase.auth.verifyOtp({
     email,
     token,
     type: 'signup',
   });
 
   if (error) {
-    return { data: null, error };
+    return authActionFailure(error);
   }
 
-  return { data, error: null };
+  return authActionSuccess(null);
 }

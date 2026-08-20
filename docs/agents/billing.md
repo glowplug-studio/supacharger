@@ -60,7 +60,7 @@ Do not select all events. Add an event only with a handler, idempotency rule, re
 
 Billing storage lives in the internal `app` schema. Browser access is through narrowly scoped `api` functions. Stripe ingestion and reconciliation use service-only `api_edge` functions. Both schemas have explicit grants; all tables have RLS enabled as defence in depth. Never grant browser roles direct mutation access to projections, Stripe mappings, payment summaries, entitlements, or event payloads.
 
-`app.stripe_customers` keys mappings by billing account, Stripe account, and live/test mode. Legacy mappings with unknown mode remain nullable until reconciliation verifies them. Never expose secret/service-role keys, full event payloads, or raw billing records to browser clients or logs.
+`app.stripe_customer_mappings` keys mappings by billing account, Stripe account, and live/test mode. `stripe_customer_mapping_id` is the local row UUID; `stripe_customer_id` is Stripe's external `cus_…` identifier. Legacy mappings with unknown mode remain nullable until reconciliation verifies them. Never expose secret/service-role keys, full event payloads, or raw billing records to browser clients or logs.
 
 ## Required verification
 

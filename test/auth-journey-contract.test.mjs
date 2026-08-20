@@ -100,6 +100,21 @@ test('auth operations enforce config and align signup confirmation redirects', a
   assert.match(auth, /verifyOtp\([\s\S]*?type:\s*'signup'/);
 });
 
+test('client-facing auth operations return safe serialisable error codes', async () => {
+  const [auth, journey, helpers] = await Promise.all([
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
+    read('src/supacharger/components/forms/login-user-form.tsx'),
+    read('src/supacharger/utils/helpers.ts'),
+  ]);
+
+  assert.match(auth, /authActionFailure\(error\)/);
+  assert.match(auth, /authActionSuccess\(\{[\s\S]*?userId:[\s\S]*?identityCount:/);
+  assert.doesNotMatch(auth, /error:\s*new Error/);
+  assert.doesNotMatch(auth, /return \{ data: null, error(?:: error)? \}/);
+  assert.match(journey, /getAuthErrorMessage\(result\.error/);
+  assert.match(helpers, /over_email_send_rate_limit:\s*'overEmailSendRateLimit'/);
+});
+
 test('shared journey supports password, magic link, OTP, and resend cooldown states', async () => {
   const [journey, resend] = await Promise.all([
     read('src/supacharger/components/forms/login-user-form.tsx'),

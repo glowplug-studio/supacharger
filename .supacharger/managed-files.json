@@ -20,8 +20,10 @@
     "supabase/functions/process-image-upload",
     "supabase/migrations",
     "supabase/templates",
+    "test/auth-action-result.test.mjs",
     "test/auth-journey-contract.test.mjs",
     "test/image-transform-contract.test.mjs",
+    "test/billing-schema-contract.test.mjs",
     "test/tooling-contract.test.mjs"
   ],
   "developerOwnedPaths": [
@@ -44,6 +46,7 @@
     "test:auth-journey",
     "test:image-transform",
     "test:image-transform-runtime",
+    "test:billing-schema",
     "test:tooling",
     "check:bruno-rpcs"
   ]

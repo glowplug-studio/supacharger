@@ -118,15 +118,30 @@ export function evaluatePasswordStrength(password: string): PasswordValidationRe
 /**
  * Returns a next-intl Message string based on the current locale.
  */
-export function supabaseErrorCodeLocalisation(response: string) {
+export function supabaseErrorCodeLocalisation(response: string, status: number | null = null) {
   const errorMap: Record<string, string> = {
     invalid_credentials: 'invalidCredentials',
     email_not_confirmed: 'emailNotConfirmed',
     email_address_invalid: 'invalidEmail',
+    email_address_not_authorized: 'emailAddressNotAuthorized',
+    email_exists: 'accountAlreadyExists',
+    user_already_exists: 'accountAlreadyExists',
+    email_provider_disabled: 'emailProviderDisabled',
+    email_password_sign_in_disabled: 'emailProviderDisabled',
+    email_password_sign_up_disabled: 'emailProviderDisabled',
+    signup_disabled: 'signupDisabled',
+    weak_password: 'weakPassword',
+    validation_failed: 'validationFailed',
     user_not_found: 'userNotFound',
+    over_email_send_rate_limit: 'overEmailSendRateLimit',
     over_request_rate_limit: 'overLimit',
     user_banned: 'userBanned',
+    otp_disabled: 'otpDisabled',
     otp_expired: 'otpExpired',
+    magic_link_disabled: 'emailProviderDisabled',
+    oauth_provider_disabled: 'providerDisabled',
+    oauth_provider_not_supported: 'providerDisabled',
+    provider_disabled: 'providerDisabled',
     same_password: 'samePassword',
     AuthApiError: 'tokenAuthApiError',
     unexpected_failure: 'genericError',
@@ -135,5 +150,25 @@ export function supabaseErrorCodeLocalisation(response: string) {
     // Add more mappings as needed
   };
 
-  return errorMap[response] || 'genericError';
+  return errorMap[response] || (status === 429 ? 'overLimit' : 'genericError');
+}
+
+export function supabaseErrorCodeFallback(messageKey: string) {
+  const fallbackMessages: Record<string, string> = {
+    emailAddressNotAuthorized:
+      'This project cannot send email to that address. Configure custom SMTP in Supabase or use an authorised address.',
+    accountAlreadyExists: 'An account already exists for this email address.',
+    emailProviderDisabled: 'Email authentication is currently disabled.',
+    signupDisabled: 'New account registration is currently disabled.',
+    weakPassword: "That password does not meet the server's password requirements.",
+    validationFailed: 'The authentication details are not in the expected format.',
+    overEmailSendRateLimit:
+      'Too many verification emails have been sent. Please wait a few minutes before trying again.',
+    otpDisabled: 'Email verification codes are currently disabled.',
+    providerDisabled: 'That sign-in provider is currently disabled.',
+    overLimit: 'Too many requests. Please wait a few minutes and try again.',
+    genericError: 'There was an unexpected problem.',
+  };
+
+  return fallbackMessages[messageKey] ?? fallbackMessages.genericError;
 }

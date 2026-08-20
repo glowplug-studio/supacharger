@@ -621,12 +621,12 @@ export type Database = {
         }
         Relationships: []
       }
-      stripe_customers: {
+      stripe_customer_mappings: {
         Row: {
           billing_account_id: string
           billing_address: Json | null
           created_at: string
-          id: string
+          stripe_customer_mapping_id: string
           livemode: boolean | null
           payment_method: Json | null
           stripe_account_id: string
@@ -637,7 +637,7 @@ export type Database = {
           billing_account_id: string
           billing_address?: Json | null
           created_at?: string
-          id?: string
+          stripe_customer_mapping_id?: string
           livemode?: boolean | null
           payment_method?: Json | null
           stripe_account_id?: string
@@ -648,7 +648,7 @@ export type Database = {
           billing_account_id?: string
           billing_address?: Json | null
           created_at?: string
-          id?: string
+          stripe_customer_mapping_id?: string
           livemode?: boolean | null
           payment_method?: Json | null
           stripe_account_id?: string
@@ -657,7 +657,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "stripe_customers_billing_account_id_fkey"
+            foreignKeyName: "stripe_customer_mappings_billing_account_id_fkey"
             columns: ["billing_account_id"]
             isOneToOne: false
             referencedRelation: "billing_accounts"
