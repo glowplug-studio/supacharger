@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import { copySupabaseResponseState } from '../src/supacharger/auth/proxy-response.ts';
 import { pathMatches } from '../src/supacharger/auth/route-policy.ts';
+import { getSafeNextPath, withNextPath } from '../src/supacharger/auth/safe-next-path.js';
 
 function responseDouble(cookies = [], headers = {}) {
   const writtenCookies = [];
@@ -43,4 +44,14 @@ test('response-state copy preserves refreshed cookies and cache headers only', (
   assert.equal(target.headers.get('expires'), '0');
   assert.equal(target.headers.get('pragma'), 'no-cache');
   assert.equal(target.headers.has('x-internal'), false);
+});
+
+test('auth return paths accept internal URLs and reject external redirects', () => {
+  const returnPath = '/events?filter=mine';
+  assert.equal(getSafeNextPath(returnPath), returnPath);
+  assert.equal(withNextPath('/account/login', returnPath), `/account/login?next=${encodeURIComponent(returnPath)}`);
+  assert.equal(getSafeNextPath('https://attacker.example/invite'), null);
+  assert.equal(getSafeNextPath('//attacker.example/invite'), null);
+  assert.equal(getSafeNextPath('/%2f%2fattacker.example/invite'), null);
+  assert.equal(getSafeNextPath('/\\attacker.example/invite'), null);
 });

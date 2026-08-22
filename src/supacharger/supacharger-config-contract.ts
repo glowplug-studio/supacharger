@@ -23,6 +23,10 @@ export type SupachargerOAuthProvider =
   | 'workos'
   | 'zoom';
 
+export type EmailPasswordlessMode = 'disabled' | 'link' | 'otp';
+export type EmailOtpLength = 6 | 7 | 8 | 9 | 10;
+export type SignUpEmailVerificationMode = EmailPasswordlessMode | 'otp-and-link';
+
 export type SupachargerConfig = {
   SITE_TITLE: string;
   SITE_DESCRIPTION: string;
@@ -71,11 +75,12 @@ export type SupachargerConfig = {
       SIGN_IN: boolean;
       SIGN_UP: boolean;
     };
-    MAGIC_LINK: {
-      ENABLED: boolean;
-      ALLOW_SIGN_UP: boolean;
+    PASSWORDLESS_EMAIL: {
+      SIGN_IN: EmailPasswordlessMode;
+      SIGN_UP: EmailPasswordlessMode;
+      OTP_LENGTH: EmailOtpLength;
     };
-    SIGN_UP_EMAIL_VERIFICATION: 'disabled' | 'link' | 'otp';
+    SIGN_UP_EMAIL_VERIFICATION: SignUpEmailVerificationMode;
     MFA_TOTP: {
       ENABLED: boolean;
     };
@@ -112,7 +117,7 @@ export type SupachargerConfig = {
     AUTHED_USER: {
       HOME_PATH: string;
       AUTHGUARD_REDIRECT_DESTINATION: string;
-      LOGIN_REDIRECT_DESTINATON: string;
+      LOGIN_REDIRECT_DESTINATION: string;
     };
   };
   ACCOUNT_CONFIRMED_PATH: string;

@@ -1,5 +1,6 @@
 /// <reference lib="deno.ns" />
 
+import type { IMagickImage } from 'npm:@imagemagick/magick-wasm@0.0.42';
 import {
   AlphaAction,
   Gravity,
@@ -8,7 +9,6 @@ import {
   MagickColor,
   MagickFormat,
 } from 'npm:@imagemagick/magick-wasm@0.0.42';
-import type { IMagickImage } from 'npm:@imagemagick/magick-wasm@0.0.42';
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2.112.3';
 
 import type { ImageUploadTarget } from './image-target-contract.ts';

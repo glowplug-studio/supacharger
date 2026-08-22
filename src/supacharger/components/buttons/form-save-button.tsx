@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 
-import InlineLoader from '@/assets/images/ui/InlineLoader.svg';
 import { Button } from '@/components/ui/button';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 interface SaveButtonProps {
   isLoading: boolean;
@@ -38,7 +38,7 @@ export default function SaveButton({
     >
       {isLoading ? (
         <span className='flex items-center justify-center'>
-          <InlineLoader className='-ml-1 mr-3 h-5 w-5' />
+          <LoadingSpinner className='-ml-1 mr-3 h-5 w-5' />
           {savingLabel}
         </span>
       ) : isSuccess ? (

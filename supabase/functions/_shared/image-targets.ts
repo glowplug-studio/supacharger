@@ -1,5 +1,5 @@
-import { defineImageUploadTargets } from './image-target-contract.ts';
 import type { ImageUploadTargets } from './image-target-contract.ts';
+import { defineImageUploadTargets } from './image-target-contract.ts';
 
 // Developer-owned target policy. The HTTP request may select one of these names,
 // but every destination and transform setting remains defined inside the app.

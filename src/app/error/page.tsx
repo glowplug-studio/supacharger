@@ -1,3 +1,5 @@
+import { ApplicationErrorPage } from '@/components/error-page/application-error-page';
+
 export default function ErrorPage() {
-    return <p>Sorry, something went wrong</p>
+  return <ApplicationErrorPage kind='unexpected' />;
 }

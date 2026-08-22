@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
+import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
 import { SC_CONFIG } from "@/supacharger/supacharger-config";
 import { getURL } from '@/supacharger/utils/helpers';
 
@@ -48,7 +49,9 @@ export async function GET(request: NextRequest) {
         return NextResponse.redirect(siteUrl + SC_CONFIG.BILLING_ACCESS.REDIRECT_PATH);
       }
     }
-    return NextResponse.redirect(siteUrl);
+    return NextResponse.redirect(
+      getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION),
+    );
   }
 
   return NextResponse.redirect(siteUrl);

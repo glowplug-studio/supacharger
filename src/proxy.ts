@@ -79,6 +79,7 @@ export async function proxy(request: NextRequest) {
   if (
     isAuthenticated &&
     SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED &&
+    pathname !== '/error' &&
     pathname !== SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH &&
     !pathname.startsWith('/api/') &&
     !pathname.startsWith('/auth/')

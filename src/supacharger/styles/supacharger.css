@@ -66,6 +66,25 @@
     color: white !important;
   }
 
+  .sc-auth-provider-avatar {
+    background: var(--auth-input-background, #202024);
+    border-color: var(--auth-surface-background, #1a1919);
+  }
+
+  .sc-auth-provider-button {
+    display: grid !important;
+    grid-template-columns: 2rem minmax(0, 1fr) 2rem;
+    align-items: center;
+    justify-content: stretch;
+  }
+
+  .sc-auth-provider-switcher {
+    display: grid !important;
+    grid-template-columns: 4rem minmax(0, 1fr) 4rem;
+    align-items: center;
+    justify-content: stretch;
+  }
+
   .sc-auth-primary-button {
     @apply rounded-[10px] text-sm font-semibold transition-colors;
     background: hsl(var(--primary)) !important;
@@ -82,10 +101,39 @@
     border: 1px solid var(--auth-input-border, #46484f) !important;
   }
 
+  .sc-auth-otp {
+    @apply mx-auto w-full;
+    gap: 0.25rem !important;
+  }
+
   .sc-auth-otp input {
-    @apply mx-1 h-12 w-10 rounded-md text-center text-xl font-semibold text-white;
+    @apply min-w-0 text-center font-semibold text-white;
+    width: clamp(2.25rem, 12vw, 3.75rem) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    font-size: 1.5rem !important;
     background: var(--auth-input-background, #202024);
     border: 1px solid var(--auth-input-border, #46484f);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  }
+
+  .sc-auth-otp .otp-field-placeholder {
+    color: rgb(255 255 255 / 0.18);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .sc-auth-otp input:focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+  }
+
+  @media (min-width: 640px) {
+    .sc-auth-otp {
+      gap: 0.5rem !important;
+    }
   }
 
   .sc-auth-resend {
@@ -94,19 +142,19 @@
   }
 
   .btn {
-    @apply inline-flex h-10 items-center justify-between rounded-md px-5 py-3 font-medium capitalize text-white hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
+    @apply inline-flex h-10 items-center justify-between rounded-md px-5 py-3 font-medium text-white capitalize hover:text-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600;
   }
 
   .input {
-    @apply block w-full rounded-md px-4 py-3 text-sm font-medium outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-secondary;
+    @apply focus:outline-secondary block w-full rounded-md px-4 py-3 text-sm font-medium outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2;
   }
 
   .sc_message {
-    @apply my-2 rounded-md px-4 py-4 text-xs;
+    @apply my-2 rounded-md px-4 py-4 text-sm;
   }
 
   .sc_message-error {
-    @apply bg-red-100 font-semibold text-gray-600 dark:bg-red-200 dark:text-gray-900;
+    @apply bg-red-100 text-center font-semibold text-gray-600 dark:bg-red-200 dark:text-gray-900;
   }
 
   .sc_message-attention {
@@ -115,7 +163,7 @@
   }
 
   .sc_message-positive {
-    @apply border border-green-300 font-bold text-green-700;
+    @apply border border-green-300 bg-green-100 font-semibold text-green-800 dark:bg-green-100 dark:text-green-900;
   }
 
   .dropdown-container .dropdown-content {

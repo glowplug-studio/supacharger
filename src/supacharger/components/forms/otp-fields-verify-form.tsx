@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
-import InlineLoaderDark from '@/assets/images/ui/InlineLoaderDark.svg';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import OTPField from '@/components/ui/otp-field';
 import { verifyOtp } from '@/lib/supabase/supacharger/supabase-auth';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -86,8 +86,7 @@ export function OtpFieldsForm({ email }: { email: string }) {
       <div className='flex flex-col items-center justify-center rounded-md border bg-gray-100 p-5 h-28'>
         {loading ? (
           <div className='flex flex-col items-center'>
-            <InlineLoaderDark />
-            <span className="mt-2 text-sm text-gray-500"></span>
+            <LoadingSpinner className='h-10 w-10 text-gray-500' label={tOTPFormComponent('verifyingCode')} />
           </div>
         ) : (
           <OTPField

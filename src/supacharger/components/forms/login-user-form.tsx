@@ -1,45 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Check, Eye, EyeOff, LogIn, Mail, UserPlus, WandSparkles } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Eye,
+  EyeOff,
+  LogIn,
+  Mail,
+  MailCheck,
+  UserPlus,
+  WandSparkles,
+  X,
+} from 'lucide-react';
 import AnimateHeight from 'react-animate-height';
+import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-import InlineLoader from '@/assets/images/ui/InlineLoader.svg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import OTPField from '@/components/ui/otp-field';
-import {
-  createUserByEmailPassword,
-  loginUser,
-  signInWithEmail,
-  verifyOtp,
-} from '@/lib/supabase/supacharger/supabase-auth';
-import AuthProviderButtons, {
-  EnabledAuthProviderIcons,
-} from '@/supacharger/components/buttons/auth-provider-buttons';
+import { createClient } from '@/lib/supabase/client';
+import { loginUser, signInWithEmail, verifyOtp, verifySignInOtp } from '@/lib/supabase/supacharger/supabase-auth';
+import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
+import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
 import { UIDivider } from '@/supacharger/components/ui/divider';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import {
-  supabaseErrorCodeFallback,
-  supabaseErrorCodeLocalisation,
-} from '@/supacharger/utils/helpers';
+import type { EmailPasswordlessMode, SignUpEmailVerificationMode } from '@/supacharger/supacharger-config-contract';
+import { getURL, supabaseErrorCodeFallback, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
 
 export type AuthMode = 'signin' | 'signup';
 type AuthStep = 'choose' | 'email' | 'verify-email' | 'check-email';
-type PendingAction = 'password' | 'magic-link' | 'otp' | null;
+type PendingAction = 'password' | 'passwordless-email' | 'otp' | 'verification-email' | null;
+type VerificationPurpose = 'signin' | 'signup';
 
 interface LoginUserFormProps {
   initialMode?: AuthMode;
+  nextPath?: string | null;
   onFormHeadingChange?: (heading: string) => void;
 }
 
 const emailSchema = z.string().trim().pipe(z.email());
+const OTP_SUCCESS_REDIRECT_DELAY_MS = 450;
 
 function isPasswordModeAvailable(mode: AuthMode) {
   return mode === 'signin'
@@ -47,26 +56,27 @@ function isPasswordModeAvailable(mode: AuthMode) {
     : SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
 }
 
-function isMagicLinkAvailable(mode: AuthMode) {
-  return (
-    SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED &&
-    (mode === 'signin' || SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ALLOW_SIGN_UP)
-  );
+function getPasswordlessEmailMode(mode: AuthMode) {
+  return mode === 'signin'
+    ? SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_IN
+    : SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_UP;
+}
+
+function passwordlessModeHasOtp(mode: EmailPasswordlessMode) {
+  return mode === 'otp';
 }
 
 export function shouldStartInEmailMode(initialMode: AuthMode) {
   const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
   const emailJourneyAvailable =
-    isPasswordModeAvailable(initialMode) || isMagicLinkAvailable(initialMode);
+    isPasswordModeAvailable(initialMode) || getPasswordlessEmailMode(initialMode) !== 'disabled';
 
   return emailJourneyAvailable && !providerJourneyAvailable;
 }
 
-export function LoginUserForm({
-  initialMode = 'signin',
-  onFormHeadingChange,
-}: LoginUserFormProps) {
+export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormHeadingChange }: LoginUserFormProps) {
   const t = useTranslations('AuthJourney');
+  const tAuthTerms = useTranslations('AuthTerms');
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const router = useRouter();
   const startsInEmailMode = shouldStartInEmailMode(initialMode);
@@ -79,29 +89,68 @@ export function LoginUserForm({
   const [showPassword, setShowPassword] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [organisationHandle, setOrganisationHandle] = useState('');
+  const [verificationEmail, setVerificationEmail] = useState('');
+  const [verificationPurpose, setVerificationPurpose] = useState<VerificationPurpose>('signup');
+  const [verificationDeliveryMode, setVerificationDeliveryMode] = useState<SignUpEmailVerificationMode>('disabled');
   const [otp, setOtp] = useState('');
+  const [otpVerificationSucceeded, setOtpVerificationSucceeded] = useState(false);
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loginFailed, setLoginFailed] = useState(false);
+  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false);
+  const [otpFailure, setOtpFailure] = useState<'expired-or-invalid' | 'already-verified' | null>(null);
+  const [, startAuthTransition] = useTransition();
   const parsedEmail = emailSchema.safeParse(email);
   const normalisedEmail = parsedEmail.success ? parsedEmail.data : email.trim();
   const passwordModeAvailable = isPasswordModeAvailable(mode);
-  const magicLinkAvailable = isMagicLinkAvailable(mode);
-  const emailJourneyAvailable = passwordModeAvailable || magicLinkAvailable;
+  const passwordlessEmailMode = getPasswordlessEmailMode(mode);
+  const passwordlessEmailAvailable = passwordlessEmailMode !== 'disabled';
+  const emailJourneyAvailable = passwordModeAvailable || passwordlessEmailAvailable;
   const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
   const passwordConfirmationRequired = mode === 'signup' && !showPassword;
   const passwordsMatch = passwordAgain.length > 0 && password === passwordAgain;
+  const signUpVerificationMode = SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION;
+  const otpLength = SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.OTP_LENGTH;
+  const offersOtpAndLink = verificationDeliveryMode === 'otp-and-link';
   const useSocialAuthLabel = t.has('useSocialAuth') ? t('useSocialAuth') : 'Use social auth';
+  const createAccountInsteadLabel = t.has('createAccountInstead')
+    ? t('createAccountInstead')
+    : 'Create Account instead';
+  const passwordlessSignInUnavailableLabel = t.has('passwordlessSignInUnavailable')
+    ? t('passwordlessSignInUnavailable')
+    : 'We couldn’t send a sign-in email. Check the email address, or create an account instead.';
+  const enterSignInCodeLabel = t.has('enterSignInCode') ? t('enterSignInCode') : 'Enter your login code';
+  const passwordlessButtonLabel =
+    passwordlessEmailMode === 'otp'
+      ? t.has('passwordlessOtp')
+        ? t('passwordlessOtp')
+        : 'Email me a sign-in code'
+      : t('magicLink');
+  const loginHereLabel = t.has('loginHere') ? t('loginHere') : 'Login Here';
+  const getVerificationLinkLabel = t.has('getVerificationLink') ? t('getVerificationLink') : 'Get verification link';
+  const safeNextPath = getSafeNextPath(nextPath);
+  const postAuthPath = safeNextPath ?? SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION;
 
   function pushAuthRoute(nextMode: AuthMode) {
-    window.history.pushState(null, '', nextMode === 'signup' ? '/account/create' : '/account/login');
+    window.history.pushState(
+      null,
+      '',
+      withNextPath(nextMode === 'signup' ? '/account/create' : '/account/login', safeNextPath),
+    );
   }
 
   function clearSensitiveFields() {
     setPassword('');
     setPasswordAgain('');
+    setVerificationEmail('');
+    setVerificationDeliveryMode('disabled');
     setOtp('');
+    setOtpVerificationSucceeded(false);
     setShowPassword(false);
     setError(null);
+    setLoginFailed(false);
+    setEmailNotConfirmed(false);
+    setOtpFailure(null);
   }
 
   function togglePasswordVisibility() {
@@ -109,6 +158,7 @@ export function LoginUserForm({
     if (nextShowPassword) {
       setPasswordAgain('');
       setError(null);
+      setLoginFailed(false);
     }
     setShowPassword(nextShowPassword);
   }
@@ -153,37 +203,101 @@ export function LoginUserForm({
       : supabaseErrorCodeFallback(messageKey);
   }
 
+  function getSignInDeliveryMessage() {
+    return t.has('signInCodeSent')
+      ? t('signInCodeSent', { email: verificationEmail, length: otpLength })
+      : `We sent a ${otpLength}-digit sign-in code to ${verificationEmail}.`;
+  }
+
   async function submitPassword(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    if (!validateEmail()) return;
-    if (!password) return setError(t('enterPassword'));
-    if (
-      mode === 'signup' &&
-      (!passwordIsValid || (passwordConfirmationRequired && password !== passwordAgain))
-    ) {
-      return setError(
-        passwordConfirmationRequired && password !== passwordAgain
-          ? t('passwordMismatch')
-          : t('strongerPassword'),
-      );
+    setLoginFailed(false);
+    setEmailNotConfirmed(false);
+    if (!validateEmail()) {
+      event.preventDefault();
+      return;
     }
-
-    setPendingAction('password');
-    const formData = new FormData();
-    formData.set('email', normalisedEmail);
-    formData.set('password', password);
-    const result = mode === 'signup'
-      ? await createUserByEmailPassword(formData)
-      : await loginUser(formData);
-    setPendingAction(null);
-
-    if (result?.error) {
-      setError(getAuthErrorMessage(result.error, 'authenticationFailed'));
+    if (!password) {
+      event.preventDefault();
+      setError(t('enterPassword'));
+      return;
+    }
+    if (mode === 'signup' && (!passwordIsValid || (passwordConfirmationRequired && password !== passwordAgain))) {
+      event.preventDefault();
+      setError(
+        passwordConfirmationRequired && password !== passwordAgain ? t('passwordMismatch') : t('strongerPassword'),
+      );
       return;
     }
 
-    if (mode === 'signin') {
+    if (mode === 'signup') {
+      setPendingAction('password');
+      const supabase = createClient();
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: normalisedEmail,
+        password,
+        options: {
+          emailRedirectTo: getURL(
+            `/auth/confirm?next=${encodeURIComponent(safeNextPath ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH)}`,
+          ),
+        },
+      });
+      setPendingAction(null);
+
+      if (signUpError) {
+        setError(
+          getAuthErrorMessage(
+            { code: signUpError.code ?? 'genericError', status: signUpError.status ?? null },
+            'authenticationFailed',
+          ),
+        );
+        return;
+      }
+
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        toast.warning(tSupabaseErrorCodes('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
+        setMode('signin');
+        setStep('email');
+        pushAuthRoute('signin');
+        onFormHeadingChange?.(t('signIn'));
+        setPasswordAgain('');
+        return;
+      }
+
+      setVerificationEmail(normalisedEmail);
+      setVerificationPurpose('signup');
+      setVerificationDeliveryMode(signUpVerificationMode);
+      if (signUpVerificationMode === 'otp' || signUpVerificationMode === 'otp-and-link') {
+        setStep('verify-email');
+        onFormHeadingChange?.(signUpVerificationMode === 'otp-and-link' ? t('verifyEmail') : t('enterCode'));
+      } else if (signUpVerificationMode === 'link') {
+        setStep('check-email');
+        onFormHeadingChange?.(t('checkEmail'));
+      } else {
+        router.replace(postAuthPath);
+        router.refresh();
+      }
+      return;
+    }
+
+    const formData = new FormData();
+    formData.set('email', normalisedEmail);
+    formData.set('password', password);
+    if (safeNextPath) formData.set('next', safeNextPath);
+    setPendingAction('password');
+    startAuthTransition(async () => {
+      const result = await loginUser(formData);
+      setPendingAction(null);
+
+      if (result?.error) {
+        const messageKey = supabaseErrorCodeLocalisation(result.error.code, result.error.status);
+        setLoginFailed(mode === 'signin' && messageKey === 'invalidCredentials');
+        setEmailNotConfirmed(mode === 'signin' && messageKey === 'emailNotConfirmed');
+        setError(getAuthErrorMessage(result.error, 'authenticationFailed'));
+        return;
+      }
+
       if (SC_CONFIG.ORGANISATIONS.ENABLED && organisationHandle.trim()) {
         const contextResponse = await fetch('/api/organisations/context', {
           method: 'POST',
@@ -195,47 +309,105 @@ export function LoginUserForm({
           return;
         }
       }
-      router.replace(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATON);
+      router.replace(postAuthPath);
       router.refresh();
-      return;
-    }
+    });
+  }
 
-    if (SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION === 'otp') {
+  async function requestVerificationEmail() {
+    if (!parsedEmail.success || pendingAction !== null) return;
+
+    setPendingAction('verification-email');
+    try {
+      const response = await fetch('/api/account/resend-activation-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalisedEmail, next: safeNextPath }),
+      });
+
+      if (!response.ok) {
+        setError(t('resendFailed'));
+        return;
+      }
+
+      setVerificationEmail(normalisedEmail);
+      setVerificationPurpose('signup');
+      setVerificationDeliveryMode(signUpVerificationMode);
+      setOtp('');
+      setOtpFailure(null);
+      setError(null);
+      setEmailNotConfirmed(false);
       setStep('verify-email');
-      onFormHeadingChange?.(t('enterCode'));
-    } else if (SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION === 'link') {
-      setStep('check-email');
-      onFormHeadingChange?.(t('checkEmail'));
-    } else {
-      router.replace(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATON);
-      router.refresh();
+      onFormHeadingChange?.(signUpVerificationMode === 'otp-and-link' ? t('verifyEmail') : t('enterCode'));
+    } catch {
+      setError(t('resendFailed'));
+    } finally {
+      setPendingAction(null);
     }
   }
 
-  async function sendMagicLink() {
+  function sendPasswordlessEmail() {
     setError(null);
+    setLoginFailed(false);
     if (!validateEmail()) return;
-    setPendingAction('magic-link');
-    const result = await signInWithEmail(normalisedEmail);
-    setPendingAction(null);
-    if (result?.error) return setError(getAuthErrorMessage(result.error, 'emailSendFailed'));
-    setStep('check-email');
-    onFormHeadingChange?.(t('checkEmail'));
+    setPendingAction('passwordless-email');
+    startAuthTransition(async () => {
+      const result = await signInWithEmail(normalisedEmail, safeNextPath);
+      setPendingAction(null);
+      if (result?.error) {
+        return setError(
+          result.error.code === 'otp_disabled'
+            ? passwordlessSignInUnavailableLabel
+            : getAuthErrorMessage(result.error, 'emailSendFailed'),
+        );
+      }
+      setVerificationEmail(normalisedEmail);
+      setVerificationPurpose('signin');
+      setVerificationDeliveryMode(passwordlessEmailMode);
+      if (passwordlessModeHasOtp(passwordlessEmailMode)) {
+        setStep('verify-email');
+        onFormHeadingChange?.(enterSignInCodeLabel);
+      } else {
+        setStep('check-email');
+        onFormHeadingChange?.(t('checkEmail'));
+      }
+    });
   }
 
-  async function submitOtp(value = otp) {
-    if (!/^\d{6}$/.test(value)) return;
+  async function resendPasswordlessEmail() {
+    const result = await signInWithEmail(verificationEmail, safeNextPath);
+    return !result.error;
+  }
+
+  function submitOtp(value = otp) {
+    if (value.length !== otpLength || !/^\d+$/.test(value)) return;
     setPendingAction('otp');
     setError(null);
-    const result = await verifyOtp(normalisedEmail, value);
-    setPendingAction(null);
-    if (result?.error) {
-      setOtp('');
-      setError(getAuthErrorMessage(result.error, 'invalidCode'));
-      return;
-    }
-    router.replace(SC_CONFIG.ACCOUNT_CONFIRMED_PATH);
-    router.refresh();
+    setOtpFailure(null);
+    setOtpVerificationSucceeded(false);
+    startAuthTransition(async () => {
+      const result =
+        verificationPurpose === 'signin'
+          ? await verifySignInOtp(verificationEmail, value)
+          : await verifyOtp(verificationEmail, value);
+      if (result?.error) {
+        setPendingAction(null);
+        const messageKey = supabaseErrorCodeLocalisation(result.error.code, result.error.status);
+        setOtp('');
+        setError(getAuthErrorMessage(result.error, 'invalidCode'));
+        if (messageKey === 'otpExpired') setOtpFailure('expired-or-invalid');
+        if (messageKey === 'otpAlreadyVerified') setOtpFailure('already-verified');
+        return;
+      }
+      setOtpVerificationSucceeded(true);
+      await new Promise((resolve) => window.setTimeout(resolve, OTP_SUCCESS_REDIRECT_DELAY_MS));
+      router.replace(
+        verificationPurpose === 'signin'
+          ? postAuthPath
+          : safeNextPath ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+      );
+      router.refresh();
+    });
   }
 
   const backButton = (
@@ -277,32 +449,83 @@ export function LoginUserForm({
 
   if (step === 'verify-email') {
     return (
-      <div className='space-y-5 text-white'>
+      <div className='space-y-8 text-white'>
         {backButton}
-        <div className='space-y-2'>
-          <h2 className='text-xl font-semibold'>{t('enterCode')}</h2>
-          <p className='text-sm text-white/60'>{t('codeSent', { email: normalisedEmail })}</p>
+        <div className='sc-auth-surface space-y-4 px-4 py-6 text-center sm:px-6'>
+          <p className='text-base text-white/90'>
+            {verificationPurpose === 'signin'
+              ? getSignInDeliveryMessage()
+              : offersOtpAndLink
+                ? t('codeAndLinkSent', { email: verificationEmail })
+                : t('codeSent', { email: verificationEmail, length: otpLength })}
+          </p>
+          {offersOtpAndLink ? (
+            <p className='text-sm leading-relaxed text-white/70'>{t('openLinkInstructions')}</p>
+          ) : null}
         </div>
-        <div className='sc-auth-surface flex min-h-24 items-center justify-center p-4'>
-          {pendingAction === 'otp' ? (
-            <InlineLoader className='h-6 w-6 animate-spin [&_circle]:stroke-white' aria-label={t('verifyingCode')} />
-          ) : (
-            <OTPField
-              className='sc-auth-otp'
-              length={6}
-              value={otp}
-              onValueChange={(value) => {
-                const digits = value.replace(/\D/g, '').slice(0, 6);
-                setOtp(digits);
-                if (digits.length === 6) void submitOtp(digits);
-              }}
-              autoFocus
-              autoComplete='one-time-code'
-            />
-          )}
+        <div className='sc-auth-surface space-y-5 px-4 py-6 sm:px-6'>
+          <p className='text-center text-base font-medium'>{t('enterCodeOption')}</p>
+          <div className='relative flex min-h-16 items-center justify-center'>
+            <div
+              className={`flex items-center justify-center transition-all duration-150 motion-reduce:transition-none ${
+                otpVerificationSucceeded ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+              }`}
+            >
+              {pendingAction === 'otp' ? (
+                <LoadingSpinner className='h-6 w-6 text-white' label={t('verifyingCode')} />
+              ) : (
+                <OTPField
+                  className='sc-auth-otp'
+                  length={otpLength}
+                  value={otp}
+                  onValueChange={(value) => {
+                    const digits = value.replace(/\D/g, '').slice(0, otpLength);
+                    setOtp(digits);
+                    if (digits.length === otpLength) void submitOtp(digits);
+                  }}
+                  autoFocus
+                  autoComplete='one-time-code'
+                />
+              )}
+            </div>
+            <div
+              className={`absolute flex items-center justify-center transition-all duration-150 motion-reduce:transition-none ${
+                otpVerificationSucceeded ? 'scale-100 opacity-100' : 'pointer-events-none scale-75 opacity-0'
+              }`}
+              role={otpVerificationSucceeded ? 'status' : undefined}
+              aria-label={otpVerificationSucceeded ? tAuthTerms('accountEmailVerified') : undefined}
+              aria-hidden={!otpVerificationSucceeded}
+            >
+              <span className='flex h-12 w-12 items-center justify-center rounded-full bg-green-600'>
+                <Check className='h-7 w-7 text-white' strokeWidth={3} aria-hidden='true' />
+              </span>
+            </div>
+          </div>
         </div>
-        {error ? <p className='sc_message sc_message-error' role='alert'>{error}</p> : null}
-        <ResendVerificationEmail email={normalisedEmail} />
+        {error ? (
+          <p
+            className={`sc_message ${otpFailure === 'already-verified' ? 'sc_message-positive' : 'sc_message-error'}`}
+            role={otpFailure === 'already-verified' ? 'status' : 'alert'}
+          >
+            {error}
+          </p>
+        ) : null}
+        {otpFailure && verificationPurpose === 'signup' ? (
+          <Link
+            href={withNextPath('/account/login', safeNextPath)}
+            className='text-primary hover:text-primary/80 inline-flex items-center gap-2 text-sm font-semibold transition-colors'
+          >
+            <span>{loginHereLabel}</span>
+            <ArrowRight className='h-4 w-4' aria-hidden='true' />
+          </Link>
+        ) : (
+          <ResendVerificationEmail
+            email={verificationEmail}
+            onResend={verificationPurpose === 'signin' ? resendPasswordlessEmail : undefined}
+            purpose={verificationPurpose === 'signin' ? 'signin-code' : 'signup'}
+            nextPath={safeNextPath}
+          />
+        )}
       </div>
     );
   }
@@ -311,11 +534,18 @@ export function LoginUserForm({
     return (
       <div className='space-y-5 text-white'>
         {backButton}
-        <div className='sc-auth-surface space-y-2 p-5'>
-          <h2 className='text-xl font-semibold'>{t('checkEmail')}</h2>
-          <p className='text-sm text-white/60'>{t('linkSent', { email: normalisedEmail })}</p>
+        <div className='sc_message sc_message-positive flex items-start gap-3 text-sm leading-relaxed' role='status'>
+          <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-600'>
+            <MailCheck className='h-4 w-4 text-white' aria-hidden='true' />
+          </div>
+          <p className='pt-1'>{t('linkSent', { email: verificationEmail })}</p>
         </div>
-        {mode === 'signup' ? <ResendVerificationEmail email={normalisedEmail} /> : null}
+        <ResendVerificationEmail
+          email={verificationEmail}
+          onResend={verificationPurpose === 'signin' ? resendPasswordlessEmail : undefined}
+          purpose={verificationPurpose === 'signin' ? 'signin-link' : 'signup'}
+          nextPath={safeNextPath}
+        />
       </div>
     );
   }
@@ -340,18 +570,21 @@ export function LoginUserForm({
             <Button
               type='button'
               variant='ghost'
-              className='sc-auth-surface-button mb-6 flex w-full items-center justify-center gap-3'
+              className='sc-auth-surface-button sc-auth-provider-switcher mb-6 w-full'
               onClick={showProviderChoices}
             >
-              <EnabledAuthProviderIcons limit={3} />
-              <span>{useSocialAuthLabel}</span>
+              <span className='justify-self-start'>
+                <EnabledAuthProviderIcons limit={3} />
+              </span>
+              <span className='justify-self-center'>{useSocialAuthLabel}</span>
+              <span aria-hidden='true' />
             </Button>
           ) : null}
 
           <div className='mb-4 flex items-center justify-end gap-4'>
             <button
               type='button'
-              className='text-primary inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:text-primary/80'
+              className='text-primary hover:text-primary/80 inline-flex items-center gap-2 text-sm font-semibold transition-colors'
               onClick={() => switchAuthMode(mode === 'signin' ? 'signup' : 'signin')}
             >
               {mode === 'signin' ? <UserPlus className='h-4 w-4' /> : <LogIn className='h-4 w-4' />}
@@ -372,6 +605,7 @@ export function LoginUserForm({
             onChange={(event) => {
               setEmail(event.target.value);
               setError(null);
+              setEmailNotConfirmed(false);
             }}
           />
 
@@ -397,9 +631,15 @@ export function LoginUserForm({
                   className='sc-auth-input'
                   type='text'
                   autoComplete='organization'
-                  placeholder={SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required' ? t('organisationHandle') : t('organisationHandleOptional')}
+                  placeholder={
+                    SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'
+                      ? t('organisationHandle')
+                      : t('organisationHandleOptional')
+                  }
                   value={organisationHandle}
-                  onChange={(event) => setOrganisationHandle(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  onChange={(event) =>
+                    setOrganisationHandle(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
+                  }
                   required={SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'}
                 />
               ) : null}
@@ -447,7 +687,7 @@ export function LoginUserForm({
                       disabled={showPassword}
                     />
                     {passwordsMatch ? (
-                      <span className='pointer-events-none absolute left-[calc(100%+0.5rem)] top-1/2 flex -translate-y-1/2 items-center'>
+                      <span className='pointer-events-none absolute top-1/2 left-[calc(100%+0.5rem)] flex -translate-y-1/2 items-center'>
                         <Check aria-hidden='true' className='text-green-500' size={17} strokeWidth={2.5} />
                       </span>
                     ) : null}
@@ -457,7 +697,46 @@ export function LoginUserForm({
             </div>
           ) : null}
 
-          {error ? <p className='sc_message sc_message-error' role='alert'>{error}</p> : null}
+          {emailNotConfirmed && error ? (
+            <div className='space-y-3'>
+              <div className='sc_message sc_message-error' role='alert'>
+                {error}
+              </div>
+              <button
+                type='button'
+                className='sc-auth-recovery-link text-primary hover:text-primary/80 mx-auto flex items-center justify-center gap-2 text-sm font-bold underline-offset-4 transition-colors hover:underline'
+                disabled={pendingAction !== null}
+                onClick={() => void requestVerificationEmail()}
+              >
+                {pendingAction === 'verification-email' ? <LoadingSpinner className='h-4 w-4' /> : null}
+                <span>{getVerificationLinkLabel}</span>
+                <ArrowRight className='h-4 w-4' aria-hidden='true' />
+              </button>
+            </div>
+          ) : error && loginFailed ? (
+            <div className='space-y-3'>
+              <div className='sc_message sc_message-error' role='alert'>
+                <div className='flex items-center justify-center gap-3'>
+                  <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-600'>
+                    <X className='h-4 w-4 text-white' aria-hidden='true' />
+                  </div>
+                  <span>{error}</span>
+                </div>
+              </div>
+              <button
+                type='button'
+                className='sc-auth-recovery-link text-primary hover:text-primary/80 mx-auto flex items-center justify-center gap-2 text-sm font-bold transition-colors'
+                onClick={() => switchAuthMode('signup')}
+              >
+                <span>{createAccountInsteadLabel}</span>
+                <ArrowRight className='h-4 w-4' aria-hidden='true' />
+              </button>
+            </div>
+          ) : error ? (
+            <p className='sc_message sc_message-error' role='alert'>
+              {error}
+            </p>
+          ) : null}
 
           {passwordModeAvailable ? (
             <Button
@@ -468,32 +747,44 @@ export function LoginUserForm({
                 !parsedEmail.success ||
                 !password ||
                 (mode === 'signup' &&
-                  (!passwordIsValid ||
-                    (passwordConfirmationRequired && password !== passwordAgain)))
+                  (!passwordIsValid || (passwordConfirmationRequired && password !== passwordAgain)))
               }
             >
-              {pendingAction === 'password' ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : mode === 'signin' ? <LogIn className='h-4 w-4' /> : <UserPlus className='h-4 w-4' />}
+              {pendingAction === 'password' ? (
+                <LoadingSpinner className='h-4 w-4' variant='dark' />
+              ) : mode === 'signin' ? (
+                <LogIn className='h-4 w-4' />
+              ) : (
+                <UserPlus className='h-4 w-4' />
+              )}
               {mode === 'signin' ? t('signIn') : t('signUp')}
             </Button>
           ) : null}
 
           {passwordModeAvailable && mode === 'signin' ? (
-            <Link href='/account/reset-password' className='block text-center text-sm font-semibold text-white/70 transition-colors hover:text-white'>
+            <Link
+              href='/account/reset-password'
+              className='block text-center text-sm font-semibold text-white/70 transition-colors hover:text-white'
+            >
               {t('forgotPassword')}
             </Link>
           ) : null}
 
-          {magicLinkAvailable ? (
+          {passwordlessEmailAvailable ? (
             <>
               {passwordModeAvailable ? <UIDivider text='or' className='my-5' /> : null}
               <Button
                 type='button'
                 className='sc-auth-primary-button w-full gap-3'
                 disabled={pendingAction !== null || !parsedEmail.success}
-                onClick={sendMagicLink}
+                onClick={sendPasswordlessEmail}
               >
-                {pendingAction === 'magic-link' ? <InlineLoader className='h-4 w-4 animate-spin [&_circle]:stroke-black' /> : <WandSparkles className='h-4 w-4' />}
-                {t('magicLink')}
+                {pendingAction === 'passwordless-email' ? (
+                  <LoadingSpinner className='h-4 w-4' variant='dark' />
+                ) : (
+                  <WandSparkles className='h-4 w-4' />
+                )}
+                {passwordlessButtonLabel}
               </Button>
             </>
           ) : null}

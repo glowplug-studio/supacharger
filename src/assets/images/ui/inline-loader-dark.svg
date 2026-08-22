@@ -1,0 +1,18 @@
+<!-- Black clone of the Supacharger default inline loader. -->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 100 100"
+  preserveAspectRatio="xMidYMid"
+  fill="#000000"
+>
+  <path d="M50 9a41 41 0 1 1-41 41h13a28 28 0 1 0 28-28V9Z">
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      repeatCount="indefinite"
+      dur="0.5102040816326531s"
+      values="0 50 50;360 50 50"
+      keyTimes="0;1"
+    />
+  </path>
+</svg>

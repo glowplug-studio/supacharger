@@ -36,6 +36,10 @@ Shared runtime and tooling dependencies are exact-pinned in `package.json`. Cons
 
 Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
 
+### Input validation
+
+Client-side form validation is for fast feedback; every submitted form and other untrusted payload must be parsed again with Zod in the receiving Server Action, route handler, or server-side JavaScript or TypeScript boundary before side effects or persistence. Structured Supabase Edge Function inputs should also use Zod where appropriate before privileged work or RPC calls. PostgreSQL RPCs cannot run Zod, so validate in the caller and independently enforce typed parameters, constraints, authentication, authorisation, grants, and RLS in PostgreSQL. See the [input validation guide](https://supacharger.dev/docs/Application%20Development/input-validation).
+
 ### Document metadata, providers, and analytics
 
 New projects receive `src/app/layout.tsx` as an editable template. It is explicitly developer-owned after installation, so `supacharger coreupdate` does not overwrite fonts, body classes, product providers, or extra head content. The protected `src/supacharger/root-document.tsx` helper remains CLI-managed and supplies consistent metadata, viewport, favicon, SEO, and analytics behaviour.
@@ -100,8 +104,12 @@ Authentication, identity, onboarding, and organisations are application policy b
 ```ts
 AUTHENTICATION: {
   EMAIL_PASSWORD: { SIGN_IN: true, SIGN_UP: true },
-  MAGIC_LINK: { ENABLED: true, ALLOW_SIGN_UP: true },
-  SIGN_UP_EMAIL_VERIFICATION: 'otp', // 'disabled' | 'link' | 'otp'
+  PASSWORDLESS_EMAIL: {
+    SIGN_IN: 'otp', // 'disabled' | 'otp' | 'link'
+    SIGN_UP: 'disabled',
+    OTP_LENGTH: 6, // 6 through 10
+  },
+  SIGN_UP_EMAIL_VERIFICATION: 'otp', // also supports 'otp-and-link'
   MFA_TOTP: { ENABLED: false },
 },
 PROFILE_IDENTITY: {
@@ -117,11 +125,11 @@ ORGANISATIONS: {
 },
 ```
 
-The canonical login journey preserves SnapScreen's approved progressive visual structure across Core, SnapScreen, and Wakekeeper: strong headings, provider-to-email transitions, dark auth surfaces, branded actions, and matching password-reset screens. Auth buttons and input fields share a 56 px control height and 20 px by 12 px internal padding. When the split layout's left panel is hidden below the `lg` breakpoint, the site logo appears once above the login or signup content; at `lg` and wider, that fallback is hidden and the left-panel logo remains. It exposes only enabled methods and supports password sign-in/sign-up, magic links, link or six-digit OTP sign-up verification, and resend cooldown. During password signup, a non-empty confirmation shows a green tick once it exactly matches the primary password. Revealing the primary password clears and smoothly collapses the confirmation field, removing it from required and equality validation; hiding the primary password restores an empty, required confirmation field. When social providers are enabled, direct visits to `/account/login` and `/account/create` open the provider chooser with “Continue with email”; the selected route determines whether that action opens sign-in or signup. Email mode shows a “Use social auth” control above the form with at most three overlapping enabled-provider icons. Selecting it collapses email and restores the full provider chooser without changing the route mode. When no social provider is enabled, the available email journey opens immediately and no provider switcher, divider, or redundant Back control is rendered. `MAGIC_LINK.ENABLED: false` removes the magic-link action, while `ALLOW_SIGN_UP` additionally controls whether it appears during signup and whether passwordless email may create a user. Password, magic-link, and OTP requests expose independent busy indicators. Client-facing Auth Server Actions return only plain success data or a safe `{ code, status }` error; Supabase `AuthError` instances and raw provider data never cross the Server Action boundary. The UI localises known codes such as email-send rate limits and falls back to a generic message only for unknown codes. Signup is handled by the configured journey and its server action; the starter does not publish a redundant JSON create-account route. Logout is submitted once through the server logout route so SSR auth cookies are cleared before redirecting. Project copy, colour, imagery, and adapters remain developer-owned; `AuthJourney.useSocialAuth` can localise the compact switcher and safely falls back to English for preserved catalogues created before the key existed. Specdrive retains its separate presentation. `SIGN_UP_EMAIL_VERIFICATION` accepts `disabled`, `link`, or `otp`; Supabase Auth confirmations and its hosted confirmation template must match the selection. Link mode uses a token-hash template built from `{{ .RedirectTo }}` and `{{ .TokenHash }}`. Both initial and resent confirmations return through `/auth/confirm`, which verifies the token before continuing to the configured account-confirmed path. Because an OTP and link from one signup email are the same one-time verification, using either one can invalidate the other. A rejected link now checks the current Auth user: a confirmed signed-in user continues to the safe configured app destination with an explanatory toast, while a browser without a session goes to the configured login page with a safe expired/already-used notice instead of the generic error page. The root layout mounts `AuthConfirmationNotice` so it can show and then remove those one-time query notices. A checked-in local template does not update the hosted project. When onboarding is required, callbacks and Proxy call `api.is_profile_complete_by_current_user(p_username_required)` and redirect to the real developer-owned route. The starter supplies `/account/setup-profile`; applications may preserve a product-specific form at the configured path.
+The canonical login journey preserves SnapScreen's approved progressive visual structure across Core, SnapScreen, and Wakekeeper. It supports password authentication and one exclusive passwordless email experience per action: `disabled`, `otp`, or `link`. `PASSWORDLESS_EMAIL.OTP_LENGTH` controls every OTP field and accepts 6 through 10; keep the local `[auth.email] otp_length` and the hosted Supabase setting equal to it. Passwordless sign-in sets `shouldCreateUser: false` and verifies entered codes with `type: 'email'`. Password signup and `SIGN_UP_EMAIL_VERIFICATION` remain separate; signup verification supports `disabled`, `otp`, `link`, or `otp-and-link` and verifies codes with `type: 'signup'`. Passwordless OTP templates contain `{{ .Token }}` without a sign-in link, while passwordless link templates contain the link without an OTP. A local template or `config.toml` does not update a hosted project. Safe `next` paths are preserved across the journey. Project branding and policy values remain developer-owned, and Specdrive retains its separate presentation.
 
 ### Mobile login verification and deep links
 
-Supacharger can publish the verified HTTPS association files used by iOS Universal Links and Android App Links. This lets a magic link, link-based email confirmation, or password-reset link open an installed mobile app while retaining the same web URL as a browser fallback. A six-digit email OTP is entered directly and does not itself require a deep link.
+Supacharger can publish the verified HTTPS association files used by iOS Universal Links and Android App Links. This lets a magic link, link-based email confirmation, or password-reset link open an installed mobile app while retaining the same web URL as a browser fallback. An email OTP is entered directly and does not itself require a deep link.
 
 Configure native identifiers in the developer-owned settings file; never copy another application's identifiers:
 
@@ -163,6 +171,8 @@ Profile media lives in the private `user-avatars` bucket. Store paths using `<us
 
 The globally deployed `process-image-upload` Edge Function provides reusable image resizing and re-encoding. It requires a signed-in user and accepts only multipart `file` plus a named `target`; callers cannot supply a Storage bucket, destination folder, filename prefix, output format, dimensions, or compression value. Those values live in the developer-owned `supabase/functions/_shared/image-targets.ts` policy, while the transformer and HTTP boundary are CLI-managed. Uploads use the caller's JWT and Storage RLS, never a service-role client. The starter targets create a 300×300 JPEG avatar or a 1600×600 JPEG header; target policy can also select lossless PNG output, inside/cover resizing, JPEG quality, PNG compression effort, input byte/pixel limits, cache policy, and private signed or public URLs. See `docs/agents/image-transformation.md` and the [Edge Functions guide](https://supacharger.dev/docs/Application%20Development/edge).
 
+Next.js and Supabase Edge Functions have separate TypeScript runtimes. The root `tsconfig.json` excludes `supabase/functions/**/*` from the Next.js compiler; keep that exact boundary in consuming applications and run Edge Function checks with their Deno-based scripts. Do not make Next.js resolve Deno globals, URL imports, or `jsr:` modules merely to make `npm run build` pass.
+
 The private `app.user_roles` table and custom access-token hook add a compact `user_role` claim to newly issued or refreshed JWTs. Organisation and project roles remain membership data enforced through RLS; they are not flattened into the global role. See `docs/agents/authentication-and-claims.md` and the [human roles guide](https://supacharger.dev/docs/Application%20Development/roles-and-custom-claims).
 
 ### Localisation
@@ -177,7 +187,7 @@ Applications own their locale policy and translations:
 - `src/i18n/request.ts` loads the request catalogue; and
 - `messages/<locale>.json` contains application translations.
 
-The protected `/api/intl` endpoint also persists authenticated language changes to `app.profiles.language_code`. The field accepts lowercase two-letter codes; application support remains controlled by `SUPPORTED_LOCALES`. The Supacharger CLI installs starter files for a new application, then preserves all of these paths during `coreupdate`. Core releases may introduce new translation keys, so review release notes and add required keys to each application-owned catalogue when upgrading. See the [localisation guide](https://supacharger.dev/docs/Application%20Development/localisation) for setup and extension details.
+The protected `/api/intl` endpoint also persists authenticated language changes to `app.profiles.language_code`. The field accepts lowercase two-letter codes; application support remains controlled by `SUPPORTED_LOCALES`. The Supacharger CLI installs starter files for a new application, then preserves all of these paths during `coreupdate`. When adding or changing localised copy, always update `messages/en.json`; leave secondary-language values empty or untouched unless translation into those languages is explicitly requested. Core release notes identify required English keys and any empty secondary placeholders needed for structural compatibility. See the [localisation guide](https://supacharger.dev/docs/Application%20Development/localisation) for setup and extension details.
 
 Canonical client-callable database RPC examples live in the Supacharger-only Bruno collection at `docs/bruno/supacharger-rpc/`. Run `npm run check:bruno-rpcs` after an `api` RPC migration; consumer-specific endpoints do not belong in this collection.
 
@@ -201,6 +211,7 @@ The demo includes:
 - Brevo account
 
 ### Environment Setup
+
 1. Clone this repository:
    ```bash
    git clone https://github.com/glowplug-studio/supacharger.git
@@ -382,6 +393,14 @@ The application imports Tailwind once through `src/supacharger/styles/globals.cs
 - `src/styles/project.css` is developer-owned. Put the named project's theme tokens, global defaults, product-specific classes, and overrides there; CLI updates preserve it.
 
 Prefer Tailwind utilities in components. When custom CSS is needed, use `@layer base` for element defaults and theme tokens, `@layer components` for semantic classes, and `@layer utilities` for narrowly scoped utilities. Do not import Tailwind again from `project.css`.
+
+The standard brand colour pair is `--primary` and `--primary-foreground`, expressed as space-separated HSL channels in `src/styles/project.css`. Use semantic utilities such as `bg-primary`, `text-primary-foreground`, `text-foreground`, `text-muted-foreground`, `bg-accent`, and `ring-ring` instead of copying a product colour into a component. This keeps reusable application-owned surfaces, including `src/app/error/page.tsx` and `src/app/not-found.tsx`, aligned with each consuming application's branding.
+
+The primary developer-owned inline loading animation lives at `src/assets/images/ui/inline-loader.svg`; a matching black variant lives at `src/assets/images/ui/inline-loader-dark.svg`. Replace either file in place to customise it for a brand; CLI updates preserve both. Import them through SVGR rather than using an image tag or public URL. Both supplied assets take their artwork colour from the root `fill`, so callers can override it with a prop such as `<InlineLoader fill='currentColor' />`; a branded replacement may hard-code its colours and simply ignore that prop. The shared loading component uses the primary asset.
+
+Error and not-found routes are application-owned rather than CLI-protected. The starter keeps their shared presentation under `src/components/error-page/`: unauthenticated visitors receive only a full-viewport error state, while a server-verified authenticated visitor receives the same state inside the application's signed-in header and footer. Keep `/error` in the application's public route allow-list so authentication failures can reach it without creating a redirect loop; the canonical Proxy also exempts that route from profile-onboarding redirects so the explanation is not hidden by another guard.
+
+Error copy is localised from the developer-owned `ErrorPage` message namespace when it is available. The resolver provides complete protected English defaults for an absent namespace or individual missing values, so a preserved or temporarily stale catalogue cannot make the error boundary emit `MISSING_MESSAGE` while it is trying to explain another failure.
 
 The shared base layer gives enabled interactive controls—including links, buttons, form actions, selects, summaries, and ARIA button/menu/tab controls—a pointer cursor on hover. Disabled controls are deliberately excluded, so ordinary components should not repeat `cursor-pointer` utilities.
 

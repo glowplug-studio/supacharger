@@ -19,22 +19,28 @@ export function AuthConfirmationNotice() {
   useEffect(() => {
     if (!accountConfirmed && !notice) return;
 
+    const confirmationToastId = `auth-confirmation:${notice ?? 'verified'}`;
+    const toastOptions = {
+      ...SC_CONFIG.TOAST_CONFIG,
+      toastId: confirmationToastId,
+    };
+
     if (notice === 'already-signed-in') {
       toast.info(
         t.has('confirmationLinkAlreadyUsedSignedIn')
           ? t('confirmationLinkAlreadyUsedSignedIn')
           : 'This confirmation link has expired or was already used. You are already signed in.',
-        SC_CONFIG.TOAST_CONFIG,
+        toastOptions,
       );
     } else if (notice === 'sign-in') {
       toast.info(
         t.has('confirmationLinkAlreadyUsedSignIn')
           ? t('confirmationLinkAlreadyUsedSignIn')
-          : 'This confirmation link has expired or was already used. If your account is already activated, sign in below.',
-        SC_CONFIG.TOAST_CONFIG,
+          : 'We could not verify this confirmation link. Request a new email and try again.',
+        toastOptions,
       );
     } else if (accountConfirmed) {
-      toast.success(t('accountEmailVerified'), SC_CONFIG.TOAST_CONFIG);
+      toast.success(t('accountEmailVerified'), toastOptions);
     }
 
     const params = new URLSearchParams(searchParams.toString());

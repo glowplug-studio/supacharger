@@ -84,6 +84,7 @@
     "userBanned": "This account has been suspended",
     "genericError": "There was an unexpected problem",
     "otpDisabled": "Email verification codes are currently disabled.",
+    "otpAlreadyVerified": "Your email has already been verified.",
     "providerDisabled": "That sign-in provider is currently disabled.",
     "otpExpired": "The One Time Passcode has expired or is invalid",
     "samePassword": "New password should be different from the old password",
@@ -116,9 +117,16 @@
     "hidePassword": "Hide password",
     "back": "Back",
     "enterCode": "Enter your confirmation code",
-    "codeSent": "We sent a six-digit code to {email}.",
+    "enterSignInCode": "Enter your login code",
+    "verifyEmail": "Verify your email",
+    "codeSent": "We sent a {length}-digit code to {email}.",
+    "codeAndLinkSent": "We sent an email to {email}.",
+    "signInCodeSent": "We sent a {length}-digit sign-in code to {email}.",
+    "enterCodeOption": "Enter the Code here",
+    "openLinkOption": "Option 2: Use the secure link",
+    "openLinkInstructions": "Enter the code from the email below or click the button in the email to verify.",
     "checkEmail": "Check your email",
-    "linkSent": "We sent a secure link to {email}.",
+    "linkSent": "We sent a secure link to {email}. Click the button in the email to get logged in.",
     "continueEmail": "Continue with email",
     "useSocialAuth": "Use social auth",
     "needAccount": "Need an account?",
@@ -126,6 +134,7 @@
     "signUp": "Sign up",
     "signIn": "Sign in",
     "createAccount": "Create account",
+    "createAccountInstead": "Create Account instead",
     "email": "Email address",
     "password": "Password",
     "organisationHandle": "Organisation handle",
@@ -133,11 +142,18 @@
     "repeatPassword": "Repeat password",
     "forgotPassword": "Forgot password?",
     "magicLink": "Email me a sign-in link",
+    "passwordlessOtp": "Email me a sign-in code",
+    "passwordlessSignInUnavailable": "We couldn’t send a sign-in email. Check the email address, or create an account instead.",
+    "magicLinkSignInUnavailable": "We couldn’t send a sign-in link. Check the email address, or create an account instead.",
     "resendSuccess": "A new confirmation email has been sent.",
+    "signInCodeResendSuccess": "A new login code has been sent.",
+    "signInLinkResendSuccess": "A new login link has been sent.",
     "resendFailed": "The email could not be sent yet. Try again shortly.",
     "didNotReceive": "Didn’t receive the email?",
     "sendAgainIn": "Send again in {seconds}s",
-    "sendAnother": "Send another email"
+    "sendAnother": "Send again",
+    "loginHere": "Login Here",
+    "getVerificationLink": "Get verification link"
   },
   "LoginPage": {
     "title": "Sign In",
@@ -172,7 +188,9 @@
     "title": "Verification Code",
     "description": "Enter the code we sent to you, or click the verification button in the email.",
     "fieldLabel": "Enter Code",
-    "invalidEmail": "Enter a valid email before verifying code"
+    "emailSent": "We sent an email to {email}.",
+    "invalidEmail": "Enter a valid email before verifying code",
+    "verifyingCode": "Verifying code"
   },
   "PasswordUpdateFormComponent": {
     "title": "Update your Password"
@@ -187,5 +205,19 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "ErrorPage": {
+    "notFound": {
+      "status": "404 error",
+      "title": "Page not found",
+      "description": "Sorry, we couldn’t find the page you’re looking for."
+    },
+    "unexpected": {
+      "status": "Something went wrong",
+      "title": "We couldn’t load this page",
+      "description": "The page ran into a problem. Try again from the home page, or contact support if it keeps happening."
+    },
+    "goHome": "Go home",
+    "contactSupport": "Contact support"
   }
 }

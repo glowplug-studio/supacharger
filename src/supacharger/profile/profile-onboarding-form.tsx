@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
 import { createClient } from '@/lib/supabase/client';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
@@ -58,7 +58,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
       return;
     }
 
-    router.replace(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATON);
+    router.replace(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION);
     router.refresh();
   }
 
@@ -115,10 +115,9 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
       ) : null}
 
       <Button type='submit' disabled={isSaving} className='w-full sm:w-auto'>
-        {isSaving ? <Loader2 className='mr-2 h-4 w-4 animate-spin' aria-hidden='true' /> : null}
+        {isSaving ? <Loader2 className='mr-2 h-4 w-4' aria-hidden='true' /> : null}
         Continue
       </Button>
     </form>
   );
 }
-

@@ -1,25 +1,44 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { z } from 'zod';
 
 /** ==========
  *
  * Supacharger - Supabase Auth wrappers.
  *
  * ========== */
-import {
-  authActionFailure,
-  type AuthActionResult,
-  authActionSuccess,
-} from '@/supacharger/auth/auth-action-result';
+import { authActionFailure, type AuthActionResult, authActionSuccess } from '@/supacharger/auth/auth-action-result';
+import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
+import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification';
+import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 import { getURL } from '@/supacharger/utils/helpers';
 
 import { createClient } from '../server';
 
-function getSignUpConfirmationRedirect() {
-  return getURL(`/auth/confirm?next=${encodeURIComponent(SC_CONFIG.ACCOUNT_CONFIRMED_PATH)}`);
+const emailSchema = z.string().trim().pipe(z.email());
+const passwordSchema = z.string().min(1);
+
+function otpSchema() {
+  return z.string().regex(/^\d+$/).length(SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.OTP_LENGTH);
+}
+
+function passwordlessModeHasOtp(mode: 'disabled' | 'link' | 'otp' | 'otp-and-link') {
+  return mode === 'otp' || mode === 'otp-and-link';
+}
+
+function getSignUpConfirmationRedirect(nextPath: unknown = null) {
+  const destination = getSafeNextPath(nextPath) ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH;
+  return getURL(`/auth/confirm?next=${encodeURIComponent(destination)}`);
+}
+
+function getPasswordlessConfirmationRedirect(nextPath: unknown = null) {
+  const loginDestination = getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION);
+  const next = getSafeNextPath(nextPath) ?? `${loginDestination.pathname}${loginDestination.search}`;
+
+  return getURL(`/auth/confirm?next=${encodeURIComponent(next)}`);
 }
 
 /**
@@ -39,14 +58,39 @@ export async function loginUser(formData: FormData) {
   if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN) {
     return authActionFailure('email_password_sign_in_disabled');
   }
+  const parsed = z
+    .object({ email: emailSchema, password: passwordSchema })
+    .safeParse({ email: formData.get('email'), password: formData.get('password') });
+  if (!parsed.success) return authActionFailure('validation_failed');
+
   const supabase = await createClient();
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  };
+  const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
-  const { error } = await supabase.auth.signInWithPassword(data);
+  if (error) {
+    return authActionFailure(error);
+  }
+
+  return authActionSuccess(null);
+}
+
+async function sendPasswordlessEmail(
+  email: string,
+  shouldCreateUser: boolean,
+  nextPath: unknown = null,
+): Promise<AuthActionResult> {
+  const parsedEmail = emailSchema.safeParse(email);
+  if (!parsedEmail.success) return authActionFailure('validation_failed');
+
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email: parsedEmail.data,
+    options: {
+      emailRedirectTo: getPasswordlessConfirmationRedirect(nextPath),
+      shouldCreateUser,
+    },
+  });
 
   if (error) {
     return authActionFailure(error);
@@ -56,27 +100,25 @@ export async function loginUser(formData: FormData) {
 }
 
 /**
- * Sign / Sign Up wth Magic Link to email
+ * Send the configured passwordless sign-in email to an existing user.
  */
-export async function signInWithEmail(email: string): Promise<AuthActionResult> {
-  if (!SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ENABLED) {
-    return authActionFailure('magic_link_disabled');
-  }
-  const supabase = await createClient();
-
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: getURL('/auth/callback'),
-      shouldCreateUser: SC_CONFIG.AUTHENTICATION.MAGIC_LINK.ALLOW_SIGN_UP,
-    },
-  });
-
-  if (error) {
-    return authActionFailure(error);
+export async function signInWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
+  if (SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_IN === 'disabled') {
+    return authActionFailure('otp_disabled');
   }
 
-  return authActionSuccess(null);
+  return sendPasswordlessEmail(email, false, nextPath);
+}
+
+/**
+ * Send the configured passwordless signup email.
+ */
+export async function signUpWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
+  if (SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_UP === 'disabled') {
+    return authActionFailure('otp_disabled');
+  }
+
+  return sendPasswordlessEmail(email, true, nextPath);
 }
 
 /**
@@ -90,14 +132,17 @@ export async function createUserByEmailPassword(
   }
   const supabase = await createClient();
 
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
+  const parsed = z
+    .object({ email: emailSchema, password: passwordSchema })
+    .safeParse({ email: formData.get('email'), password: formData.get('password') });
+  if (!parsed.success) return authActionFailure('validation_failed');
+  const nextPath = getSafeNextPath(formData.get('next'));
 
   const { data, error } = await supabase.auth.signUp({
-    email: email,
-    password: password,
+    email: parsed.data.email,
+    password: parsed.data.password,
     options: {
-      emailRedirectTo: getSignUpConfirmationRedirect(),
+      emailRedirectTo: getSignUpConfirmationRedirect(nextPath),
     },
   });
 
@@ -114,14 +159,16 @@ export async function createUserByEmailPassword(
 /**
  *  Resends the activation email to unconfirmed users
  */
-export async function resendAccountConfirmEmail(email: string) {
+export async function resendAccountConfirmEmail(email: string, nextPath: string | null = null) {
+  const parsedEmail = emailSchema.safeParse(email);
+  if (!parsedEmail.success) return authActionFailure('validation_failed');
   const supabase = await createClient();
 
   const { error } = await supabase.auth.resend({
     type: 'signup',
-    email: email,
+    email: parsedEmail.data,
     options: {
-      emailRedirectTo: getSignUpConfirmationRedirect(),
+      emailRedirectTo: getSignUpConfirmationRedirect(nextPath),
     },
   });
 
@@ -225,17 +272,59 @@ export async function isLoggedIn() {
  * @returns {Promise<AuthActionResult>} The safe serialisable verification response
  */
 export async function verifyOtp(email: string, token: string): Promise<AuthActionResult> {
+  if (!passwordlessModeHasOtp(SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION)) {
+    return authActionFailure('otp_disabled');
+  }
+
+  const parsed = z.object({ email: emailSchema, token: otpSchema() }).safeParse({ email, token });
+  if (!parsed.success) return authActionFailure('validation_failed');
+
   const supabase = await createClient();
 
+  const {
+    data: { user: existingUser },
+  } = await supabase.auth.getUser();
+
+  if (hasVerifiedSessionForEmail(existingUser, parsed.data.email)) {
+    return authActionFailure('otp_already_verified');
+  }
+
   const { error } = await supabase.auth.verifyOtp({
-    email,
-    token,
+    email: parsed.data.email,
+    token: parsed.data.token,
     type: 'signup',
   });
 
   if (error) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (hasVerifiedSessionForEmail(user, parsed.data.email)) {
+      return authActionFailure('otp_already_verified');
+    }
+
     return authActionFailure(error);
   }
 
   return authActionSuccess(null);
+}
+
+/** Verify a passwordless email sign-in code. */
+export async function verifySignInOtp(email: string, token: string): Promise<AuthActionResult> {
+  if (!passwordlessModeHasOtp(SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_IN)) {
+    return authActionFailure('otp_disabled');
+  }
+
+  const parsed = z.object({ email: emailSchema, token: otpSchema() }).safeParse({ email, token });
+  if (!parsed.success) return authActionFailure('validation_failed');
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email: parsed.data.email,
+    token: parsed.data.token,
+    type: 'email',
+  });
+
+  return error ? authActionFailure(error) : authActionSuccess(null);
 }

@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { ToastContainer } from 'react-toastify';
 
 import { AuthConfirmationNotice } from '@/supacharger/components/auth/auth-confirmation-notice';
+import { AuthLoginNotice } from '@/supacharger/components/auth/auth-login-notice';
 import { SmoothAnchorNavigation } from '@/supacharger/components/layout/smooth-anchor-navigation';
 import {
   createSupachargerMetadata,
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
     <>
       <Suspense fallback={null}>
         <AuthConfirmationNotice />
+        <AuthLoginNotice />
       </Suspense>
       {children}
     </>

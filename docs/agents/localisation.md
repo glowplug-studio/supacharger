@@ -12,6 +12,15 @@ The CLI installs these starter paths for a new application. After installation, 
 
 The developer-owned root-layout template obtains locale and messages from `next-intl/server`; it must not import a catalogue directly. `ROOT_PROVIDERS.INTERNATIONALISATION` controls whether the template mounts `NextIntlClientProvider`. The protected `/api/intl` endpoint validates requested locales against the developer-owned configuration, stores the choice in an HTTP-only, same-site cookie, and writes the two-letter code to the authenticated user's `app.profiles.language_code` profile field.
 
+## Translation authoring
+
+- Add or update every new or changed English source value in `messages/en.json` in the same change as the consuming UI.
+- Before introducing or changing a `useTranslations` or `getTranslations` call, verify that its namespace and every statically referenced key exist with non-empty English values. Never defer the English catalogue update to a later change.
+- Do not invent, machine-translate, copy English wording into, or otherwise fill a secondary-language value unless the human explicitly requests translation into that language.
+- If catalogue structure or a validation check requires the corresponding key in a secondary catalogue, add it with an empty string. Otherwise leave that catalogue untouched.
+- Treat empty strings as untranslated placeholders. Report them as pending translation and do not describe the affected catalogue or surface as complete or reviewed.
+- Never omit the English key, and do not use placeholder secondary-language content as a substitute for a deliberate English fallback where the runtime requires one.
+
 ## Marketing-site handoff and persistence
 
 A separate marketing application may link to any SaaS route with `?lang=<code>`, for example `/login?lang=fr`. Treat this parameter as a transient handoff, not locale-based routing:
@@ -26,4 +35,4 @@ The effective precedence is accepted `lang` handoff, explicit cookie preference,
 
 ## Upgrade consequence
 
-Because application catalogues are not CLI-managed, a core release that adds or renames a message key must document the required catalogue edits. Update every supported application locale before using the new core UI. Do not hide missing keys by overwriting catalogues or accepting unvalidated cookie values.
+Because application catalogues are not CLI-managed, a core release that adds or renames a message key must document the required English edit and any secondary catalogue placeholders needed for structural compatibility. Do not translate those placeholders unless the human explicitly requests it. Do not hide missing keys by overwriting catalogues or accepting unvalidated cookie values.

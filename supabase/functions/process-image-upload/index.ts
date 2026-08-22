@@ -1,11 +1,11 @@
 /// <reference lib="deno.ns" />
 
-import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
-
 import { withSupabase } from 'npm:@supabase/server@1.4.1';
 
 import { imageUploadTargets } from '../_shared/image-targets.ts';
 import { ImageTransformError, supportsImageMimeType, transformAndStoreImage } from '../_shared/image-transform.ts';
+
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
 function errorResponse(error: string, status: number) {
   return Response.json({ error }, { status });

@@ -81,9 +81,21 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 - `api.get_user_profiles_by_identifiers` is the general identity projection. It may return names, username, and media paths to verified authenticated users, but must never return email or unrestricted profile rows.
 - Internal tables live in `app`; browser RPCs live in `api`; trusted service-only RPCs live in `api_edge`. Expose `api` and `api_edge` through PostgREST, not `app`.
 
+## Mandatory English catalogue and translation policy
+
+- Every task that adds or changes user-facing copy, introduces or changes a `useTranslations` or `getTranslations` call, or adds or changes a translation key must add or update the complete English source value in `messages/en.json` in the same change. This is required even when the human did not ask for translation work.
+- Before reporting the task complete, verify that every referenced namespace and every statically referenced key exist in `messages/en.json` with non-empty English values. The consuming code and English catalogue are one atomic change; a task with missing English messages is incomplete and must not be reported as complete.
+- Do not invent, machine-translate, copy English wording into, or otherwise fill any secondary-language value unless the human explicitly asks for translation into that specific language.
+- When catalogue structure or validation requires corresponding keys in secondary catalogues, add those keys with empty strings as untranslated placeholders. Otherwise leave secondary catalogues unchanged.
+- Treat empty secondary-language values as pending translation. Do not describe the affected language, catalogue, or surface as translated, complete, or reviewed.
+- Run the project's English-catalogue or i18n validation command when one exists. The absence of an automated check does not waive the manual English namespace and key verification.
+- Keep this entire policy verbatim in the workspace `AGENTS.md` and every project or nested `AGENTS.md`; do not shorten, paraphrase, or relocate it solely to another guidance file.
+
 ## Documentation and verification
 
 - Keep code, `README.md`, repository agent guidance, MCP guidance, and `supacharger-docs` consistent with actual behaviour.
+- Read `docs/agents/localisation.md` whenever adding or changing user-facing copy, locale behaviour, or translation catalogues.
+- Read `docs/agents/input-validation.md` before creating or changing a form submission, Server Action, route handler, Supabase Edge Function request, or RPC input contract. Client validation is supplemental: parse every untrusted payload with Zod at its server-side JavaScript or TypeScript boundary, then preserve independent database constraints and authorisation.
 - Interpret an unqualified request to "update the docs" as requiring the repository `README.md`, the Docusaurus documentation in `../supacharger-docs/`, and the agent-facing guidance/resources in `docs/agents/` and `tools/supacharger-mcp/` to be reviewed and updated together. Explicitly state when one of these surfaces is unaffected.
 - Prefer focused checks during implementation and run the relevant lint, type, test, or build commands before reporting completion.
 - Report all affected repositories and any verification that could not be run.

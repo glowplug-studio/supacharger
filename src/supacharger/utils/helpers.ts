@@ -130,6 +130,7 @@ export function supabaseErrorCodeLocalisation(response: string, status: number |
     user_banned: 'userBanned',
     otp_disabled: 'otpDisabled',
     otp_expired: 'otpExpired',
+    otp_already_verified: 'otpAlreadyVerified',
     magic_link_disabled: 'emailProviderDisabled',
     oauth_provider_disabled: 'providerDisabled',
     oauth_provider_not_supported: 'providerDisabled',

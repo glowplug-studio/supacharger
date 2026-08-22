@@ -6,8 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
-import InlineLoader from '@/assets/images/ui/InlineLoader.svg';
 import SCSiteLogo from '@/components/sc_demo/sc_site-logo';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { createClient } from '@/lib/supabase/client';
 import SaveButton from '@/supacharger/components/buttons/form-save-button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -113,7 +113,7 @@ export default function ResetPasswordFormPage() {
         <div>
           {isPending && (
             <div className='flex items-center gap-3 rounded bg-gray-100 px-4 py-3'>
-              <InlineLoader className='h-5 w-5 animate-spin text-gray-500' />
+              <LoadingSpinner className='h-5 w-5' />
               <span className='text-gray-600'>{tPasswordResetPage('verifyingCode') || 'Verifying code...'}</span>
             </div>
           )}

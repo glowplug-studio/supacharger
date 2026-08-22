@@ -2,9 +2,9 @@
 
 import { ChangeEvent, useRef, useState } from 'react';
 import Image from 'next/image';
-import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
 import { cn } from '@/utils/cn';
 
 interface AvatarProps {
@@ -111,7 +111,7 @@ export function Avatar({ initialImage, onImageChange }: AvatarProps) {
         <Button type='button' disabled={!selectedFile || isLoading} onClick={handleSave}>
           {isLoading ? (
             <>
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+              <Loader2 className='mr-2 h-4 w-4' />
               Saving...
             </>
           ) : (

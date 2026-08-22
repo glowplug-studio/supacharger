@@ -15,7 +15,9 @@ const guidanceFiles = {
   authentication: 'docs/agents/authentication-and-claims.md',
   mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
   database: 'docs/agents/database-foundation.md',
+  input_validation: 'docs/agents/input-validation.md',
   image_transforms: 'docs/agents/image-transformation.md',
+  loading_ui: 'docs/agents/loading-ui.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
@@ -55,6 +57,17 @@ export function resolveRepositoryPath(inputPath = '.') {
 
 export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
+
+  if (
+    relativePath === 'src/assets/images/ui/inline-loader.svg' ||
+    relativePath === 'src/assets/images/ui/inline-loader-dark.svg'
+  ) {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Brand-customisable inline loader variant. CLI updates must preserve this exact file; import it through SVGR and replace it in place to customise the animation.',
+    };
+  }
 
   if (
     relativePath === 'src/proxy.ts' ||

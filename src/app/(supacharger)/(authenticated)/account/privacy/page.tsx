@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/seperator';
 import { Switch } from '@/components/ui/switch';
 
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
 
           <div className='pt-4'>
             <Button type='submit' disabled={isLoading}>
-              {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+              {isLoading && <Loader2 className='mr-2 h-4 w-4' />}
               Save Privacy Settings
             </Button>
           </div>

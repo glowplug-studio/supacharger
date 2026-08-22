@@ -1,3 +1,5 @@
+import { getSafeNextPath } from './safe-next-path.js';
+
 export const AUTH_CONFIRMATION_NOTICE_PARAM = 'confirmation_notice';
 
 export type AuthConfirmationOutcome = 'verified' | 'already-authenticated' | 'invalid';
@@ -10,10 +12,6 @@ interface ResolveAuthConfirmationRedirectOptions {
   outcome: AuthConfirmationOutcome;
 }
 
-function isSafeInternalPath(path: string | null): path is string {
-  return Boolean(path?.startsWith('/') && !path.startsWith('//'));
-}
-
 export function resolveAuthConfirmationRedirect({
   requestUrl,
   requestedNext,
@@ -21,11 +19,8 @@ export function resolveAuthConfirmationRedirect({
   loginPath,
   outcome,
 }: ResolveAuthConfirmationRedirectOptions) {
-  const destination = outcome === 'invalid'
-    ? loginPath
-    : isSafeInternalPath(requestedNext)
-      ? requestedNext
-      : fallbackNext;
+  const safeRequestedNext = getSafeNextPath(requestedNext);
+  const destination = outcome === 'invalid' ? loginPath : safeRequestedNext ?? fallbackNext;
   const redirectTo = new URL(destination, requestUrl);
 
   redirectTo.searchParams.delete('token_hash');

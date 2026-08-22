@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import { Avatar } from '@/app/(supacharger)/(authenticated)/account/edit-profile/account-profile-edit-avatar';
@@ -14,6 +14,7 @@ import { Dialog,
   DialogTrigger } from "@/components/ui/dialog"
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/seperator';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -128,7 +129,7 @@ export default function EditProfilePage() {
             </div>
 
             <Button type='submit' disabled={isLoading}>
-              {isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
+              {isLoading && <Loader2 className='mr-2 h-4 w-4' />}
               Save Changes
             </Button>
           </div>

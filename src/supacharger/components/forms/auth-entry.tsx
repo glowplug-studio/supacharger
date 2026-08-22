@@ -11,7 +11,7 @@ import {
   shouldStartInEmailMode,
 } from '@/supacharger/components/forms/login-user-form';
 
-export function AuthEntry({ initialMode }: { initialMode: AuthMode }) {
+export function AuthEntry({ initialMode, nextPath = null }: { initialMode: AuthMode; nextPath?: string | null }) {
   const t = useTranslations('AuthJourney');
   const initialModeHeading = initialMode === 'signup' ? t('signUp') : t('signIn');
   const initialHeading = shouldStartInEmailMode(initialMode)
@@ -49,7 +49,7 @@ export function AuthEntry({ initialMode }: { initialMode: AuthMode }) {
           )}
         </div>
       </div>
-      <LoginUserForm initialMode={initialMode} onFormHeadingChange={handleFormHeadingChange} />
+      <LoginUserForm initialMode={initialMode} nextPath={nextPath} onFormHeadingChange={handleFormHeadingChange} />
     </div>
   );
 }

@@ -68,7 +68,7 @@ export function EnabledAuthProviderIcons({ limit = 3 }: { limit?: number }) {
     <span className='flex -space-x-2' aria-hidden='true'>
       {enabledProviders.map(({ key, Logo }) => (
         <span
-          className='relative inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-slate-950 bg-white p-1.5 shadow-sm'
+          className='sc-auth-provider-avatar relative inline-flex h-8 w-8 items-center justify-center rounded-full border-2 p-1.5 shadow-sm'
           key={key}
         >
           <Logo className='h-full w-full' focusable='false' />
@@ -89,11 +89,13 @@ export default function AuthProviderButtons() {
         <Button
           type='button'
           variant='ghost'
-          className='sc-auth-surface-button grid w-full grid-cols-[1.75rem_1fr_1.75rem]'
+          className='sc-auth-surface-button sc-auth-provider-button w-full'
           key={key}
           onClick={() => void signInWithOAuth(key)}
         >
-          <Logo className='h-5 w-5 justify-self-start' aria-hidden='true' focusable='false' />
+          <span className='sc-auth-provider-avatar inline-flex h-8 w-8 items-center justify-center justify-self-start rounded-full border-2 p-1.5 shadow-sm'>
+            <Logo className='h-full w-full' aria-hidden='true' focusable='false' />
+          </span>
           <span className='justify-self-center'>{label}</span>
           <span aria-hidden='true' />
         </Button>

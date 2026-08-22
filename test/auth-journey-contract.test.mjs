@@ -57,7 +57,12 @@ const authProviderIconFiles = [
 
 test('configuration exposes the canonical authentication and onboarding policies', async () => {
   const contract = await read('src/supacharger/supacharger-config-contract.ts');
-  assert.match(contract, /SIGN_UP_EMAIL_VERIFICATION:\s*'disabled' \| 'link' \| 'otp'/);
+  assert.match(contract, /EmailPasswordlessMode = 'disabled' \| 'link' \| 'otp'/);
+  assert.match(contract, /EmailOtpLength = 6 \| 7 \| 8 \| 9 \| 10/);
+  assert.match(contract, /SignUpEmailVerificationMode = EmailPasswordlessMode \| 'otp-and-link'/);
+  assert.match(contract, /PASSWORDLESS_EMAIL:[\s\S]*?SIGN_IN: EmailPasswordlessMode/);
+  assert.match(contract, /OTP_LENGTH: EmailOtpLength/);
+  assert.match(contract, /SIGN_UP_EMAIL_VERIFICATION: SignUpEmailVerificationMode/);
   assert.match(contract, /USERNAME:\s*'disabled' \| 'optional' \| 'required'/);
   assert.match(contract, /POST_SIGN_IN_ONBOARDING/);
   assert.match(contract, /AUTHENTICATION_HANDLE:\s*'disabled' \| 'optional' \| 'required'/);
@@ -110,30 +115,65 @@ test('social OAuth provider configuration, buttons, guards, and assets stay alig
 });
 
 test('auth operations enforce config and align signup confirmation redirects', async () => {
-  const auth = await read('src/lib/supabase/supacharger/supabase-auth.ts');
+  const [auth, journey, config, englishMessages] = await Promise.all([
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
+    read('src/supacharger/components/forms/login-user-form.tsx'),
+    read('src/supacharger.config.ts'),
+    read('messages/en.json'),
+  ]);
   assert.match(auth, /EMAIL_PASSWORD\.SIGN_IN/);
   assert.match(auth, /EMAIL_PASSWORD\.SIGN_UP/);
-  assert.match(auth, /MAGIC_LINK\.ENABLED/);
-  assert.match(auth, /shouldCreateUser:\s*SC_CONFIG\.AUTHENTICATION\.MAGIC_LINK\.ALLOW_SIGN_UP/);
+  assert.match(auth, /PASSWORDLESS_EMAIL\.SIGN_IN/);
+  assert.match(auth, /export async function signInWithEmail\(email: string, nextPath:/);
+  assert.match(auth, /export async function signUpWithEmail\(email: string, nextPath:/);
+  assert.match(auth, /signInWithEmail[\s\S]*?sendPasswordlessEmail\(email, false, nextPath\)/);
+  assert.match(auth, /function getPasswordlessConfirmationRedirect/);
+  assert.match(
+    auth,
+    /getPasswordlessConfirmationRedirect[\s\S]*?LOGIN_REDIRECT_DESTINATION[\s\S]*?getURL\(`\/auth\/confirm\?next=/,
+  );
+  assert.match(auth, /emailRedirectTo:\s*getPasswordlessConfirmationRedirect\(nextPath\)/);
+  assert.doesNotMatch(auth, /emailRedirectTo:\s*getURL\('\/auth\/callback'\)/);
+  assert.match(auth, /signInWithOAuth[\s\S]*?redirectTo:\s*getURL\('\/auth\/callback'\)/);
+  assert.match(auth, /signUpWithEmail[\s\S]*?PASSWORDLESS_EMAIL\.SIGN_UP[\s\S]*?sendPasswordlessEmail\(email, true, nextPath\)/);
+  assert.match(config, /PASSWORDLESS_EMAIL:[\s\S]*?SIGN_IN:\s*'otp'[\s\S]*?SIGN_UP:\s*'disabled'/);
+  assert.doesNotMatch(journey, /signUpWithEmail/);
+  assert.match(journey, /const result = await signInWithEmail\(normalisedEmail, safeNextPath\)/);
+  assert.match(journey, /result\.error\.code === 'otp_disabled'/);
+  assert.match(journey, /t\('passwordlessSignInUnavailable'\)/);
+  assert.match(journey, /result\.error\.code === 'otp_disabled'[\s\S]*?\? passwordlessSignInUnavailableLabel/);
+  assert.match(
+    englishMessages,
+    /"passwordlessSignInUnavailable":\s*"We couldn’t send a sign-in email\. Check the email address, or create an account instead\."/,
+  );
   assert.match(auth, /function getSignUpConfirmationRedirect/);
-  assert.equal((auth.match(/emailRedirectTo:\s*getSignUpConfirmationRedirect\(\)/g) ?? []).length, 2);
+  assert.match(auth, /getSignUpConfirmationRedirect\(nextPath\)/);
   assert.match(auth, /verifyOtp\([\s\S]*?type:\s*'signup'/);
+  assert.match(auth, /verifySignInOtp\([\s\S]*?type:\s*'email'/);
 });
 
 test('consumed confirmation links recover through session-aware app or login notices', async () => {
-  const [route, layout, notice, messages] = await Promise.all([
+  const [route, serverClient, layout, notice, messages] = await Promise.all([
     read('src/app/(supacharger)/(unauthenticated)/auth/confirm/route.ts'),
+    read('src/lib/supabase/server.ts'),
     read('src/app/layout.tsx'),
     read('src/supacharger/components/auth/auth-confirmation-notice.tsx'),
     read('messages/en.json'),
   ]);
 
+  assert.equal((route.match(/await createClient\(\)/g) ?? []).length, 1);
+  assert.match(route, /const supabase = await createClient\(\)/);
+  assert.match(route, /supabase\.auth\.verifyOtp\(/);
   assert.match(route, /supabase\.auth\.getUser\(\)/);
+  assert.doesNotMatch(route, /readSessionCookies/);
+  assert.doesNotMatch(serverClient, /CreateClientOptions|readSessionCookies/);
+  assert.match(serverClient, /getAll\(\)\s*\{\s*return cookieStore\.getAll\(\)/);
   assert.match(route, /user\?\.email_confirmed_at\s*\?\s*'already-authenticated'\s*:\s*'invalid'/);
   assert.doesNotMatch(route, /redirectTo\.pathname\s*=\s*'\/error'/);
   assert.match(layout, /<AuthConfirmationNotice\s*\/>/);
   assert.match(notice, /confirmationLinkAlreadyUsedSignedIn/);
   assert.match(notice, /confirmationLinkAlreadyUsedSignIn/);
+  assert.match(notice, /toastId:\s*confirmationToastId/);
   assert.match(messages, /"confirmationLinkAlreadyUsedSignIn"/);
 });
 
@@ -152,34 +192,108 @@ test('client-facing auth operations return safe serialisable error codes', async
   assert.match(helpers, /over_email_send_rate_limit:\s*'overEmailSendRateLimit'/);
 });
 
-test('shared journey supports password, magic link, OTP, and resend cooldown states', async () => {
-  const [journey, resend] = await Promise.all([
+test('local passwordless and signup templates match their independent configured modes', async () => {
+  const [appConfig, config, template, magicLinkTemplate] = await Promise.all([
+    read('src/supacharger.config.ts'),
+    read('supabase/config.toml'),
+    read('supabase/templates/confirmation.html'),
+    read('supabase/templates/magic_link.html'),
+  ]);
+
+  assert.match(config, /\[auth\.email\][\s\S]*?enable_confirmations\s*=\s*true/);
+  assert.match(
+    config,
+    /\[auth\.email\.template\.confirmation\][\s\S]*?content_path\s*=\s*"\.\/supabase\/templates\/confirmation\.html"/,
+  );
+  const signupMode = appConfig.match(/SIGN_UP_EMAIL_VERIFICATION:\s*'([^']+)'/)?.[1];
+  assert.ok(['disabled', 'otp', 'link', 'otp-and-link'].includes(signupMode));
+  if (signupMode === 'otp' || signupMode === 'otp-and-link') assert.match(template, /\{\{ \.Token \}\}/);
+  if (signupMode === 'link' || signupMode === 'otp-and-link') {
+    assert.match(template, /\{\{ \.RedirectTo \}\}/);
+    assert.match(template, /\{\{ \.TokenHash \}\}/);
+    assert.match(template, /type=email/);
+  }
+  assert.match(config, /\[auth\.email\.template\.magic_link\][\s\S]*?magic_link\.html/);
+  assert.match(magicLinkTemplate, /\{\{ \.Token \}\}/);
+  assert.doesNotMatch(magicLinkTemplate, /\{\{ \.RedirectTo \}\}|\{\{ \.TokenHash \}\}|type=email/);
+});
+
+test('shared journey supports password, passwordless email, OTP, and resend cooldown states', async () => {
+  const [auth, journey, resend, helpers, englishMessages] = await Promise.all([
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
     read('src/supacharger/components/forms/login-user-form.tsx'),
     read('src/supacharger/components/forms/resend-verification-email.tsx'),
+    read('src/supacharger/utils/helpers.ts'),
+    read('messages/en.json'),
   ]);
-  assert.match(journey, /magicLinkAvailable/);
-  assert.match(journey, /SIGN_UP_EMAIL_VERIFICATION === 'otp'/);
-  assert.match(journey, /SIGN_UP_EMAIL_VERIFICATION === 'link'/);
+  assert.match(journey, /passwordlessEmailAvailable/);
+  assert.match(journey, /signUpVerificationMode === 'otp'/);
+  assert.match(journey, /signUpVerificationMode === 'link'/);
+  assert.match(journey, /signUpVerificationMode === 'otp-and-link'/);
+  assert.match(journey, /offersOtpAndLink/);
+  assert.match(journey, /openLinkInstructions/);
+  assert.doesNotMatch(journey, /passwordlessEmailMode === 'otp-and-link'/);
   assert.match(journey, /autoComplete='one-time-code'/);
   assert.match(journey, /autoComplete='current-password'/);
+  const verifyOtpAction = auth.slice(auth.indexOf('export async function verifyOtp'));
+  assert.ok(
+    verifyOtpAction.indexOf('supabase.auth.getUser()') < verifyOtpAction.indexOf('supabase.auth.verifyOtp('),
+    'an existing verified session must be recognised before submitting a consumed OTP',
+  );
+  assert.equal((verifyOtpAction.match(/supabase\.auth\.getUser\(\)/g) ?? []).length, 2);
+  assert.match(auth, /supabase\.auth\.getUser\(\)/);
+  assert.match(auth, /hasVerifiedSessionForEmail/);
+  assert.match(auth, /authActionFailure\('otp_already_verified'\)/);
+  assert.match(helpers, /otp_already_verified:\s*'otpAlreadyVerified'/);
+  assert.match(journey, /messageKey === 'otpExpired'/);
+  assert.match(journey, /messageKey === 'otpAlreadyVerified'/);
+  assert.match(journey, /otpFailure === 'already-verified' \? 'sc_message-positive' : 'sc_message-error'/);
+  assert.match(journey, /withNextPath\('\/account\/login', safeNextPath\)/);
+  assert.match(journey, /t\('loginHere'\)/);
+  assert.match(journey, /otpFailure && verificationPurpose === 'signup'/);
+  assert.match(englishMessages, /"otpAlreadyVerified":\s*"Your email has already been verified\."/);
+  assert.match(englishMessages, /"loginHere":\s*"Login Here"/);
   assert.match(resend, /EMAIL_RESEND_COOLDOWN_SECONDS/);
   assert.match(resend, /\/api\/account\/resend-activation-link/);
+  assert.match(resend, /onResend/);
+});
+
+test('the starter enables OTP-only passwordless sign-in independently of signup verification', async () => {
+  const config = await read('src/supacharger.config.ts');
+
+  assert.match(config, /SIGN_IN:\s*'otp'/);
+  assert.match(config, /SIGN_UP_EMAIL_VERIFICATION:\s*'(?:disabled|otp|link|otp-and-link)'/);
+});
+
+test('frontend and local Supabase use the same email OTP length', async () => {
+  const [appConfig, supabaseConfig, journey, auth] = await Promise.all([
+    read('src/supacharger.config.ts'),
+    read('supabase/config.toml'),
+    read('src/supacharger/components/forms/login-user-form.tsx'),
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
+  ]);
+  const frontendLength = Number(appConfig.match(/OTP_LENGTH:\s*(\d+)/)?.[1]);
+  const localLength = Number(supabaseConfig.match(/\[auth\.email\][\s\S]*?otp_length\s*=\s*(\d+)/)?.[1]);
+
+  assert.ok(Number.isInteger(frontendLength) && frontendLength > 0);
+  assert.equal(frontendLength, localLength);
+  assert.match(journey, /length=\{otpLength\}/);
+  assert.match(auth, /\.length\(SC_CONFIG\.AUTHENTICATION\.PASSWORDLESS_EMAIL\.OTP_LENGTH\)/);
 });
 
 test('direct auth routes prefer providers while email-only authentication opens directly', async () => {
-  const [journey, providerButtons, englishMessages, frenchMessages] = await Promise.all([
+  const [journey, providerButtons, englishMessages] = await Promise.all([
     read('src/supacharger/components/forms/login-user-form.tsx'),
     read('src/supacharger/components/buttons/auth-provider-buttons.tsx'),
     read('messages/en.json'),
-    read('messages/fr.json'),
   ]);
 
   assert.match(journey, /startsInEmailMode/);
   assert.match(journey, /return emailJourneyAvailable && !providerJourneyAvailable/);
   assert.doesNotMatch(journey, /initialMode === 'signup' \|\| !providerJourneyAvailable/);
-  assert.match(journey, /MAGIC_LINK\.ENABLED/);
-  assert.match(journey, /MAGIC_LINK\.ALLOW_SIGN_UP/);
-  assert.match(journey, /magicLinkAvailable\s*\?\s*\(/);
+  assert.match(journey, /PASSWORDLESS_EMAIL\.SIGN_IN/);
+  assert.match(journey, /PASSWORDLESS_EMAIL\.SIGN_UP/);
+  assert.match(journey, /passwordlessEmailAvailable\s*\?\s*\(/);
   assert.match(journey, /onClick=\{showProviderChoices\}/);
   assert.match(journey, /t\.has\('useSocialAuth'\)/);
   assert.doesNotMatch(journey, /showProvidersInEmailMode/);
@@ -187,7 +301,6 @@ test('direct auth routes prefer providers while email-only authentication opens 
   assert.match(providerButtons, /slice\(0, limit\)/);
   assert.match(providerButtons, /-space-x-2/);
   assert.match(englishMessages, /"useSocialAuth":\s*"Use social auth"/);
-  assert.match(frenchMessages, /"useSocialAuth":/);
 });
 
 test('the reusable embedded signup form retains the submitted email for OTP verification', async () => {
@@ -197,14 +310,48 @@ test('the reusable embedded signup form retains the submitted email for OTP veri
   assert.match(embeddedSignup, /<OtpFieldsForm email=\{verificationEmail\}/);
 });
 
+test('an existing signup returns to sign in with the submitted credentials intact', async () => {
+  const journey = await read('src/supacharger/components/forms/login-user-form.tsx');
+  const transition = journey.match(
+    /if \(data\.user && Array\.isArray\(data\.user\.identities\) && data\.user\.identities\.length === 0\) \{([\s\S]*?)\n      \}/,
+  );
+
+  assert.ok(transition, 'expected an existing-account sign-in transition');
+  assert.match(journey, /data\.user\.identities\.length === 0/);
+  assert.match(journey, /toast\.warning\(tSupabaseErrorCodes\('accountAlreadyExists'\), SC_CONFIG\.TOAST_CONFIG\)/);
+  assert.match(transition[1], /setMode\('signin'\)/);
+  assert.match(transition[1], /setStep\('email'\)/);
+  assert.match(transition[1], /pushAuthRoute\('signin'\)/);
+  assert.match(transition[1], /setPasswordAgain\(''\)/);
+  assert.doesNotMatch(transition[1], /setPassword\(/);
+});
+
 test('auth choices hide empty provider separators and track each request independently', async () => {
   const journey = await read('src/supacharger/components/forms/login-user-form.tsx');
 
   assert.match(journey, /providerJourneyAvailable/);
   assert.match(journey, /providerJourneyAvailable\s*\?\s*<UIDivider text='or'/);
   assert.match(journey, /pendingAction === 'password'/);
-  assert.match(journey, /pendingAction === 'magic-link'/);
+  assert.match(journey, /pendingAction === 'passwordless-email'/);
   assert.match(journey, /pendingAction === 'otp'/);
+});
+
+test('password signup uses the browser SDK and one explicit verification step', async () => {
+  const [journey, auth] = await Promise.all([
+    read('src/supacharger/components/forms/login-user-form.tsx'),
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
+  ]);
+
+  assert.match(journey, /import \{ useState, useTransition \} from 'react'/);
+  assert.match(journey, /const supabase = createClient\(\)/);
+  assert.match(journey, /await supabase\.auth\.signUp\(/);
+  assert.match(journey, /setVerificationEmail\(normalisedEmail\)/);
+  assert.match(journey, /setStep\('verify-email'\)/);
+  assert.doesNotMatch(journey, /useActionState|signUpActionState|signUpFormAction|submissionId/);
+  assert.doesNotMatch(auth, /submitEmailPasswordSignUp|EmailPasswordSignUpActionState/);
+  assert.equal((journey.match(/startAuthTransition\(async \(\) => \{/g) ?? []).length, 3);
+  assert.match(journey, /startAuthTransition\(async \(\) => \{[\s\S]*?await signInWithEmail\(normalisedEmail, safeNextPath\)/);
+  assert.match(journey, /startAuthTransition\(async \(\) => \{[\s\S]*?await verifyOtp\(verificationEmail, value\)/);
 });
 
 test('auth buttons and inputs share the canonical control dimensions', async () => {
@@ -217,10 +364,7 @@ test('auth buttons and inputs share the canonical control dimensions', async () 
 });
 
 test('signup is exposed through the canonical journey rather than a public JSON route', async () => {
-  const route = new URL(
-    '../src/app/(supacharger)/api/(supacharger)/account/create-account/route.ts',
-    import.meta.url,
-  );
+  const route = new URL('../src/app/(supacharger)/api/(supacharger)/account/create-account/route.ts', import.meta.url);
 
   await assert.rejects(access(route));
 });

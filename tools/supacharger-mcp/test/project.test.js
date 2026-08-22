@@ -9,6 +9,8 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/i18n/request.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('messages/en.json').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/assets/images/ui/inline-loader.svg').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/assets/images/ui/inline-loader-dark.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger/styles/supacharger.css').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/components/sc_demo/header.tsx').ownership, 'developer-owned-example');
   assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'cli-managed-core');
@@ -50,4 +52,14 @@ test('searches the billing guidance exposed to the MCP', async () => {
 test('searches the image transformation guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('request never supplies a bucket or path');
   assert.ok(matches.some((match) => match.path === 'docs/agents/image-transformation.md'));
+});
+
+test('searches the input validation guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('Browser-callable RPCs are public server boundaries');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/input-validation.md'));
+});
+
+test('searches the inline loading guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('every inline loading indicator');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/loading-ui.md'));
 });

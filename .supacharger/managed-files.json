@@ -23,6 +23,9 @@
     "test/auth-action-result.test.mjs",
     "test/auth-confirmation-redirect.test.mjs",
     "test/auth-journey-contract.test.mjs",
+    "test/auth-otp-verification.test.mjs",
+    "test/auth-presentation-contract.test.mjs",
+    "test/auth-proxy-contract.test.mjs",
     "test/site-url.test.mjs",
     "test/image-transform-contract.test.mjs",
     "test/billing-schema-contract.test.mjs",
@@ -37,6 +40,8 @@
     "src/components/sc_demo",
     "src/i18n/config.ts",
     "src/i18n/request.ts",
+    "src/assets/images/ui/inline-loader-dark.svg",
+    "src/assets/images/ui/inline-loader.svg",
     "src/styles/project.css",
     "src/supacharger.adapters",
     "src/supacharger.config.ts"

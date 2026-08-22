@@ -62,9 +62,13 @@ export const SC_CONFIG: SupachargerConfig = {
       SIGN_IN: true,
       SIGN_UP: true,
     },
-    MAGIC_LINK: {
-      ENABLED: true,
-      ALLOW_SIGN_UP: true,
+    // Supabase sends links and codes through the same signInWithOtp request.
+    // Keep OTP_LENGTH aligned with auth.email.otp_length in supabase/config.toml
+    // and with the hosted project's Email OTP length.
+    PASSWORDLESS_EMAIL: {
+      SIGN_IN: 'otp',
+      SIGN_UP: 'disabled',
+      OTP_LENGTH: 6,
     },
     // Keep this aligned with Supabase Auth email-confirmation settings and templates.
     SIGN_UP_EMAIL_VERIFICATION: 'otp',
@@ -107,6 +111,7 @@ export const SC_CONFIG: SupachargerConfig = {
           "/about",
           "/user/:username",
           "/legal",
+          "/error",
 
           // Defaults
           "/",
@@ -151,7 +156,7 @@ export const SC_CONFIG: SupachargerConfig = {
       // Which path authenticated users are redirected to when requesting an auth protected page
       AUTHGUARD_REDIRECT_DESTINATION: '/',
         // Where to go after successful authentication flow
-      LOGIN_REDIRECT_DESTINATON: '/',
+      LOGIN_REDIRECT_DESTINATION: '/',
     },
   },
 
