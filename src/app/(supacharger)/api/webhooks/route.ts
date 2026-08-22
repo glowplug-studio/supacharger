@@ -20,8 +20,9 @@ export async function POST(req: Request) {
 
   try {
     event = getStripeAdmin().webhooks.constructEvent(rawBody, sig, webhookSecret);
-  } catch (err: any) {
-    return new Response(`Webhook Error: ${err.message}`, { status: 400 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Invalid Stripe webhook payload';
+    return new Response(`Webhook Error: ${message}`, { status: 400 });
   }
 
   try {
