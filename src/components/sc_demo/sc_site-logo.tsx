@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import SiteLogoSVG from '@/assets/images/SiteLogoSVG.svg';
+import SiteLogoSVG from '@/assets/images/site-logo-light.svg';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
