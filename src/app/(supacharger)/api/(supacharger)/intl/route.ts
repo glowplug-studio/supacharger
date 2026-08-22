@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { getLocale } from 'next-intl/server';
 import { z } from 'zod';
 
-import { LOCALE_COOKIE_NAME, SUPPORTED_LOCALES } from '@/i18n/config';
+import { isSupportedLocale, LOCALE_COOKIE_NAME, SUPPORTED_LOCALES } from '@/i18n/config';
 import { createClient } from '@/lib/supabase/server';
 
 const localeCookieOptions = {
@@ -14,7 +14,7 @@ const localeCookieOptions = {
   secure: process.env.NODE_ENV === 'production',
 };
 const LOCALE_PROFILE_SYNC_COOKIE_NAME = `${LOCALE_COOKIE_NAME}_profile_sync`;
-const localeRequestSchema = z.object({ locale: z.enum(SUPPORTED_LOCALES) });
+const localeRequestSchema = z.object({ locale: z.string().refine(isSupportedLocale) }).strict();
 
 export async function GET() {
   return NextResponse.json({ locale: await getLocale() });

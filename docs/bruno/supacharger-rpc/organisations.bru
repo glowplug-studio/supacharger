@@ -1,0 +1,34 @@
+meta {
+  name: switch organisation context
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/organisations
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "input_payload": {
+      "action": "switch",
+      "handle": "example-organisation"
+    }
+  }
+}
+
+docs {
+  Creates or switches the authenticated user's active organisation context. The RPC derives the user and session identifiers from the verified JWT; clients must not supply either identifier.
+
+  For creation, send action "create" with title and handle. For selection, send action "switch" with handle. The selected organisation must already include the authenticated user as a member.
+}

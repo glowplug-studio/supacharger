@@ -48,11 +48,13 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
 
     setIsSaving(true);
     const supabase = createClient();
-    const { error: updateError } = await supabase.schema('api').rpc('update_account_profile_by_current_user', {
-      input_first_name: normalisedFirstName,
-      input_last_name: normalisedLastName,
-      input_username: usernamePolicy === 'disabled' ? null : normalisedUsername || null,
-    });
+    const { error: updateError } = await supabase
+      .schema('api')
+      .rpc('update_account_profile_by_current_user', {
+        input_first_name: normalisedFirstName,
+        input_last_name: normalisedLastName,
+        ...(usernamePolicy === 'disabled' ? {} : { input_username: normalisedUsername }),
+      });
 
     if (updateError) {
       setError(updateError.message);

@@ -5,8 +5,6 @@ import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
 import { acceptStripeEvent, processStripeEvent } from '@/lib/stripe/stripe-events';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 
-export const runtime = 'nodejs';
-
 export async function POST(req: Request) {
   const arrayBuffer = await req.arrayBuffer();
   const rawBody = Buffer.from(arrayBuffer).toString('utf8');

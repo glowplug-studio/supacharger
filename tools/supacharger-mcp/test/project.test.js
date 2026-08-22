@@ -18,13 +18,17 @@ test('classifies protected and developer-owned paths', () => {
     'developer-owned-example',
   );
   assert.match(classifyPath('src/components/sc_demo/assets/logos/demo-logo-09.svg').guidance, /SVGR/);
-  assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'cli-managed-core');
-  assert.equal(classifyPath('src/features/pricing/controllers/upsert-price.ts').ownership, 'cli-managed-core');
-  assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'application-integration');
+  assert.equal(classifyPath('src/features/pricing/controllers/upsert-price.ts').ownership, 'application-integration');
+  assert.equal(classifyPath('src/lib/supabase/types.ts').ownership, 'application-integration');
+  assert.equal(classifyPath('package.json').ownership, 'merge-managed-contract');
+  assert.equal(classifyPath('tailwind.config.ts').ownership, 'merge-managed-contract');
+  assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'forward-only-history');
+  assert.equal(classifyPath('postcss.config.mjs').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/process-image-upload/index.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/_shared/image-transform.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/_shared/image-targets.ts').ownership, 'developer-owned');
-  assert.equal(classifyPath('src/lib/supabase/types.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('src/app/(project)/account/page.tsx').ownership, 'developer-owned');
 });
 
 test('rejects paths outside the repository and sensitive paths', () => {

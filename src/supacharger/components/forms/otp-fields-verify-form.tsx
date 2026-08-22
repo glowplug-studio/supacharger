@@ -77,6 +77,7 @@ export function OtpFieldsForm({ email }: { email: string }) {
   return (
     <div id='sc_otp-fields-verification-form' className='space-y-3'>
       <h2 className='mb-2 text-xl font-bold tracking-tight'>{tOTPFormComponent('title')}</h2>
+      <p className='text-xs'>{tOTPFormComponent('emailSent', { email })}</p>
       <p className='text-xs'>{tOTPFormComponent('description')}</p>
 
       <LabelPrimitive.Root htmlFor='otp-group' className='mb-2 block font-medium'>

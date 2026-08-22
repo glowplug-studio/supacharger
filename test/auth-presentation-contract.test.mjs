@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -119,9 +119,23 @@ test('responsive inline loader assets retain their SVG scaling coordinate system
   }
 });
 
+test('protected auth provider SVGs are responsive SVGR sources', async () => {
+  const directory = new URL('../src/supacharger/assets/svgr/auth-providers/', import.meta.url);
+  const filenames = (await readdir(directory)).filter((filename) => filename.endsWith('.svg'));
+
+  for (const filename of filenames) {
+    const source = await readFile(new URL(filename, directory), 'utf8');
+    const root = source.match(/<svg\b[^>]*>/s)?.[0] ?? '';
+
+    assert.match(root, /\bviewBox=/, `${filename} must retain a viewBox`);
+    assert.doesNotMatch(root, /\swidth=/, `${filename} must not set an intrinsic width`);
+    assert.doesNotMatch(root, /\sheight=/, `${filename} must not set an intrinsic height`);
+  }
+});
+
 test('password reset uses the same auth presentation without replacing its logic', async () => {
   const [page, form] = await Promise.all([
-    read('src/app/(supacharger)/(unauthenticated)/account/reset-password/new/page.tsx'),
+    read('src/app/(project)/(unauthenticated)/account/reset-password/new/page.tsx'),
     read('src/supacharger/components/forms/reset-password-request-link-form.tsx'),
   ]);
 

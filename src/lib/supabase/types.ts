@@ -67,6 +67,7 @@ export type Database = {
         Args: { input_username_required?: boolean }
         Returns: boolean
       }
+      organisations: { Args: { input_payload: Json }; Returns: Json }
       update_account_avatar_by_current_user: {
         Args: { input_avatar_path: string }
         Returns: undefined

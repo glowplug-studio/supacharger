@@ -50,6 +50,7 @@
     "oldPasswordIncorrect": "当前密码不正确",
     "oldPasswordRequired": "您必须输入当前密码",
     "provided_password_mismatch": "提供的密码不匹配",
+    "passwordUpdateFailed": "",
     "passwordTooShort": "提供的密码太短",
     "password_failed_regex_evaluation": "提供的密码强度不够",
     "mustContainLetterDigit": "密码必须包含至少一个字母和至少一位数字",

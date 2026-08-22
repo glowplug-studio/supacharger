@@ -299,7 +299,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
         const contextResponse = await fetch('/api/organisations/context', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'select', handle: organisationHandle.trim() }),
+          body: JSON.stringify({ action: 'switch', handle: organisationHandle.trim() }),
         });
         if (!contextResponse.ok) {
           setError(t('organisationFailed'));

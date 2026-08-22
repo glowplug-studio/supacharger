@@ -1,107 +1,69 @@
-'use server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
 
-import { cookies } from 'next/headers';
-import { NextRequest, NextResponse } from 'next/server';
-
-import { getUser, getUserSession } from '@/lib/supabase/supacharger/supabase-auth';
+import { createClient } from '@/lib/supabase/server';
 import { evaluatePasswordStrength } from '@/supacharger/utils/helpers';
-import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const passwordUpdateSchema = z
+  .object({
+    password: z.string().min(1).max(256),
+    newPassword: z.string().min(1).max(256),
+    newPasswordRetype: z.string().min(1).max(256),
+  })
+  .strict();
 
 export async function POST(request: NextRequest) {
-  // Parse the request body
-  const { password, newPassword, newPasswordRetype } = await request.json();
+  let body: unknown;
 
-  // Evaluate passwords
-  if (!password) {
+  try {
+    body = await request.json();
+  } catch {
     return NextResponse.json({ error: 'oldPasswordRequired' }, { status: 400 });
   }
+
+  const parsed = passwordUpdateSchema.safeParse(body);
+  if (!parsed.success) {
+    const passwordMissing = parsed.error.issues.some((issue) => issue.path[0] === 'password');
+    return NextResponse.json(
+      { error: passwordMissing ? 'oldPasswordRequired' : 'provided_password_mismatch' },
+      { status: 400 },
+    );
+  }
+
+  const { password, newPassword, newPasswordRetype } = parsed.data;
   if (newPassword !== newPasswordRetype) {
     return NextResponse.json({ error: 'provided_password_mismatch' }, { status: 400 });
   }
-  const passStrengthValidity = evaluatePasswordStrength(newPassword);
-  if (!passStrengthValidity.valid) {
-    return NextResponse.json({ error: passStrengthValidity.message }, { status: 400 });
+
+  const passwordStrength = evaluatePasswordStrength(newPassword);
+  if (!passwordStrength.valid) {
+    return NextResponse.json({ error: passwordStrength.message }, { status: 400 });
   }
 
-  // Get the userSession and accessToken
-  const supaSession = await getUserSession();
+  const supabase = await createClient();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-  // Check that supaSession has a session property and it's not null
-  if (!('session' in supaSession) || !supaSession.session) {
+  if (userError || !user?.email) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
   }
 
-  const { access_token: accessToken, user: sessionUser } = supaSession.session;
-
-  // Get the user by JWT
-  //This method is useful for checking if the user is authorized because it validates the user's access token JWT on the server.
-
-  const supaUser = await getUser(accessToken, true);
-
-  // Type guard for supaUser: must have .data and .supabase
-  if (
-    !supaUser ||
-    !('data' in supaUser) ||
-    !supaUser.data ||
-    !('user' in supaUser.data) ||
-    !supaUser.data.user ||
-    !('supabase' in supaUser) ||
-    !supaUser.supabase
-  ) {
-    return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
-  }
-
-  const { id: supaUserId } = supaUser.data.user;
-  const { id: supaSessionId } = sessionUser;
-
-  // Server side verification that supplied token data is valid for the current user session.
-  // @todo It's probaly uncessary to check the User as well as only the JWT is passed to the rpc call. Anyway be extra safe when it comes to password update.
-
-  if (
-    !supaUserId ||
-    !supaSessionId ||
-    supaUserId !== supaSessionId
-  ) {
-    return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
-  }
-
-  // Use the access token to make the client
-  const supabase = createClient(
-    supabaseUrl,
-    supabasePublishableKey,
-    {
-      global: {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    }
-  );
-
-  // RPC call to function
-  const { data, error } = await supabase.rpc('verify_user_password', {
+  const { error: reauthenticationError } = await supabase.auth.signInWithPassword({
+    email: user.email,
     password,
   });
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  if (!data?.matched) {
+  if (reauthenticationError) {
     return NextResponse.json({ error: 'oldPasswordIncorrect' }, { status: 400 });
   }
 
-  // data.matched == true
-  const { data: updateData, error: updateError } = await supaUser.supabase.auth.updateUser({
-    password: newPassword,
-  });
-
+  const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
   if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 500 });
-  } else {
-    return NextResponse.json({ data: { updated: true } });
+    return NextResponse.json({ error: 'passwordUpdateFailed' }, { status: 500 });
   }
+
+  return NextResponse.json({ data: { updated: true } });
 }

@@ -4,55 +4,40 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
-import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
-import { SC_CONFIG } from "@/supacharger/supacharger-config";
-import { getURL } from '@/supacharger/utils/helpers';
-
-let siteUrl = getURL();
+import {
+  resolveAuthCallbackFailure,
+  resolveAuthCallbackSuccess,
+} from '@/supacharger.adapters/auth-callback';
+import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
+  const nextPath = getSafeNextPath(requestUrl.searchParams.get('next'));
+  const supabase = await createClient();
+  const context = { code, nextPath, requestUrl, supabase };
 
-  if (code) {
-    const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user?.id) {
-      return NextResponse.redirect( getURL(SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION) );
-    }
-
-    if (SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED) {
-      const { data: profileComplete } = await supabase
-        .schema('api')
-        .rpc('is_profile_complete_by_current_user', {
-          input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
-        });
-
-      if (profileComplete === false) {
-        return NextResponse.redirect(siteUrl + SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH);
-      }
-    }
-
-
-
-
-    if (SC_CONFIG.BILLING_ACCESS.REQUIRED) {
-      const { data: hasBillingAccess } = await supabase.schema('api').rpc('has_billing_access_by_current_user', {
-        input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY,
-      });
-      if (!hasBillingAccess) {
-        return NextResponse.redirect(siteUrl + SC_CONFIG.BILLING_ACCESS.REDIRECT_PATH);
-      }
-    }
+  if (!code) {
     return NextResponse.redirect(
-      getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION),
+      await resolveAuthCallbackFailure({ ...context, reason: 'missing-code' }),
     );
   }
 
-  return NextResponse.redirect(siteUrl);
+  const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+  if (exchangeError) {
+    return NextResponse.redirect(
+      await resolveAuthCallbackFailure({ ...context, error: exchangeError, reason: 'exchange-error' }),
+    );
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.id) {
+    return NextResponse.redirect(
+      await resolveAuthCallbackFailure({ ...context, reason: 'missing-user' }),
+    );
+  }
+
+  return NextResponse.redirect(await resolveAuthCallbackSuccess(context));
 }

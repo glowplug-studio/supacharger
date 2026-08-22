@@ -1,23 +1,18 @@
 {
-  "version": 1,
+  "version": 2,
   "managedPaths": [
     ".supacharger/managed-files.json",
     "components.json",
-    "package-lock.json",
-    "package.json",
+    "postcss.config.mjs",
     "src/app/(supacharger)",
     "src/lib/supabase/supacharger",
     "src/proxy.ts",
     "src/supacharger",
-    "tailwind.config.ts",
     "tsconfig.json",
-    "supabase/config.toml",
     "supabase/functions/_shared/image-target-contract.ts",
     "supabase/functions/_shared/image-transform-runtime.test.ts",
     "supabase/functions/_shared/image-transform.ts",
     "supabase/functions/process-image-upload",
-    "supabase/migrations",
-    "supabase/templates",
     "test/auth-action-result.test.mjs",
     "test/auth-confirmation-redirect.test.mjs",
     "test/auth-journey-contract.test.mjs",
@@ -29,10 +24,20 @@
     "test/billing-schema-contract.test.mjs",
     "test/tooling-contract.test.mjs"
   ],
+  "mergeManagedPaths": [
+    "package.json",
+    "package-lock.json",
+    "supabase/config.toml",
+    "tailwind.config.ts"
+  ],
+  "forwardOnlyMigrationPaths": [
+    "supabase/migrations"
+  ],
   "developerOwnedPaths": [
     ".supacharger/core-lock.json",
     "messages",
     "supabase/functions/_shared/image-targets.ts",
+    "supabase/templates",
     "src/app/layout.tsx",
     "src/app/(project)",
     "src/components/sc_demo",

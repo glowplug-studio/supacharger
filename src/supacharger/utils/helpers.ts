@@ -17,6 +17,17 @@ export function getEnvVar(varValue: string | undefined, varName: string): string
   return value;
 }
 
+export function getSupabaseUrl(): string {
+  return getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL, 'NEXT_PUBLIC_SUPABASE_URL');
+}
+
+export function getSupabasePublishableKey(): string {
+  return getEnvVar(
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
+  );
+}
+
 /**
  *  Email Validation
  * */

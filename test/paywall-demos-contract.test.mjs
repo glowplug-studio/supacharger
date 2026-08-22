@@ -7,7 +7,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 test('public paywall gallery demonstrates seven billing entry patterns', async () => {
   const [gallery, page, englishMessages] = await Promise.all([
     read('src/components/sc_demo/sc_paywall-demos.tsx'),
-    read('src/app/(supacharger)/(unauthenticated)/(sc_demo)/paywall-demos/page.tsx'),
+    read('src/app/(project)/(unauthenticated)/(sc_demo)/paywall-demos/page.tsx'),
     read('messages/en.json'),
   ]);
   const messages = JSON.parse(englishMessages).MarketingFeaturePages.paywallDemos;

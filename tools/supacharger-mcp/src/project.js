@@ -72,33 +72,54 @@ export function classifyPath(inputPath) {
   if (
     relativePath === 'src/proxy.ts' ||
     relativePath === 'src/lib/supabase/supacharger/proxy.ts' ||
-    relativePath === 'supabase/config.toml' ||
+    relativePath === 'postcss.config.mjs' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform-runtime.test.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
     relativePath === 'supabase/functions/process-image-upload' ||
     relativePath.startsWith('supabase/functions/process-image-upload/') ||
-    relativePath === 'src/lib/stripe' ||
-    relativePath.startsWith('src/lib/stripe/') ||
-    relativePath === 'src/features/pricing' ||
-    relativePath.startsWith('src/features/pricing/') ||
-    relativePath === 'supabase/migrations' ||
-    relativePath.startsWith('supabase/migrations/') ||
-    relativePath === 'src/lib/supabase/types.ts' ||
-    [
-      'get-customer-id.ts',
-      'billing-account.ts',
-      'get-billing-overview.ts',
-      'get-or-create-customer.ts',
-      'get-subscription.ts',
-      'sync-entitlements.ts',
-      'upsert-user-subscription.ts',
-    ].some((file) => relativePath === `src/features/account/controllers/${file}`)
+    relativePath === 'components.json' ||
+    relativePath === 'tsconfig.json'
   ) {
     return {
       ownership: 'cli-managed-core',
       guidance:
         'Canonical shared implementation or schema. Follow the matching authentication, database, or billing guidance, land changes in core first, and propagate them through the CLI.',
+    };
+  }
+
+  if (
+    relativePath === 'package.json' ||
+    relativePath === 'package-lock.json' ||
+    relativePath === 'supabase/config.toml' ||
+    relativePath === 'tailwind.config.ts'
+  ) {
+    return {
+      ownership: 'merge-managed-contract',
+      guidance:
+        'Core supplies requirements, but the application owns additional values. Merge the canonical contract without byte-replacing product dependencies or project configuration.',
+    };
+  }
+
+  if (relativePath === 'supabase/migrations' || relativePath.startsWith('supabase/migrations/')) {
+    return {
+      ownership: 'forward-only-history',
+      guidance:
+        'Permanent project migration history. Copy only new Core migrations; never replace, delete, reorder, or rewrite an installed migration.',
+    };
+  }
+
+  if (
+    relativePath === 'src/lib/stripe' ||
+    relativePath.startsWith('src/lib/stripe/') ||
+    relativePath === 'src/features' ||
+    relativePath.startsWith('src/features/') ||
+    relativePath === 'src/lib/supabase/types.ts'
+  ) {
+    return {
+      ownership: 'application-integration',
+      guidance:
+        'Application schema and product integration code. Preserve product-specific shapes while satisfying the stable interfaces used by protected Core routes.',
     };
   }
 
@@ -122,6 +143,14 @@ export function classifyPath(inputPath) {
       ownership: 'developer-owned-template',
       guidance:
         'Installed root-layout template. Keep it wired to the protected root-document helper, but preserve application fonts, providers, body classes, and intentional head additions during CLI updates.',
+    };
+  }
+
+  if (relativePath === 'src/app/(project)' || relativePath.startsWith('src/app/(project)/')) {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Application routes and presentation. Preserve these paths during Core updates; reusable framework boundaries belong in the protected route group.',
     };
   }
 
@@ -149,6 +178,13 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'developer-owned',
       guidance: 'Application styling seam. Keep the project name accurate; CLI updates must preserve this file.',
+    };
+  }
+
+  if (relativePath === '.supacharger/managed-files.json') {
+    return {
+      ownership: 'cli-managed-core',
+      guidance: 'Canonical versioned ownership manifest. Consumer copies must be byte-identical to Core.',
     };
   }
 

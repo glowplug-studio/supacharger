@@ -10,14 +10,17 @@ Stripe remains authoritative for Customers, Products, Prices, Subscriptions, Sub
 
 ## Canonical implementation
 
-Supacharger owns the reusable billing implementation under:
+Supacharger defines the reusable billing behaviour through:
 
 - `src/lib/stripe/`;
 - `src/features/pricing/`;
 - the named billing controllers in `src/features/account/controllers/`;
 - `src/app/(supacharger)/api/webhooks/` and the protected Stripe processor/reconciliation routes;
-- `src/app/(supacharger)/(authenticated)/account/billing/`;
+- exact protected Stripe webhook, processor, and reconciliation Route Handlers under `src/app/(supacharger)/`;
+- developer-owned billing/account pages under `src/app/(project)/(authenticated)/account/billing/`;
 - billing objects in `src/lib/supabase/types.ts` and `supabase/migrations/`.
+
+The manifest byte-protects the Route Handlers, not application table shapes. Stripe libraries, generated types, and billing controllers are application integration code that must satisfy the protected handlers' stable interfaces while adapting product schemas. Migration histories are forward-only and must never be byte-replaced.
 
 Product catalogue content, tax registrations, payment-method Dashboard settings, entitlement definitions, copy, branding, account-subject provisioning, and organisation membership remain developer-owned policy. Consumers must adapt their product model to `billing_accounts`; they must not fork the core back to user-owned subscriptions.
 

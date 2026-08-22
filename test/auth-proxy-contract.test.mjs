@@ -48,7 +48,7 @@ test('Proxy performs claims verification without profile or billing RPCs', async
 
 test('protected layout enforces profile and billing access on the server', async () => {
   const [layout, access] = await Promise.all([
-    readFile(new URL('../src/app/(supacharger)/(authenticated)/layout.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/app/(project)/(authenticated)/layout.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/supacharger/auth/server-access.ts', import.meta.url), 'utf8'),
   ]);
 

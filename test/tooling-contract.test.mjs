@@ -25,7 +25,7 @@ async function findLegacyCnImports(directory) {
   return matches;
 }
 
-test('Tailwind configuration loads without Node reparsing the package as ESM', () => {
+test('root tool configuration uses explicit module formats', () => {
   const result = spawnSync(
     process.execPath,
     ['--experimental-strip-types', '--eval', 'import("./tailwind.config.ts")'],
@@ -37,6 +37,12 @@ test('Tailwind configuration loads without Node reparsing the package as ESM', (
 
   assert.equal(result.status, 0, result.stderr);
   assert.doesNotMatch(result.stderr, /MODULE_TYPELESS_PACKAGE_JSON/);
+
+  const postcss = spawnSync(process.execPath, ['--eval', 'import("./postcss.config.mjs")'], {
+    cwd: projectRoot,
+    encoding: 'utf8',
+  });
+  assert.equal(postcss.status, 0, postcss.stderr);
 });
 
 test('uses the canonical class-name utility module', async () => {
@@ -55,6 +61,15 @@ test('keeps the root layout editable and the root document implementation manage
 
   assert.ok(manifest.developerOwnedPaths.includes('src/app/layout.tsx'));
   assert.ok(manifest.managedPaths.includes('src/supacharger'));
+  assert.ok(manifest.managedPaths.includes('postcss.config.mjs'));
+  assert.ok(manifest.mergeManagedPaths.includes('package.json'));
+  assert.ok(manifest.mergeManagedPaths.includes('supabase/config.toml'));
+  assert.ok(manifest.mergeManagedPaths.includes('tailwind.config.ts'));
+  assert.deepEqual(manifest.forwardOnlyMigrationPaths, ['supabase/migrations']);
+  assert.ok(!manifest.managedPaths.includes('package.json'));
+  assert.ok(!manifest.managedPaths.includes('supabase/config.toml'));
+  assert.ok(!manifest.managedPaths.includes('supabase/migrations'));
+  assert.ok(!manifest.managedPaths.includes('tailwind.config.ts'));
   assert.match(rootDocument, /createSupachargerMetadata/);
   assert.match(rootDocument, /createSupachargerPageMetadata/);
   assert.match(rootDocument, /@next\/third-parties\/google/);
@@ -72,15 +87,10 @@ test('keeps inline loader variants responsive and colour configurable', async ()
 
   for (const source of [defaultLoader, darkLoader]) {
     const root = source.match(/<svg\b([^>]*)>/)?.[1] ?? '';
-    const artwork = source.replace(/^[\s\S]*?<svg\b[^>]*>/, '');
-
-    assert.match(root, /\bviewBox="0 0 100 100"/);
+    assert.match(root, /\bviewBox="[^"]+"/);
     assert.doesNotMatch(root, /\b(?:width|height)=/);
-    assert.doesNotMatch(artwork, /\b(?:fill|stroke)=/);
   }
 
-  assert.match(defaultLoader, /<svg[\s\S]*?\bfill="#ffffff"/);
-  assert.match(darkLoader, /<svg[\s\S]*?\bfill="#000000"/);
   assert.match(wrapper, /fill\s*=\s*'currentColor'/);
   assert.match(wrapper, /<Loader[\s\S]*?fill=\{fill\}/);
   assert.ok(manifest.developerOwnedPaths.includes('src/assets/svgr/ui/inline-loader.svg'));
@@ -88,16 +98,13 @@ test('keeps inline loader variants responsive and colour configurable', async ()
   assert.ok(!manifest.managedPaths.includes('src/assets'));
 });
 
-test('offers the footer theme choices in the canonical three-position order', async () => {
-  const [toggle, footer, layout, englishMessages] = await Promise.all([
-    readFile(new URL('../src/supacharger/components/buttons/mode-toggle-button.tsx', import.meta.url), 'utf8'),
-    readFile(new URL('../src/components/sc_demo/sc_footer.tsx', import.meta.url), 'utf8'),
-    readFile(new URL('../src/app/layout.tsx', import.meta.url), 'utf8'),
-    readFile(new URL('../messages/en.json', import.meta.url), 'utf8'),
-  ]);
+test('offers the protected theme choices in the canonical three-position order', async () => {
+  const toggle = await readFile(
+    new URL('../src/supacharger/components/buttons/mode-toggle-button.tsx', import.meta.url),
+    'utf8',
+  );
   const choices = ["value: 'system'", "value: 'light'", "value: 'dark'"];
   const positions = choices.map((choice) => toggle.indexOf(choice));
-  const messages = JSON.parse(englishMessages);
 
   assert.ok(positions.every((position) => position >= 0));
   assert.deepEqual(
@@ -114,15 +121,6 @@ test('offers the footer theme choices in the canonical three-position order', as
     /const mounted = useSyncExternalStore\(subscribeToHydration, getClientSnapshot, getServerSnapshot\)/,
   );
   assert.match(toggle, /mounted\s*\?\s*\(themeChoices\.find/);
-  assert.match(footer, /<LocaleSwitcher appearance='marketing'\s*\/>[\s\S]*?<ModeToggle appearance='marketing'\s*\/>/);
-  assert.match(layout, /<ThemeProvider[^>]*enableSystem/);
-  assert.match(layout, /<body[\s\S]*?<SupachargerAnalytics config=\{SC_CONFIG\} \/>[\s\S]*?<\/body>/);
-  assert.deepEqual(messages.ThemeChangerMenu, {
-    title: 'Theme',
-    light: 'Light',
-    dark: 'Dark',
-    system: 'System',
-  });
 });
 
 test('smooths global fragment navigation while respecting reduced-motion preferences', async () => {

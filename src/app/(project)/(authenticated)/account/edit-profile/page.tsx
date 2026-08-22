@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { Avatar } from '@/app/(supacharger)/(authenticated)/account/edit-profile/account-profile-edit-avatar';
+import { Avatar } from '@/app/(project)/(authenticated)/account/edit-profile/account-profile-edit-avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog,
   DialogContent,

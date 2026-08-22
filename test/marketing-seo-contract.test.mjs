@@ -7,17 +7,17 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 const marketingPages = {
   home: 'src/app/page.tsx',
-  legal: 'src/app/(supacharger)/(unauthenticated)/(sc_demo)/legal/page.tsx',
-  license: 'src/app/(supacharger)/(unauthenticated)/(sc_demo)/license/page.tsx',
-  paywallDemos: 'src/app/(supacharger)/(unauthenticated)/(sc_demo)/paywall-demos/page.tsx',
-  pricing: 'src/app/(supacharger)/(unauthenticated)/(sc_demo)/pricing/page.tsx',
-  whatsIncluded: 'src/app/(supacharger)/(unauthenticated)/(sc_demo)/whats-included/page.tsx',
+  legal: 'src/app/(project)/(unauthenticated)/(sc_demo)/legal/page.tsx',
+  license: 'src/app/(project)/(unauthenticated)/(sc_demo)/license/page.tsx',
+  paywallDemos: 'src/app/(project)/(unauthenticated)/(sc_demo)/paywall-demos/page.tsx',
+  pricing: 'src/app/(project)/(unauthenticated)/(sc_demo)/pricing/page.tsx',
+  whatsIncluded: 'src/app/(project)/(unauthenticated)/(sc_demo)/whats-included/page.tsx',
 };
 
 test('marketing pages publish distinct canonical and social metadata', async () => {
   const [helper, layout, englishMessages, ...pages] = await Promise.all([
     read('src/components/sc_demo/sc_marketing_metadata.ts'),
-    read('src/app/(supacharger)/(unauthenticated)/(sc_demo)/layout.tsx'),
+    read('src/app/(project)/(unauthenticated)/(sc_demo)/layout.tsx'),
     read('messages/en.json'),
     ...Object.values(marketingPages).map(read),
   ]);
@@ -67,6 +67,6 @@ test('crawler discovery exposes only public marketing routes', async () => {
 });
 
 test('the retired About marketing page is absent', () => {
-  assert.equal(existsSync('src/app/(supacharger)/(unauthenticated)/(sc_demo)/about/page.tsx'), false);
+  assert.equal(existsSync('src/app/(project)/(unauthenticated)/(sc_demo)/about/page.tsx'), false);
   assert.equal(existsSync('src/components/sc_demo/sc_marketing-about.tsx'), false);
 });

@@ -2,25 +2,33 @@
 
 ## Versioned ownership manifest
 
-`.supacharger/managed-files.json` is the authoritative versioned list of managed and developer-owned paths plus post-update checks. `coreupdate --plan` compares the installed baseline with latest core without changing project files or a database. A real update writes only managed paths, removes obsolete managed files, backs up overwritten files under `.supacharger/backups/`, installs changed dependencies, previews linked migrations, verifies the linked ledger after an approved push, runs declared checks, and advances the core lock only after completion.
+`.supacharger/managed-files.json` is the authoritative versioned ownership contract. Version 2 separates exact managed paths, merge-managed contracts, forward-only migration histories, developer-owned paths, and post-update checks. `coreupdate --plan` compares the installed baseline with latest core without changing project files or a database. A real update replaces only exact managed paths, merges approved dependency contracts, copies only new forward migrations, backs up overwritten files under `.supacharger/backups/`, runs declared checks, and advances the core lock only after completion.
 
 ## CLI-managed paths
 
-The CLI-managed core currently occupies:
+The byte-identical CLI-managed core currently occupies the paths listed in `managedPaths`, including:
 
 - `src/supacharger/`
 - `src/app/(supacharger)/`
 - `src/lib/supabase/supacharger/`
-- `src/lib/stripe/`
-- `src/features/pricing/`
-- shared billing controllers in `src/features/account/controllers/`
-- `supabase/migrations/`
+- `postcss.config.mjs`
 - `supabase/functions/_shared/image-target-contract.ts`
 - `supabase/functions/_shared/image-transform.ts`
 - `supabase/functions/process-image-upload/`
-- `.supacharger/`
+- the exact protected contract tests listed in the manifest
+- `.supacharger/managed-files.json`
 
-Application developers should not edit these paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI.
+Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. Product routes and account presentation live under `src/app/(project)/`; the protected route group contains reusable Route Handlers and framework boundaries only.
+
+## Merge-managed contracts
+
+`package.json`, `package-lock.json`, `supabase/config.toml`, and `tailwind.config.ts` are not byte-replaced. The CLI merges canonical dependency requirements into the application package while preserving product dependencies and scripts, then regenerates the lock through the package manager. Supabase local configuration and Tailwind configuration retain project-specific values and require contract-aware merge logic. A changed Core file is not permission to overwrite the consumer copy wholesale.
+
+## Forward-only migration history
+
+`supabase/migrations/` is permanent per-project history. Core updates may copy a new canonical migration only when its filename is absent. A differing migration with the same filename is a conflict and must halt safely. The CLI must never replace, delete, reorder, or rewrite an installed migration, and a file backup is not a database rollback.
+
+Stripe libraries under `src/lib/stripe/`, billing controllers under `src/features/`, and generated database types are application integration code unless a future manifest explicitly classifies an individual path. They may implement the same shared behaviour with application schema adapters; exact protected Route Handlers depend on their stable interfaces rather than owning product table shapes.
 
 ## Developer-owned paths
 
@@ -68,7 +76,7 @@ The root `tsconfig.json` belongs to the Next.js application runtime and must exc
 
 `src/supacharger/styles/globals.css` is the CLI-managed Tailwind entrypoint. Keep it structural: import Tailwind once, then `supacharger.css`, then the developer-owned `src/styles/project.css`.
 
-The root `tailwind.config.ts` is also CLI-managed. It intentionally uses CommonJS syntax while retaining its TypeScript filename, because the root Next.js, PostCSS, and Prettier configuration boundary is CommonJS. Preserve the `@config` path and do not set the whole package to ESM solely to silence Node's module-type warning.
+The root `tailwind.config.ts` is merge-managed because applications may own font and theme choices. `postcss.config.mjs` is exact managed and uses an explicit ESM export for reliable Next.js/Turbopack loading. Preserve the `@config` path and do not set the whole package to ESM solely to load Tailwind configuration.
 
 `src/supacharger/styles/supacharger.css` contains reusable Supacharger defaults and semantic component styles. Use Tailwind layers and keep product-specific branding out of this file.
 

@@ -36,6 +36,10 @@ Shared runtime and tooling dependencies are exact-pinned in `package.json`. Cons
 
 Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
 
+### Core update ownership
+
+The version 2 `.supacharger/managed-files.json` contract separates exact managed files, merge-managed configuration, forward-only migrations, and developer-owned paths. Exact paths—including `postcss.config.mjs`, the protected route/runtime trees, and contract tests—must be byte-identical in managed consumers. Package files, `supabase/config.toml`, and `tailwind.config.ts` are merged without discarding product settings. Migration histories are append-only. Product and account routes live under `src/app/(project)/`; reusable handlers remain under `src/app/(supacharger)/`.
+
 ### Input validation
 
 Client-side form validation is for fast feedback; every submitted form and other untrusted payload must be parsed again with Zod in the receiving Server Action, route handler, or server-side JavaScript or TypeScript boundary before side effects or persistence. Structured Supabase Edge Function inputs should also use Zod where appropriate before privileged work or RPC calls. PostgreSQL RPCs cannot run Zod, so validate in the caller and independently enforce typed parameters, constraints, authentication, authorisation, grants, and RLS in PostgreSQL. See the [input validation guide](https://supacharger.dev/docs/Application%20Development/input-validation).
@@ -419,7 +423,7 @@ The shared base layer gives enabled interactive controls—including links, butt
 
 The same base layer supplies native smooth scrolling, while the root layout mounts the protected `SmoothAnchorNavigation` helper so Next.js `<Link>` fragment navigation behaves identically. Every same-page link such as `href='#features'` works automatically, including clicks on nested link content and `/#features` links. Modified clicks, downloads, external targets, and missing fragments retain their normal browser behaviour. Set `data-smooth-scroll='false'` on an exceptional link to opt out. Visitors who prefer reduced motion receive immediate scrolling.
 
-`tailwind.config.ts` deliberately uses CommonJS `require`/`module.exports` syntax because the root Next.js, PostCSS, and Prettier configuration boundary is CommonJS. Keep the managed filename and the `@config` reference unchanged; do not add a package-wide `"type": "module"` merely to load Tailwind configuration.
+`tailwind.config.ts` remains a merge-managed application configuration file and retains its current CommonJS export. `postcss.config.mjs` is the exact ESM PostCSS boundary used by Next.js and Turbopack. Keep the `@config` reference unchanged; do not add a package-wide `"type": "module"` merely to load either configuration.
 
 - [Learn more about shadcn/ui components](https://ui.shadcn.com/docs)
 - [Learn more about theming with shadcn/ui](https://ui.shadcn.com/docs/theming)

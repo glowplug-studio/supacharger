@@ -148,7 +148,9 @@ export async function saveToDatabase<T extends DatabaseRecord>(
   record: T
 ): Promise<T> {
   
-  const supabase = createClient();
+  // Application-owned extension tables are intentionally outside the core's
+  // generated Database type, so this generic helper crosses that type boundary.
+  const supabase = createClient() as any;
   
   try {
     const { data, error } = await supabase
@@ -190,7 +192,9 @@ export async function fetchFromDatabase<T extends DatabaseRecord>(
   filter?: { column: string; value: any },
   orderBy?: { column: string; ascending?: boolean }
 ): Promise<T[]> {
-  const supabase = createClient();
+  // Application-owned extension tables are intentionally outside the core's
+  // generated Database type, so this generic helper crosses that type boundary.
+  const supabase = createClient() as any;
   
   let query = supabase.from(tableName).select('*');
   

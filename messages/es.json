@@ -50,6 +50,7 @@
     "oldPasswordIncorrect": "Contraseña actual incorrecta",
     "oldPasswordRequired": "Debes ingresar la contraseña actual",
     "provided_password_mismatch": "Las contraseñas proporcionadas no coinciden",
+    "passwordUpdateFailed": "",
     "passwordTooShort": "La contraseña proporcionada es demasiado corta",
     "password_failed_regex_evaluation": "La contraseña proporcionada no es lo suficientemente segura",
     "mustContainLetterDigit": "La contraseña debe contener al menos una letra y al menos un dígito",

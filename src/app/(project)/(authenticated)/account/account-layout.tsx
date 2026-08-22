@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { getTabIdFromPath } from '@/app/(supacharger)/(authenticated)/account/account-menu';
+import { getTabIdFromPath } from '@/app/(project)/(authenticated)/account/account-menu';
 import { Separator } from '@/components/ui/seperator';
 import { TabMenu } from '@/components/ui/tab-menu';
 

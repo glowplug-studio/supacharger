@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { AccountLayout } from  '@/app/(supacharger)/(authenticated)/account/account-layout';
+import { AccountLayout } from  '@/app/(project)/(authenticated)/account/account-layout';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export const dynamic = 'force-dynamic';

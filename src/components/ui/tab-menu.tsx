@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { Tab, tabs } from '@/app/(supacharger)/(authenticated)/account/account-menu';
+import { Tab, tabs } from '@/app/(project)/(authenticated)/account/account-menu';
 import { useDraggableScroll } from '@/hooks/use-draggable-scroll'
 import { cn } from '@/utils/cn';
 

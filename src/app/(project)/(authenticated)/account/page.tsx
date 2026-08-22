@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import AccountChangePasswordForm from '@/app/(supacharger)/(authenticated)/account/components/account-change-password-form';
+import AccountChangePasswordForm from '@/app/(project)/(authenticated)/account/components/account-change-password-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

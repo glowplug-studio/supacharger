@@ -16,6 +16,8 @@ This repository is the canonical source of truth for shared Supacharger behaviou
 
 Respect file ownership before making changes.
 
+The version 2 manifest distinguishes four update modes. `managedPaths` are exact, byte-identical replacement files; `mergeManagedPaths` require contract-aware merging; `forwardOnlyMigrationPaths` accept only new migration files; and `developerOwnedPaths` are preserved. Never infer byte-replacement authority from a file being reusable Core code.
+
 ### CLI-managed core
 
 Treat these directories as protected implementation owned by Supacharger and updated by the CLI:
@@ -34,6 +36,8 @@ Application developers should consume these modules through their documented int
 - `src/styles/project.css` contains application theme tokens, global defaults, overrides, and product-specific styles. Keep its `Project: ...` header accurate and preserve it during every CLI update.
 - `src/components/sc_demo/` contains replaceable example presentation code.
 - Application-specific routes, features, assets, and presentation outside protected paths belong to the consuming application unless explicitly designated as shared.
+
+Keep product and account routes under `src/app/(project)/`. Keep the protected `src/app/(supacharger)/` tree limited to reusable framework routes and handlers. `package.json`, `package-lock.json`, `supabase/config.toml`, and `tailwind.config.ts` are merge-managed; `supabase/migrations/` is forward-only permanent history; `postcss.config.mjs` is exact managed.
 
 `src/supacharger/supacharger-config.ts` is a protected compatibility interface that re-exports the developer configuration. Never move application values back into that protected module.
 

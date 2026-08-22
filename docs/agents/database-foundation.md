@@ -20,13 +20,13 @@ Consumers may add application-specific fields to `app.profiles` or a one-to-one 
 
 `PROFILE_IDENTITY.USERNAME` is `disabled`, `optional`, or `required`. The database column and case-insensitive partial uniqueness remain installed and nullable in every mode. Disabled applications omit the form field, public username route, and username display. Optional applications accept a blank value. Required applications validate and include it in completion.
 
-`api.is_profile_complete_by_current_user(username_required boolean default false)` always requires non-empty names and requires username only when the caller passes true. `POST_SIGN_IN_ONBOARDING.REQUIRED` enables the callback and protected server-layout redirect; `REDIRECT_PATH` selects the developer-owned setup page. Disabling enforcement does not disable the profile trigger or profile APIs.
+`api.is_profile_complete_by_current_user(input_username_required boolean default false)` always requires non-empty names and requires username only when the caller passes true. `POST_SIGN_IN_ONBOARDING.REQUIRED` enables the callback and protected server-layout redirect; `REDIRECT_PATH` selects the developer-owned setup page. Disabling enforcement does not disable the profile trigger or profile APIs.
 
 Identity display uses the shared projection in this order: first and last name; populated username when policy permits it; owner-only email; `Account`. Email never enters the general/public profile projection.
 
 ## Dormant organisation foundation
 
-`app.organisations`, `app.organisation_members`, and `app.user_session_contexts` are installed in every aligned application. They have RLS, no browser table grants, and narrow Auth-hook/service-role access. `ORGANISATIONS.ENABLED` controls whether application routes and adapters expose the capability. Disabling it does not drop schema. Creation and selection occur through service-only `api_edge` functions after a verified user and session have been established.
+`app.organisations`, `app.organisation_members`, and `app.user_session_contexts` are installed in every aligned application. They have RLS, no browser table grants, and narrow Auth-hook/service-role access. `ORGANISATIONS.ENABLED` controls whether application routes and adapters expose the capability. Disabling it does not drop schema. Authenticated application code calls `api.organisations(input_payload)` with `action: 'create'` or `action: 'switch'`; the dispatcher derives the current user and Auth `session_id` from the verified JWT and delegates to service-only `api_edge` functions. Clients never supply identity or session IDs.
 
 ## Profile visibility
 

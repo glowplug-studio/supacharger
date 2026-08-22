@@ -3,9 +3,6 @@ import { NextResponse } from 'next/server';
 import { processPendingStripeEvents } from '@/lib/stripe/stripe-events';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-
 export async function POST(request: Request) {
   const expectedSecret = getEnvVar(process.env.STRIPE_EVENT_PROCESSOR_SECRET, 'STRIPE_EVENT_PROCESSOR_SECRET');
   if (request.headers.get('authorization') !== `Bearer ${expectedSecret}`) {

@@ -51,6 +51,7 @@
     "oldPasswordIncorrect": "Incorrect current password",
     "oldPasswordRequired": "You must enter the current password",
     "provided_password_mismatch": "Provided passwords do not match",
+    "passwordUpdateFailed": "Unable to update your password. Please try again.",
     "passwordTooShort": "The password provided is too short",
     "password_failed_regex_evaluation": "The password provided is not strong enough",
     "mustContainLetterDigit": "The password must contain at least one letter and at least one digit",
