@@ -40,9 +40,9 @@ export async function uploadFileToSupabase(
   options: FileUploadOptions
 ): Promise<string> {
   const supabase = createClient();
-  
+
   const fullPath = options.path ? `${options.path}/${fileName}` : fileName;
-  
+
   try {
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
@@ -66,7 +66,7 @@ export async function uploadFileToSupabase(
       .getPublicUrl(fullPath);
 
 
-    
+
     return publicUrl;
   } catch (error: any) {
     if (!(error.type)) {
@@ -94,11 +94,11 @@ export async function uploadFilesWithProgress(
   onProgress?: (progress: UploadProgress) => void
 ): Promise<string[]> {
   const results: string[] = [];
-  
+
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
     const fileId = `file-${i}`;
-    
+
     try {
       // Update progress - uploading
       onProgress?.({
@@ -109,7 +109,7 @@ export async function uploadFilesWithProgress(
 
       // Generate filename
       const fileName = generateFileName(file, i);
-      
+
       // Upload file
       const fileUrl = await uploadFileToSupabase(file, fileName, options);
       results.push(fileUrl);
@@ -123,7 +123,7 @@ export async function uploadFilesWithProgress(
 
     } catch (error) {
       console.error(`Failed to upload file ${i}:`, error);
-      
+
       // Update progress - error
       onProgress?.({
         fileId,
@@ -147,11 +147,11 @@ export async function saveToDatabase<T extends DatabaseRecord>(
   tableName: string,
   record: T
 ): Promise<T> {
-  
+
   // Application-owned extension tables are intentionally outside the core's
   // generated Database type, so this generic helper crosses that type boundary.
   const supabase = createClient() as any;
-  
+
   try {
     const { data, error } = await supabase
       .from(tableName)
@@ -167,8 +167,6 @@ export async function saveToDatabase<T extends DatabaseRecord>(
       throw parsedError;
     }
 
-
-    
     return data;
   } catch (error: any) {
     if (!(error.type)) {
@@ -195,13 +193,13 @@ export async function fetchFromDatabase<T extends DatabaseRecord>(
   // Application-owned extension tables are intentionally outside the core's
   // generated Database type, so this generic helper crosses that type boundary.
   const supabase = createClient() as any;
-  
+
   let query = supabase.from(tableName).select('*');
-  
+
   if (filter) {
     query = query.eq(filter.column, filter.value);
   }
-  
+
   if (orderBy) {
     query = query.order(orderBy.column, { ascending: orderBy.ascending ?? true });
   }
@@ -229,11 +227,11 @@ export function dataURLtoFile(dataUrl: string, filename: string): File {
   const bstr = atob(arr[1]);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);
-  
+
   while (n--) {
     u8arr[n] = bstr.charCodeAt(n);
   }
-  
+
   return new File([u8arr], filename, { type: mime });
 }
 
@@ -255,13 +253,13 @@ export function validateFile(
       error: `File is too large (${Math.round(file.size / 1024 / 1024)}MB). Maximum size is ${Math.round(maxSize / 1024 / 1024)}MB.`
     };
   }
-  
+
   if (!allowedTypes.includes(file.type)) {
     return {
       valid: false,
       error: `File type ${file.type} is not allowed. Allowed types: ${allowedTypes.join(', ')}`
     };
   }
-  
+
   return { valid: true };
 }

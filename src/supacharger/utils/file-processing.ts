@@ -1,7 +1,7 @@
-import { 
-  checkFileExists, 
-  createTrackedObjectURL, 
-  generateUniqueId, 
+import {
+  checkFileExists,
+  createTrackedObjectURL,
+  generateUniqueId,
   saveFileToMemory} from './memory';
 
 /** ==========
@@ -65,7 +65,7 @@ async function processBatch(
       if (options.checkDuplicates) {
         const isDuplicateExisting = checkFileExists(file, existingFiles);
         const isDuplicateInAll = checkFileExists(file, [...allNewFiles, ...batchProcessedFiles]);
-        
+
         if (isDuplicateExisting || isDuplicateInAll) {
           batchDuplicateCount++;
           continue;
@@ -89,7 +89,7 @@ async function processBatch(
       // Create processed file object
       const fileId = generateUniqueId();
       const objectUrl = createTrackedObjectURL(file, fileId);
-      
+
       const processedFile: ProcessedFile = {
         id: fileId,
         url: objectUrl,
@@ -98,7 +98,7 @@ async function processBatch(
       };
 
       batchProcessedFiles.push(processedFile);
-      
+
       // Store file in memory
       saveFileToMemory(fileId, file);
 
@@ -108,10 +108,10 @@ async function processBatch(
     }
   }
 
-  return { 
-    processedFiles: batchProcessedFiles, 
-    duplicateCount: batchDuplicateCount, 
-    errorCount: batchErrorCount 
+  return {
+    processedFiles: batchProcessedFiles,
+    duplicateCount: batchDuplicateCount,
+    errorCount: batchErrorCount
   };
 }
 
@@ -148,13 +148,13 @@ export async function processMultipleFiles(
   for (let i = 0; i < allFiles.length; i += mergedOptions.batchSize) {
     const batch = allFiles.slice(i, i + mergedOptions.batchSize);
     console.log(`Processing batch ${Math.floor(i / mergedOptions.batchSize) + 1}/${Math.ceil(allFiles.length / mergedOptions.batchSize)} (${batch.length} files)`);
-    
+
     try {
       const batchResult = await processBatch(batch, existingFiles, allProcessedFiles, mergedOptions);
       allProcessedFiles.push(...batchResult.processedFiles);
       totalDuplicateCount += batchResult.duplicateCount;
       totalErrorCount += batchResult.errorCount;
-        
+
       // Small delay between batches to keep UI responsive
       if (i + mergedOptions.batchSize < allFiles.length) {
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -166,7 +166,7 @@ export async function processMultipleFiles(
   }
 
   console.log(`Processed ${totalFiles} files: ${allProcessedFiles.length} new, ${totalDuplicateCount} duplicates, ${totalErrorCount} errors`);
-  
+
   return {
     processedFiles: allProcessedFiles,
     duplicateCount: totalDuplicateCount,
@@ -193,26 +193,26 @@ export async function processCameraFile(
 
     // Validate file type
     if (!file.type.startsWith('image/') || !mergedOptions.allowedTypes.includes(file.type)) {
-      return { 
-        processedFile: null, 
-        isDuplicate: false, 
-        error: `Invalid file type: ${file.type}` 
+      return {
+        processedFile: null,
+        isDuplicate: false,
+        error: `Invalid file type: ${file.type}`
       };
     }
 
     // Validate file size
     if (file.size > mergedOptions.maxFileSize) {
-      return { 
-        processedFile: null, 
-        isDuplicate: false, 
-        error: `File too large: ${Math.round(file.size / 1024 / 1024)}MB` 
+      return {
+        processedFile: null,
+        isDuplicate: false,
+        error: `File too large: ${Math.round(file.size / 1024 / 1024)}MB`
       };
     }
 
     // Create processed file object
     const fileId = generateUniqueId();
     const objectUrl = createTrackedObjectURL(file, fileId);
-    
+
     const processedFile: ProcessedFile = {
       id: fileId,
       url: objectUrl,
@@ -227,10 +227,10 @@ export async function processCameraFile(
 
   } catch (error) {
     console.error('Error processing camera file:', error);
-    return { 
-      processedFile: null, 
-      isDuplicate: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
+    return {
+      processedFile: null,
+      isDuplicate: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     };
   }
 }
@@ -245,13 +245,13 @@ export function createCameraInput(): Promise<File | null> {
       input.type = 'file';
       input.accept = 'image/*';
       input.capture = 'environment'; // Use back camera by default
-      
+
       input.onchange = (event) => {
         const target = event.target as HTMLInputElement;
         const file = target.files?.[0];
         resolve(file || null);
       };
-      
+
       // Trigger file selection
       input.click();
     } catch (error) {
@@ -271,13 +271,13 @@ export function createFileInput(multiple: boolean = true): Promise<FileList | nu
       input.type = 'file';
       input.accept = 'image/*';
       input.multiple = multiple;
-      
+
       input.onchange = (event) => {
         const target = event.target as HTMLInputElement;
         const files = target.files;
         resolve(files && files.length > 0 ? files : null);
       };
-      
+
       // Trigger file selection
       input.click();
     } catch (error) {
@@ -299,11 +299,11 @@ export function checkUrlExists(url: string, existingFiles: ProcessedFile[]): boo
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
@@ -320,4 +320,4 @@ export function getFileExtension(filename: string): string {
 export function isValidFileExtension(filename: string, allowedExtensions: string[]): boolean {
   const extension = getFileExtension(filename);
   return allowedExtensions.includes(extension);
-} 
+}
