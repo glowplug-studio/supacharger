@@ -29,15 +29,15 @@ export async function POST(request: NextRequest) {
   const admin = getSupabaseAdminClient();
   const result = action === 'create'
     ? await admin.schema('api_edge').rpc('create_organisation_context', {
-        p_user_id: userId,
-        p_session_id: sessionId,
-        p_name: body?.name,
-        p_handle: body?.handle,
+        input_user_id: userId,
+        input_session_id: sessionId,
+        input_name: body?.name,
+        input_handle: body?.handle,
       })
     : await admin.schema('api_edge').rpc('select_organisation_context', {
-        p_user_id: userId,
-        p_session_id: sessionId,
-        p_handle: body?.handle,
+        input_user_id: userId,
+        input_session_id: sessionId,
+        input_handle: body?.handle,
       });
 
   if (result.error) {

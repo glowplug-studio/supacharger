@@ -1,5 +1,11 @@
 # Supacharger Core Agent Instructions
 
+## Core-contract change approval gate
+
+Before modifying any core-contracted file or behaviour, stop after inspection and ask the human owner to confirm that you should continue. First report the affected files and contracts, the consumers that must be synchronised, the proposed canonical result, and any migration, compatibility, deployment, or data risk. Do not make the change until the human explicitly says to continue or proceed.
+
+Core-contracted scope includes protected or CLI-managed paths, `.supacharger/managed-files.json`, the `SupachargerConfig` contract, shared public APIs, authentication and route-protection behaviour, database schemas and migrations, exposed RPC signatures, generated database types, shared assets and file-ownership conventions, CLI installation/update behaviour, and the documentation that defines those contracts. Read-only inspection, comparison, diagnosis, and planning may continue before approval. Approval for one reported change set does not authorise newly discovered core-contract changes; report those separately and pause again.
+
 ## Mission
 
 Develop `supacharger/` as the canonical, open-source starter core for applications built with Supacharger. Keep the core reusable, updateable by the Supacharger CLI, independently documented, and free of application-specific assumptions.
@@ -135,6 +141,11 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 
 - `docs/bruno/supacharger-rpc/` is the canonical Supacharger-only Bruno collection for client-callable functions in the `api` schema.
 - Add, update, rename, or remove the matching Bruno request in the same change as every Supacharger `api` RPC contract change. Run `npm run check:bruno-rpcs` before reporting completion.
+
+### PostgreSQL RPC argument naming
+
+- Do not prefix PostgreSQL function or PostgREST RPC arguments with `p_` in exposed schemas. Use descriptive names and qualify columns and arguments anywhere they could be ambiguous.
+- Rename existing arguments only with forward migrations. Preserve function behaviour, security attributes, ownership, comments, grants, and dependencies; update generated types, all callers, OpenAPI, and Bruno in the same change.
 - Keep request bodies, schema profile headers, authentication requirements, examples, and explanatory docs aligned with the current migration and generated API contract.
 - Do not add Specdrive, SnapScreen, Wakekeeper, or other consumer-specific endpoints to this collection. Promote a reusable contract into Supacharger first.
 - Do not put real access tokens, service-role keys, secret keys, or customer data in Bruno files or environments. The default collection excludes privileged `api_edge` mutation workflows.

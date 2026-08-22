@@ -16,7 +16,7 @@ export type Database = {
     }
     Functions: {
       check_account_username_available: {
-        Args: { p_username: string }
+        Args: { input_username: string }
         Returns: boolean
       }
       get_account_profile_by_current_user: {
@@ -49,7 +49,7 @@ export type Database = {
       get_active_subscription_by_current_user: { Args: never; Returns: Json }
       get_billing_overview_by_current_user: { Args: never; Returns: Json }
       get_user_profiles_by_identifiers: {
-        Args: { p_identifiers: string[] }
+        Args: { input_identifiers: string[] }
         Returns: {
           avatar_path: string
           first_name: string
@@ -60,27 +60,31 @@ export type Database = {
         }[]
       }
       has_billing_access_by_current_user: {
-        Args: { p_feature_lookup_key?: string }
+        Args: { input_feature_lookup_key?: string }
         Returns: boolean
       }
       is_profile_complete_by_current_user: {
-        Args: { p_username_required?: boolean }
+        Args: { input_username_required?: boolean }
         Returns: boolean
       }
       update_account_avatar_by_current_user: {
-        Args: { p_avatar_path: string }
+        Args: { input_avatar_path: string }
         Returns: undefined
       }
       update_account_header_image_by_current_user: {
-        Args: { p_header_image_path: string }
+        Args: { input_header_image_path: string }
         Returns: undefined
       }
       update_account_language_by_current_user: {
-        Args: { p_language_code: string }
+        Args: { input_language_code: string }
         Returns: undefined
       }
       update_account_profile_by_current_user: {
-        Args: { p_first_name: string; p_last_name: string; p_username?: string }
+        Args: {
+          input_first_name: string
+          input_last_name: string
+          input_username?: string
+        }
         Returns: undefined
       }
     }
@@ -101,38 +105,38 @@ export type Database = {
     Functions: {
       accept_stripe_event: {
         Args: {
-          p_api_version: string
-          p_event_id: string
-          p_event_type: string
-          p_livemode: boolean
-          p_object_id: string
-          p_payload: Json
+          input_api_version: string
+          input_event_id: string
+          input_event_type: string
+          input_livemode: boolean
+          input_object_id: string
+          input_payload: Json
         }
         Returns: boolean
       }
       billing_get_account_by_customer: {
-        Args: { p_stripe_customer_id: string }
+        Args: { input_stripe_customer_id: string }
         Returns: string
       }
       billing_get_customer: {
-        Args: { p_user_id: string }
+        Args: { input_user_id: string }
         Returns: {
           stripe_customer_id: string
         }[]
       }
       billing_get_customer_for_account: {
-        Args: { p_billing_account_id: string; p_livemode?: boolean }
+        Args: { input_billing_account_id: string; input_livemode?: boolean }
         Returns: {
           livemode: boolean
           stripe_customer_id: string
         }[]
       }
       billing_get_or_create_user_account: {
-        Args: { p_user_id: string }
+        Args: { input_user_id: string }
         Returns: string
       }
       billing_get_user_id: {
-        Args: { p_stripe_customer_id: string }
+        Args: { input_stripe_customer_id: string }
         Returns: string
       }
       billing_list_customer_mappings: {
@@ -144,78 +148,89 @@ export type Database = {
         }[]
       }
       billing_put_customer: {
-        Args: { p_stripe_customer_id: string; p_user_id: string }
+        Args: { input_stripe_customer_id: string; input_user_id: string }
         Returns: string
       }
       billing_put_customer_for_account: {
         Args: {
-          p_billing_account_id: string
-          p_livemode: boolean
-          p_stripe_account_id?: string
-          p_stripe_customer_id: string
+          input_billing_account_id: string
+          input_livemode: boolean
+          input_stripe_account_id?: string
+          input_stripe_customer_id: string
         }
         Returns: string
       }
       billing_replace_stripe_entitlements: {
-        Args: { p_entitlements: Json; p_stripe_customer_id: string }
+        Args: { input_entitlements: Json; input_stripe_customer_id: string }
         Returns: undefined
       }
       billing_set_catalogue_item_inactive: {
-        Args: { p_id: string; p_kind: string }
+        Args: { input_id: string; input_kind: string }
         Returns: undefined
       }
       billing_update_payment_method: {
         Args: {
-          p_billing_address: Json
-          p_payment_method: Json
-          p_user_id: string
+          input_billing_address: Json
+          input_payment_method: Json
+          input_user_id: string
         }
         Returns: undefined
       }
       billing_update_payment_method_for_account: {
         Args: {
-          p_billing_account_id: string
-          p_billing_address: Json
-          p_payment_method: Json
+          input_billing_account_id: string
+          input_billing_address: Json
+          input_payment_method: Json
         }
         Returns: undefined
       }
-      billing_upsert_price: { Args: { p_price: Json }; Returns: undefined }
-      billing_upsert_product: { Args: { p_product: Json }; Returns: undefined }
+      billing_upsert_price: { Args: { input_price: Json }; Returns: undefined }
+      billing_upsert_product: {
+        Args: { input_product: Json }
+        Returns: undefined
+      }
       billing_upsert_subscription: {
-        Args: { p_subscription: Json }
+        Args: { input_subscription: Json }
         Returns: undefined
       }
       billing_upsert_subscription_v2: {
-        Args: { p_items: Json; p_subscription: Json }
+        Args: { input_items: Json; input_subscription: Json }
         Returns: undefined
       }
       billing_user_can_manage: {
-        Args: { p_billing_account_id: string; p_user_id: string }
+        Args: { input_billing_account_id: string; input_user_id: string }
         Returns: boolean
       }
-      claim_stripe_event: { Args: { p_event_id: string }; Returns: Json }
+      claim_stripe_event: { Args: { input_event_id: string }; Returns: Json }
       complete_stripe_event: {
-        Args: { p_error?: string; p_event_id: string; p_retry_at?: string }
+        Args: {
+          input_error?: string
+          input_event_id: string
+          input_retry_at?: string
+        }
         Returns: undefined
       }
       create_organisation_context: {
         Args: {
-          p_handle: string
-          p_name: string
-          p_session_id: string
-          p_user_id: string
+          input_handle: string
+          input_name: string
+          input_session_id: string
+          input_user_id: string
         }
         Returns: Json
       }
       list_claimable_stripe_events: {
-        Args: { p_limit?: number }
+        Args: { result_limit?: number }
         Returns: {
           event_id: string
         }[]
       }
       select_organisation_context: {
-        Args: { p_handle: string; p_session_id: string; p_user_id: string }
+        Args: {
+          input_handle: string
+          input_session_id: string
+          input_user_id: string
+        }
         Returns: Json
       }
     }
@@ -626,33 +641,33 @@ export type Database = {
           billing_account_id: string
           billing_address: Json | null
           created_at: string
-          stripe_customer_mapping_id: string
           livemode: boolean | null
           payment_method: Json | null
           stripe_account_id: string
           stripe_customer_id: string
+          stripe_customer_mapping_id: string
           updated_at: string
         }
         Insert: {
           billing_account_id: string
           billing_address?: Json | null
           created_at?: string
-          stripe_customer_mapping_id?: string
           livemode?: boolean | null
           payment_method?: Json | null
           stripe_account_id?: string
           stripe_customer_id: string
+          stripe_customer_mapping_id?: string
           updated_at?: string
         }
         Update: {
           billing_account_id?: string
           billing_address?: Json | null
           created_at?: string
-          stripe_customer_mapping_id?: string
           livemode?: boolean | null
           payment_method?: Json | null
           stripe_account_id?: string
           stripe_customer_id?: string
+          stripe_customer_mapping_id?: string
           updated_at?: string
         }
         Relationships: [

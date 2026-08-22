@@ -67,7 +67,6 @@ export type SupachargerConfig = {
     VERCEL_ANALYTICS_ENABLED: boolean;
   };
   AUTH_SESSION: {
-    VERIFICATION_MODE: 'claims' | 'user';
     ALLOW_ANONYMOUS_USERS: boolean;
   };
   AUTHENTICATION: {

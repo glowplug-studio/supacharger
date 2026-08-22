@@ -90,16 +90,15 @@ A page can use Next.js `title.absolute` when it deliberately needs to bypass the
 
 Public content pages should expose page-specific canonical and social metadata and appear in `src/app/sitemap.ts`. Keep authenticated and authentication routes out of the sitemap. `src/app/robots.ts` follows `METADATA.INDEXING_ENABLED`, and both `/robots.txt` and `/sitemap.xml` must bypass Proxy so crawlers receive direct text/XML responses rather than an authentication redirect.
 
-Authentication uses one request-scoped SSR client and one verification call. The core defaults to verified JWT claims and excludes anonymous Auth users; an application can deliberately choose strict Auth-server verification:
+Authentication uses one request-scoped SSR client and exactly one `getClaims()` verification call in Proxy. Anonymous Auth users are excluded unless the application deliberately enables them:
 
 ```ts
 AUTH_SESSION: {
-  VERIFICATION_MODE: 'claims', // or 'user' for strict/fresh Auth validation
   ALLOW_ANONYMOUS_USERS: false,
 },
 ```
 
-Every Proxy redirect preserves refreshed cookies and Supabase's auth anti-cache headers. Proxy is an optimistic navigation layer only; server code and RLS remain authoritative.
+Every Proxy redirect preserves refreshed cookies and Supabase's auth anti-cache headers. Proxy is an optimistic navigation layer only and performs no database RPCs. `src/supacharger/auth/server-access.ts` enforces verified identity, onboarding, and billing access in protected server layouts and handlers; handler checks and RLS remain authoritative.
 
 Authentication, identity, onboarding, and organisations are application policy behind one shared contract:
 

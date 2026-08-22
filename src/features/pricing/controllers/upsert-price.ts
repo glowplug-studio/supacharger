@@ -39,7 +39,7 @@ export async function upsertPrice(price: Stripe.Price) {
 
   const { error } = await supabaseAdminClient
     .schema('api_edge')
-    .rpc('billing_upsert_price', { p_price: priceData });
+    .rpc('billing_upsert_price', { input_price: priceData });
 
   if (error) {
     throw error;

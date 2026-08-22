@@ -17,7 +17,7 @@ export async function upsertProduct(product: Stripe.Product) {
 
   const { error } = await supabaseAdminClient
     .schema('api_edge')
-    .rpc('billing_upsert_product', { p_product: productData });
+    .rpc('billing_upsert_product', { input_product: productData });
 
   if (error) {
     throw error;

@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import SCFooterSession from '@/components/sc_demo/sc_footer-session';
 import { SCHeaderSession } from '@/components/sc_demo/sc_header-session';
+import { requireAppAccess } from '@/supacharger/auth/server-access';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: site_title, description: t('description') };
 }
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
+  await requireAppAccess();
+
   return (
     <div className='m-auto flex h-full flex-col'>
       <SCHeaderSession />

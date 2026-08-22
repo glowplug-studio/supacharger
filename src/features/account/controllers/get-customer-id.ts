@@ -9,8 +9,8 @@ export async function getCustomerId({ userId, billingAccountId }: { userId: stri
   const { data, error } = await supabaseAdminClient
     .schema('api_edge')
     .rpc('billing_get_customer_for_account', {
-      p_billing_account_id: accountId,
-      p_livemode: getStripeLivemode(),
+      input_billing_account_id: accountId,
+      input_livemode: getStripeLivemode(),
     })
     .single();
 

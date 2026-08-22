@@ -14,8 +14,8 @@ export async function syncStripeEntitlements(customerId: string) {
   const { error } = await supabaseAdminClient
     .schema('api_edge')
     .rpc('billing_replace_stripe_entitlements', {
-      p_stripe_customer_id: customerId,
-      p_entitlements: entitlements,
+      input_stripe_customer_id: customerId,
+      input_entitlements: entitlements,
     });
 
   if (error) throw error;

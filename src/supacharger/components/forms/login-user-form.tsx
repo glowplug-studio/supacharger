@@ -25,8 +25,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import OTPField from '@/components/ui/otp-field';
-import { createClient } from '@/lib/supabase/client';
-import { loginUser, signInWithEmail, verifyOtp, verifySignInOtp } from '@/lib/supabase/supacharger/supabase-auth';
+import {
+  createUserByEmailPassword,
+  loginUser,
+  signInWithEmail,
+  verifyOtp,
+  verifySignInOtp,
+} from '@/lib/supabase/supacharger/supabase-auth';
 import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
@@ -34,7 +39,7 @@ import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-v
 import { UIDivider } from '@/supacharger/components/ui/divider';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { EmailPasswordlessMode, SignUpEmailVerificationMode } from '@/supacharger/supacharger-config-contract';
-import { getURL, supabaseErrorCodeFallback, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
+import { supabaseErrorCodeFallback, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
 
 export type AuthMode = 'signin' | 'signup';
 type AuthStep = 'choose' | 'email' | 'verify-email' | 'check-email';
@@ -232,52 +237,44 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     }
 
     if (mode === 'signup') {
+      const formData = new FormData();
+      formData.set('email', normalisedEmail);
+      formData.set('password', password);
+      if (safeNextPath) formData.set('next', safeNextPath);
       setPendingAction('password');
-      const supabase = createClient();
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: normalisedEmail,
-        password,
-        options: {
-          emailRedirectTo: getURL(
-            `/auth/confirm?next=${encodeURIComponent(safeNextPath ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH)}`,
-          ),
-        },
+      startAuthTransition(async () => {
+        const result = await createUserByEmailPassword(formData);
+        setPendingAction(null);
+
+        if (result.error) {
+          setError(getAuthErrorMessage(result.error, 'authenticationFailed'));
+          return;
+        }
+
+        if (result.data.userId && result.data.identityCount === 0) {
+          toast.warning(tSupabaseErrorCodes('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
+          setMode('signin');
+          setStep('email');
+          pushAuthRoute('signin');
+          onFormHeadingChange?.(t('signIn'));
+          setPasswordAgain('');
+          return;
+        }
+
+        setVerificationEmail(normalisedEmail);
+        setVerificationPurpose('signup');
+        setVerificationDeliveryMode(signUpVerificationMode);
+        if (signUpVerificationMode === 'otp' || signUpVerificationMode === 'otp-and-link') {
+          setStep('verify-email');
+          onFormHeadingChange?.(signUpVerificationMode === 'otp-and-link' ? t('verifyEmail') : t('enterCode'));
+        } else if (signUpVerificationMode === 'link') {
+          setStep('check-email');
+          onFormHeadingChange?.(t('checkEmail'));
+        } else {
+          router.replace(postAuthPath);
+          router.refresh();
+        }
       });
-      setPendingAction(null);
-
-      if (signUpError) {
-        setError(
-          getAuthErrorMessage(
-            { code: signUpError.code ?? 'genericError', status: signUpError.status ?? null },
-            'authenticationFailed',
-          ),
-        );
-        return;
-      }
-
-      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
-        toast.warning(tSupabaseErrorCodes('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
-        setMode('signin');
-        setStep('email');
-        pushAuthRoute('signin');
-        onFormHeadingChange?.(t('signIn'));
-        setPasswordAgain('');
-        return;
-      }
-
-      setVerificationEmail(normalisedEmail);
-      setVerificationPurpose('signup');
-      setVerificationDeliveryMode(signUpVerificationMode);
-      if (signUpVerificationMode === 'otp' || signUpVerificationMode === 'otp-and-link') {
-        setStep('verify-email');
-        onFormHeadingChange?.(signUpVerificationMode === 'otp-and-link' ? t('verifyEmail') : t('enterCode'));
-      } else if (signUpVerificationMode === 'link') {
-        setStep('check-email');
-        onFormHeadingChange?.(t('checkEmail'));
-      } else {
-        router.replace(postAuthPath);
-        router.refresh();
-      }
       return;
     }
 

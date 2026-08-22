@@ -6,7 +6,6 @@
     "package-lock.json",
     "package.json",
     "src/app/(supacharger)",
-    "src/lib/supabase/middleware.ts",
     "src/lib/supabase/supacharger",
     "src/proxy.ts",
     "src/supacharger",

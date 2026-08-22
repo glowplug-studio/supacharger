@@ -5,7 +5,6 @@ import type { Database } from '@/lib/supabase/types';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 import { createServerClient } from '@supabase/ssr';
-import type { User } from '@supabase/supabase-js';
 
 export type VerifiedAuthClaims = {
   is_anonymous?: boolean;
@@ -14,6 +13,13 @@ export type VerifiedAuthClaims = {
   [claim: string]: unknown;
 };
 
+/**
+ * Refresh the Supabase session and verify the signed access-token claims once.
+ *
+ * Keep database and product access checks out of Proxy. Protected layouts,
+ * Server Actions, and Route Handlers must enforce their own authoritative
+ * access rules with the request-scoped server client.
+ */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -35,25 +41,10 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  let claims: VerifiedAuthClaims | null = null;
-  let user: User | null = null;
-  let verificationError: unknown = null;
-  const verificationMode = SC_CONFIG.AUTH_SESSION.VERIFICATION_MODE as 'claims' | 'user';
-
-  if (verificationMode === 'user') {
-    const result = await supabase.auth.getUser();
-    user = result.data.user;
-    verificationError = result.error;
-  } else {
-    const result = await supabase.auth.getClaims();
-    claims = result.data?.claims ?? null;
-    verificationError = result.error;
-  }
-
-  const isAnonymous = claims?.is_anonymous === true || user?.is_anonymous === true;
-  const hasAuthenticatedIdentity = claims
-    ? Boolean(claims.sub && claims.role === 'authenticated')
-    : Boolean(user?.id && user.aud === 'authenticated');
+  const { data, error: verificationError } = await supabase.auth.getClaims();
+  const claims = (data?.claims ?? null) as VerifiedAuthClaims | null;
+  const isAnonymous = claims?.is_anonymous === true;
+  const hasAuthenticatedIdentity = Boolean(claims?.sub && claims.role === 'authenticated');
   const isAuthenticated =
     !verificationError &&
     hasAuthenticatedIdentity &&
@@ -63,8 +54,6 @@ export async function updateSession(request: NextRequest) {
     claims,
     isAuthenticated,
     response,
-    supabase,
-    user,
     verificationError,
   };
 }

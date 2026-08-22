@@ -49,9 +49,9 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
     setIsSaving(true);
     const supabase = createClient();
     const { error: updateError } = await supabase.schema('api').rpc('update_account_profile_by_current_user', {
-      p_first_name: normalisedFirstName,
-      p_last_name: normalisedLastName,
-      p_username: usernamePolicy === 'disabled' ? null : normalisedUsername || null,
+      input_first_name: normalisedFirstName,
+      input_last_name: normalisedLastName,
+      input_username: usernamePolicy === 'disabled' ? null : normalisedUsername || null,
     });
 
     if (updateError) {

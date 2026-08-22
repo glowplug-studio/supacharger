@@ -151,6 +151,10 @@ test('auth operations enforce config and align signup confirmation redirects', a
   );
   assert.match(auth, /function getSignUpConfirmationRedirect/);
   assert.match(auth, /getSignUpConfirmationRedirect\(nextPath\)/);
+  assert.match(journey, /createUserByEmailPassword\(formData\)/);
+  assert.doesNotMatch(journey, /auth\.signUp\(/);
+  assert.match(auth, /signUpPasswordSchema/);
+  assert.match(auth, /evaluatePasswordStrength\(password\)\.valid/);
   assert.match(auth, /verifyOtp\([\s\S]*?type:\s*'signup'/);
   assert.match(auth, /verifySignInOtp\([\s\S]*?type:\s*'email'/);
 });
@@ -316,11 +320,11 @@ test('the reusable embedded signup form retains the submitted email for OTP veri
 test('an existing signup returns to sign in with the submitted credentials intact', async () => {
   const journey = await read('src/supacharger/components/forms/login-user-form.tsx');
   const transition = journey.match(
-    /if \(data\.user && Array\.isArray\(data\.user\.identities\) && data\.user\.identities\.length === 0\) \{([\s\S]*?)\n      \}/,
+    /if \(result\.data\.userId && result\.data\.identityCount === 0\) \{([\s\S]*?)\n        \}/,
   );
 
   assert.ok(transition, 'expected an existing-account sign-in transition');
-  assert.match(journey, /data\.user\.identities\.length === 0/);
+  assert.match(journey, /result\.data\.identityCount === 0/);
   assert.match(journey, /toast\.warning\(tSupabaseErrorCodes\('accountAlreadyExists'\), SC_CONFIG\.TOAST_CONFIG\)/);
   assert.match(transition[1], /setMode\('signin'\)/);
   assert.match(transition[1], /setStep\('email'\)/);
@@ -339,20 +343,22 @@ test('auth choices hide empty provider separators and track each request indepen
   assert.match(journey, /pendingAction === 'otp'/);
 });
 
-test('password signup uses the browser SDK and one explicit verification step', async () => {
+test('password signup uses the validated Server Action and one explicit verification step', async () => {
   const [journey, auth] = await Promise.all([
     read('src/supacharger/components/forms/login-user-form.tsx'),
     read('src/lib/supabase/supacharger/supabase-auth.ts'),
   ]);
 
   assert.match(journey, /import \{ useState, useTransition \} from 'react'/);
-  assert.match(journey, /const supabase = createClient\(\)/);
-  assert.match(journey, /await supabase\.auth\.signUp\(/);
+  assert.match(journey, /await createUserByEmailPassword\(formData\)/);
+  assert.doesNotMatch(journey, /await supabase\.auth\.signUp\(/);
+  assert.match(auth, /await supabase\.auth\.signUp\(/);
+  assert.match(auth, /signUpPasswordSchema/);
   assert.match(journey, /setVerificationEmail\(normalisedEmail\)/);
   assert.match(journey, /setStep\('verify-email'\)/);
   assert.doesNotMatch(journey, /useActionState|signUpActionState|signUpFormAction|submissionId/);
   assert.doesNotMatch(auth, /submitEmailPasswordSignUp|EmailPasswordSignUpActionState/);
-  assert.equal((journey.match(/startAuthTransition\(async \(\) => \{/g) ?? []).length, 3);
+  assert.equal((journey.match(/startAuthTransition\(async \(\) => \{/g) ?? []).length, 4);
   assert.match(
     journey,
     /startAuthTransition\(async \(\) => \{[\s\S]*?await signInWithEmail\(normalisedEmail, safeNextPath\)/,

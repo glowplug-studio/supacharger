@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
   let languageSyncSucceeded = false;
   if (user) {
     const { error } = await supabase.schema('api').rpc('update_account_language_by_current_user', {
-      p_language_code: locale,
+      input_language_code: locale,
     });
     languageSyncSucceeded = !error;
   }

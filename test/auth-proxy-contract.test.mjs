@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import { copySupabaseResponseState } from '../src/supacharger/auth/proxy-response.ts';
-import { pathMatches, shouldCheckPostSignInOnboarding } from '../src/supacharger/auth/route-policy.ts';
+import { pathMatches } from '../src/supacharger/auth/route-policy.ts';
 import { getSafeNextPath, withNextPath } from '../src/supacharger/auth/safe-next-path.js';
 
 function responseDouble(cookies = [], headers = {}) {
@@ -32,36 +32,29 @@ test('route policy rejects malformed patterns', () => {
   assert.throws(() => pathMatches('/account', ['account']), /must start with/);
 });
 
-test('public marketing routes bypass post-sign-in onboarding protection', () => {
-  const publicPaths = [
-    '/',
-    '/about',
-    '/pricing',
-    '/legal',
-    '/license',
-    '/whats-included',
-    '/paywall-demos',
-    '/profile/:username',
-  ];
-  const policy = (pathname) =>
-    shouldCheckPostSignInOnboarding({
-      isAuthenticated: true,
-      isPublicPath: pathMatches(pathname, publicPaths),
-      pathname,
-      redirectPath: '/account/setup-profile',
-      required: true,
-    });
+test('Proxy performs claims verification without profile or billing RPCs', async () => {
+  const [proxy, sessionAdapter] = await Promise.all([
+    readFile(new URL('../src/proxy.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../src/lib/supabase/supacharger/proxy.ts', import.meta.url), 'utf8'),
+  ]);
 
-  assert.equal(policy('/'), false);
-  assert.equal(policy('/about'), false);
-  assert.equal(policy('/pricing'), false);
-  assert.equal(policy('/legal'), false);
-  assert.equal(policy('/license'), false);
-  assert.equal(policy('/whats-included'), false);
-  assert.equal(policy('/paywall-demos'), false);
-  assert.equal(policy('/profile/fern-friends'), false);
-  assert.equal(policy('/account'), true);
-  assert.equal(policy('/account/setup-profile'), false);
+  assert.match(sessionAdapter, /auth\.getClaims\(\)/);
+  assert.doesNotMatch(sessionAdapter, /auth\.getUser\(\)/);
+  assert.doesNotMatch(proxy, /\.rpc\(/);
+  assert.doesNotMatch(proxy, /get_account_profile_by_current_user/);
+  assert.doesNotMatch(proxy, /is_profile_complete_by_current_user/);
+  assert.doesNotMatch(proxy, /has_billing_access_by_current_user/);
+});
+
+test('protected layout enforces profile and billing access on the server', async () => {
+  const [layout, access] = await Promise.all([
+    readFile(new URL('../src/app/(supacharger)/(authenticated)/layout.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/supacharger/auth/server-access.ts', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(layout, /await requireAppAccess\(\)/);
+  assert.match(access, /is_profile_complete_by_current_user/);
+  assert.match(access, /has_billing_access_by_current_user/);
 });
 
 test('crawler metadata endpoints bypass Proxy authentication and redirects', async () => {

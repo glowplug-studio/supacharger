@@ -20,7 +20,7 @@ Consumers may add application-specific fields to `app.profiles` or a one-to-one 
 
 `PROFILE_IDENTITY.USERNAME` is `disabled`, `optional`, or `required`. The database column and case-insensitive partial uniqueness remain installed and nullable in every mode. Disabled applications omit the form field, public username route, and username display. Optional applications accept a blank value. Required applications validate and include it in completion.
 
-`api.is_profile_complete_by_current_user(p_username_required boolean default false)` always requires non-empty names and requires username only when the caller passes true. `POST_SIGN_IN_ONBOARDING.REQUIRED` enables the callback and route-guard redirect; `REDIRECT_PATH` selects the developer-owned setup page. Disabling enforcement does not disable the profile trigger or profile APIs.
+`api.is_profile_complete_by_current_user(username_required boolean default false)` always requires non-empty names and requires username only when the caller passes true. `POST_SIGN_IN_ONBOARDING.REQUIRED` enables the callback and protected server-layout redirect; `REDIRECT_PATH` selects the developer-owned setup page. Disabling enforcement does not disable the profile trigger or profile APIs.
 
 Identity display uses the shared projection in this order: first and last name; populated username when policy permits it; owner-only email; `Account`. Email never enters the general/public profile projection.
 
@@ -45,4 +45,6 @@ Use the authenticated `process-image-upload` Edge Function for shared resizing/r
 
 ## Migration verification
 
-Create migrations with `supabase migration new`, rebuild a clean local database, run `supabase db lint --local`, and regenerate TypeScript types from `public,api,api_edge,app`. Update current-user callers, general profile callers, storage upload paths, route guards, Bruno requests, and human documentation in the same change.
+Exposed `api`, `api_edge`, and `mcp_api` RPC arguments must not use a `p_` prefix. Prefer descriptive names. Use `input_` where an argument could collide with a column, local variable, or result field, and use `result_limit` for row limits. Qualify SQL identifiers to make ambiguity impossible. A rename migration must preserve the exact function signature types, defaults, security mode, `search_path`, owner, comments, grants, and dependencies; update generated types, every caller, OpenAPI, and Bruno together.
+
+Create migrations with `supabase migration new`, rebuild a clean local database, run `supabase db lint --local`, and regenerate TypeScript types from `public,api,api_edge,app`. Update current-user callers, general profile callers, storage upload paths, protected server-access checks, Bruno requests, and human documentation in the same change.

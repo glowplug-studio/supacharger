@@ -51,10 +51,7 @@ export const SC_CONFIG: SupachargerConfig = {
     VERCEL_ANALYTICS_ENABLED: true,
   },
 
-  // Supabase recommends getClaims for normal SSR identity verification. Use
-  // "user" only when every matched request needs a fresh Auth-server check.
   AUTH_SESSION: {
-    VERIFICATION_MODE: 'claims',
     ALLOW_ANONYMOUS_USERS: false,
   },
   AUTHENTICATION: {

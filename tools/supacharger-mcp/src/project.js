@@ -71,7 +71,7 @@ export function classifyPath(inputPath) {
 
   if (
     relativePath === 'src/proxy.ts' ||
-    relativePath === 'src/lib/supabase/middleware.ts' ||
+    relativePath === 'src/lib/supabase/supacharger/proxy.ts' ||
     relativePath === 'supabase/config.toml' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform-runtime.test.ts' ||

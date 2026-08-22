@@ -14,12 +14,14 @@ import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification'
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
-import { getURL } from '@/supacharger/utils/helpers';
+import { evaluatePasswordStrength, getURL, isValidEmail } from '@/supacharger/utils/helpers';
 
 import { createClient } from '../server';
 
 const emailSchema = z.string().trim().pipe(z.email());
 const passwordSchema = z.string().min(1);
+const signUpEmailSchema = emailSchema.refine(isValidEmail);
+const signUpPasswordSchema = passwordSchema.refine((password) => evaluatePasswordStrength(password).valid);
 
 function otpSchema() {
   return z.string().regex(/^\d+$/).length(SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.OTP_LENGTH);
@@ -133,7 +135,7 @@ export async function createUserByEmailPassword(
   const supabase = await createClient();
 
   const parsed = z
-    .object({ email: emailSchema, password: passwordSchema })
+    .object({ email: signUpEmailSchema, password: signUpPasswordSchema })
     .safeParse({ email: formData.get('email'), password: formData.get('password') });
   if (!parsed.success) return authActionFailure('validation_failed');
   const nextPath = getSafeNextPath(formData.get('next'));

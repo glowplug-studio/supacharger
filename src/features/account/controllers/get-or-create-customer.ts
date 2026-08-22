@@ -20,8 +20,8 @@ export async function getOrCreateCustomer({
   const { data, error } = await supabaseAdminClient
     .schema('api_edge')
     .rpc('billing_get_customer_for_account', {
-      p_billing_account_id: accountId,
-      p_livemode: getStripeLivemode(),
+      input_billing_account_id: accountId,
+      input_livemode: getStripeLivemode(),
     })
     .maybeSingle();
   if (error) throw error;
@@ -34,9 +34,9 @@ export async function getOrCreateCustomer({
   const { data: mapping, error: insertError } = await supabaseAdminClient
     .schema('api_edge')
     .rpc('billing_put_customer_for_account', {
-      p_billing_account_id: accountId,
-      p_stripe_customer_id: customer.id,
-      p_livemode: customer.livemode,
+      input_billing_account_id: accountId,
+      input_stripe_customer_id: customer.id,
+      input_livemode: customer.livemode,
     });
   if (insertError) throw insertError;
   if (!mapping) throw new Error('Stripe customer mapping is empty.');

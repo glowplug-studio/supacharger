@@ -34,7 +34,7 @@ export async function upsertUserSubscription({
 }) {
   const { data: billingAccountId, error: noCustomerError } = await supabaseAdminClient
     .schema('api_edge')
-    .rpc('billing_get_account_by_customer', { p_stripe_customer_id: customerId });
+    .rpc('billing_get_account_by_customer', { input_stripe_customer_id: customerId });
   if (noCustomerError) throw noCustomerError;
   if (!billingAccountId) throw new Error(`No Supacharger billing-account mapping exists for ${customerId}.`);
 
@@ -92,7 +92,7 @@ export async function upsertUserSubscription({
 
   const { error } = await supabaseAdminClient
     .schema('api_edge')
-    .rpc('billing_upsert_subscription_v2', { p_subscription: subscriptionData, p_items: itemData });
+    .rpc('billing_upsert_subscription_v2', { input_subscription: subscriptionData, input_items: itemData });
   if (error) {
     throw error;
   }
@@ -134,9 +134,9 @@ const copyBillingDetailsToCustomer = async (billingAccountId: string, paymentMet
   const { error } = await supabaseAdminClient
     .schema('api_edge')
     .rpc('billing_update_payment_method_for_account', {
-      p_billing_account_id: billingAccountId,
-      p_billing_address: { ...address },
-      p_payment_method: paymentMethodSummary,
+      input_billing_account_id: billingAccountId,
+      input_billing_address: { ...address },
+      input_payment_method: paymentMethodSummary,
     });
 
   if (error) {

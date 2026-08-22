@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       const { data: profileComplete } = await supabase
         .schema('api')
         .rpc('is_profile_complete_by_current_user', {
-          p_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
+          input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
         });
 
       if (profileComplete === false) {
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     if (SC_CONFIG.BILLING_ACCESS.REQUIRED) {
       const { data: hasBillingAccess } = await supabase.schema('api').rpc('has_billing_access_by_current_user', {
-        p_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY,
+        input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY,
       });
       if (!hasBillingAccess) {
         return NextResponse.redirect(siteUrl + SC_CONFIG.BILLING_ACCESS.REDIRECT_PATH);
