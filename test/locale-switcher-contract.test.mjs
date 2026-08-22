@@ -12,6 +12,26 @@ test('the locale menu does not lock the page or mobile navigation', async () => 
   assert.doesNotMatch(switcher, /useEffect|fetch\('\/api\/intl'\)[\s\S]*?method:\s*'GET'/);
 });
 
+test('locale menu options show native language names', async () => {
+  const switcher = await read('src/components/sc_demo/sc_locale-switcher.tsx');
+
+  assert.match(switcher, /label: 'English'/);
+  assert.match(switcher, /label: 'Español'/);
+  assert.match(switcher, /label: '中文'/);
+  assert.doesNotMatch(switcher, /label: t\('english'\)|label: t\('spanish'\)|label: t\('chinese'\)/);
+});
+
+test('shared menu controls stay interactive inside composed surfaces', async () => {
+  const [button, dropdownMenu] = await Promise.all([
+    read('src/components/ui/button.tsx'),
+    read('src/components/ui/dropdown-menu.tsx'),
+  ]);
+
+  assert.match(button, /type = "button"/);
+  assert.match(button, /type=\{asChild \? undefined : type\}/);
+  assert.match(dropdownMenu, /DropdownMenuSubContent[\s\S]*?<DropdownMenuPrimitive\.Portal>/);
+});
+
 test('locale changes survive profile sync failures and retry later', async () => {
   const route = await read('src/app/(supacharger)/api/(supacharger)/intl/route.ts');
 

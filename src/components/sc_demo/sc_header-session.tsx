@@ -32,6 +32,7 @@ export function SCHeaderSession() {
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <button
+                  type='button'
                   className={`flex h-8 w-8 flex-col items-center justify-center space-y-1 rounded-md border border-gray-200 ${focusClasses}`}
                   aria-label={t('openNavigation')}
                   aria-expanded={mobileMenuOpen}

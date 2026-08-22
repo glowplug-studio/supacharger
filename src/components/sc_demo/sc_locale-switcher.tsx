@@ -48,9 +48,9 @@ export default function LocaleSwitcher({ appearance = 'default', className }: Lo
 
   const currentLocale = pendingLocale ?? requestLocale;
   const localeOptions: { flag: string; label: string; value: AppLocale }[] = [
-    { flag: '🇬🇧', label: t('english'), value: 'en' },
-    { flag: '🇪🇸', label: t('spanish'), value: 'es' },
-    { flag: '🇨🇳', label: t('chinese'), value: 'zh' },
+    { flag: '🇬🇧', label: 'English', value: 'en' },
+    { flag: '🇪🇸', label: 'Español', value: 'es' },
+    { flag: '🇨🇳', label: '中文', value: 'zh' },
   ];
   const currentOption = localeOptions.find(({ value }) => value === currentLocale) ?? localeOptions[0];
 

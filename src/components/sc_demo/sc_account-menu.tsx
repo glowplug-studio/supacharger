@@ -51,7 +51,11 @@ export default function SCAccountMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className={`flex items-center rounded-full ${focusClasses}`} aria-label={tMenu('userMenu', { name: identity.displayName })}>
+        <button
+          type='button'
+          className={`flex items-center rounded-full ${focusClasses}`}
+          aria-label={tMenu('userMenu', { name: identity.displayName })}
+        >
           <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary'>
             <span className='text-sm font-bold text-white' aria-hidden='true'>
               {identity.initials}
