@@ -28,6 +28,8 @@ The favicon path contract keeps `public/favicon.ico` at the public root and grou
 
 The `loading_ui` resource defines the developer-owned primary and dark inline-loader branding seams, SVGR-only UI asset convention, `fill` override behaviour, and replacement-file workflow. Path classification reports both exact loader paths as developer-owned even though adjacent shared assets may follow a different ownership policy.
 
+The `ownership` resource and path classifier define demo presentation and its colocated assets under `src/components/sc_demo/` as developer-owned examples. UI SVGs stay with their owning source and are imported through SVGR; `public/` is reserved for assets that genuinely require a URL.
+
 The MCP is descriptive and read-only. It does not supersede `AGENTS.md`, edit files, run migrations, or access sibling applications.
 
 The localisation resource records the locale-neutral routing contract, English-only copy-authoring default, empty or untouched secondary-language policy unless translation is explicitly requested, the transient `?lang=<two-letter-code>` marketing handoff, profile persistence in `app.profiles.language_code`, and the precedence used to restore a preference. It also identifies `src/i18n/` plus `messages/` as developer-owned paths that the CLI must preserve.

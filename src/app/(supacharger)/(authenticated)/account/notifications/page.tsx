@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Bell, Mail } from 'lucide-react';
 import { toast } from 'react-toastify';
 
@@ -18,6 +19,7 @@ interface NotificationSettings {
 }
 
 export default function NotificationsPage() {
+  const t = useTranslations('AccountPages.notifications');
   const [isLoading, setIsLoading] = useState(false);
 
   const [settings, setSettings] = useState<NotificationSettings>({
@@ -62,13 +64,13 @@ export default function NotificationsPage() {
     setInitialSettings(settings);
     setIsLoading(false);
 
-    toast.success('Your notification settings have been saved.');
+    toast.success(t('saved'));
   };
 
   return (
     <div className='space-y-6'>
       <div>
-        <h2 className='text-2xl font-bold tracking-tight'>Notifications</h2>
+        <h2 className='text-2xl font-bold tracking-tight'>{t('title')}</h2>
         <Separator className='my-4' />
       </div>
 
@@ -78,14 +80,14 @@ export default function NotificationsPage() {
           <div>
             <h3 className='mb-4 flex items-center text-lg font-medium'>
               <Bell className='mr-2 h-5 w-5' />
-              Push Notifications
+              {t('pushTitle')}
             </h3>
 
             <div className='space-y-4'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <Label className='text-base'>Enable Push Notifications</Label>
-                  <p className='text-sm text-muted-foreground'>Receive notifications on your device</p>
+                  <Label className='text-base'>{t('pushLabel')}</Label>
+                  <p className='text-sm text-muted-foreground'>{t('pushDescription')}</p>
                 </div>
                 <Switch
                   checked={settings.pushEnabled}
@@ -101,14 +103,14 @@ export default function NotificationsPage() {
           <div>
             <h3 className='mb-4 flex items-center text-lg font-medium'>
               <Mail className='mr-2 h-5 w-5' />
-              Email Notifications
+              {t('emailTitle')}
             </h3>
 
             <div className='space-y-4'>
               <div className='flex items-center justify-between'>
                 <div>
-                  <Label className='text-base'>Daily Summary</Label>
-                  <p className='text-sm text-muted-foreground'>Get a daily digest of your activity</p>
+                  <Label className='text-base'>{t('dailyLabel')}</Label>
+                  <p className='text-sm text-muted-foreground'>{t('dailyDescription')}</p>
                 </div>
                 <Switch
                   checked={settings.emailDaily}
@@ -118,8 +120,8 @@ export default function NotificationsPage() {
 
               <div className='flex items-center justify-between'>
                 <div>
-                  <Label className='text-base'>Weekly Report</Label>
-                  <p className='text-sm text-muted-foreground'>Receive a weekly summary of your stats</p>
+                  <Label className='text-base'>{t('weeklyLabel')}</Label>
+                  <p className='text-sm text-muted-foreground'>{t('weeklyDescription')}</p>
                 </div>
                 <Switch
                   checked={settings.emailWeekly}
@@ -129,8 +131,8 @@ export default function NotificationsPage() {
 
               <div className='flex items-center justify-between'>
                 <div>
-                  <Label className='text-base'>Marketing Emails</Label>
-                  <p className='text-sm text-muted-foreground'>Receive updates about new features and promotions</p>
+                  <Label className='text-base'>{t('marketingLabel')}</Label>
+                  <p className='text-sm text-muted-foreground'>{t('marketingDescription')}</p>
                 </div>
                 <Switch
                   checked={settings.emailMarketing}
@@ -143,7 +145,7 @@ export default function NotificationsPage() {
           <div className='pt-4'>
             <Button type='submit' disabled={isLoading}>
               {isLoading && <Loader2 className='mr-2 h-4 w-4' />}
-              Save Preferences
+              {t('save')}
             </Button>
           </div>
         </div>

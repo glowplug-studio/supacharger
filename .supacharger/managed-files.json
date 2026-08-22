@@ -6,7 +6,6 @@
     "package-lock.json",
     "package.json",
     "src/app/(supacharger)",
-    "src/assets",
     "src/lib/supabase/middleware.ts",
     "src/lib/supabase/supacharger",
     "src/proxy.ts",
@@ -40,8 +39,8 @@
     "src/components/sc_demo",
     "src/i18n/config.ts",
     "src/i18n/request.ts",
-    "src/assets/images/ui/inline-loader-dark.svg",
-    "src/assets/images/ui/inline-loader.svg",
+    "src/assets/svgr/ui/inline-loader-dark.svg",
+    "src/assets/svgr/ui/inline-loader.svg",
     "src/styles/project.css",
     "src/supacharger.adapters",
     "src/supacharger.config.ts"

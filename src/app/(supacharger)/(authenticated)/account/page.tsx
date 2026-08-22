@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import AccountChangePasswordForm from '@/app/(supacharger)/(authenticated)/account/components/account-change-password-form';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ import {
 import { Separator } from '@/components/ui/seperator';
 
 export default function AccountPage() {
+    const t = useTranslations('AccountPages.account');
     const [settings, setSettings] = useState({
         email: '',
         language: 'en',
@@ -25,7 +27,7 @@ export default function AccountPage() {
     useEffect(() => {
         setSettings({
             email: 'user@example.com',
-            language: 'fr',
+            language: 'es',
         });
     }, []);
 
@@ -33,14 +35,14 @@ export default function AccountPage() {
         <div className="space-y-6">
             <div>
                 <h2 className="text-2xl font-bold tracking-tight">
-                    Account & Security Settings
+                    {t('title')}
                 </h2>
                 <Separator className="my-4" />
             </div>
 
             {/* Authentication Provider */}
             <div className="max-w-md space-y-4">
-                <h3 className="text-lg font-medium">You Authenticated with</h3>
+                <h3 className="text-lg font-medium">{t('authenticatedWith')}</h3>
                 <div className="flex items-center justify-between">
                     <span>Google</span>
                     <img
@@ -55,10 +57,10 @@ export default function AccountPage() {
 
             {/* Email Section */}
             <div className="max-w-md space-y-4">
-                <h3 className="text-lg font-medium">Email</h3>
+                <h3 className="text-lg font-medium">{t('email')}</h3>
                 <div className="space-y-2">
                     <div className="flex flex-col">
-                        <Label htmlFor="email">Account Email Address</Label>
+                        <Label htmlFor="email">{t('emailAddress')}</Label>
                         <Input
                             id="email"
                             type="email"
@@ -70,7 +72,7 @@ export default function AccountPage() {
                         />
                     </div>
                 </div>
-                <Button variant="secondary">Save Changes</Button>
+                <Button variant="secondary">{t('save')}</Button>
             </div>
 
             <Separator />
@@ -82,19 +84,19 @@ export default function AccountPage() {
 
             {/* 2FA Section */}
             <div className="max-w-md space-y-4">
-                <h3 className="text-lg font-medium">Two Factor Authentication</h3>
-                <p className="text-muted-foreground">No 2FA found.</p>
-                <Button variant="secondary">Set up 2FA</Button>
+                <h3 className="text-lg font-medium">{t('twoFactor')}</h3>
+                <p className="text-muted-foreground">{t('noTwoFactor')}</p>
+                <Button variant="secondary">{t('setupTwoFactor')}</Button>
             </div>
 
             <Separator />
 
             {/* Language Section */}
             <div className="max-w-md space-y-4">
-                <h3 className="text-lg font-medium">Language</h3>
+                <h3 className="text-lg font-medium">{t('language')}</h3>
                 <div className="space-y-2">
                     <div className="flex flex-col">
-                        <Label>Language Preference</Label>
+                        <Label>{t('languagePreference')}</Label>
                         <Select
                             value={settings.language}
                             onValueChange={(value) =>
@@ -102,29 +104,28 @@ export default function AccountPage() {
                             }
                         >
                             <SelectTrigger className="w-full">
-                                <SelectValue placeholder="Select a language" />
+                                <SelectValue placeholder={t('selectLanguage')} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="en">English</SelectItem>
-                                <SelectItem value="fr">Français (French)</SelectItem>
-                                <SelectItem value="es">Español (Spanish)</SelectItem>
-                                <SelectItem value="de">Deutsch (German)</SelectItem>
+                                <SelectItem value="en">🇬🇧 {t('english')}</SelectItem>
+                                <SelectItem value="es">🇪🇸 {t('spanish')}</SelectItem>
+                                <SelectItem value="zh">🇨🇳 {t('chinese')}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
-                <Button variant="secondary">Save Changes</Button>
+                <Button variant="secondary">{t('save')}</Button>
             </div>
 
             <Separator />
 
             {/* Cancel Account Section */}
             <div className="max-w-md space-y-4">
-                <h3 className="text-lg font-medium">Cancel Account</h3>
+                <h3 className="text-lg font-medium">{t('cancelAccount')}</h3>
                 <p className="text-muted-foreground">
-                    This is what happens when you cancel your account.
+                    {t('cancelDescription')}
                 </p>
-                <Button variant="destructive">Cancel Account</Button>
+                <Button variant="destructive">{t('cancelAccount')}</Button>
             </div>
         </div>
     );

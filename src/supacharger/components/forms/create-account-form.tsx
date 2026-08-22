@@ -59,6 +59,7 @@ export function CreateAccountForm() {
   const tCreateAccountFormComponent = useTranslations('CreateAccountFormComponent');
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const tEvaluatePasswordStrengthComponent = useTranslations('evaluatePasswordStrengthComponent');
+  const tAuthJourney = useTranslations('AuthJourney');
 
   // React Hook Form
   const {
@@ -255,7 +256,7 @@ export function CreateAccountForm() {
                 <button
                   type='button'
                   className='ml-2 mt-4 text-gray-400 hover:text-slate-800'
-                  aria-label='Show password'
+                  aria-label={showPassword ? tAuthJourney('hidePassword') : tAuthJourney('showPassword')}
                   aria-expanded={!showPassword}
                   aria-controls='embedded-signup-password-confirmation'
                   onClick={togglePasswordVisibility}

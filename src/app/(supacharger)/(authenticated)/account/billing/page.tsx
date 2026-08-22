@@ -1,11 +1,13 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/seperator';
 import { getBillingOverview } from '@/features/account/controllers/get-billing-overview';
 
 export default async function BillingPage() {
+  const t = await getTranslations('AccountPages.billing');
   const billingAccounts = await getBillingOverview();
 
   return (
@@ -13,42 +15,42 @@ export default async function BillingPage() {
       <div className='container'>
         <section className='w-full'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Billing</h2>
+            <h2 className='text-2xl font-bold tracking-tight'>{t('title')}</h2>
             <Separator className='my-4' />
           </div>
 
           <div className='container mx-auto space-y-6 px-4 py-8'>
             {billingAccounts.length === 0 ? (
               <Card
-                title='No billing account'
+                title={t('noAccount')}
                 footer={
                   <Button size='sm' variant='secondary' asChild>
-                    <Link href='/account/billing/subscribe'>Start a subscription</Link>
+                    <Link href='/account/billing/subscribe'>{t('startSubscription')}</Link>
                   </Button>
                 }
               >
-                <p>Create a billing account when you start Checkout.</p>
+                <p>{t('createAccountHelp')}</p>
               </Card>
             ) : (
               billingAccounts.map((account) => (
                 <Card
                   key={account.id}
-                  title={account.display_name || `${account.subject_type} billing`}
+                  title={account.display_name || t('accountTitle', { type: account.subject_type })}
                   footer={
                     account.member_role !== 'member' ? (
                       <Button size='sm' variant='secondary' asChild>
-                        <a href={`billing/portal?billing_account_id=${account.id}`}>Manage billing</a>
+                        <a href={`billing/portal?billing_account_id=${account.id}`}>{t('manageBilling')}</a>
                       </Button>
                     ) : undefined
                   }
                 >
                   {account.subscriptions.length === 0 ? (
-                    <p>No subscriptions are attached to this billing account.</p>
+                    <p>{t('noSubscriptions')}</p>
                   ) : (
                     <div className='space-y-4'>
                       {account.subscriptions.map((subscription) => (
                         <div key={subscription.id} className='rounded border border-zinc-800 p-3'>
-                          <p className='font-medium'>Status: {subscription.status}</p>
+                          <p className='font-medium'>{t('status', { status: subscription.status ?? t('unknownStatus') })}</p>
                           <ul className='mt-2 space-y-1 text-sm text-zinc-300'>
                             {subscription.items.map((item) => (
                               <li key={item.id}>
@@ -62,7 +64,7 @@ export default async function BillingPage() {
                   )}
                   {account.entitlements.length > 0 && (
                     <p className='mt-4 text-sm text-zinc-400'>
-                      Features: {account.entitlements.map((item) => item.feature_lookup_key).join(', ')}
+                      {t('features')}: {account.entitlements.map((item) => item.feature_lookup_key).join(', ')}
                     </p>
                   )}
                 </Card>

@@ -21,8 +21,8 @@ export default function SCSiteLogo({ showSiteTitle, darkMode }: LogoProps) {
             darkMode === true
               ? 'text-white hover:text-white/80'
               : darkMode === false
-                ? 'text-gray-700 hover:text-gray-900'
-                : 'text-gray-700 hover:text-gray-900 dark:text-white dark:hover:text-white/80',
+                ? 'text-foreground hover:text-foreground/80'
+                : 'text-foreground hover:text-foreground/80',
           )}
         >
           {SC_CONFIG.SITE_TITLE}

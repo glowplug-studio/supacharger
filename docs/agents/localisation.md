@@ -23,7 +23,7 @@ The developer-owned root-layout template obtains locale and messages from `next-
 
 ## Marketing-site handoff and persistence
 
-A separate marketing application may link to any SaaS route with `?lang=<code>`, for example `/login?lang=fr`. Treat this parameter as a transient handoff, not locale-based routing:
+A separate marketing application may link to any SaaS route with `?lang=<code>`, for example `/login?lang=es`. Treat this parameter as a transient handoff, not locale-based routing:
 
 1. Accept it only when the exact lowercase code is in `SUPPORTED_LOCALES`.
 2. Store an accepted value in `supacharger_locale` and in the signed-in profile.

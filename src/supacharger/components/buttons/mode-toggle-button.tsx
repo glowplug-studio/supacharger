@@ -1,42 +1,95 @@
 'use client';
 
-import * as React from 'react';
+import { useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import { MonitorCog,Moon, Sun } from 'lucide-react';
+import { MonitorCog, Moon, Sun } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { cn } from '@/utils/cn';
 
-export default function ModeToggle() {
-  const { setTheme } = useTheme();
+type ThemeChoice = 'system' | 'light' | 'dark';
 
+interface ModeToggleProps {
+  appearance?: 'default' | 'marketing';
+  className?: string;
+}
+
+const themeChoices = [
+  { icon: MonitorCog, value: 'system' },
+  { icon: Sun, value: 'light' },
+  { icon: Moon, value: 'dark' },
+] as const;
+
+const subscribeToHydration = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+export default function ModeToggle({ appearance = 'default', className }: ModeToggleProps) {
+  const { theme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(subscribeToHydration, getClientSnapshot, getServerSnapshot);
   const tThemeChangerMenu = useTranslations('ThemeChangerMenu');
+  const currentTheme: ThemeChoice = mounted && (theme === 'light' || theme === 'dark') ? theme : 'system';
+  const CurrentIcon = mounted
+    ? (themeChoices.find(({ value }) => value === currentTheme)?.icon ?? MonitorCog)
+    : MonitorCog;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='icon' className='bg-white dark:bg-slate-800'>
-          <Sun className='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-          <Moon className='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 dark:text-yellow-200' />
-          <span className='sr-only'>Toggle theme</span>
+        <Button
+          aria-label={tThemeChangerMenu('title')}
+          className={cn(
+            appearance === 'default' && 'relative bg-white dark:bg-slate-800',
+            appearance === 'marketing' &&
+              'border-border text-foreground hover:bg-accent hover:text-foreground h-auto rounded-sm bg-transparent px-5 py-3 text-sm shadow-none',
+            className,
+          )}
+          size={appearance === 'marketing' ? 'sm' : 'icon'}
+          variant='outline'
+        >
+          <CurrentIcon aria-hidden='true' />
+          {appearance === 'marketing' ? <span>{tThemeChangerMenu(currentTheme)}</span> : null}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end'>
-      <DropdownMenuItem className='text-xs  hover:cursor-pointer' onClick={() => setTheme('light')}>
-                <Sun size={14} /> {tThemeChangerMenu('light')}
-              </DropdownMenuItem>
-              <DropdownMenuItem className='text-xs  hover:cursor-pointer' onClick={() => setTheme('dark')}>
-                <Moon size={14} /> {tThemeChangerMenu('dark')}
-              </DropdownMenuItem>
-              <DropdownMenuItem className='text-xs hover:cursor-pointer' onClick={() => setTheme('system')}>
-                <MonitorCog size={14} />  {tThemeChangerMenu('system')}
-              </DropdownMenuItem>
+      <DropdownMenuContent
+        align={appearance === 'marketing' ? 'start' : 'end'}
+        className={cn(
+          'w-[17rem] rounded-sm p-2',
+          appearance === 'marketing' && 'border-border bg-popover text-popover-foreground shadow-xl',
+        )}
+      >
+        <DropdownMenuLabel className='text-muted-foreground px-1.5 pt-1 pb-2 text-xs font-medium'>
+          {tThemeChangerMenu('title')}
+        </DropdownMenuLabel>
+        <ToggleGroup
+          aria-label={tThemeChangerMenu('title')}
+          className='border-border bg-muted grid grid-cols-3 gap-1 rounded-sm border p-1'
+          onValueChange={(value) => {
+            if (value === 'system' || value === 'light' || value === 'dark') setTheme(value);
+          }}
+          type='single'
+          value={currentTheme}
+        >
+          {themeChoices.map(({ icon: Icon, value }) => (
+            <ToggleGroupItem
+              aria-label={tThemeChangerMenu(value)}
+              className='text-muted-foreground hover:bg-background hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground h-14 min-w-0 flex-col gap-1 rounded-sm px-2 text-xs data-[state=on]:shadow-sm'
+              key={value}
+              value={value}
+            >
+              <Icon aria-hidden='true' />
+              <span>{tThemeChangerMenu(value)}</span>
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

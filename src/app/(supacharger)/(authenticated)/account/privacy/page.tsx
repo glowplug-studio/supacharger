@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ interface PrivacySettings {
 }
 
 export default function PrivacyPage() {
+  const t = useTranslations('AccountPages.privacy');
   //const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,25 +60,25 @@ export default function PrivacyPage() {
     setInitialSettings(settings);
     setIsLoading(false);
 
-    toast.success('Your privacy preferences have been saved.');
+    toast.success(t('saved'));
   };
 
   return (
     <div className='space-y-6'>
       <div>
-        <h2 className='text-2xl font-bold tracking-tight'>Privacy Settings</h2>
+        <h2 className='text-2xl font-bold tracking-tight'>{t('title')}</h2>
         <Separator className='my-4' />
       </div>
 
       <form onSubmit={handleSubmit} className='space-y-6'>
         <div className='space-y-6 rounded-lg bg-card p-6 shadow-sm'>
-          <h3 className='mb-4 text-lg font-medium'>Privacy Preferences</h3>
+          <h3 className='mb-4 text-lg font-medium'>{t('preferences')}</h3>
 
           <div className='space-y-4'>
             <div className='flex items-center justify-between'>
               <div>
-                <Label className='text-base'>Profile Visibility</Label>
-                <p className='text-sm text-muted-foreground'>Make your profile visible to other users</p>
+                <Label className='text-base'>{t('profileLabel')}</Label>
+                <p className='text-sm text-muted-foreground'>{t('profileDescription')}</p>
               </div>
               <Switch
                 checked={settings.profileVisible}
@@ -88,8 +90,8 @@ export default function PrivacyPage() {
 
             <div className='flex items-center justify-between'>
               <div>
-                <Label className='text-base'>Activity Status</Label>
-                <p className='text-sm text-muted-foreground'>Show when you&apos;re active on the platform</p>
+                <Label className='text-base'>{t('activityLabel')}</Label>
+                <p className='text-sm text-muted-foreground'>{t('activityDescription')}</p>
               </div>
               <Switch
                 checked={settings.activityVisible}
@@ -101,8 +103,8 @@ export default function PrivacyPage() {
 
             <div className='flex items-center justify-between'>
               <div>
-                <Label className='text-base'>Search Visibility</Label>
-                <p className='text-sm text-muted-foreground'>Allow others to find you in search results</p>
+                <Label className='text-base'>{t('searchLabel')}</Label>
+                <p className='text-sm text-muted-foreground'>{t('searchDescription')}</p>
               </div>
               <Switch
                 checked={settings.searchable}
@@ -114,7 +116,7 @@ export default function PrivacyPage() {
           <div className='pt-4'>
             <Button type='submit' disabled={isLoading}>
               {isLoading && <Loader2 className='mr-2 h-4 w-4' />}
-              Save Privacy Settings
+              {t('save')}
             </Button>
           </div>
         </div>

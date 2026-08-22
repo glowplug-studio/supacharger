@@ -7,11 +7,13 @@
  * ========== */
 
 import { FormEvent, useState } from "react";
+import { useTranslations } from 'next-intl';
 import { toast } from "react-toastify";
 
 import { signInWithEmail } from "@/lib/supabase/supacharger/supabase-auth";
 
 export function LoginMagicLinkUI() {
+  const t = useTranslations('MagicLinkForm');
   const [pending, setPending] = useState(false);
 
   async function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
@@ -23,9 +25,9 @@ export function LoginMagicLinkUI() {
     const response = await signInWithEmail(email);
 
     if (response?.error) {
-      toast.error("FAIL");
+      toast.error(t('failed'));
     } else {
-      toast.success("worked");
+      toast.success(t('sent'));
     }
 
     form.reset();
@@ -37,14 +39,14 @@ export function LoginMagicLinkUI() {
       <input
         type="email"
         name="email"
-        placeholder="Enter your email"
-        aria-label="Enter your email"
+        placeholder={t('emailPlaceholder')}
+        aria-label={t('emailPlaceholder')}
         autoFocus
         className="input"
       />
       <div className="mt-4 flex justify-end gap-2">
         <button className="btn bg-primary" type="submit" disabled={pending}>
-          Submit
+          {t('submit')}
         </button>
       </div>
     </form>

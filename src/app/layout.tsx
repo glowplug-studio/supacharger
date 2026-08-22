@@ -60,8 +60,8 @@ export default async function RootLayout({ children }: PropsWithChildren) {
         <SmoothAnchorNavigation />
         {content}
         {SC_CONFIG.ROOT_PROVIDERS.TOASTS ? <ToastContainer {...SC_CONFIG.TOAST_CONFIG} /> : null}
+        <SupachargerAnalytics config={SC_CONFIG} />
       </body>
-      <SupachargerAnalytics config={SC_CONFIG} />
     </html>
   );
 }

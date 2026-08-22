@@ -97,7 +97,7 @@ test('bright auth actions use the black inline-loader variant', async () => {
   const [spinner, journey, darkLoader] = await Promise.all([
     read('src/components/ui/loading-spinner.tsx'),
     read('src/supacharger/components/forms/login-user-form.tsx'),
-    read('src/assets/images/ui/inline-loader-dark.svg'),
+    read('src/assets/svgr/ui/inline-loader-dark.svg'),
   ]);
 
   assert.match(spinner, /inline-loader-dark\.svg/);
@@ -108,8 +108,8 @@ test('bright auth actions use the black inline-loader variant', async () => {
 
 test('responsive inline loader assets retain their SVG scaling coordinate system', async () => {
   const loaders = await Promise.all([
-    read('src/assets/images/ui/inline-loader.svg'),
-    read('src/assets/images/ui/inline-loader-dark.svg'),
+    read('src/assets/svgr/ui/inline-loader.svg'),
+    read('src/assets/svgr/ui/inline-loader-dark.svg'),
   ]);
 
   for (const loader of loaders) {

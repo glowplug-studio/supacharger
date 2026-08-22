@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Check, Globe } from 'lucide-react';
+import { useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import { Check } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +12,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { type AppLocale, DEFAULT_LOCALE, resolveLocale } from '@/i18n/config';
+import { type AppLocale, resolveLocale } from '@/i18n/config';
+import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
 interface LocaleSwitcherProps {
@@ -19,58 +22,74 @@ interface LocaleSwitcherProps {
 }
 
 export default function LocaleSwitcher({ appearance = 'default', className }: LocaleSwitcherProps) {
-  const handleLocaleChange = async (locale: AppLocale) => {
-    const response = await fetch('/api/intl', {
-      body: JSON.stringify({ locale }),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    });
+  const t = useTranslations('LocaleSwitcher');
+  const requestLocale = resolveLocale(useLocale());
+  const [pendingLocale, setPendingLocale] = useState<AppLocale | null>(null);
 
-    if (response.ok) window.location.reload();
+  const handleLocaleChange = async (locale: AppLocale) => {
+    if (locale === requestLocale || pendingLocale) return;
+
+    setPendingLocale(locale);
+
+    try {
+      const response = await fetch('/api/intl', {
+        body: JSON.stringify({ locale }),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      });
+
+      if (!response.ok) throw new Error('Unable to change locale');
+      window.location.reload();
+    } catch {
+      setPendingLocale(null);
+      toast.error(t('changeFailed'), SC_CONFIG.TOAST_CONFIG);
+    }
   };
 
-  const [locale, setLocale] = useState<AppLocale>(DEFAULT_LOCALE);
-
-  useEffect(() => {
-    fetch('/api/intl')
-      .then((res) => res.json())
-      .then((data) => setLocale(resolveLocale(data.locale)));
-  }, []);
-
-  const currentLocale = locale;
+  const currentLocale = pendingLocale ?? requestLocale;
+  const localeOptions: { flag: string; label: string; value: AppLocale }[] = [
+    { flag: '🇬🇧', label: t('english'), value: 'en' },
+    { flag: '🇪🇸', label: t('spanish'), value: 'es' },
+    { flag: '🇨🇳', label: t('chinese'), value: 'zh' },
+  ];
+  const currentOption = localeOptions.find(({ value }) => value === currentLocale) ?? localeOptions[0];
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
-          aria-label='Change language'
+          aria-label={t('changeLanguage')}
           className={cn(
             'gap-2',
             appearance === 'marketing' &&
-              'h-auto rounded-sm border-white/15 bg-transparent px-5 py-3 text-sm text-white shadow-none hover:bg-white/10 hover:text-white',
+              'border-border text-foreground hover:bg-accent hover:text-foreground h-auto rounded-sm bg-transparent px-5 py-3 text-sm shadow-none',
             className,
           )}
           size='sm'
           variant='outline'
+          disabled={pendingLocale !== null}
         >
-          <Globe aria-hidden='true' />
+          <span aria-hidden='true'>{currentOption.flag}</span>
           {currentLocale.toUpperCase()}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align='end'
         className={cn(
-          appearance === 'marketing' && 'rounded-sm border-white/10 bg-[#151716] text-white shadow-2xl shadow-black/30',
+          appearance === 'marketing' && 'border-border bg-popover text-popover-foreground rounded-sm shadow-xl',
         )}
       >
-        <DropdownMenuItem onClick={() => handleLocaleChange('en')}>
-          <span className='flex-1'>English</span>
-          {currentLocale === 'en' ? <Check aria-hidden='true' /> : null}
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleLocaleChange('fr')}>
-          <span className='flex-1'>Français</span>
-          {currentLocale === 'fr' ? <Check aria-hidden='true' /> : null}
-        </DropdownMenuItem>
+        {localeOptions.map((option) => (
+          <DropdownMenuItem
+            disabled={pendingLocale !== null}
+            key={option.value}
+            onSelect={() => handleLocaleChange(option.value)}
+          >
+            <span aria-hidden='true'>{option.flag}</span>
+            <span className='flex-1'>{option.label}</span>
+            {currentLocale === option.value ? <Check aria-hidden='true' /> : null}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

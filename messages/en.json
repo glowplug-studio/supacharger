@@ -5,10 +5,10 @@
     "or": "or"
   },
   "GlobalUI": {
-      "buttonSaveChanges": "Save Changes",
-      "buttonSaving": "Saving",
-      "buttonThinking": "Thinking...",
-      "buttonSaved": "Done"
+    "buttonSaveChanges": "Save Changes",
+    "buttonSaving": "Saving",
+    "buttonThinking": "Thinking...",
+    "buttonSaved": "Done"
   },
   "PageMeta": {
     "accountAccountSecuritySettingsSectionTitle": "Account Config",
@@ -206,6 +206,846 @@
     "dark": "Dark",
     "system": "System"
   },
+  "Attribution": {
+    "builtWith": "Built with"
+  },
+  "MarketingDemo": {
+    "trustedOrganisations": "Trusted by top organisations"
+  },
+  "MarketingMetadata": {
+    "home": {
+      "title": "Korunet",
+      "description": "The community platform for stronger local connections, shared conversations, groups, and events."
+    },
+    "legal": {
+      "title": "Legal",
+      "description": "Read Korunet’s terms of use, privacy policy, and third-party cookie policy."
+    },
+    "pricing": {
+      "title": "Pricing",
+      "description": "Explore Korunet pricing and choose the right plan for your community."
+    },
+    "license": {
+      "title": "License",
+      "description": "Understand the Supacharger source license, attribution requirements, commercial licensing, and third-party dependencies."
+    },
+    "whatsIncluded": {
+      "title": "What's included",
+      "description": "Explore the product foundations and developer capabilities included with Supacharger."
+    },
+    "paywallDemos": {
+      "title": "Paywall demos",
+      "description": "Preview subscription and one-time purchase prompts for protected product features."
+    }
+  },
+  "MarketingFeaturePages": {
+    "whatsIncluded": {
+      "title": "What Supacharger actually includes",
+      "description": "A reusable foundation for identity, billing, profiles, localisation, and the tooling required to extend your product.",
+      "fullFeatureSet": "View the full feature set",
+      "capabilitiesTitle": "The product foundations are already connected",
+      "capabilitiesDescription": "These are implemented routes, policies, database contracts, and components. They are not roadmap placeholders.",
+      "items": [
+        {
+          "title": "Authentication",
+          "description": "Email, passwordless, OAuth, confirmation, recovery, and protected-route foundations."
+        },
+        {
+          "title": "Profiles and organisations",
+          "description": "Shared profile contracts, onboarding policies, private media, and organisation-ready services."
+        },
+        {
+          "title": "Billing and access",
+          "description": "Subscription state, entitlements, checkout flows, and configurable paywall boundaries."
+        },
+        {
+          "title": "Localisation",
+          "description": "Application-owned locale policy, catalogues, persistence, and language handoff support."
+        },
+        {
+          "title": "Marketing foundations",
+          "description": "Responsive navigation, metadata, crawler discovery, themes, and accessible presentation components."
+        },
+        {
+          "title": "Developer tooling",
+          "description": "Typed contracts, database migrations, verification suites, upgrade metadata, and repository guidance."
+        }
+      ],
+      "boundariesTitle": "Clear ownership makes updates safer",
+      "boundariesDescription": "The starter separates CLI-managed implementation from application-owned branding, policy, translations, styles, and demo presentation.",
+      "boundaries": [
+        {
+          "title": "CLI-managed core",
+          "description": "Shared authentication, profile, route, database, billing, and compatibility code can be upgraded as one protected foundation."
+        },
+        {
+          "title": "Developer-owned extension points",
+          "description": "Product configuration, locale policy, catalogues, project styles, and demo components remain under application control."
+        },
+        {
+          "title": "Database and integration contracts",
+          "description": "Supabase migrations, private app tables, public API RPCs, trusted service RPCs, Stripe routes, and image processing are included."
+        }
+      ],
+      "stackTitle": "The installed stack",
+      "stackDescription": "The page reads exact dependency versions from package.json. Shared runtime packages are pinned for reproducible CLI updates.",
+      "stackGroups": [
+        { "title": "Application runtime" },
+        { "title": "Data and billing" },
+        { "title": "Interface tooling" }
+      ],
+      "packageTitle": "The package.json you receive",
+      "packageDescription": "This is the repository's current file, rendered directly from source so every script, dependency, development tool, and override is visible.",
+      "packageFile": "package.json",
+      "copyPackage": "Copy package.json",
+      "copiedPackage": "Copied",
+      "copyFailed": "Copy failed"
+    },
+    "paywallDemos": {
+      "title": "Paywall patterns for different purchase journeys",
+      "description": "Compare public upgrade prompts without signing in. Authentication is only required when a visitor continues into an account-specific purchase flow.",
+      "heroImageAlt": "Korunet product workspace showing community billing features",
+      "galleryTitle": "Choose the billing boundary that fits the moment",
+      "galleryDescription": "Seven interaction patterns show how access, upgrades, products, services, and payments can appear inside a product.",
+      "items": [
+        {
+          "id": "modal",
+          "title": "Upgrade in a modal",
+          "description": "Keep people in context while explaining the plan required for the action they selected.",
+          "cta": "Open modal"
+        },
+        {
+          "id": "redirect",
+          "title": "Redirect to a product page",
+          "description": "Send visitors to a complete public plan comparison without asking them to authenticate first.",
+          "cta": "Browse products"
+        },
+        {
+          "id": "tooltip",
+          "title": "Explain a disabled feature",
+          "description": "Keep an unavailable control visible and explain which plan includes it on hover or keyboard focus.",
+          "cta": "Show plan requirement"
+        },
+        {
+          "id": "services",
+          "title": "Services that change the plan",
+          "description": "Let customers add managed services and immediately show the resulting plan and monthly total.",
+          "cta": "Add service"
+        },
+        {
+          "id": "cart",
+          "title": "One-time product cart",
+          "description": "Add a separately priced product without interrupting the page, then review it in a side panel.",
+          "cta": "Add to cart"
+        },
+        {
+          "id": "in-app",
+          "title": "In-app purchase",
+          "description": "Offer a small contextual purchase where the value is already clear inside the application.",
+          "cta": "Buy in app"
+        },
+        {
+          "id": "stripe",
+          "title": "Stripe embedded payment",
+          "description": "Keep payment inside the product with a clearly labelled Embedded Checkout integration boundary.",
+          "cta": "Preview payment"
+        }
+      ],
+      "modal": {
+        "title": "Unlock organisation controls",
+        "description": "Advanced roles and multiple organisers are available on the Community plan.",
+        "plan": "Community plan",
+        "price": "$19 per month",
+        "priceCaption": "Billing begins after account creation and confirmation.",
+        "dismiss": "Not now",
+        "continue": "Continue to sign up"
+      },
+      "modalExample": {
+        "title": "Attach the opener to any element",
+        "code": "const openUpgradeModal = () => setUpgradeModalOpen(true);\n\n<Button onClick={openUpgradeModal}>\n  Manage organisers\n</Button>",
+        "copy": "Copy code",
+        "copied": "Copied",
+        "copyFailed": "Copy failed",
+        "agentNote": "A coding agent can use the Supacharger MCP for repository context and its installed skills to apply this pattern to the right element."
+      },
+      "products": {
+        "plan": "Public product catalogue",
+        "caption": "Compare plans, included capabilities, and purchase types before creating an account."
+      },
+      "tooltip": {
+        "feature": "Export organisation report",
+        "explanation": "Available in the Organisation plan. Upgrade to export reports and manage multiple communities."
+      },
+      "services": {
+        "basePlan": "Community",
+        "expandedPlan": "Organisation",
+        "basePrice": 19,
+        "planLabel": "Resulting plan",
+        "monthly": "per month in this demo",
+        "options": [
+          {
+            "id": "onboarding",
+            "name": "Managed onboarding",
+            "description": "Guided setup for organisers",
+            "price": 12
+          },
+          {
+            "id": "moderation",
+            "name": "Moderation support",
+            "description": "A recurring support service",
+            "price": 24
+          },
+          {
+            "id": "migration",
+            "name": "Content migration",
+            "description": "Import existing community data",
+            "price": 18
+          }
+        ]
+      },
+      "cart": {
+        "title": "Your cart",
+        "description": "Review one-time products before continuing to account creation.",
+        "product": "Community launch kit",
+        "license": "One-time product license",
+        "price": "$79",
+        "checkout": "Continue to sign up",
+        "imageAlt": "Korunet mobile onboarding screens included in the community launch kit"
+      },
+      "inApp": {
+        "product": "Event promotion boost",
+        "price": "$4.99 one-time",
+        "ready": "Ready",
+        "status": "The purchase handoff is ready. A production app would now invoke its platform billing adapter."
+      },
+      "stripe": {
+        "emailLabel": "Email",
+        "cardLabel": "Card details",
+        "cardPlaceholder": "4242 4242 4242 4242",
+        "disclaimer": "Interactive presentation only. No payment data is submitted. A live integration mounts Stripe Embedded Checkout with a server-created client secret.",
+        "status": "Preview complete. Connect a Stripe Checkout Session to accept a real payment."
+      },
+      "billingCta": {
+        "title": "See billing in action with your own account",
+        "description": "Create an account, then continue directly to the subscription flow to test the authenticated billing journey.",
+        "label": "Sign up for billing",
+        "href": "/account/create?next=%2Faccount%2Fbilling%2Fsubscribe%3Ffull%3D1"
+      }
+    }
+  },
+  "MarketingNavigation": {
+    "overview": "Overview",
+    "features": "Features",
+    "integrations": "Integrations",
+    "benefits": "Benefits",
+    "reviews": "Reviews",
+    "pricing": "Pricing",
+    "inPageAnchors": "In page Anchors",
+    "supachargerFeatures": "Supacharger Features",
+    "whatsIncluded": "What's included",
+    "whatsIncludedDescription": "From core product features to developer specifications.",
+    "paywallDemos": "Paywall demos",
+    "paywallDemosDescription": "See how calls to action encourage users to subscribe.",
+    "licenseInformation": "License information",
+    "licenseInformationDescription": "Review licensing and attribution.",
+    "license": "License",
+    "supacharger": "Supacharger",
+    "opensInNewTab": "opens in a new tab",
+    "login": "Login",
+    "createAccount": "Create account",
+    "openNavigation": "Open navigation",
+    "mobileNavigation": "Mobile navigation"
+  },
+  "LocaleSwitcher": {
+    "changeLanguage": "Change language",
+    "changeFailed": "Unable to change language. Please try again.",
+    "english": "English",
+    "spanish": "Spanish",
+    "chinese": "Chinese"
+  },
+  "MarketingFooter": {
+    "tagline": "A shared community platform for conversations, groups, events, and the people nearby.",
+    "navigation": "Navigation",
+    "information": "Information",
+    "overview": "Overview",
+    "features": "Features",
+    "integrations": "Integrations",
+    "benefits": "Benefits",
+    "reviews": "Reviews",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "termsOfUse": "Terms of use",
+    "license": "License",
+    "login": "Login",
+    "createAccount": "Create account",
+    "allRightsReserved": "All rights reserved.",
+    "firstBuiltIn": "First built in",
+    "newZealand": "New Zealand",
+    "by": "by"
+  },
+  "LicensePage": {
+    "eyebrow": "Open-source licensing",
+    "title": "Use Supacharger with attribution, or choose a commercial license.",
+    "introduction": "This page summarises the repository license and the licenses declared by its direct dependencies. It is a practical guide, not a substitute for the governing license texts.",
+    "nonAttributionCta": "Get a non-attribution license",
+    "readLicense": "Read CC BY-NC-SA 4.0",
+    "coreTitle": "The Supacharger source license",
+    "coreBody": "The repository LICENSE applies Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International to Supacharger-owned source. Attribution is required, commercial use is not permitted under that public license, and adaptations must use the same license.",
+    "commercialBody": "A separate paid license is the route for commercial or non-attribution use. Its terms are separate from the public repository license and should be reviewed before using Supacharger in a commercial product.",
+    "notLegalAdvice": "License summaries can omit important conditions and exceptions. Read the full texts and obtain legal advice for your use case.",
+    "dependenciesTitle": "Direct dependency license snapshot",
+    "dependenciesIntro": "The installed direct runtime and development dependencies are mostly permissively licensed. These groups are based on package metadata and bundled license files in the current lockfile, not a legal opinion or a complete transitive-dependency notice.",
+    "groups": {
+      "mit": {
+        "title": "MIT",
+        "description": "Permissive licenses that generally require preservation of copyright and license notices in redistributed copies."
+      },
+      "apache": {
+        "title": "Apache-2.0",
+        "description": "A permissive license with notice requirements and an express patent grant."
+      },
+      "isc": {
+        "title": "ISC and MIT icon lineage",
+        "description": "Lucide declares ISC licensing and includes some Feather-derived icon work under MIT terms."
+      },
+      "mpl": {
+        "title": "MPL-2.0",
+        "description": "Vercel Analytics declares a file-level copyleft license. Modified covered files may carry source-availability obligations when distributed."
+      }
+    },
+    "importsTitle": "Does an import count as distribution?",
+    "importsBody": "Import syntax alone does not answer that question. Client builds can copy dependency code into browser bundles, and deployments or source archives can include package files. A remotely hosted script may not be copied into Supacharger, but its service terms still apply. Compliance follows what is actually copied, modified, and distributed.",
+    "scopeTitle": "What this audit covers",
+    "scopeBody": "This snapshot groups declared licenses for direct packages in package.json. The lockfile also contains transitive packages, and assets, fonts, hosted services, and user-added code may have separate terms. Re-run a formal notice audit before each release.",
+    "auditDate": "Reviewed against the repository dependency set on 22 August 2026.",
+    "ccSoftwareFaq": "Creative Commons software FAQ",
+    "repositoryLicense": "Repository LICENSE",
+    "legalPage": "Korunet legal page"
+  },
+  "MarketingLanding": {
+    "createAccount": "Create account",
+    "exploreFeatures": "Explore features",
+    "trustedOrganisations": "Trusted by top organisations",
+    "getStarted": "Get started",
+    "mostPopular": "Most popular",
+    "roleAtOrganisation": "{role} at {organisation}",
+    "hero": {
+      "title": "The community platform for stronger local connections.",
+      "description": "Bring conversations, groups, events, and trusted local connections into one calm, shared place built for real communities."
+    },
+    "overview": {
+      "title": "One place for the communities around you",
+      "description": "Keep the people, context, and activity around every community visible without stitching together a collection of unrelated tools."
+    },
+    "features": {
+      "title": "A platform that adapts to your community",
+      "description": "Start with a focused group, then add the conversations, events, and structure your community needs as it grows."
+    },
+    "integrations": {
+      "title": "Works with the tools people already know",
+      "description": "Connect familiar services while Korunet remains the shared place members return to for community activity."
+    },
+    "benefitsSection": {
+      "title": "A flexible foundation for local connection",
+      "description": "Give real-world groups the structure they need while keeping the product warm, clear, and easy to take part in."
+    },
+    "experiences": {
+      "title": "Everything your community needs to stay connected",
+      "description": "Move between discovery, organised groups, and direct conversations without losing the context that makes each connection useful."
+    },
+    "reviewsSection": {
+      "title": "Trusted by people who make communities work",
+      "description": "A clear community experience helps organisers spend less time managing tools and more time bringing people together."
+    },
+    "pricingSection": {
+      "title": "Pricing that grows with your community",
+      "description": "Start with the shape your community needs today, then add more coordination and support as participation grows."
+    },
+    "faqSection": {
+      "title": "Everything you need to move forward",
+      "description": "The essentials about spaces, privacy, access, languages, and getting your first community started."
+    },
+    "cta": {
+      "title": "Bring your community closer together",
+      "description": "Create a focused space for the people, conversations, and activity that matter locally."
+    },
+    "images": {
+      "messagingWorkspace": "Korunet community messaging workspace",
+      "mobileScreens": "Korunet mobile community screens",
+      "neighboursAtNight": "Korunet community activity, roles, private-space controls, and plant events over dense fern foliage",
+      "mobileExperience": "Korunet community experience across mobile screens"
+    },
+    "communityPillars": [
+      { "title": "Shared conversations", "description": "Keep every conversation easy to find and simple to follow." },
+      {
+        "title": "Real communities",
+        "description": "Bring members, neighbours, and organisers into one trusted space."
+      },
+      {
+        "title": "Events that connect",
+        "description": "Coordinate events and recurring meetups without scattered tools."
+      },
+      { "title": "Built-in trust", "description": "Use clear controls that keep each group private and manageable." }
+    ],
+    "platformFeatures": [
+      {
+        "title": "Discover your community",
+        "description": "Bring nearby groups, organisers, and shared interests into one clear view.",
+        "imageAlt": "Korunet community discovery screens"
+      },
+      {
+        "title": "One shared workspace",
+        "description": "Keep messages, profiles, and community activity connected across every screen.",
+        "imageAlt": "Korunet community messaging workspace"
+      },
+      {
+        "title": "Participation that lasts",
+        "description": "Give members a welcoming place to meet, contribute, and stay involved.",
+        "imageAlt": "Local neighbours gathering in a shared community space"
+      }
+    ],
+    "connectedExperiences": [
+      {
+        "title": "Find the people and groups around you",
+        "description": "Find relevant groups, people, and activity without searching across disconnected services.",
+        "cta": "Explore discovery",
+        "imageAlt": "Korunet community profiles and discovery experience"
+      },
+      {
+        "title": "Coordinate activity from one clear home",
+        "description": "Plan events, share updates, and keep the full conversation available to every member.",
+        "cta": "See community tools",
+        "imageAlt": "Korunet community workspace with messages and activity"
+      },
+      {
+        "title": "Turn introductions into participation",
+        "description": "Make it easy for new members to understand where they belong and how to take part.",
+        "cta": "Create account",
+        "imageAlt": "Korunet mobile community experience"
+      }
+    ],
+    "benefits": [
+      { "title": "Local by design", "description": "Create spaces around a place, cause, interest, or shared goal." },
+      { "title": "Flexible controls", "description": "Set roles and permissions without slowing organisers down." },
+      { "title": "Fast discovery", "description": "Find people, conversations, and groups from one clear search." },
+      {
+        "title": "Useful notifications",
+        "description": "Keep members informed without turning every update into noise."
+      },
+      { "title": "Privacy first", "description": "Protect personal details with private spaces and clear choices." },
+      { "title": "Ready to grow", "description": "Support small circles and larger organisations on one platform." }
+    ],
+    "testimonials": [
+      {
+        "avatarAlt": "Portrait of Maya Okafor",
+        "organisation": "Northside Neighbours",
+        "name": "Maya Okafor",
+        "quote": "Korunet brought our events, member updates, and local conversations into one place people actually check.",
+        "role": "Neighbourhood organiser"
+      },
+      {
+        "avatarAlt": "Portrait of Luca Moretti",
+        "organisation": "Common Ground",
+        "name": "Luca Moretti",
+        "quote": "New members understand where to go, who to ask, and how to take part from their first day.",
+        "role": "Community host"
+      },
+      {
+        "avatarAlt": "Portrait of Sora Kim",
+        "organisation": "Riverside Network",
+        "name": "Sora Kim",
+        "quote": "We spend less time chasing messages and more time helping neighbours turn good ideas into real events.",
+        "role": "Volunteer coordinator"
+      },
+      {
+        "avatarAlt": "Portrait of Tomasz Kowalski",
+        "organisation": "Open Door Collective",
+        "name": "Tomasz Kowalski",
+        "quote": "Private spaces and clear roles let our volunteers work confidently without making the platform feel complicated.",
+        "role": "Programme lead"
+      },
+      {
+        "avatarAlt": "Portrait of Elias Novak",
+        "organisation": "Market Lane",
+        "name": "Elias Novak",
+        "quote": "Nearby groups now share opportunities and organise meetups without every conversation disappearing into another app.",
+        "role": "Local business owner"
+      },
+      {
+        "avatarAlt": "Portrait of Camille Laurent",
+        "organisation": "Mosaic House",
+        "name": "Camille Laurent",
+        "quote": "Korunet gives every project enough structure while keeping the community warm, visible, and easy to join.",
+        "role": "Cultural network coordinator"
+      }
+    ],
+    "plans": [
+      {
+        "name": "Starter",
+        "price": "Free",
+        "description": "Start a focused group and bring your first members together.",
+        "features": ["Core community spaces", "Direct conversations", "Event planning", "Member profiles"]
+      },
+      {
+        "name": "Community",
+        "price": "9.99 USD/mo",
+        "description": "Run an active community with more control and collaboration.",
+        "features": ["Everything in Starter", "Advanced roles", "Multiple organisers", "Priority support"]
+      },
+      {
+        "name": "Organisation",
+        "price": "Custom",
+        "description": "Coordinate several communities with tailored support and governance.",
+        "features": ["Everything in Community", "Organisation controls", "Custom onboarding", "Dedicated support"]
+      }
+    ],
+    "compliance": {
+      "title": "Trust is part of the product",
+      "description": "Clear permissions, private spaces, and responsible defaults keep members in control of how they participate.",
+      "items": [
+        "Private spaces",
+        "Clear roles",
+        "Data control",
+        "Secure access",
+        "Member choice",
+        "Responsible defaults"
+      ]
+    },
+    "faqs": [
+      {
+        "question": "What can I manage with Korunet?",
+        "answer": "Korunet brings community conversations, direct messages, groups, events, and member discovery into one shared platform."
+      },
+      {
+        "question": "Can communities stay private?",
+        "answer": "Yes. Communities can control who joins, what members can see, and which roles can organise or moderate each space."
+      },
+      {
+        "question": "Who is Korunet for?",
+        "answer": "Korunet is designed for neighbourhood groups, meetups, advocacy networks, local businesses, and larger community organisations."
+      },
+      {
+        "question": "Does Korunet support multiple languages?",
+        "answer": "Members can switch the interface language from the header or footer. The current demo includes English, Spanish, and Chinese."
+      },
+      {
+        "question": "How do I get started?",
+        "answer": "Create an account, set up your profile, and begin with a focused group. You can add more spaces as the community grows."
+      }
+    ]
+  },
+  "PricingPage": {
+    "title": "Pricing",
+    "description": "Choose a flexible plan for a new group, an active community, or an organisation coordinating several spaces.",
+    "included": "Includes",
+    "getStarted": "Get started",
+    "plans": [
+      {
+        "name": "Starter",
+        "description": "For individuals and small teams",
+        "price": "$10 per month",
+        "features": ["50 community members", "10 active spaces"]
+      },
+      {
+        "name": "Professional",
+        "description": "For growing communities",
+        "price": "$20 per month",
+        "features": ["100 community members", "20 active spaces", "Priority support"]
+      },
+      {
+        "name": "Business",
+        "description": "For organisations and larger teams",
+        "price": "$100 per month",
+        "features": ["300 community members", "100 active spaces", "100 team members", "Advanced controls"]
+      }
+    ],
+    "lifetime": {
+      "title": "Unlimited lifetime account",
+      "description": "Make one payment for permanent access to the core community experience.",
+      "included": "What's included",
+      "features": ["Private forum access", "Member resources", "Entry to annual conference", "Official member shirt"],
+      "access": "Unlimited access, forever",
+      "price": "$500 USD",
+      "getStarted": "Get started"
+    }
+  },
+  "LegalPage": {
+    "eyebrow": "Policies",
+    "title": "Legal information",
+    "description": "The terms and policies that govern use of Korunet and explain how personal information and cookies are handled.",
+    "lastUpdated": "Last updated: 4 June 2025",
+    "tabs": { "terms": "Terms of use", "privacy": "Privacy policy", "cookies": "Third-party cookies" },
+    "terms": {
+      "title": "Korunet terms of use",
+      "sections": [
+        {
+          "title": "Using the service",
+          "body": "Use Korunet only for lawful purposes. Keep account credentials confidential, provide accurate account information, and do not interfere with the operation or security of the service."
+        },
+        {
+          "title": "Your content",
+          "body": "You retain ownership of content you submit. You grant Korunet the permissions needed to host, display, and process that content to operate the service."
+        },
+        {
+          "title": "Availability and warranties",
+          "body": "The service is provided as available. Features may change, be suspended, or be discontinued, and no uninterrupted or error-free operation is promised."
+        },
+        {
+          "title": "Ending access",
+          "body": "Access may be suspended or terminated when these terms are breached, the service is misused, or continued access creates legal or security risk."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Korunet privacy policy",
+      "sections": [
+        {
+          "title": "Information collected",
+          "body": "Korunet may collect account details, profile information, usage data, device information, and information supplied when you contact support."
+        },
+        {
+          "title": "How information is used",
+          "body": "Information is used to provide and secure the service, personalise the experience, communicate with users, understand product usage, and meet legal obligations."
+        },
+        {
+          "title": "Sharing and retention",
+          "body": "Personal information is not sold. It may be shared with service providers, legal authorities when required, or other parties at your direction. Information is retained only as long as needed for these purposes."
+        },
+        {
+          "title": "Your choices",
+          "body": "Depending on applicable law, you may request access, correction, export, or deletion of personal information and may opt out of marketing communications."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Third-party cookie policy",
+      "sections": [
+        {
+          "title": "Why cookies are used",
+          "body": "Cookies and similar storage can keep sessions secure, remember preferences, measure performance, and help understand how the service is used."
+        },
+        {
+          "title": "Third-party services",
+          "body": "Providers used for authentication, payments, analytics, or embedded content may set their own cookies under their policies."
+        },
+        {
+          "title": "Managing cookies",
+          "body": "Browser controls can block or remove cookies. Disabling essential cookies may prevent sign-in or other parts of the service from working correctly."
+        }
+      ]
+    }
+  },
+  "AccountPages": {
+    "billing": {
+      "title": "Billing",
+      "noAccount": "No billing account",
+      "startSubscription": "Start a subscription",
+      "createAccountHelp": "Create a billing account when you start checkout.",
+      "accountTitle": "{type} billing",
+      "manageBilling": "Manage billing",
+      "noSubscriptions": "No subscriptions are attached to this billing account.",
+      "status": "Status: {status}",
+      "unknownStatus": "Unknown",
+      "features": "Features"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "saved": "Your notification settings have been saved.",
+      "pushTitle": "Push notifications",
+      "pushLabel": "Enable push notifications",
+      "pushDescription": "Receive notifications on your device",
+      "emailTitle": "Email notifications",
+      "dailyLabel": "Daily summary",
+      "dailyDescription": "Get a daily digest of your activity",
+      "weeklyLabel": "Weekly report",
+      "weeklyDescription": "Receive a weekly summary of your stats",
+      "marketingLabel": "Marketing emails",
+      "marketingDescription": "Receive updates about new features and promotions",
+      "save": "Save preferences"
+    },
+    "privacy": {
+      "title": "Privacy settings",
+      "saved": "Your privacy preferences have been saved.",
+      "preferences": "Privacy preferences",
+      "profileLabel": "Profile visibility",
+      "profileDescription": "Make your profile visible to other users",
+      "activityLabel": "Activity status",
+      "activityDescription": "Show when you're active on the platform",
+      "searchLabel": "Search visibility",
+      "searchDescription": "Allow others to find you in search results",
+      "save": "Save privacy settings"
+    },
+    "editProfile": {
+      "title": "Edit profile",
+      "saved": "Your profile has been successfully updated.",
+      "open": "Open",
+      "confirmTitle": "Are you absolutely sure?",
+      "confirmDescription": "This action cannot be undone. It will permanently delete your account and remove your data from our servers.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "aboutMe": "About me",
+      "save": "Save changes"
+    },
+    "account": {
+      "title": "Account and security settings",
+      "authenticatedWith": "You authenticated with",
+      "email": "Email",
+      "emailAddress": "Account email address",
+      "save": "Save changes",
+      "twoFactor": "Two-factor authentication",
+      "noTwoFactor": "No two-factor authentication method found.",
+      "setupTwoFactor": "Set up two-factor authentication",
+      "language": "Language",
+      "languagePreference": "Language preference",
+      "selectLanguage": "Select a language",
+      "english": "English",
+      "spanish": "Spanish",
+      "chinese": "Chinese",
+      "cancelAccount": "Cancel account",
+      "cancelDescription": "This permanently closes your account and removes access to its data."
+    },
+    "setupProfile": {
+      "metadataTitle": "Set up profile",
+      "title": "Set up your profile",
+      "description": "Tell us how your account should be identified."
+    },
+    "setupWizard": {
+      "title": "Setup wizard",
+      "sourceTitle": "How did you hear about us?",
+      "sourceDescription": "Tell us how you found us so we can improve the service and reach more people like you.",
+      "selectOption": "Select an option",
+      "pleaseChoose": "Please choose",
+      "friend": "Friend or family",
+      "social": "Social media",
+      "search": "Search engine",
+      "advertisement": "Online advertisement",
+      "event": "Event or conference",
+      "other": "Other",
+      "submit": "Submit",
+      "continue": "Continue",
+      "completeTitle": "Complete your profile",
+      "completeDescription": "Finish setting up your profile so we can personalise your experience.",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Enter your full name",
+      "email": "Email address",
+      "emailPlaceholder": "Enter your email",
+      "bio": "Short bio",
+      "bioPlaceholder": "Tell us a little about yourself",
+      "saveProfile": "Save profile",
+      "back": "Back",
+      "done": "Done"
+    }
+  },
+  "SessionNavigation": {
+    "openNavigation": "Open navigation menu",
+    "navigationMenu": "Navigation menu",
+    "mainNavigation": "Main navigation",
+    "dashboard": "Dashboard",
+    "deals": "Deals",
+    "connections": "Connections",
+    "userMenu": "User menu for {name}",
+    "preferences": "Preferences",
+    "language": "Language"
+  },
+  "SessionFooter": {
+    "terms": "Terms and conditions",
+    "fairUse": "Fair use policy",
+    "allRightsReserved": "All rights reserved."
+  },
+  "ProfilePage": {
+    "sampleBio": "Community member, organiser, and neighbour. Interested in local projects, useful conversations, and helping people connect.",
+    "bannerAlt": "Profile banner",
+    "avatarAlt": "{username}'s avatar",
+    "followers": "Followers",
+    "following": "Following",
+    "follow": "Follow",
+    "aboutMe": "About me"
+  },
+  "UserDashboard": {
+    "accountConfirmed": "Account confirmed",
+    "title": "Updates from your network",
+    "compose": "Compose a new post",
+    "placeholder": "Enter your post here",
+    "publish": "Publish",
+    "byAuthor": "By {author}",
+    "viewMore": "View more",
+    "posts": [
+      {
+        "title": "Prime office space yielding 7% in Auckland CBD",
+        "author": "Jane Smith",
+        "summary": "Explore a premium office investment in central Auckland with stable returns and long-term tenancy."
+      },
+      {
+        "title": "NZX technology stock with 30% upside potential",
+        "author": "Mark Lee",
+        "summary": "Analysts expect strong growth from this lesser-known NZX technology stock and explain the factors behind it."
+      },
+      {
+        "title": "Queenstown lakeside apartment presale",
+        "author": "Sophie Turner",
+        "summary": "An early opportunity in new lakeside apartments with presale pricing."
+      },
+      {
+        "title": "Diversified investment fund for steady growth",
+        "author": "Alex Kim",
+        "summary": "A diversified fund focused on sustainable growth and risk management is open to new investors this quarter."
+      },
+      {
+        "title": "Personal finance app opens early access",
+        "author": "Priya Patel",
+        "summary": "Try a new app for managing finances, tracking investments, and building better saving habits."
+      },
+      {
+        "title": "High-yield commercial property in Wellington",
+        "author": "Liam Brown",
+        "summary": "A fully leased commercial property is available in Wellington's business district."
+      },
+      {
+        "title": "Green energy investment bonds open",
+        "author": "Emily Green",
+        "summary": "Support renewable energy through new fixed-return green bonds now open for subscription."
+      }
+    ]
+  },
+  "ProfileOnboardingForm": {
+    "nameError": "Enter your first and last name.",
+    "usernameError": "Choose a username to continue.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "username": "Username",
+    "optional": "(optional)",
+    "usernameHelp": "Use letters, numbers, underscores, or hyphens.",
+    "continue": "Continue"
+  },
+  "MagicLinkForm": {
+    "failed": "The sign-in link could not be sent.",
+    "sent": "Sign-in link sent. Check your inbox.",
+    "emailPlaceholder": "Enter your email",
+    "submit": "Submit"
+  },
+  "AccountTabs": {
+    "title": "Account settings",
+    "accountSecurity": "Account and security",
+    "editProfile": "Edit profile",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "billing": "Billing"
+  },
+  "AvatarEditor": {
+    "title": "Set avatar",
+    "validationError": "The image must be exactly 400 by 400 pixels and under 10 MB.",
+    "avatarAlt": "Avatar",
+    "noImage": "No image",
+    "requirements": "Must be 400 by 400 pixels, maximum 10 MB",
+    "upload": "Upload new",
+    "saving": "Saving...",
+    "save": "Save"
+  },
+  "AccountMetadata": {
+    "title": "Account settings",
+    "description": "Manage account security, profile details, notifications, privacy, and billing."
+  },
+  "AuthenticatedMetadata": { "description": "Your Korunet account and community workspace." },
   "ErrorPage": {
     "notFound": {
       "status": "404 error",

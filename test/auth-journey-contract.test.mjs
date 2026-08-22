@@ -103,13 +103,13 @@ test('social OAuth provider configuration, buttons, guards, and assets stay alig
     assert.ok(buttons.includes(`key: '${provider}'`), `Missing ${provider} from the provider buttons`);
   }
   assert.match(contract, /Readonly<Record<SupachargerOAuthProvider, boolean>>/);
-  assert.match(buttons, /assets\/images\/authProviderIcons/);
+  assert.match(buttons, /supacharger\/assets\/svgr\/auth-providers/);
   assert.doesNotMatch(buttons, /socialAuthIcons/);
   assert.match(auth, /if \(!SC_CONFIG\.AUTH_PROVDERS_ENABLED\[provider\]\)/);
 
   await Promise.all(
     authProviderIconFiles.map((icon) =>
-      access(new URL(`../src/assets/images/authProviderIcons/${icon}`, import.meta.url)),
+      access(new URL(`../src/supacharger/assets/svgr/auth-providers/${icon}`, import.meta.url)),
     ),
   );
 });
@@ -135,7 +135,10 @@ test('auth operations enforce config and align signup confirmation redirects', a
   assert.match(auth, /emailRedirectTo:\s*getPasswordlessConfirmationRedirect\(nextPath\)/);
   assert.doesNotMatch(auth, /emailRedirectTo:\s*getURL\('\/auth\/callback'\)/);
   assert.match(auth, /signInWithOAuth[\s\S]*?redirectTo:\s*getURL\('\/auth\/callback'\)/);
-  assert.match(auth, /signUpWithEmail[\s\S]*?PASSWORDLESS_EMAIL\.SIGN_UP[\s\S]*?sendPasswordlessEmail\(email, true, nextPath\)/);
+  assert.match(
+    auth,
+    /signUpWithEmail[\s\S]*?PASSWORDLESS_EMAIL\.SIGN_UP[\s\S]*?sendPasswordlessEmail\(email, true, nextPath\)/,
+  );
   assert.match(config, /PASSWORDLESS_EMAIL:[\s\S]*?SIGN_IN:\s*'otp'[\s\S]*?SIGN_UP:\s*'disabled'/);
   assert.doesNotMatch(journey, /signUpWithEmail/);
   assert.match(journey, /const result = await signInWithEmail\(normalisedEmail, safeNextPath\)/);
@@ -350,7 +353,10 @@ test('password signup uses the browser SDK and one explicit verification step', 
   assert.doesNotMatch(journey, /useActionState|signUpActionState|signUpFormAction|submissionId/);
   assert.doesNotMatch(auth, /submitEmailPasswordSignUp|EmailPasswordSignUpActionState/);
   assert.equal((journey.match(/startAuthTransition\(async \(\) => \{/g) ?? []).length, 3);
-  assert.match(journey, /startAuthTransition\(async \(\) => \{[\s\S]*?await signInWithEmail\(normalisedEmail, safeNextPath\)/);
+  assert.match(
+    journey,
+    /startAuthTransition\(async \(\) => \{[\s\S]*?await signInWithEmail\(normalisedEmail, safeNextPath\)/,
+  );
   assert.match(journey, /startAuthTransition\(async \(\) => \{[\s\S]*?await verifyOtp\(verificationEmail, value\)/);
 });
 

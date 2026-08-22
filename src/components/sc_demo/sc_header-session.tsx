@@ -2,6 +2,7 @@
 
 import {  useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 import SCAccountMenu from '@/components/sc_demo/sc_account-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,6 +12,7 @@ import LocaleSwitcher from './sc_locale-switcher';
 import SCSiteLogo from './sc_site-logo';
 
 export function SCHeaderSession() {
+  const t = useTranslations('SessionNavigation');
 
   const focusClasses = 'focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2';
 
@@ -31,7 +33,7 @@ export function SCHeaderSession() {
               <SheetTrigger asChild>
                 <button
                   className={`flex h-8 w-8 flex-col items-center justify-center space-y-1 rounded-md border border-gray-200 ${focusClasses}`}
-                  aria-label='Open navigation menu'
+                  aria-label={t('openNavigation')}
                   aria-expanded={mobileMenuOpen}
                 >
                   <span className='h-0.5 w-4 bg-slate-800' />
@@ -39,32 +41,32 @@ export function SCHeaderSession() {
                   <span className='h-0.5 w-4 bg-slate-800' />
                 </button>
               </SheetTrigger>
-              <SheetContent side='left' className='w-[240px] p-0' aria-label='Navigation menu'>
+              <SheetContent side='left' className='w-[240px] p-0' aria-label={t('navigationMenu')}>
                 <div className='flex flex-col py-2'>
                   <div className='px-4 py-2' role='banner'>
                   <SCSiteLogo showSiteTitle={true}></SCSiteLogo>
                   </div>
-                  <nav className='mt-2 border-t border-gray-100 pt-4' role='navigation' aria-label='Main navigation'>
+                  <nav className='mt-2 border-t border-gray-100 pt-4' role='navigation' aria-label={t('mainNavigation')}>
                     <Link
                       href='/#'
                       className={`${mobileLinkClasses} ${focusClasses}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Dashboard
+                      {t('dashboard')}
                     </Link>
                     <Link
                       href='/#'
                       className={`${mobileLinkClasses} ${focusClasses}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Deals
+                      {t('deals')}
                     </Link>
                     <Link
                       href='/#'
                       className={`${mobileLinkClasses} ${focusClasses}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Connections
+                      {t('connections')}
                     </Link>
                   </nav>
                 </div>
@@ -78,15 +80,15 @@ export function SCHeaderSession() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className='hidden h-full lg:flex' role='navigation' aria-label='Main navigation'>
+          <nav className='hidden h-full lg:flex' role='navigation' aria-label={t('mainNavigation')}>
             <Link href='/' className={`${linkClasses} ${focusClasses}`}>
-              Dashboard
+              {t('dashboard')}
             </Link>
             <Link href='/#' className={`${linkClasses} ${focusClasses}`}>
-              Deals
+              {t('deals')}
             </Link>
             <Link href='/#' className={`${linkClasses} ${focusClasses}`}>
-              Connections
+              {t('connections')}
             </Link>
           </nav>
         </div>

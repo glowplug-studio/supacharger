@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Tab, tabs } from '@/app/(supacharger)/(authenticated)/account/account-menu';
@@ -19,6 +20,7 @@ export function TabMenu({
 }: TabMenuProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const t = useTranslations('AccountTabs');
   const [isMobile, setIsMobile] = useState(false);
 
   // Detect if we're in mobile view for responsive behavior
@@ -76,7 +78,7 @@ export function TabMenu({
               )}
             >
               <tab.icon className="mr-2 h-5 w-5" />
-              <span>{tab.label}</span>
+              <span>{t(tab.labelKey)}</span>
             </button>
           );
         })}
@@ -128,7 +130,7 @@ export function TabMenu({
               )}
             >
               <tab.icon className="mr-2 h-5 w-5" />
-              <span>{tab.label}</span>
+              <span>{t(tab.labelKey)}</span>
             </button>
           );
         })}

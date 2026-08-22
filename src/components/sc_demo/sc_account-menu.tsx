@@ -46,11 +46,12 @@ export default function SCAccountMenu() {
   const tAuthTerms = useTranslations('AuthTerms');
   const tAccountDropdownMenu = useTranslations('AccountDropdownMenu');
   const tThemeChangerMenu = useTranslations('ThemeChangerMenu');
+  const tMenu = useTranslations('SessionNavigation');
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className={`flex items-center rounded-full ${focusClasses}`} aria-label={`User menu for ${identity.displayName}`}>
+        <button className={`flex items-center rounded-full ${focusClasses}`} aria-label={tMenu('userMenu', { name: identity.displayName })}>
           <div className='flex h-8 w-8 items-center justify-center rounded-full bg-primary'>
             <span className='text-sm font-bold text-white' aria-hidden='true'>
               {identity.initials}
@@ -82,8 +83,8 @@ export default function SCAccountMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuLabel className='text-xs font-bold'>Preferences</DropdownMenuLabel>
-          <DropdownMenuItem>Language</DropdownMenuItem>
+          <DropdownMenuLabel className='text-xs font-bold'>{tMenu('preferences')}</DropdownMenuLabel>
+          <DropdownMenuItem>{tMenu('language')}</DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className='text-xs'>
               <span><SunMoon className='inline mr-2 '/> {tThemeChangerMenu('title')}</span>

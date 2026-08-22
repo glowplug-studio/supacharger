@@ -1,12 +1,9 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { getLocale } from 'next-intl/server';
+import { z } from 'zod';
 
-import {
-  isSupportedLocale,
-  LOCALE_COOKIE_NAME,
-  SUPPORTED_LOCALES,
-} from '@/i18n/config';
+import { LOCALE_COOKIE_NAME, SUPPORTED_LOCALES } from '@/i18n/config';
 import { createClient } from '@/lib/supabase/server';
 
 const localeCookieOptions = {
@@ -17,42 +14,43 @@ const localeCookieOptions = {
   secure: process.env.NODE_ENV === 'production',
 };
 const LOCALE_PROFILE_SYNC_COOKIE_NAME = `${LOCALE_COOKIE_NAME}_profile_sync`;
+const localeRequestSchema = z.object({ locale: z.enum(SUPPORTED_LOCALES) });
 
 export async function GET() {
   return NextResponse.json({ locale: await getLocale() });
 }
 
 export async function POST(request: NextRequest) {
-  let locale: unknown;
+  let body: unknown;
 
   try {
-    locale = (await request.json())?.locale;
+    body = await request.json();
   } catch {
     return NextResponse.json({ error: 'Request body must be valid JSON.' }, { status: 400 });
   }
 
-  if (!isSupportedLocale(locale)) {
+  const parsed = localeRequestSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json({ error: 'Unsupported locale.', supportedLocales: SUPPORTED_LOCALES }, { status: 400 });
   }
+  const { locale } = parsed.data;
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  let languageSyncSucceeded = false;
   if (user) {
     const { error } = await supabase.schema('api').rpc('update_account_language_by_current_user', {
       p_language_code: locale,
     });
-
-    if (error) {
-      return NextResponse.json({ error: 'Unable to save locale preference.' }, { status: 500 });
-    }
+    languageSyncSucceeded = !error;
   }
 
   const response = NextResponse.json({ locale });
   response.cookies.set(LOCALE_COOKIE_NAME, locale, localeCookieOptions);
-  if (user) {
+  if (user && languageSyncSucceeded) {
     response.cookies.delete(LOCALE_PROFILE_SYNC_COOKIE_NAME);
   } else {
     response.cookies.set(LOCALE_PROFILE_SYNC_COOKIE_NAME, '1', localeCookieOptions);

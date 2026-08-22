@@ -2,7 +2,7 @@ import { Bell, CreditCard, DivideIcon as LucideIcon, Lock,Shield, User } from 'l
 
 export interface Tab {
   id: string;
-  label: string;
+  labelKey: 'accountSecurity' | 'billing' | 'editProfile' | 'notifications' | 'privacy';
   path: string;
   icon: typeof LucideIcon;
 }
@@ -10,31 +10,31 @@ export interface Tab {
 export const tabs: Tab[] = [
   {
     id: 'account-security',
-    label: 'Account & Security',
+    labelKey: 'accountSecurity',
     path: '/account/',
     icon: Shield,
   },
   {
     id: 'edit-profile',
-    label: 'Edit Profile',
+    labelKey: 'editProfile',
     path: '/account/edit-profile',
     icon: User,
   },
   {
     id: 'notifications',
-    label: 'Notifications',
+    labelKey: 'notifications',
     path: '/account/notifications',
     icon: Bell,
   },
   {
     id: 'privacy',
-    label: 'Privacy',
+    labelKey: 'privacy',
     path: '/account/privacy',
     icon: Lock,
   },
   {
     id: 'billing',
-    label: 'Billing',
+    labelKey: 'billing',
     path: '/account/billing',
     icon: CreditCard,
   },

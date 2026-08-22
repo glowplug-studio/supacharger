@@ -102,49 +102,52 @@ export const SC_CONFIG: SupachargerConfig = {
   AUTH_ONLY_APP: true,
 
   PATH_AUTH_GUARD: {
-      UNAUTHED_USER: {
-         // Users without auth sessions can acess
-        ALLOWED: [
+    UNAUTHED_USER: {
+      // Users without auth sessions can acess
+      ALLOWED: [
+        // Custom
+        '/pricing',
+        '/about',
+        '/whats-included',
+        '/paywall-demos',
+        '/profile/:username',
+        '/legal',
+        '/license',
+        '/error',
 
-          // Custom
-          "/pricing",
-          "/about",
-          "/user/:username",
-          "/legal",
-          "/error",
-
-          // Defaults
-          "/",
-          "/account/login",
-          "/account/create",
-          "/account/login-magic",
-          "/account/reset-password",
-          "/api/webhooks",
-          "/api/account/request-password-reset",
-          "/api/account/resend-activation-link",
-          "/api/account/update-password",
-          "/auth/confirm",
-          "/auth/callback"
-        ],
-        // Unauthenticated users cant visit these paths, important if AUTH_ONLY_APP is false.
-        DISALLOWED: [
-           //"/about"
-        ],
-      },
-      AUTHED_USER:{
-        // Paths authenticated users can not access
-        DISALLOWED: [
-          '/account/login',
-          '/account/create',
-          '/account/login-magic',
-          '/account/reset-password',
-          '/account/reset-password/:path*',
-        ]
-      }
+        // Defaults
+        '/',
+        '/account/login',
+        '/account/create',
+        '/account/login-magic',
+        '/account/reset-password',
+        '/api/webhooks',
+        '/api/account/request-password-reset',
+        '/api/account/resend-activation-link',
+        '/api/account/update-password',
+        '/api/intl',
+        '/auth/confirm',
+        '/auth/callback',
+      ],
+      // Unauthenticated users cant visit these paths, important if AUTH_ONLY_APP is false.
+      DISALLOWED: [
+        //"/about"
+      ],
     },
+    AUTHED_USER: {
+      // Paths authenticated users can not access
+      DISALLOWED: [
+        '/account/login',
+        '/account/create',
+        '/account/login-magic',
+        '/account/reset-password',
+        '/account/reset-password/:path*',
+      ],
+    },
+  },
   USER_REDIRECTS: {
     UNAUTHED_USER: {
-        // Which path is considered "home" for unauthenticated users
+      // Which path is considered "home" for unauthenticated users
       HOME_PATH: '/',
       // Which path unauthenticated users are redirected to when requesting an auth protected page
       AUTHGUARD_REDIRECT_DESTINATION: '/account/login',
@@ -155,7 +158,7 @@ export const SC_CONFIG: SupachargerConfig = {
       HOME_PATH: '/',
       // Which path authenticated users are redirected to when requesting an auth protected page
       AUTHGUARD_REDIRECT_DESTINATION: '/',
-        // Where to go after successful authentication flow
+      // Where to go after successful authentication flow
       LOGIN_REDIRECT_DESTINATION: '/',
     },
   },
@@ -200,7 +203,7 @@ export const SC_CONFIG: SupachargerConfig = {
   ACCOUNT_FORCE_SUBSCRIPTION: true,
   /** @deprecated Use BILLING_ACCESS.REDIRECT_PATH. */
   ACCOUNT_ENFORCE_SUBSCRIPTION_PATH: '/account/billing/subscribe?full=1',
-    // Is there a required terms checkbox? null if not needed
+  // Is there a required terms checkbox? null if not needed
   ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH: null,
 
   /**
@@ -261,12 +264,12 @@ export const SC_CONFIG: SupachargerConfig = {
     zoom: false,
   },
 
-    /**
+  /**
    * ==========
    * Payments
    * ==========
    */
-  // where does the 
+  // where does the
   STRIPE_PORTAL_LOGO_RETURN_PATH: 'account/billing',
   BILLING: {
     // Stripe chooses eligible local methods dynamically from Dashboard settings.

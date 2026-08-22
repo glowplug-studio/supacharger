@@ -1,0 +1,1109 @@
+{
+  "Global": {
+    "siteTitle": "Korunet",
+    "siteDescription": "Comienza tu próximo proyecto sin reinventar la rueda",
+    "or": "o"
+  },
+  "GlobalUI": {
+    "buttonSaveChanges": "Guardar cambios",
+    "buttonSaving": "Ahorro",
+    "buttonThinking": "Pensamiento...",
+    "buttonSaved": "Hecho"
+  },
+  "PageMeta": {
+    "accountAccountSecuritySettingsSectionTitle": "Configuración de cuenta",
+    "accountAccountSecuritySettingsPageTitle": "Configuración de cuenta y seguridad"
+  },
+  "AuthTerms": {
+    "name": "Nombre",
+    "username": "Nombre de usuario",
+    "emailAddress": "Dirección de correo electrónico",
+    "password": "Contraseña",
+    "oldPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "retypeNewPassword": "Vuelva a escribir la nueva contraseña",
+    "setNewPassword": "Establecer nueva contraseña",
+    "forgotPassword": "Has olvidado tu contraseña",
+    "loginSuccess": "Has iniciado sesión",
+    "logIn": "Iniciar sesión",
+    "logOut": "Desconectar",
+    "createAnAccount": "Crea una cuenta",
+    "signUp": "Inscribirse",
+    "retypePassword": "Vuelva a escribir la contraseña",
+    "sendNewAuthEmailLabel": "Enviar otro correo electrónico de verificación",
+    "sendNewAuthEmailButtonLabel": "Reenviar correo electrónico de verificación",
+    "accountEmailVerified": "Correo electrónico verificado",
+    "sendNewAuthEmailSendingButtonLabel": "Envío",
+    "sendNewAuthEmailSentButtonLabel": "Enviado",
+    "confirmationLinkAlreadyUsedSignedIn": "Este enlace de confirmación ha caducado o ya se utilizó. Ya has iniciado sesión.",
+    "confirmationLinkAlreadyUsedSignIn": "Este enlace de confirmación ha caducado o ya se utilizó. Si su cuenta ya está activada, inicie sesión a continuación.",
+    "resendConfirmationEmailSent": "Confirmar enlace de correo electrónico reenviado, revisa tu correo electrónico",
+    "resendConfirmationEmailFail": "No se pudo enviar. Espera y vuelve a intentarlo",
+    "passwordUpdated": "Tu contraseña ha sido actualizada",
+    "backToSignIn": "Volver a la página de inicio de sesión",
+    "backToRequestLink": "Obtener otro enlace",
+    "createAccountWithEmail": "Continuar con el correo electrónico",
+    "createAccountSuccess": "Cuenta creada exitosamente",
+    "accountAlreadyExists": "La cuenta ya existe, inicia sesión en su lugar"
+  },
+  "evaluatePasswordStrengthErrorCodes": {
+    "oldPasswordIncorrect": "Contraseña actual incorrecta",
+    "oldPasswordRequired": "Debes ingresar la contraseña actual",
+    "provided_password_mismatch": "Las contraseñas proporcionadas no coinciden",
+    "passwordTooShort": "La contraseña proporcionada es demasiado corta",
+    "password_failed_regex_evaluation": "La contraseña proporcionada no es lo suficientemente segura",
+    "mustContainLetterDigit": "La contraseña debe contener al menos una letra y al menos un dígito",
+    "mustContainLowerLetterUpperLetterDigit": "La contraseña debe contener al menos 1 letra mayúscula, al menos 1 letra minúscula y al menos un dígito",
+    "mustContainLowerLetterUpperLetterDigitSymbol": "La contraseña debe contener al menos 1 letra mayúscula, al menos 1 letra minúscula, al menos un dígito y al menos un carácter especial"
+  },
+  "evaluatePasswordStrengthComponent": {
+    "passwordLetter": "Tiene una letra (Aa-Zz)",
+    "passwordDigit": "Tiene un dígito (0-9)",
+    "passwordLowercase": "Tiene una letra minúscula (a-z)",
+    "passwordUppercase": "Tiene una letra mayúscula (A-Z)",
+    "passwordSymbol": "Tiene un carácter especial, por ejemplo ($%@$^£)",
+    "passwordRequirementsLabel": "Requisitos",
+    "passwordMinLength": "Mínimo de caracteres",
+    "passwordCustomRegexDescription": "REEMPLAZAR_ME",
+    "passwordNotStrongEnough": "La contraseña no es lo suficientemente segura"
+  },
+  "SupabaseErrorCodes": {
+    "invalidCredentials": "Error de inicio de sesion. Por favor revisa tu correo electrónico y contraseña y vuelve a intentarlo.",
+    "emailNotConfirmed": "Ups, correo electrónico no verificado",
+    "invalidEmail": "Dirección de correo electrónico no válida. Por favor utilice una dirección de correo electrónico válida",
+    "emailAddressNotAuthorized": "Este proyecto no puede enviar correo electrónico a esa dirección. Configure SMTP personalizado en Supabase o utilice una dirección autorizada.",
+    "accountAlreadyExists": "Ya existe una cuenta para esta dirección de correo electrónico.",
+    "emailProviderDisabled": "La autenticación de correo electrónico está actualmente deshabilitada.",
+    "signupDisabled": "El registro de nueva cuenta está actualmente deshabilitado.",
+    "weakPassword": "Esa contraseña no cumple con los requisitos de contraseña del servidor.",
+    "validationFailed": "Los detalles de autenticación no están en el formato esperado.",
+    "userNotFound": "Cuenta no encontrada. Por favor, revisa tu correo electrónico y contraseña e inténtalo nuevamente.",
+    "overEmailSendRateLimit": "Se han enviado demasiados correos electrónicos de verificación. Espere unos minutos antes de volver a intentarlo.",
+    "overLimit": "Demasiadas solicitudes. Espere unos minutos y vuelva a intentarlo.",
+    "userBanned": "Esta Cuenta Ha Sido Suspendida",
+    "genericError": "Hubo un problema inesperado",
+    "otpDisabled": "Los códigos de verificación de correo electrónico están actualmente deshabilitados.",
+    "otpAlreadyVerified": "Tu correo electrónico ya ha sido verificado.",
+    "providerDisabled": "Ese proveedor de inicio de sesión está actualmente deshabilitado.",
+    "otpExpired": "El código de acceso único ha caducado o no es válido",
+    "samePassword": "La nueva contraseña debe ser diferente de la antigua",
+    "tokenAuthApiError": "El token ha caducado o no es válido",
+    "signupApiAuthError": "La dirección de correo electrónico y la contraseña no cumplen con los requisitos de seguridad"
+  },
+  "Toasts": {
+    "logoutFailed": "Hubo un problema al cerrar sesión",
+    "logoutSucceeded": "¡Hasta luego!"
+  },
+  "Billing": {
+    "title": "Facturación"
+  },
+  "AuthJourney": {
+    "heroTitle": "Haz crecer tu propia comunidad",
+    "welcomeBack": "Bienvenido de nuevo",
+    "createAccountTitle": "Crea tu cuenta",
+    "chooseStart": "Elige cómo quieres empezar.",
+    "chooseSignIn": "Elija cómo desea iniciar sesión.",
+    "validEmail": "Ingrese una dirección de correo electrónico válida.",
+    "enterPassword": "Ingrese su contraseña.",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "strongerPassword": "Elija una contraseña más segura.",
+    "authenticationFailed": "La autenticación falló. Comprueba tus datos y vuelve a intentarlo.",
+    "organisationFailed": "Usted inició sesión, pero no se pudo seleccionar esa organización.",
+    "emailSendFailed": "No se pudo enviar el correo electrónico de inicio de sesión. Vuelve a intentarlo en breve.",
+    "invalidCode": "Ese código no es válido o ha caducado. Inténtalo de nuevo o solicita otro correo electrónico.",
+    "verifyingCode": "Verificando código",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "back": "Atrás",
+    "enterCode": "Ingrese su código de confirmación",
+    "enterSignInCode": "Ingrese su código de inicio de sesión",
+    "verifyEmail": "Verifica tu correo electrónico",
+    "codeSent": "Enviamos un código de dígitos {length} a {email}.",
+    "codeAndLinkSent": "Enviamos un correo electrónico a {email}.",
+    "signInCodeSent": "Enviamos un código de inicio de sesión de dígitos {length} a {email}.",
+    "enterCodeOption": "Ingrese el Código aquí",
+    "openLinkOption": "Opción 2: utilizar el enlace seguro",
+    "openLinkInstructions": "Ingrese el código del correo electrónico a continuación o haga clic en el botón del correo electrónico para verificar.",
+    "checkEmail": "Revisa tu correo electrónico",
+    "linkSent": "Enviamos un enlace seguro a {email}. Haga clic en el botón del correo electrónico para iniciar sesión.",
+    "continueEmail": "Continuar con el correo electrónico",
+    "useSocialAuth": "Utilice la autenticación social",
+    "needAccount": "¿Necesitas una cuenta?",
+    "alreadyAccount": "¿Ya tienes una cuenta?",
+    "signUp": "Inscribirse",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear una cuenta",
+    "createAccountInstead": "Crear cuenta en su lugar",
+    "email": "Dirección de correo electrónico",
+    "password": "Contraseña",
+    "organisationHandle": "Identificador de organización",
+    "organisationHandleOptional": "Identificador de organización (opcional)",
+    "repeatPassword": "Repita la contraseña",
+    "forgotPassword": "¿Has olvidado tu contraseña?",
+    "magicLink": "Envíeme un correo electrónico con un enlace de inicio de sesión",
+    "passwordlessOtp": "Envíeme un código de inicio de sesión por correo electrónico",
+    "passwordlessSignInUnavailable": "No pudimos enviar un correo electrónico de inicio de sesión. Verifique la dirección de correo electrónico o cree una cuenta.",
+    "magicLinkSignInUnavailable": "No pudimos enviar un enlace de inicio de sesión. Verifique la dirección de correo electrónico o cree una cuenta.",
+    "resendSuccess": "Se ha enviado un nuevo correo electrónico de confirmación.",
+    "signInCodeResendSuccess": "Se ha enviado un nuevo código de inicio de sesión.",
+    "signInLinkResendSuccess": "Se ha enviado un nuevo enlace de inicio de sesión.",
+    "resendFailed": "El correo electrónico aún no se ha podido enviar. Vuelve a intentarlo en breve.",
+    "didNotReceive": "¿No recibiste el correo electrónico?",
+    "sendAgainIn": "Enviar de nuevo en {seconds}s",
+    "sendAnother": "Enviar de nuevo",
+    "loginHere": "Inicia sesión aquí",
+    "getVerificationLink": "Obtener enlace de verificación"
+  },
+  "LoginPage": {
+    "title": "Iniciar sesión",
+    "newTo": "Nuevo en"
+  },
+  "PasswordResetPage": {
+    "title": "Restablecer su contraseña",
+    "redirectingIn": "Éxito. Redireccionando en",
+    "description": "Le enviaremos un enlace para restablecer su contraseña a su correo electrónico.",
+    "expiredCode": "El código de reinicio no es válido o ha caducado",
+    "verifyingCode": "Verificando código...",
+    "noCode": "El enlace de verificación ha caducado o el código no es válido",
+    "getResetLink": "Enviar enlace",
+    "emailSent": "Enlace enviado, revisa tu bandeja de entrada.",
+    "enterEmailPlaceholder": "Introduce tu correo electrónico"
+  },
+  "CreateAccountPage": {
+    "title": "Crear una cuenta",
+    "iAlreadyHaveAnAccount": "ya tengo una cuenta"
+  },
+  "CreateAccountFormComponent": {
+    "title": "Crear una cuenta",
+    "orCreateAccountWithEmail": "O crear una cuenta con correo electrónico",
+    "iAlreadyHaveAnAccount": "ya tengo una cuenta",
+    "invalidEmail": "Introduce un correo electrónico válido",
+    "missingEmail": "Se requiere correo electrónico",
+    "missingPassword": "Se requiere contraseña",
+    "missingRetypePassword": "Se requiere volver a escribir la contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden"
+  },
+  "OTPFormComponent": {
+    "title": "Código de verificación",
+    "description": "Ingrese el código que le enviamos o haga clic en el botón de verificación en el correo electrónico.",
+    "fieldLabel": "Introducir código",
+    "emailSent": "Enviamos un correo electrónico a {email}.",
+    "invalidEmail": "Ingrese un correo electrónico válido antes de verificar el código",
+    "verifyingCode": "Verificando código"
+  },
+  "PasswordUpdateFormComponent": {
+    "title": "Actualiza tu contraseña"
+  },
+  "AccountDropdownMenu": {
+    "accountSettings": "Configuraciones de la cuenta",
+    "billing": "Facturación",
+    "myProfile": "Perfil"
+  },
+  "ThemeChangerMenu": {
+    "title": "Tema",
+    "light": "Luz",
+    "dark": "Oscuro",
+    "system": "Sistema"
+  },
+  "Attribution": {
+    "builtWith": "Construido con"
+  },
+  "MarketingDemo": {
+    "trustedOrganisations": "Con la confianza de las principales organizaciones"
+  },
+  "MarketingMetadata": {
+    "home": {
+      "title": "Korunet",
+      "description": "La plataforma comunitaria para conexiones locales más sólidas, conversaciones, grupos y eventos compartidos."
+    },
+    "legal": {
+      "title": "Legal",
+      "description": "Lea los términos de uso, la política de privacidad y la política de cookies de terceros de Korunet."
+    },
+    "pricing": {
+      "title": "Precios",
+      "description": "Explore los precios de Korunet y elija el plan adecuado para su comunidad."
+    },
+    "license": {
+      "title": "Licencia",
+      "description": "Comprenda la licencia fuente de Supacharger, los requisitos de atribución, las licencias comerciales y las dependencias de terceros."
+    },
+    "whatsIncluded": {
+      "title": "¿Qué está incluido?",
+      "description": "Explore los fundamentos del producto y las capacidades de desarrollador incluidas con Supacharger."
+    },
+    "paywallDemos": {
+      "title": "Demostraciones de muro de pago",
+      "description": "Obtenga una vista previa de las solicitudes de suscripción y compra única para funciones protegidas del producto."
+    }
+  },
+  "MarketingFeaturePages": {
+    "whatsIncluded": {
+      "title": "Qué incluye realmente Supacharger",
+      "description": "Una base reutilizable para identidad, facturación, perfiles, localización y las herramientas necesarias para ampliar su producto.",
+      "fullFeatureSet": "",
+      "capabilitiesTitle": "Los fundamentos del producto ya están conectados",
+      "capabilitiesDescription": "Estas son rutas, políticas, contratos de base de datos y componentes implementados. No son elementos pendientes de una hoja de ruta.",
+      "items": [
+        {
+          "title": "Autenticación",
+          "description": "Bases de correo electrónico, sin contraseña, OAuth, confirmación, recuperación y ruta protegida."
+        },
+        {
+          "title": "Perfiles y organizaciones",
+          "description": "Contratos de perfil compartido, políticas de incorporación, medios privados y servicios listos para la organización."
+        },
+        {
+          "title": "Facturación y acceso",
+          "description": "Estado de suscripción, derechos, flujos de pago y límites de muro de pago configurables."
+        },
+        {
+          "title": "Localización",
+          "description": "Política regional de propiedad de la aplicación, catálogos, persistencia y compatibilidad con transferencia de idiomas."
+        },
+        {
+          "title": "Fundamentos del marketing",
+          "description": "Navegación responsiva, metadatos, descubrimiento de rastreadores, temas y componentes de presentación accesibles."
+        },
+        {
+          "title": "Herramientas para desarrolladores",
+          "description": "Contratos escritos, migraciones de bases de datos, conjuntos de verificación, actualización de metadatos y orientación sobre repositorios."
+        }
+      ],
+      "boundariesTitle": "Una propiedad clara hace que las actualizaciones sean más seguras",
+      "boundariesDescription": "El starter separa la implementación gestionada por la CLI de la marca, las políticas, las traducciones, los estilos y la presentación de demostración que pertenecen a la aplicación.",
+      "boundaries": [
+        {
+          "title": "Núcleo gestionado por la CLI",
+          "description": "La autenticación, los perfiles, las rutas, la base de datos, la facturación y el código de compatibilidad compartidos se pueden actualizar como una única base protegida."
+        },
+        {
+          "title": "Puntos de extensión del desarrollador",
+          "description": "La configuración del producto, la política regional, los catálogos, los estilos del proyecto y los componentes de demostración permanecen bajo el control de la aplicación."
+        },
+        {
+          "title": "Contratos de base de datos e integraciones",
+          "description": "Se incluyen migraciones de Supabase, tablas privadas de la aplicación, RPC públicas de API, RPC de servicios de confianza, rutas de Stripe y procesamiento de imágenes."
+        }
+      ],
+      "stackTitle": "La tecnología instalada",
+      "stackDescription": "La página lee las versiones exactas de las dependencias desde package.json. Los paquetes compartidos de ejecución están fijados para que las actualizaciones de la CLI sean reproducibles.",
+      "stackGroups": [
+        { "title": "Entorno de la aplicación" },
+        { "title": "Datos y facturación" },
+        { "title": "Herramientas de interfaz" }
+      ],
+      "packageTitle": "El package.json que recibe",
+      "packageDescription": "Este es el archivo actual del repositorio, renderizado directamente desde el código fuente para mostrar cada script, dependencia, herramienta de desarrollo y sobrescritura.",
+      "packageFile": "package.json",
+      "copyPackage": "Copiar package.json",
+      "copiedPackage": "Copiado",
+      "copyFailed": "Error al copiar"
+    },
+    "paywallDemos": {
+      "title": "Patrones de muro de pago para diferentes procesos de compra",
+      "description": "Compare las solicitudes de actualización públicas sin iniciar sesión. La autenticación solo se requiere cuando un visitante continúa con un flujo de compra específico de la cuenta.",
+      "heroImageAlt": "Espacio de trabajo del producto Korunet que muestra funciones de facturación comunitaria",
+      "galleryTitle": "Elige el límite de facturación que se ajuste al momento",
+      "galleryDescription": "Siete patrones de interacción muestran cómo el acceso, las actualizaciones, los productos, los servicios y los pagos pueden aparecer dentro de un producto.",
+      "items": [
+        {
+          "id": "modal",
+          "title": "Actualizar en un modal",
+          "description": "Mantenga a las personas en contexto mientras explica el plan requerido para la acción que seleccionaron.",
+          "cta": "modal abierto"
+        },
+        {
+          "id": "redirigir",
+          "title": "Redirigir a una página de producto",
+          "description": "Envíe a los visitantes a una comparación completa de planes públicos sin pedirles que se autentiquen primero.",
+          "cta": "Explorar productos"
+        },
+        {
+          "id": "información sobre herramientas",
+          "title": "Explicar una característica deshabilitada",
+          "description": "Mantenga visible un control no disponible y explique qué plan lo incluye al pasar el cursor o con el teclado.",
+          "cta": "Mostrar requisito del plan"
+        },
+        {
+          "id": "servicios",
+          "title": "Servicios que cambian el plan",
+          "description": "Permita que los clientes agreguen servicios administrados y muestre inmediatamente el plan resultante y el total mensual.",
+          "cta": "Agregar servicio"
+        },
+        {
+          "id": "carro",
+          "title": "Carrito de producto único",
+          "description": "Agregue un producto con precio por separado sin interrumpir la página y luego revíselo en un panel lateral.",
+          "cta": "Añadir a la cesta"
+        },
+        {
+          "id": "en la aplicación",
+          "title": "Compra desde la aplicación",
+          "description": "Ofrece una pequeña compra contextual donde el valor ya esté claro dentro de la aplicación.",
+          "cta": "Comprar en la aplicación"
+        },
+        {
+          "id": "raya",
+          "title": "Pago integrado de rayas",
+          "description": "Mantenga el pago dentro del producto con un límite de integración de pago integrado claramente etiquetado.",
+          "cta": "Pago previo"
+        }
+      ],
+      "modal": {
+        "title": "Desbloquear controles de organización",
+        "description": "Roles avanzados y múltiples organizadores están disponibles en el plan comunitario.",
+        "plan": "plano comunitario",
+        "price": "$19 por mes",
+        "priceCaption": "La facturación comienza después de la creación y confirmación de la cuenta.",
+        "dismiss": "Ahora no",
+        "continue": "Continuar registrándose"
+      },
+      "modalExample": {
+        "title": "",
+        "code": "",
+        "copy": "",
+        "copied": "",
+        "copyFailed": "",
+        "agentNote": ""
+      },
+      "products": {
+        "plan": "Catálogo público de productos.",
+        "caption": "Compare planes, capacidades incluidas y tipos de compras antes de crear una cuenta."
+      },
+      "tooltip": {
+        "feature": "Informe de organización exportadora",
+        "explanation": "Disponible en el plan Organización. Actualice para exportar informes y administrar múltiples comunidades."
+      },
+      "services": {
+        "basePlan": "Comunidad",
+        "expandedPlan": "Organización",
+        "basePrice": 19,
+        "planLabel": "Plan resultante",
+        "monthly": "por mes en esta demostración",
+        "options": [
+          {
+            "id": "incorporación",
+            "name": "Incorporación gestionada",
+            "description": "Configuración guiada para organizadores",
+            "price": 12
+          },
+          {
+            "id": "moderación",
+            "name": "Soporte de moderación",
+            "description": "Un servicio de soporte recurrente",
+            "price": 24
+          },
+          {
+            "id": "migración",
+            "name": "Migración de contenido",
+            "description": "Importar datos comunitarios existentes",
+            "price": 18
+          }
+        ]
+      },
+      "cart": {
+        "title": "tu carrito",
+        "description": "Revise los productos únicos antes de continuar con la creación de cuentas.",
+        "product": "Kit de lanzamiento comunitario",
+        "license": "Licencia de producto única",
+        "price": "$79",
+        "checkout": "Continuar registrándose",
+        "imageAlt": "Pantallas de incorporación móvil de Korunet incluidas en el kit de lanzamiento de la comunidad"
+      },
+      "inApp": {
+        "product": "Impulso a la promoción de eventos",
+        "price": "$4.99 por única vez",
+        "ready": "Listo",
+        "status": "La transferencia de compra está lista. Una aplicación de producción ahora invocaría su adaptador de facturación de plataforma."
+      },
+      "stripe": {
+        "emailLabel": "Correo electrónico",
+        "cardLabel": "Detalles de la tarjeta",
+        "cardPlaceholder": "4242 4242 4242 4242",
+        "disclaimer": "Presentación interactiva únicamente. No se envían datos de pago. Una integración en vivo monta Stripe Embedded Checkout con un secreto de cliente creado por el servidor.",
+        "status": "Vista previa completa. Conecte una sesión de pago de Stripe para aceptar un pago real."
+      },
+      "billingCta": {
+        "title": "Vea la facturación en acción con su propia cuenta",
+        "description": "Cree una cuenta y luego continúe directamente con el flujo de suscripción para probar el recorrido de facturación autenticado.",
+        "label": "Regístrate para facturación",
+        "href": "/account/create?next=%2Faccount%2Fbilling%2Fsubscribe%3Ffull%3D1"
+      }
+    }
+  },
+  "MarketingNavigation": {
+    "overview": "Descripción general",
+    "features": "Características",
+    "integrations": "Integraciones",
+    "benefits": "Beneficios",
+    "reviews": "Reseñas",
+    "pricing": "Precios",
+    "inPageAnchors": "En la página Anclas",
+    "supachargerFeatures": "Características del supercargador",
+    "whatsIncluded": "¿Qué está incluido?",
+    "whatsIncludedDescription": "Desde las características principales del producto hasta las especificaciones del desarrollador.",
+    "paywallDemos": "Demostraciones de muro de pago",
+    "paywallDemosDescription": "Vea cómo las llamadas a la acción alientan a los usuarios a suscribirse.",
+    "licenseInformation": "Información de licencia",
+    "licenseInformationDescription": "Comprenda la licencia de origen, los requisitos de atribución y los componentes de terceros.",
+    "license": "Licencia",
+    "supacharger": "Supacargador",
+    "opensInNewTab": "se abre en una nueva pestaña",
+    "login": "Acceso",
+    "createAccount": "Crear una cuenta",
+    "openNavigation": "Abrir navegación",
+    "mobileNavigation": "Navegación móvil"
+  },
+  "LocaleSwitcher": {
+    "changeLanguage": "Cambiar idioma",
+    "changeFailed": "No se pudo cambiar el idioma. Inténtelo de nuevo.",
+    "english": "Inglés",
+    "spanish": "Español",
+    "chinese": "Chino"
+  },
+  "MarketingFooter": {
+    "tagline": "Una plataforma comunitaria compartida para conversaciones, grupos, eventos y personas cercanas.",
+    "navigation": "Navegación",
+    "information": "Información",
+    "overview": "Descripción general",
+    "features": "Características",
+    "integrations": "Integraciones",
+    "benefits": "Beneficios",
+    "reviews": "Reseñas",
+    "pricing": "Precios",
+    "faq": "Preguntas frecuentes",
+    "termsOfUse": "Condiciones de uso",
+    "license": "Licencia",
+    "login": "Acceso",
+    "createAccount": "Crear una cuenta",
+    "allRightsReserved": "Reservados todos los derechos.",
+    "firstBuiltIn": "Primero construido",
+    "newZealand": "Nueva Zelanda",
+    "by": "por"
+  },
+  "LicensePage": {
+    "eyebrow": "Licencias de código abierto",
+    "title": "Utilice Supacharger con atribución o elija una licencia comercial.",
+    "introduction": "Esta página resume la licencia del repositorio y las licencias declaradas por sus dependencias directas. Es una guía práctica, no un sustituto de los textos de licencia que rigen.",
+    "nonAttributionCta": "Obtenga una licencia sin atribución",
+    "readLicense": "Leer CC BY-NC-SA 4.0",
+    "coreTitle": "La licencia fuente de Supacharger",
+    "coreBody": "La LICENCIA del repositorio aplica Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International a la fuente propiedad de Supacharger. Se requiere atribución, el uso comercial no está permitido bajo esa licencia pública y las adaptaciones deben usar la misma licencia.",
+    "commercialBody": "Una licencia paga separada es la ruta para uso comercial o sin atribución. Sus términos son independientes de la licencia de repositorio público y deben revisarse antes de utilizar Supacharger en un producto comercial.",
+    "notLegalAdvice": "Los resúmenes de licencias pueden omitir condiciones y excepciones importantes. Lea los textos completos y obtenga asesoramiento legal para su caso de uso.",
+    "dependenciesTitle": "Instantánea de licencia de dependencia directa",
+    "dependenciesIntro": "El tiempo de ejecución directo instalado y las dependencias de desarrollo tienen en su mayoría licencias permisivas. Estos grupos se basan en metadatos de paquetes y archivos de licencia incluidos en el archivo de bloqueo actual, no en una opinión legal ni en un aviso completo de dependencia transitiva.",
+    "groups": {
+      "mit": {
+        "title": "MIT",
+        "description": "Licencias permisivas que generalmente requieren la preservación de los derechos de autor y avisos de licencia en copias redistribuidas."
+      },
+      "apache": {
+        "title": "Apache-2.0",
+        "description": "Una licencia permisiva con requisitos de notificación y una concesión expresa de patente."
+      },
+      "isc": {
+        "title": "Linaje de iconos de ISC y MIT",
+        "description": "Lucide declara la licencia ISC e incluye algunos íconos derivados de Feather bajo los términos del MIT."
+      },
+      "mpl": {
+        "title": "MPL-2.0",
+        "description": "Vercel Analytics declara una licencia copyleft a nivel de archivo. Los archivos cubiertos modificados pueden conllevar obligaciones de disponibilidad de fuente cuando se distribuyen."
+      }
+    },
+    "importsTitle": "¿Una importación cuenta como distribución?",
+    "importsBody": "La sintaxis de importación por sí sola no responde a esa pregunta. Las compilaciones de clientes pueden copiar el código de dependencia en paquetes de navegadores, y las implementaciones o archivos fuente pueden incluir archivos de paquetes. Es posible que un script alojado de forma remota no se pueda copiar en Supacharger, pero aún se aplican sus términos de servicio. El cumplimiento sigue lo que realmente se copia, modifica y distribuye.",
+    "scopeTitle": "Qué cubre esta auditoría",
+    "scopeBody": "Esta instantánea agrupa las licencias declaradas para paquetes directos en package.json. El archivo de bloqueo también contiene paquetes transitivos y los activos, fuentes, servicios alojados y código agregado por el usuario pueden tener términos separados. Vuelva a ejecutar una auditoría de notificación formal antes de cada publicación.",
+    "auditDate": "Revisado con respecto a la dependencia del repositorio establecida el 22 de agosto de 2026.",
+    "ccSoftwareFaq": "Preguntas frecuentes sobre el software Creative Commons",
+    "repositoryLicense": "LICENCIA del repositorio",
+    "legalPage": "Página legal de Korunet"
+  },
+  "MarketingLanding": {
+    "createAccount": "Crear una cuenta",
+    "exploreFeatures": "Explorar características",
+    "trustedOrganisations": "Con la confianza de las principales organizaciones",
+    "getStarted": "empezar",
+    "mostPopular": "mas popular",
+    "roleAtOrganisation": "{role} y {organisation}",
+    "hero": {
+      "title": "La plataforma comunitaria para conexiones locales más sólidas.",
+      "description": "Reúna conversaciones, grupos, eventos y conexiones locales confiables en un lugar tranquilo y compartido creado para comunidades reales."
+    },
+    "overview": {
+      "title": "Un lugar para las comunidades que te rodean",
+      "description": "Mantenga visibles las personas, el contexto y la actividad de cada comunidad sin unir una colección de herramientas no relacionadas."
+    },
+    "features": {
+      "title": "Una plataforma que se adapta a tu comunidad",
+      "description": "Comience con un grupo enfocado, luego agregue las conversaciones, eventos y estructura que su comunidad necesita a medida que crece."
+    },
+    "integrations": {
+      "title": "Funciona con las herramientas que la gente ya conoce.",
+      "description": "Conecte servicios familiares mientras Korunet sigue siendo el lugar compartido al que los miembros regresan para realizar actividades comunitarias."
+    },
+    "benefitsSection": {
+      "title": "Una base flexible para la conexión local",
+      "description": "Ofrezca a los grupos del mundo real la estructura que necesitan manteniendo al mismo tiempo el producto cálido, claro y fácil de participar."
+    },
+    "experiences": {
+      "title": "Todo lo que tu comunidad necesita para mantenerse conectada",
+      "description": "Muévete entre descubrimientos, grupos organizados y conversaciones directas sin perder el contexto que hace que cada conexión sea útil."
+    },
+    "reviewsSection": {
+      "title": "Con la confianza de personas que hacen que las comunidades funcionen",
+      "description": "Una experiencia comunitaria clara ayuda a los organizadores a dedicar menos tiempo a administrar herramientas y más tiempo a reunir a las personas."
+    },
+    "pricingSection": {
+      "title": "Precios que crecen con su comunidad",
+      "description": "Comience con la forma que su comunidad necesita hoy y luego agregue más coordinación y apoyo a medida que crezca la participación."
+    },
+    "faqSection": {
+      "title": "Todo lo que necesitas para seguir adelante",
+      "description": "Lo esencial sobre espacios, privacidad, acceso, idiomas y cómo iniciar tu primera comunidad."
+    },
+    "cta": {
+      "title": "Acerca a tu comunidad",
+      "description": "Cree un espacio enfocado para las personas, las conversaciones y las actividades que importan a nivel local."
+    },
+    "images": {
+      "messagingWorkspace": "Espacio de trabajo de mensajería de la comunidad Korunet",
+      "mobileScreens": "Pantallas de la comunidad móvil de Korunet",
+      "neighboursAtNight": "Vecinos locales reunidos en espacios comunitarios compartidos por la noche",
+      "mobileExperience": "Experiencia de la comunidad Korunet en pantallas móviles"
+    },
+    "communityPillars": [
+      {
+        "title": "Conversaciones compartidas",
+        "description": "Haga que cada conversación sea fácil de encontrar y de seguir."
+      },
+      {
+        "title": "Comunidades reales",
+        "description": "Reúna a miembros, vecinos y organizadores en un espacio de confianza."
+      },
+      {
+        "title": "Eventos que conectan",
+        "description": "Coordine eventos y reuniones recurrentes sin herramientas dispersas."
+      },
+      {
+        "title": "Confianza incorporada",
+        "description": "Utilice controles claros que mantengan cada grupo privado y manejable."
+      }
+    ],
+    "platformFeatures": [
+      {
+        "title": "Descubre tu comunidad",
+        "description": "Reúna a los grupos cercanos, organizadores e intereses compartidos en una vista clara.",
+        "imageAlt": "Pantallas de descubrimiento de la comunidad Korunet"
+      },
+      {
+        "title": "Un espacio de trabajo compartido",
+        "description": "Mantenga los mensajes, los perfiles y la actividad de la comunidad conectados en todas las pantallas.",
+        "imageAlt": "Espacio de trabajo de mensajería de la comunidad Korunet"
+      },
+      {
+        "title": "Participación que dura",
+        "description": "Brinde a los miembros un lugar acogedor para reunirse, contribuir y mantenerse involucrados.",
+        "imageAlt": "Vecinos locales reunidos en un espacio comunitario compartido"
+      }
+    ],
+    "connectedExperiences": [
+      {
+        "title": "Encuentra las personas y grupos que te rodean",
+        "description": "Encuentre grupos, personas y actividades relevantes sin buscar en servicios desconectados.",
+        "cta": "Explorar descubrimiento",
+        "imageAlt": "Perfiles de la comunidad Korunet y experiencia de descubrimiento."
+      },
+      {
+        "title": "Coordine la actividad desde un hogar claro",
+        "description": "Planifique eventos, comparta actualizaciones y mantenga la conversación completa disponible para todos los miembros.",
+        "cta": "Ver herramientas comunitarias",
+        "imageAlt": "Espacio de trabajo comunitario de Korunet con mensajes y actividad."
+      },
+      {
+        "title": "Convierta las presentaciones en participación",
+        "description": "Facilite a los nuevos miembros comprender a dónde pertenecen y cómo participar.",
+        "cta": "Crear una cuenta",
+        "imageAlt": "Experiencia de la comunidad móvil Korunet"
+      }
+    ],
+    "benefits": [
+      {
+        "title": "Local por diseño",
+        "description": "Crea espacios en torno a un lugar, causa, interés u objetivo compartido."
+      },
+      {
+        "title": "Controles flexibles",
+        "description": "Establezca roles y permisos sin ralentizar a los organizadores."
+      },
+      {
+        "title": "Descubrimiento rápido",
+        "description": "Encuentre personas, conversaciones y grupos a partir de una búsqueda clara."
+      },
+      {
+        "title": "Notificaciones útiles",
+        "description": "Mantenga a los miembros informados sin convertir cada actualización en ruido."
+      },
+      {
+        "title": "Privacidad primero",
+        "description": "Proteja los datos personales con espacios privados y opciones claras."
+      },
+      {
+        "title": "Listo para crecer",
+        "description": "Apoye círculos pequeños y organizaciones más grandes en una sola plataforma."
+      }
+    ],
+    "testimonials": [
+      {
+        "avatarAlt": "Retrato de Maya Okafor",
+        "organisation": "Vecinos del norte",
+        "name": "maya okafor",
+        "quote": "Korunet reunió nuestros eventos, actualizaciones de miembros y conversaciones locales en un solo lugar que la gente realmente consulta.",
+        "role": "Organizador vecinal"
+      },
+      {
+        "avatarAlt": "Retrato de Luca Moretti",
+        "organisation": "Terreno común",
+        "name": "Luca Moretti",
+        "quote": "Los nuevos miembros saben dónde ir, a quién preguntar y cómo participar desde el primer día.",
+        "role": "anfitrión de la comunidad"
+      },
+      {
+        "avatarAlt": "Retrato de Sora Kim",
+        "organisation": "Red ribereña",
+        "name": "Sora Kim",
+        "quote": "Pasamos menos tiempo persiguiendo mensajes y más tiempo ayudando a los vecinos a convertir buenas ideas en eventos reales.",
+        "role": "coordinador de voluntariado"
+      },
+      {
+        "avatarAlt": "Retrato de Tomasz Kowalski",
+        "organisation": "Colectivo Puerta Abierta",
+        "name": "Tomasz Kowalski",
+        "quote": "Los espacios privados y los roles claros permiten a nuestros voluntarios trabajar con confianza sin que la plataforma parezca complicada.",
+        "role": "Líder del programa"
+      },
+      {
+        "avatarAlt": "Retrato de Elías Novak",
+        "organisation": "Carril del mercado",
+        "name": "Elías Novak",
+        "quote": "Los grupos cercanos ahora comparten oportunidades y organizan reuniones sin que cada conversación desaparezca en otra aplicación.",
+        "role": "Dueño de negocio local"
+      },
+      {
+        "avatarAlt": "Retrato de Camille Laurent",
+        "organisation": "Casa Mosaico",
+        "name": "camille laurent",
+        "quote": "Korunet brinda a cada proyecto la estructura suficiente y, al mismo tiempo, mantiene la comunidad cálida, visible y fácil de unir.",
+        "role": "Coordinador de la red cultural"
+      }
+    ],
+    "plans": [
+      {
+        "name": "Motor de arranque",
+        "price": "Gratis",
+        "description": "Inicie un grupo enfocado y reúna a sus primeros miembros.",
+        "features": [
+          "Espacios comunitarios centrales",
+          "Conversaciones directas",
+          "Planificación de eventos",
+          "Perfiles de miembros"
+        ]
+      },
+      {
+        "name": "Comunidad",
+        "price": "9,99 USD/mes",
+        "description": "Dirija una comunidad activa con más control y colaboración.",
+        "features": ["Todo en arranque", "Roles avanzados", "Múltiples organizadores", "Apoyo prioritario"]
+      },
+      {
+        "name": "Organización",
+        "price": "Costumbre",
+        "description": "Coordinar varias comunidades con apoyo y gobernanza personalizados.",
+        "features": [
+          "Todo en comunidad",
+          "Controles de la organización",
+          "Incorporación personalizada",
+          "Soporte dedicado"
+        ]
+      }
+    ],
+    "compliance": {
+      "title": "La confianza es parte del producto.",
+      "description": "Permisos claros, espacios privados y valores predeterminados responsables mantienen a los miembros en control de cómo participan.",
+      "items": [
+        "Espacios privados",
+        "Roles claros",
+        "Control de datos",
+        "Acceso seguro",
+        "elección de miembro",
+        "Impagos responsables"
+      ]
+    },
+    "faqs": [
+      {
+        "question": "¿Qué puedo gestionar con Korunet?",
+        "answer": "Korunet reúne conversaciones comunitarias, mensajes directos, grupos, eventos y descubrimiento de miembros en una plataforma compartida."
+      },
+      {
+        "question": "¿Pueden las comunidades seguir siendo privadas?",
+        "answer": "Sí. Las comunidades pueden controlar quién se une, qué miembros pueden ver y qué roles pueden organizar o moderar cada espacio."
+      },
+      {
+        "question": "¿Para quién es Korunet?",
+        "answer": "Korunet está diseñado para grupos de vecinos, reuniones, redes de defensa, empresas locales y organizaciones comunitarias más grandes."
+      },
+      {
+        "question": "¿Korunet admite varios idiomas?",
+        "answer": "Los miembros pueden cambiar el idioma de la interfaz desde el encabezado o pie de página. La demostración actual incluye inglés, español y chino."
+      },
+      {
+        "question": "¿Cómo empiezo?",
+        "answer": "Cree una cuenta, configure su perfil y comience con un grupo enfocado. Puedes agregar más espacios a medida que la comunidad crezca."
+      }
+    ]
+  },
+  "PricingPage": {
+    "title": "Precios",
+    "description": "Elija un plan flexible para un grupo nuevo, una comunidad activa o una organización que coordine varios espacios.",
+    "included": "Incluye",
+    "getStarted": "empezar",
+    "plans": [
+      {
+        "name": "Motor de arranque",
+        "description": "Para individuos y equipos pequeños",
+        "price": "$10 por mes",
+        "features": ["50 miembros de la comunidad", "10 espacios activos"]
+      },
+      {
+        "name": "Profesional",
+        "description": "Para comunidades en crecimiento",
+        "price": "$20 por mes",
+        "features": ["100 miembros de la comunidad", "20 espacios activos", "Apoyo prioritario"]
+      },
+      {
+        "name": "Negocio",
+        "description": "Para organizaciones y equipos más grandes",
+        "price": "$100 por mes",
+        "features": [
+          "300 miembros de la comunidad",
+          "100 espacios activos",
+          "100 miembros del equipo",
+          "Controles avanzados"
+        ]
+      }
+    ],
+    "lifetime": {
+      "title": "Cuenta ilimitada de por vida",
+      "description": "Realice un pago para obtener acceso permanente a la experiencia principal de la comunidad.",
+      "included": "¿Qué está incluido?",
+      "features": [
+        "Acceso privado al foro",
+        "Recursos para miembros",
+        "Entrada a la conferencia anual",
+        "Camiseta oficial de miembro."
+      ],
+      "access": "Acceso ilimitado, para siempre",
+      "price": "$500USD",
+      "getStarted": "empezar"
+    }
+  },
+  "LegalPage": {
+    "eyebrow": "Políticas",
+    "title": "Información legal",
+    "description": "Los términos y políticas que rigen el uso de Korunet y explican cómo se maneja la información personal y las cookies.",
+    "lastUpdated": "Última actualización: 4 de junio de 2025",
+    "tabs": {
+      "terms": "Condiciones de uso",
+      "privacy": "Política de privacidad",
+      "cookies": "Cookies de terceros"
+    },
+    "terms": {
+      "title": "Condiciones de uso de Korunet",
+      "sections": [
+        {
+          "title": "Usando el servicio",
+          "body": "Utilice Korunet sólo para fines legales. Mantenga la confidencialidad de las credenciales de la cuenta, proporcione información precisa de la cuenta y no interfiera con el funcionamiento o la seguridad del servicio."
+        },
+        {
+          "title": "Tu contenido",
+          "body": "Usted conserva la propiedad del contenido que envía. Usted otorga a Korunet los permisos necesarios para alojar, mostrar y procesar ese contenido para operar el servicio."
+        },
+        {
+          "title": "Disponibilidad y garantías",
+          "body": "El servicio se proporciona según disponibilidad. Las funciones pueden cambiar, suspenderse o descontinuarse, y no se promete ningún funcionamiento ininterrumpido o libre de errores."
+        },
+        {
+          "title": "Finalizar el acceso",
+          "body": "El acceso puede suspenderse o cancelarse cuando se incumplen estos términos, se hace un mal uso del servicio o el acceso continuo crea un riesgo legal o de seguridad."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Política de privacidad de Korunet",
+      "sections": [
+        {
+          "title": "Información recopilada",
+          "body": "Korunet puede recopilar detalles de la cuenta, información del perfil, datos de uso, información del dispositivo e información proporcionada cuando se comunica con el soporte."
+        },
+        {
+          "title": "Cómo se utiliza la información",
+          "body": "La información se utiliza para proporcionar y asegurar el servicio, personalizar la experiencia, comunicarse con los usuarios, comprender el uso del producto y cumplir obligaciones legales."
+        },
+        {
+          "title": "Compartir y retener",
+          "body": "La información personal no se vende. Puede compartirse con proveedores de servicios, autoridades legales cuando sea necesario u otras partes según sus instrucciones. La información se conserva sólo durante el tiempo necesario para estos fines."
+        },
+        {
+          "title": "Tus elecciones",
+          "body": "Dependiendo de la ley aplicable, puede solicitar acceso, corrección, exportación o eliminación de información personal y puede optar por no recibir comunicaciones de marketing."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "Política de cookies de terceros",
+      "sections": [
+        {
+          "title": "Por qué se utilizan cookies",
+          "body": "Las cookies y almacenamiento similar pueden mantener las sesiones seguras, recordar preferencias, medir el rendimiento y ayudar a comprender cómo se utiliza el servicio."
+        },
+        {
+          "title": "Servicios de terceros",
+          "body": "Los proveedores utilizados para autenticación, pagos, análisis o contenido integrado pueden establecer sus propias cookies según sus políticas."
+        },
+        {
+          "title": "Gestionar cookies",
+          "body": "Los controles del navegador pueden bloquear o eliminar cookies. Deshabilitar las cookies esenciales puede impedir que el inicio de sesión u otras partes del servicio funcionen correctamente."
+        }
+      ]
+    }
+  },
+  "AccountPages": {
+    "billing": {
+      "title": "Facturación",
+      "noAccount": "Sin cuenta de facturación",
+      "startSubscription": "Iniciar una suscripción",
+      "createAccountHelp": "Cree una cuenta de facturación cuando comience a pagar.",
+      "accountTitle": "Facturación {type}",
+      "manageBilling": "Administrar facturación",
+      "noSubscriptions": "No hay suscripciones adjuntas a esta cuenta de facturación.",
+      "status": "Estado: {status}",
+      "unknownStatus": "Desconocido",
+      "features": "Características"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "saved": "Su configuración de notificaciones se ha guardado.",
+      "pushTitle": "Notificaciones push",
+      "pushLabel": "Habilitar notificaciones push",
+      "pushDescription": "Recibe notificaciones en tu dispositivo",
+      "emailTitle": "Notificaciones por correo electrónico",
+      "dailyLabel": "Resumen diario",
+      "dailyDescription": "Obtenga un resumen diario de su actividad",
+      "weeklyLabel": "Informe semanal",
+      "weeklyDescription": "Reciba un resumen semanal de sus estadísticas",
+      "marketingLabel": "Correos electrónicos de marketing",
+      "marketingDescription": "Reciba actualizaciones sobre nuevas funciones y promociones.",
+      "save": "Guardar preferencias"
+    },
+    "privacy": {
+      "title": "Configuración de privacidad",
+      "saved": "Se han guardado sus preferencias de privacidad.",
+      "preferences": "Preferencias de privacidad",
+      "profileLabel": "Visibilidad del perfil",
+      "profileDescription": "Haz que tu perfil sea visible para otros usuarios",
+      "activityLabel": "Estado de actividad",
+      "activityDescription": "Mostrar cuando estás activo en la plataforma",
+      "searchLabel": "Visibilidad de búsqueda",
+      "searchDescription": "Permitir que otros te encuentren en los resultados de búsqueda",
+      "save": "Guardar configuración de privacidad"
+    },
+    "editProfile": {
+      "title": "Editar perfil",
+      "saved": "Su perfil se ha actualizado correctamente.",
+      "open": "Abierto",
+      "confirmTitle": "¿Estás absolutamente seguro?",
+      "confirmDescription": "Esta acción no se puede deshacer. Eliminará permanentemente su cuenta y eliminará sus datos de nuestros servidores.",
+      "firstName": "Nombre de pila",
+      "lastName": "Apellido",
+      "aboutMe": "Acerca de mí",
+      "save": "Guardar cambios"
+    },
+    "account": {
+      "title": "Configuración de cuenta y seguridad",
+      "authenticatedWith": "Te autentificaste con",
+      "email": "Correo electrónico",
+      "emailAddress": "Dirección de correo electrónico de la cuenta",
+      "save": "Guardar cambios",
+      "twoFactor": "Autenticación de dos factores",
+      "noTwoFactor": "No se encontró ningún método de autenticación de dos factores.",
+      "setupTwoFactor": "Configurar la autenticación de dos factores",
+      "language": "Idioma",
+      "languagePreference": "Preferencia de idioma",
+      "selectLanguage": "Seleccione un idioma",
+      "english": "Inglés",
+      "spanish": "Español",
+      "chinese": "Chino",
+      "cancelAccount": "Cancelar cuenta",
+      "cancelDescription": "Esto cierra permanentemente su cuenta y elimina el acceso a sus datos."
+    },
+    "setupProfile": {
+      "metadataTitle": "Configurar perfil",
+      "title": "Configura tu perfil",
+      "description": "Díganos cómo debe identificarse su cuenta."
+    },
+    "setupWizard": {
+      "title": "Asistente de configuración",
+      "sourceTitle": "¿Cómo se enteró de nosotros?",
+      "sourceDescription": "Cuéntanos cómo nos encontraste para que podamos mejorar el servicio y llegar a más personas como tú.",
+      "selectOption": "Seleccione una opción",
+      "pleaseChoose": "Por favor elige",
+      "friend": "Amigo o familia",
+      "social": "redes sociales",
+      "search": "motor de búsqueda",
+      "advertisement": "publicidad en línea",
+      "event": "Evento o conferencia",
+      "other": "Otro",
+      "submit": "Entregar",
+      "continue": "Continuar",
+      "completeTitle": "Completa tu perfil",
+      "completeDescription": "Termina de configurar tu perfil para que podamos personalizar tu experiencia.",
+      "fullName": "nombre completo",
+      "fullNamePlaceholder": "Introduce tu nombre completo",
+      "email": "Dirección de correo electrónico",
+      "emailPlaceholder": "Introduce tu correo electrónico",
+      "bio": "Breve biografía",
+      "bioPlaceholder": "Cuéntanos un poco sobre ti",
+      "saveProfile": "Guardar perfil",
+      "back": "Atrás",
+      "done": "Hecho"
+    }
+  },
+  "SessionNavigation": {
+    "openNavigation": "Abrir menú de navegación",
+    "navigationMenu": "Menú de navegación",
+    "mainNavigation": "Navegación principal",
+    "dashboard": "Panel",
+    "deals": "Ofertas",
+    "connections": "Conexiones",
+    "userMenu": "Menú de usuario para {name}",
+    "preferences": "Preferencias",
+    "language": "Idioma"
+  },
+  "SessionFooter": {
+    "terms": "Términos y condiciones",
+    "fairUse": "Política de uso justo",
+    "allRightsReserved": "Reservados todos los derechos."
+  },
+  "ProfilePage": {
+    "sampleBio": "Miembro de la comunidad, organizador y vecino. Interesado en proyectos locales, conversaciones útiles y ayudar a las personas a conectarse.",
+    "bannerAlt": "Bandera de perfil",
+    "avatarAlt": "Avatar de {username}",
+    "followers": "Seguidores",
+    "following": "Siguiente",
+    "follow": "Seguir",
+    "aboutMe": "Acerca de mí"
+  },
+  "UserDashboard": {
+    "accountConfirmed": "Cuenta confirmada",
+    "title": "Actualizaciones de su red",
+    "compose": "Redactar una nueva publicación",
+    "placeholder": "Ingresa tu publicación aquí",
+    "publish": "Publicar",
+    "byAuthor": "Por {author}",
+    "viewMore": "Ver más",
+    "posts": [
+      {
+        "title": "Espacio de oficinas de primera categoría con un rendimiento del 7% en Auckland CBD",
+        "author": "fulana",
+        "summary": "Explore una inversión de oficina premium en el centro de Auckland con rendimientos estables y arrendamiento a largo plazo."
+      },
+      {
+        "title": "Acciones de tecnología de NZX con un potencial de subida del 30%",
+        "author": "Marcos Lee",
+        "summary": "Los analistas esperan un fuerte crecimiento de esta acción tecnológica menos conocida de NZX y explican los factores detrás de esto."
+      },
+      {
+        "title": "Preventa de apartamento junto al lago en Queenstown",
+        "author": "Sofía Turner",
+        "summary": "Una oportunidad temprana en apartamentos nuevos junto al lago con precios de preventa."
+      },
+      {
+        "title": "Fondo de inversión diversificado para un crecimiento constante",
+        "author": "Alex Kim",
+        "summary": "Un fondo diversificado centrado en el crecimiento sostenible y la gestión de riesgos está abierto a nuevos inversores este trimestre."
+      },
+      {
+        "title": "La aplicación de finanzas personales abre acceso temprano",
+        "author": "Priya Patel",
+        "summary": "Pruebe una nueva aplicación para administrar las finanzas, realizar un seguimiento de las inversiones y desarrollar mejores hábitos de ahorro."
+      },
+      {
+        "title": "Propiedad comercial de alto rendimiento en Wellington",
+        "author": "Liam Brown",
+        "summary": "Hay una propiedad comercial totalmente alquilada disponible en el distrito comercial de Wellington."
+      },
+      {
+        "title": "Se abren bonos de inversión en energía verde",
+        "author": "emily verde",
+        "summary": "Apoyar la energía renovable a través de nuevos bonos verdes de rendimiento fijo que ya están abiertos a suscripción."
+      }
+    ]
+  },
+  "ProfileOnboardingForm": {
+    "nameError": "Ingrese su nombre y apellido.",
+    "usernameError": "Elija un nombre de usuario para continuar.",
+    "firstName": "Nombre de pila",
+    "lastName": "Apellido",
+    "username": "Nombre de usuario",
+    "optional": "(opcional)",
+    "usernameHelp": "Utilice letras, números, guiones bajos o guiones.",
+    "continue": "Continuar"
+  },
+  "MagicLinkForm": {
+    "failed": "No se pudo enviar el enlace de inicio de sesión.",
+    "sent": "Enlace de inicio de sesión enviado. Revisa tu bandeja de entrada.",
+    "emailPlaceholder": "Introduce tu correo electrónico",
+    "submit": "Entregar"
+  },
+  "AccountTabs": {
+    "title": "Configuraciones de la cuenta",
+    "accountSecurity": "Cuenta y seguridad",
+    "editProfile": "Editar perfil",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad",
+    "billing": "Facturación"
+  },
+  "AvatarEditor": {
+    "title": "Establecer avatar",
+    "validationError": "La imagen debe tener exactamente 400 por 400 píxeles y menos de 10 MB.",
+    "avatarAlt": "Avatar",
+    "noImage": "Sin imagen",
+    "requirements": "Debe tener 400 por 400 píxeles, máximo 10 MB",
+    "upload": "Subir nuevo",
+    "saving": "Ahorro...",
+    "save": "Ahorrar"
+  },
+  "AccountMetadata": {
+    "title": "Configuraciones de la cuenta",
+    "description": "Administre la seguridad de la cuenta, los detalles del perfil, las notificaciones, la privacidad y la facturación."
+  },
+  "AuthenticatedMetadata": {
+    "description": "Tu cuenta de Korunet y espacio de trabajo comunitario."
+  },
+  "ErrorPage": {
+    "notFound": {
+      "status": "error 404",
+      "title": "Página no encontrada",
+      "description": "Lo sentimos, no pudimos encontrar la página que estás buscando."
+    },
+    "unexpected": {
+      "status": "algo salió mal",
+      "title": "No pudimos cargar esta página",
+      "description": "La página tuvo un problema. Inténtalo de nuevo desde la página de inicio o ponte en contacto con el servicio de asistencia si el problema continúa."
+    },
+    "goHome": "Ir a casa",
+    "contactSupport": "Contactar con soporte"
+  }
+}

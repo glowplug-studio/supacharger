@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
 import { toast } from 'react-toastify';
 
@@ -26,6 +27,7 @@ interface Profile {
 }
 
 export default function EditProfilePage() {
+  const t = useTranslations('AccountPages.editProfile');
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState<Profile>({
     firstName: '',
@@ -69,26 +71,25 @@ export default function EditProfilePage() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
-    toast.success('Your profile has been successfully updated.');
+    toast.success(t('saved'));
   };
 
   return (
     <div className='space-y-6'>
       <div>
-        <h2 className='text-2xl font-bold tracking-tight'>Edit Profile</h2>
+        <h2 className='text-2xl font-bold tracking-tight'>{t('title')}</h2>
         <Separator className='my-4' />
       </div>
 
       <div>
 
       <Dialog>
-  <DialogTrigger>Open</DialogTrigger>
+  <DialogTrigger>{t('open')}</DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogTitle>{t('confirmTitle')}</DialogTitle>
       <DialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
+        {t('confirmDescription')}
       </DialogDescription>
     </DialogHeader>
   </DialogContent>
@@ -113,24 +114,24 @@ export default function EditProfilePage() {
           <div className='max-w-md space-y-4'>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               <div className='space-y-2'>
-                <Label htmlFor='firstName'>First name</Label>
+                <Label htmlFor='firstName'>{t('firstName')}</Label>
                 <Input id='firstName' name='firstName' value={profile.firstName} onChange={handleChange} />
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='lastName'>Last name</Label>
+                <Label htmlFor='lastName'>{t('lastName')}</Label>
                 <Input id='lastName' name='lastName' value={profile.lastName} onChange={handleChange} />
               </div>
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='aboutMe'>About Me</Label>
+              <Label htmlFor='aboutMe'>{t('aboutMe')}</Label>
               <Textarea id='aboutMe' name='aboutMe' value={profile.aboutMe} onChange={handleChange} rows={6} />
             </div>
 
             <Button type='submit' disabled={isLoading}>
               {isLoading && <Loader2 className='mr-2 h-4 w-4' />}
-              Save Changes
+              {t('save')}
             </Button>
           </div>
         </div>

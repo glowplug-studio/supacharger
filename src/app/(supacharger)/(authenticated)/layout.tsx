@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import SCFooterSession from '@/components/sc_demo/sc_footer-session';
 import { SCHeaderSession } from '@/components/sc_demo/sc_header-session';
@@ -9,10 +10,10 @@ export const dynamic = 'force-dynamic';
 
 const site_title = SC_CONFIG.SITE_TITLE;
 
-export const metadata: Metadata = {
-  title: site_title,
-  description: 'Start your next project without reinventing the wheel. REPLACE_ME',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('AuthenticatedMetadata');
+  return { title: site_title, description: t('description') };
+}
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (

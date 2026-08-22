@@ -59,8 +59,8 @@ export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
 
   if (
-    relativePath === 'src/assets/images/ui/inline-loader.svg' ||
-    relativePath === 'src/assets/images/ui/inline-loader-dark.svg'
+    relativePath === 'src/assets/svgr/ui/inline-loader.svg' ||
+    relativePath === 'src/assets/svgr/ui/inline-loader-dark.svg'
   ) {
     return {
       ownership: 'developer-owned',
@@ -177,7 +177,8 @@ export function classifyPath(inputPath) {
   if (relativePath === 'src/components/sc_demo' || relativePath.startsWith('src/components/sc_demo/')) {
     return {
       ownership: 'developer-owned-example',
-      guidance: 'Replaceable example presentation intended for application customisation.',
+      guidance:
+        'Replaceable example presentation intended for application customisation. Keep demo-only assets here; import UI SVGs through SVGR so deleting the demo removes its assets too.',
     };
   }
 

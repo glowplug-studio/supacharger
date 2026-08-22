@@ -40,9 +40,7 @@ test('Tailwind configuration loads without Node reparsing the package as ESM', (
 });
 
 test('uses the canonical class-name utility module', async () => {
-  const components = JSON.parse(
-    await readFile(new URL('../components.json', import.meta.url), 'utf8'),
-  );
+  const components = JSON.parse(await readFile(new URL('../components.json', import.meta.url), 'utf8'));
   const utility = await readFile(new URL('../src/utils/cn.ts', import.meta.url), 'utf8');
   const legacyImports = await findLegacyCnImports(new URL('../src/', import.meta.url));
 
@@ -52,13 +50,8 @@ test('uses the canonical class-name utility module', async () => {
 });
 
 test('keeps the root layout editable and the root document implementation managed', async () => {
-  const manifest = JSON.parse(
-    await readFile(new URL('../.supacharger/managed-files.json', import.meta.url), 'utf8'),
-  );
-  const rootDocument = await readFile(
-    new URL('../src/supacharger/root-document.tsx', import.meta.url),
-    'utf8',
-  );
+  const manifest = JSON.parse(await readFile(new URL('../.supacharger/managed-files.json', import.meta.url), 'utf8'));
+  const rootDocument = await readFile(new URL('../src/supacharger/root-document.tsx', import.meta.url), 'utf8');
 
   assert.ok(manifest.developerOwnedPaths.includes('src/app/layout.tsx'));
   assert.ok(manifest.managedPaths.includes('src/supacharger'));
@@ -70,8 +63,8 @@ test('keeps the root layout editable and the root document implementation manage
 
 test('keeps inline loader variants responsive and colour configurable', async () => {
   const [defaultLoader, darkLoader, wrapper, manifestSource] = await Promise.all([
-    readFile(new URL('../src/assets/images/ui/inline-loader.svg', import.meta.url), 'utf8'),
-    readFile(new URL('../src/assets/images/ui/inline-loader-dark.svg', import.meta.url), 'utf8'),
+    readFile(new URL('../src/assets/svgr/ui/inline-loader.svg', import.meta.url), 'utf8'),
+    readFile(new URL('../src/assets/svgr/ui/inline-loader-dark.svg', import.meta.url), 'utf8'),
     readFile(new URL('../src/components/ui/loading-spinner.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../.supacharger/managed-files.json', import.meta.url), 'utf8'),
   ]);
@@ -90,17 +83,52 @@ test('keeps inline loader variants responsive and colour configurable', async ()
   assert.match(darkLoader, /<svg[\s\S]*?\bfill="#000000"/);
   assert.match(wrapper, /fill\s*=\s*'currentColor'/);
   assert.match(wrapper, /<Loader[\s\S]*?fill=\{fill\}/);
-  assert.ok(manifest.developerOwnedPaths.includes('src/assets/images/ui/inline-loader.svg'));
-  assert.ok(manifest.developerOwnedPaths.includes('src/assets/images/ui/inline-loader-dark.svg'));
+  assert.ok(manifest.developerOwnedPaths.includes('src/assets/svgr/ui/inline-loader.svg'));
+  assert.ok(manifest.developerOwnedPaths.includes('src/assets/svgr/ui/inline-loader-dark.svg'));
+  assert.ok(!manifest.managedPaths.includes('src/assets'));
+});
+
+test('offers the footer theme choices in the canonical three-position order', async () => {
+  const [toggle, footer, layout, englishMessages] = await Promise.all([
+    readFile(new URL('../src/supacharger/components/buttons/mode-toggle-button.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/sc_demo/sc_footer.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../src/app/layout.tsx', import.meta.url), 'utf8'),
+    readFile(new URL('../messages/en.json', import.meta.url), 'utf8'),
+  ]);
+  const choices = ["value: 'system'", "value: 'light'", "value: 'dark'"];
+  const positions = choices.map((choice) => toggle.indexOf(choice));
+  const messages = JSON.parse(englishMessages);
+
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(
+    positions,
+    [...positions].sort((left, right) => left - right),
+  );
+  assert.match(toggle, /<ToggleGroup/);
+  assert.match(toggle, /MonitorCog/);
+  assert.match(toggle, /Sun/);
+  assert.match(toggle, /Moon/);
+  assert.match(toggle, /useSyncExternalStore/);
+  assert.match(
+    toggle,
+    /const mounted = useSyncExternalStore\(subscribeToHydration, getClientSnapshot, getServerSnapshot\)/,
+  );
+  assert.match(toggle, /mounted\s*\?\s*\(themeChoices\.find/);
+  assert.match(footer, /<LocaleSwitcher appearance='marketing'\s*\/>[\s\S]*?<ModeToggle appearance='marketing'\s*\/>/);
+  assert.match(layout, /<ThemeProvider[^>]*enableSystem/);
+  assert.match(layout, /<body[\s\S]*?<SupachargerAnalytics config=\{SC_CONFIG\} \/>[\s\S]*?<\/body>/);
+  assert.deepEqual(messages.ThemeChangerMenu, {
+    title: 'Theme',
+    light: 'Light',
+    dark: 'Dark',
+    system: 'System',
+  });
 });
 
 test('smooths global fragment navigation while respecting reduced-motion preferences', async () => {
   const [styles, navigation, layout] = await Promise.all([
     readFile(new URL('../src/supacharger/styles/supacharger.css', import.meta.url), 'utf8'),
-    readFile(
-      new URL('../src/supacharger/components/layout/smooth-anchor-navigation.tsx', import.meta.url),
-      'utf8',
-    ),
+    readFile(new URL('../src/supacharger/components/layout/smooth-anchor-navigation.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../src/app/layout.tsx', import.meta.url), 'utf8'),
   ]);
 

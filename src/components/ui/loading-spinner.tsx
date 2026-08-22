@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 
-import InlineLoader from '@/assets/images/ui/inline-loader.svg';
-import InlineLoaderDark from '@/assets/images/ui/inline-loader-dark.svg';
+import InlineLoader from '@/assets/svgr/ui/inline-loader.svg';
+import InlineLoaderDark from '@/assets/svgr/ui/inline-loader-dark.svg';
 import { cn } from '@/utils/cn';
 
 type LoadingSpinnerProps = ComponentProps<typeof InlineLoader> & {

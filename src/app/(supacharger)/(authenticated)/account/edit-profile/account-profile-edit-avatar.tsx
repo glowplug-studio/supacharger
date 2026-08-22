@@ -2,6 +2,7 @@
 
 import { ChangeEvent, useRef, useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
@@ -13,6 +14,7 @@ interface AvatarProps {
 }
 
 export function Avatar({ initialImage, onImageChange }: AvatarProps) {
+  const t = useTranslations('AvatarEditor');
   const [image, setImage] = useState<string | null>(initialImage || null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +41,7 @@ export function Avatar({ initialImage, onImageChange }: AvatarProps) {
     if (file) {
       const isValid = await validateImage(file);
       if (!isValid) {
-        alert('Image must be exactly 400x400px and under 10MB');
+        alert(t('validationError'));
         return;
       }
 
@@ -71,7 +73,7 @@ export function Avatar({ initialImage, onImageChange }: AvatarProps) {
   return (
     <div className='flex w-full flex-col items-center space-y-4'>
       <div className='text-center'>
-        <p className='font-medium'>Set Avatar</p>
+        <p className='font-medium'>{t('title')}</p>
       </div>
 
       <div className='flex flex-col items-center'>
@@ -87,7 +89,7 @@ export function Avatar({ initialImage, onImageChange }: AvatarProps) {
             <div className='relative h-full w-full'>
               <Image
                 src={image}
-                alt='Avatar'
+                alt={t('avatarAlt')}
                 width={128}
                 height={128}
                 className='h-full w-full object-cover'
@@ -95,27 +97,27 @@ export function Avatar({ initialImage, onImageChange }: AvatarProps) {
               />
             </div>
           ) : (
-            <span className='text-sm text-muted-foreground'>No Image</span>
+            <span className='text-sm text-muted-foreground'>{t('noImage')}</span>
           )}
         </div>
-        <p className='mt-1 text-center text-[10px] text-muted-foreground'>Must be 400x400px, max 10mb</p>
+        <p className='mt-1 text-center text-[10px] text-muted-foreground'>{t('requirements')}</p>
       </div>
 
       <input type='file' ref={fileInputRef} onChange={handleFileChange} accept='image/*' className='hidden' />
 
       <div className='flex w-full max-w-[200px] flex-col gap-2'>
         <Button type='button' variant='secondary' onClick={handleUploadClick}>
-          Upload New
+          {t('upload')}
         </Button>
 
         <Button type='button' disabled={!selectedFile || isLoading} onClick={handleSave}>
           {isLoading ? (
             <>
               <Loader2 className='mr-2 h-4 w-4' />
-              Saving...
+              {t('saving')}
             </>
           ) : (
-            'Save'
+            t('save')
           )}
         </Button>
       </div>

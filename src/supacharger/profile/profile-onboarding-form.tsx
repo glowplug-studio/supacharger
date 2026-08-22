@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,7 @@ type ProfileOnboardingFormProps = {
 };
 
 export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormProps) {
+  const t = useTranslations('ProfileOnboardingForm');
   const router = useRouter();
   const usernamePolicy = SC_CONFIG.PROFILE_IDENTITY.USERNAME;
   const [firstName, setFirstName] = useState(initialProfile?.first_name ?? '');
@@ -36,11 +38,11 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
     const normalisedUsername = username.trim();
 
     if (!normalisedFirstName || !normalisedLastName) {
-      setError('Enter your first and last name.');
+      setError(t('nameError'));
       return;
     }
     if (usernamePolicy === 'required' && !normalisedUsername) {
-      setError('Choose a username to continue.');
+      setError(t('usernameError'));
       return;
     }
 
@@ -66,7 +68,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
     <form onSubmit={handleSubmit} className='space-y-5'>
       <div className='grid gap-4 sm:grid-cols-2'>
         <div className='space-y-2'>
-          <Label htmlFor='profile-first-name'>First name</Label>
+          <Label htmlFor='profile-first-name'>{t('firstName')}</Label>
           <Input
             id='profile-first-name'
             autoComplete='given-name'
@@ -77,7 +79,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
           />
         </div>
         <div className='space-y-2'>
-          <Label htmlFor='profile-last-name'>Last name</Label>
+          <Label htmlFor='profile-last-name'>{t('lastName')}</Label>
           <Input
             id='profile-last-name'
             autoComplete='family-name'
@@ -92,7 +94,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
       {usernamePolicy !== 'disabled' ? (
         <div className='space-y-2'>
           <Label htmlFor='profile-username'>
-            Username{usernamePolicy === 'optional' ? ' (optional)' : ''}
+            {t('username')}{usernamePolicy === 'optional' ? ` ${t('optional')}` : ''}
           </Label>
           <Input
             id='profile-username'
@@ -104,7 +106,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
             maxLength={40}
             pattern='[A-Za-z0-9_-]+'
           />
-          <p className='text-muted-foreground text-sm'>Use letters, numbers, underscores, or hyphens.</p>
+          <p className='text-muted-foreground text-sm'>{t('usernameHelp')}</p>
         </div>
       ) : null}
 
@@ -116,7 +118,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
 
       <Button type='submit' disabled={isSaving} className='w-full sm:w-auto'>
         {isSaving ? <Loader2 className='mr-2 h-4 w-4' aria-hidden='true' /> : null}
-        Continue
+        {t('continue')}
       </Button>
     </form>
   );

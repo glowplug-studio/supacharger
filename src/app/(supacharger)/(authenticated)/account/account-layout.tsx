@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { getTabIdFromPath } from '@/app/(supacharger)/(authenticated)/account/account-menu';
 import { Separator } from '@/components/ui/seperator';
 import { TabMenu } from '@/components/ui/tab-menu';
 
 export function AccountLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations('AccountTabs');
   const pathname = usePathname();
   const [activeTabId, setActiveTabId] = useState<string>('');
   const [isMobile, setIsMobile] = useState(false);
@@ -30,7 +32,7 @@ export function AccountLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <main className='container mx-auto px-4 py-6'>
-      <h1 className='mb-6 text-2xl font-bold tracking-tight'>Account Settings</h1>
+      <h1 className='mb-6 text-2xl font-bold tracking-tight'>{t('title')}</h1>
 
       {/* Mobile tabs (horizontal) */}
       {isMobile && (

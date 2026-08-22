@@ -9,10 +9,15 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/i18n/request.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('messages/en.json').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
-  assert.equal(classifyPath('src/assets/images/ui/inline-loader.svg').ownership, 'developer-owned');
-  assert.equal(classifyPath('src/assets/images/ui/inline-loader-dark.svg').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/assets/svgr/ui/inline-loader.svg').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/assets/svgr/ui/inline-loader-dark.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger/styles/supacharger.css').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/components/sc_demo/header.tsx').ownership, 'developer-owned-example');
+  assert.equal(
+    classifyPath('src/components/sc_demo/assets/logos/demo-logo-09.svg').ownership,
+    'developer-owned-example',
+  );
+  assert.match(classifyPath('src/components/sc_demo/assets/logos/demo-logo-09.svg').guidance, /SVGR/);
   assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/features/pricing/controllers/upsert-price.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'cli-managed-core');

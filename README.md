@@ -88,6 +88,8 @@ export const metadata = createSupachargerPageMetadata(SC_CONFIG, {
 
 A page can use Next.js `title.absolute` when it deliberately needs to bypass the global template. Google Analytics is disabled when `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` is empty and is loaded through Next.js's `@next/third-parties/google` integration when configured. A GA4 measurement ID is public configuration, not a secret; use a different value per deployment where required.
 
+Public content pages should expose page-specific canonical and social metadata and appear in `src/app/sitemap.ts`. Keep authenticated and authentication routes out of the sitemap. `src/app/robots.ts` follows `METADATA.INDEXING_ENABLED`, and both `/robots.txt` and `/sitemap.xml` must bypass Proxy so crawlers receive direct text/XML responses rather than an authentication redirect.
+
 Authentication uses one request-scoped SSR client and one verification call. The core defaults to verified JWT claims and excludes anonymous Auth users; an application can deliberately choose strict Auth-server verification:
 
 ```ts
@@ -179,7 +181,7 @@ The private `app.user_roles` table and custom access-token hook add a compact `u
 
 Supacharger uses `next-intl` with locale-neutral routes. A signed-in page keeps the same URL in every language—for example, `/account` never becomes `/en/account`. The request locale comes from the validated `supacharger_locale` cookie, then the signed-in user's saved profile preference, and finally English.
 
-A separate marketing site can hand off a language by linking to the SaaS with a standard query parameter such as `https://app.example.com/login?lang=fr`. Supacharger accepts only a locale listed in `SUPPORTED_LOCALES`, stores it as the active preference, synchronises the lowercase two-letter code to `app.profiles.language_code` when the user is signed in, and redirects to the same URL without `lang`. If the visitor signs in later, the cookie preference is synchronised after authentication. Other query parameters are preserved.
+A separate marketing site can hand off a language by linking to the SaaS with a standard query parameter such as `https://app.example.com/login?lang=es`. Supacharger accepts only a locale listed in `SUPPORTED_LOCALES`, stores it as the active preference, synchronises the locale code to `app.profiles.language_code` when the user is signed in, and redirects to the same URL without `lang`. If the visitor signs in later, the cookie preference is synchronised after authentication. Other query parameters are preserved. The demo catalogues currently cover English (`en`), Spanish (`es`), and Simplified Chinese (`zh`).
 
 Applications own their locale policy and translations:
 
@@ -196,6 +198,7 @@ Canonical client-callable database RPC examples live in the Supacharger-only Bru
 🚀 **[View Live Demo](https://demo.supacharger.dev/)**
 
 The demo includes:
+
 - User authentication with Supabase
 - Stripe payment integration (test mode)
 - Subscription management
@@ -205,6 +208,7 @@ The demo includes:
 ## Quick Start for Development
 
 ### Prerequisites
+
 - Node.js 22.0.0+
 - Supabase account
 - Stripe account (test mode at least)
@@ -213,17 +217,20 @@ The demo includes:
 ### Environment Setup
 
 1. Clone this repository:
+
    ```bash
    git clone https://github.com/glowplug-studio/supacharger.git
    cd supacharger
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Copy environment variables:
+
    ```bash
    cp .env.local.example .env.local
    ```
@@ -240,6 +247,7 @@ The demo includes:
 This project requires Node.js 22.0.0+. We've included version management files to ensure consistency:
 
 #### Using nvm (recommended)
+
 ```bash
 # Install and use the correct Node version
 nvm use
@@ -249,12 +257,15 @@ nvm install 22
 ```
 
 #### Using other version managers
+
 - **fnm**: `fnm use`
 - **nodenv**: `nodenv install && nodenv local`
 - **volta**: Volta will automatically use the correct version
 
 #### Manual installation
+
 If you don't use a version manager, ensure you have Node.js 22.0.0+ installed:
+
 ```bash
 node --version  # Should show v20.x.x
 ```
@@ -325,7 +336,6 @@ node --version  # Should show v20.x.x
    - Manage each authorised billing account in Customer Portal
    - Run event processing and reconciliation, then verify subscription Items and entitlements in Supabase
 
-
 **That's the end of the setup. The following are guides to help you code in your new codebase.**
 
 ---
@@ -349,9 +359,7 @@ Then you can make use of it like this:
 ```ts
 const products = await getProducts();
 const billingAccounts = await getBillingOverview();
-const featureKeys = billingAccounts.flatMap((account) =>
-  account.entitlements.map((grant) => grant.feature_lookup_key),
-);
+const featureKeys = billingAccounts.flatMap((account) => account.entitlements.map((grant) => grant.feature_lookup_key));
 ```
 
 ### Managing your database schema
@@ -379,7 +387,7 @@ Supacharger supports Apple (`apple`), Microsoft Azure (`azure`), Bitbucket (`bit
 
 Set a provider to `true` in the typed `AUTH_PROVDERS_ENABLED` map to render its login/signup button and permit the shared OAuth server action; disabled providers are rejected by that action. Configure the same provider in Supabase and allow the application's exact `/auth/callback` URL before enabling its UI flag. Prefer the OIDC and OAuth 2.0 options for new LinkedIn, Slack, and Twitter/X integrations.
 
-The downloaded Supabase SVG set lives in `src/assets/images/authProviderIcons/`. It also contains Email, Phone, SAML, and Web3 artwork for future method-specific journeys; those methods are not interchangeable with `signInWithOAuth`.
+The CLI-managed Supabase SVG set lives in `src/supacharger/assets/svgr/auth-providers/`. It also contains Email, Phone, SAML, and Web3 artwork for future method-specific journeys; those methods are not interchangeable with `signInWithOAuth`.
 
 Follow the [Supabase social login guides](https://supabase.com/docs/guides/auth/social-login) for provider credentials and callback configuration.
 
@@ -394,9 +402,15 @@ The application imports Tailwind once through `src/supacharger/styles/globals.cs
 
 Prefer Tailwind utilities in components. When custom CSS is needed, use `@layer base` for element defaults and theme tokens, `@layer components` for semantic classes, and `@layer utilities` for narrowly scoped utilities. Do not import Tailwind again from `project.css`.
 
+The shared `ModeToggle` opens a three-position System, Light, and Dark selector. Marketing presentation can pass `appearance='marketing'` so it matches the developer-owned locale switcher; the root theme provider must enable system mode for all three choices to work.
+
+Keep UI SVGs with their owning source under a developer-owned `src/` path and import them as React components through SVGR. Demo-only SVGs belong under `src/components/sc_demo/`, not `public/`, so the complete example can be deleted as one unit. Reserve public SVG URLs for favicons, manifests, external URL contracts, and similar cases that cannot use a component import.
+
 The standard brand colour pair is `--primary` and `--primary-foreground`, expressed as space-separated HSL channels in `src/styles/project.css`. Use semantic utilities such as `bg-primary`, `text-primary-foreground`, `text-foreground`, `text-muted-foreground`, `bg-accent`, and `ring-ring` instead of copying a product colour into a component. This keeps reusable application-owned surfaces, including `src/app/error/page.tsx` and `src/app/not-found.tsx`, aligned with each consuming application's branding.
 
-The primary developer-owned inline loading animation lives at `src/assets/images/ui/inline-loader.svg`; a matching black variant lives at `src/assets/images/ui/inline-loader-dark.svg`. Replace either file in place to customise it for a brand; CLI updates preserve both. Import them through SVGR rather than using an image tag or public URL. Both supplied assets take their artwork colour from the root `fill`, so callers can override it with a prop such as `<InlineLoader fill='currentColor' />`; a branded replacement may hard-code its colours and simply ignore that prop. The shared loading component uses the primary asset.
+The primary developer-owned inline loading animation lives at `src/assets/svgr/ui/inline-loader.svg`; a matching black variant lives at `src/assets/svgr/ui/inline-loader-dark.svg`. Replace either file in place to customise it for a brand; CLI updates preserve both. Import them through SVGR rather than using an image tag or public URL. Both supplied assets take their artwork colour from the root `fill`, so callers can override it with a prop such as `<InlineLoader fill='currentColor' />`; a branded replacement may hard-code its colours and simply ignore that prop. The shared loading component uses the primary asset.
+
+Responsive UI SVG sources need a correct `viewBox` and no root `width` or `height` when CSS controls sizing. Size their SVGR components at the call site with utilities such as `size-*`, `w-*`, `h-*`, or `size-[1em]`; usually add `shrink-0` beside text, preserve the artwork's aspect ratio, and use `currentColor` only when colour inheritance is intentional. Test the source contract and inspect the rendered SVG at each affected viewport so clipping cannot be hidden by arbitrary dimensions.
 
 Error and not-found routes are application-owned rather than CLI-protected. The starter keeps their shared presentation under `src/components/error-page/`: unauthenticated visitors receive only a full-viewport error state, while a server-verified authenticated visitor receives the same state inside the application's signed-in header and footer. Keep `/error` in the application's public route allow-list so authentication failures can reach it without creating a redirect loop; the canonical Proxy also exempts that route from profile-onboarding redirects so the explanation is not hidden by another guard.
 
@@ -454,4 +468,4 @@ PRs are always welcome.
 
 ---
 
-This project was inspired by Kolby Sisk's [next-supabase-stripe-starter]([https://github.com/vercel/nextjs-subscription-payments](https://github.com/KolbySisk/next-supabase-stripe-starter/tree/main)).
+This project was inspired by Kolby Sisk's [next-supabase-stripe-starter](<[https://github.com/vercel/nextjs-subscription-payments](https://github.com/KolbySisk/next-supabase-stripe-starter/tree/main)>).

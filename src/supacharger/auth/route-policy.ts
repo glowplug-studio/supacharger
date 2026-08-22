@@ -40,3 +40,28 @@ export function pathMatches(pathname: string, patterns: readonly string[]) {
   return patterns.some((pattern) => compileRoutePattern(pattern).test(pathname));
 }
 
+interface PostSignInOnboardingRoutePolicy {
+  isAuthenticated: boolean;
+  isPublicPath: boolean;
+  pathname: string;
+  redirectPath: string;
+  required: boolean;
+}
+
+export function shouldCheckPostSignInOnboarding({
+  isAuthenticated,
+  isPublicPath,
+  pathname,
+  redirectPath,
+  required,
+}: PostSignInOnboardingRoutePolicy) {
+  return (
+    isAuthenticated &&
+    required &&
+    !isPublicPath &&
+    pathname !== '/error' &&
+    pathname !== redirectPath &&
+    !pathname.startsWith('/api/') &&
+    !pathname.startsWith('/auth/')
+  );
+}

@@ -1,0 +1,1078 @@
+{
+  "Global": {
+    "siteTitle": "科鲁内特",
+    "siteDescription": "无需重新发明轮子即可开始您的下一个项目",
+    "or": "或者"
+  },
+  "GlobalUI": {
+    "buttonSaveChanges": "保存更改",
+    "buttonSaving": "保存",
+    "buttonThinking": "思维...",
+    "buttonSaved": "完毕"
+  },
+  "PageMeta": {
+    "accountAccountSecuritySettingsSectionTitle": "账户配置",
+    "accountAccountSecuritySettingsPageTitle": "帐户和安全设置"
+  },
+  "AuthTerms": {
+    "name": "姓名",
+    "username": "用户名",
+    "emailAddress": "电子邮件",
+    "password": "密码",
+    "oldPassword": "当前密码",
+    "newPassword": "新密码",
+    "retypeNewPassword": "重新输入新密码",
+    "setNewPassword": "设置新密码",
+    "forgotPassword": "忘记密码",
+    "loginSuccess": "您已登录",
+    "logIn": "登入",
+    "logOut": "登出",
+    "createAnAccount": "创建一个帐户",
+    "signUp": "报名",
+    "retypePassword": "重新输入密码",
+    "sendNewAuthEmailLabel": "发送另一封验证电子邮件",
+    "sendNewAuthEmailButtonLabel": "重新发送验证邮件",
+    "accountEmailVerified": "电子邮件已验证",
+    "sendNewAuthEmailSendingButtonLabel": "发送",
+    "sendNewAuthEmailSentButtonLabel": "发送",
+    "confirmationLinkAlreadyUsedSignedIn": "此确认链接已过期或已被使用。您已经登录。",
+    "confirmationLinkAlreadyUsedSignIn": "此确认链接已过期或已被使用。如果您的帐户已激活，请在下面登录。",
+    "resendConfirmationEmailSent": "确认电子邮件链接已重新发送，请检查您的电子邮件",
+    "resendConfirmationEmailFail": "发送失败。等待并重试",
+    "passwordUpdated": "您的密码已更新",
+    "backToSignIn": "返回登录页面",
+    "backToRequestLink": "获取另一个链接",
+    "createAccountWithEmail": "继续使用电子邮件",
+    "createAccountSuccess": "账户创建成功",
+    "accountAlreadyExists": "帐户已存在，请登录"
+  },
+  "evaluatePasswordStrengthErrorCodes": {
+    "oldPasswordIncorrect": "当前密码不正确",
+    "oldPasswordRequired": "您必须输入当前密码",
+    "provided_password_mismatch": "提供的密码不匹配",
+    "passwordTooShort": "提供的密码太短",
+    "password_failed_regex_evaluation": "提供的密码强度不够",
+    "mustContainLetterDigit": "密码必须包含至少一个字母和至少一位数字",
+    "mustContainLowerLetterUpperLetterDigit": "密码必须包含至少1个大写字母、至少1个小写字母和至少1个数字",
+    "mustContainLowerLetterUpperLetterDigitSymbol": "密码必须包含至少1个大写字母、至少1个小写字母、至少1个数字和至少1个特殊字符"
+  },
+  "evaluatePasswordStrengthComponent": {
+    "passwordLetter": "有一个字母 (Aa-Zz)",
+    "passwordDigit": "有一个数字 (0-9)",
+    "passwordLowercase": "有一个小写字母 (a-z)",
+    "passwordUppercase": "有一个大写字母 (A-Z)",
+    "passwordSymbol": "有特殊字符，例如 (%@$^£)",
+    "passwordRequirementsLabel": "要求",
+    "passwordMinLength": "最少字符数",
+    "passwordCustomRegexDescription": "替换_我",
+    "passwordNotStrongEnough": "密码强度不够"
+  },
+  "SupabaseErrorCodes": {
+    "invalidCredentials": "登录失败。请检查您的电子邮件和密码，然后重试",
+    "emailNotConfirmed": "糟糕，电子邮件未验证",
+    "invalidEmail": "电子邮件地址无效。请使用有效的电子邮件地址",
+    "emailAddressNotAuthorized": "该项目无法向该地址发送电子邮件。在 Supabase 中配置自定义 SMTP 或使用授权地址。",
+    "accountAlreadyExists": "该电子邮件地址已存在一个帐户。",
+    "emailProviderDisabled": "电子邮件身份验证当前已禁用。",
+    "signupDisabled": "目前已禁用新帐户注册。",
+    "weakPassword": "该密码不符合服务器的密码要求。",
+    "validationFailed": "身份验证详细信息不是预期的格式。",
+    "userNotFound": "未找到帐户。请仔细检查您的电子邮件和密码，然后重试",
+    "overEmailSendRateLimit": "已发送过多验证电子邮件。请等待几分钟，然后重试。",
+    "overLimit": "请求太多。请等待几分钟，然后重试",
+    "userBanned": "此帐户已被暂停",
+    "genericError": "出现了意想不到的问题",
+    "otpDisabled": "电子邮件验证码目前已禁用。",
+    "otpAlreadyVerified": "您的电子邮件已经过验证。",
+    "providerDisabled": "该登录提供程序当前已被禁用。",
+    "otpExpired": "一次性密码已过期或无效",
+    "samePassword": "新密码应与旧密码不同",
+    "tokenAuthApiError": "令牌已过期或无效",
+    "signupApiAuthError": "电子邮件地址和密码不符合安全要求"
+  },
+  "Toasts": {
+    "logoutFailed": "您退出时出现问题",
+    "logoutSucceeded": "稍后见！"
+  },
+  "Billing": {
+    "title": "计费"
+  },
+  "AuthJourney": {
+    "heroTitle": "发展您自己的社区",
+    "welcomeBack": "欢迎回来",
+    "createAccountTitle": "创建您的帐户",
+    "chooseStart": "选择您想要如何开始。",
+    "chooseSignIn": "选择您想要的登录方式。",
+    "validEmail": "输入有效的电子邮件地址。",
+    "enterPassword": "输入您的密码。",
+    "passwordMismatch": "密码不匹配。",
+    "strongerPassword": "选择一个更强的密码。",
+    "authenticationFailed": "认证失败。检查您的详细信息，然后重试。",
+    "organisationFailed": "您已登录，但无法选择该组织。",
+    "emailSendFailed": "无法发送登录电子邮件。稍后再试。",
+    "invalidCode": "该代码无效或已过期。再试一次或请求另一封电子邮件。",
+    "verifyingCode": "验证码",
+    "showPassword": "显示密码",
+    "hidePassword": "隐藏密码",
+    "back": "后退",
+    "enterCode": "输入您的确认码",
+    "enterSignInCode": "输入您的登录码",
+    "verifyEmail": "验证您的电子邮件",
+    "codeSent": "我们向 {email} 发送了 {length} 数字代码。",
+    "codeAndLinkSent": "我们向 {email} 发送了一封电子邮件。",
+    "signInCodeSent": "我们向 {email} 发送了 {length} 数字登录代码。",
+    "enterCodeOption": "在此输入代码",
+    "openLinkOption": "选项 2：使用安全链接",
+    "openLinkInstructions": "输入下面电子邮件中的代码或单击电子邮件中的按钮进行验证。",
+    "checkEmail": "检查您的电子邮件",
+    "linkSent": "我们向 {email} 发送了安全链接。单击电子邮件中的按钮进行登录。",
+    "continueEmail": "继续使用电子邮件",
+    "useSocialAuth": "使用社交身份验证",
+    "needAccount": "需要帐户吗？",
+    "alreadyAccount": "已经有帐户？",
+    "signUp": "报名",
+    "signIn": "登入",
+    "createAccount": "创建账户",
+    "createAccountInstead": "改为创建帐户",
+    "email": "电子邮件",
+    "password": "密码",
+    "organisationHandle": "组织句柄",
+    "organisationHandleOptional": "组织句柄（可选）",
+    "repeatPassword": "重复密码",
+    "forgotPassword": "忘记密码？",
+    "magicLink": "通过电子邮件向我发送登录链接",
+    "passwordlessOtp": "通过电子邮件向我发送登录代码",
+    "passwordlessSignInUnavailable": "我们无法发送登录电子邮件。检查电子邮件地址，或创建一个帐户。",
+    "magicLinkSignInUnavailable": "我们无法发送登录链接。检查电子邮件地址，或创建一个帐户。",
+    "resendSuccess": "新的确认电子邮件已发送。",
+    "signInCodeResendSuccess": "新的登录代码已发送。",
+    "signInLinkResendSuccess": "新的登录链接已发送。",
+    "resendFailed": "电子邮件尚无法发送。稍后再试。",
+    "didNotReceive": "没有收到电子邮件？",
+    "sendAgainIn": "以 {seconds}s 再次发送",
+    "sendAnother": "再次发送",
+    "loginHere": "在此登录",
+    "getVerificationLink": "获取验证链接"
+  },
+  "LoginPage": {
+    "title": "登入",
+    "newTo": "新来的"
+  },
+  "PasswordResetPage": {
+    "title": "重置您的密码",
+    "redirectingIn": "成功。重定向至",
+    "description": "我们将向您的电子邮件发送密码重置链接",
+    "expiredCode": "重置代码无效或已过期",
+    "verifyingCode": "正在验证代码...",
+    "noCode": "验证链接已过期或代码无效",
+    "getResetLink": "发送链接",
+    "emailSent": "链接已发送，请检查您的收件箱",
+    "enterEmailPlaceholder": "输入您的电子邮件"
+  },
+  "CreateAccountPage": {
+    "title": "创建一个帐户",
+    "iAlreadyHaveAnAccount": "我已经有一个帐户"
+  },
+  "CreateAccountFormComponent": {
+    "title": "创建一个帐户",
+    "orCreateAccountWithEmail": "或使用电子邮件创建帐户",
+    "iAlreadyHaveAnAccount": "我已经有一个帐户",
+    "invalidEmail": "输入有效的电子邮件",
+    "missingEmail": "电子邮件为必填项",
+    "missingPassword": "需要密码",
+    "missingRetypePassword": "需要重新输入密码",
+    "passwordMismatch": "密码不匹配"
+  },
+  "OTPFormComponent": {
+    "title": "验证码",
+    "description": "输入我们发送给您的代码，或单击电子邮件中的验证按钮。",
+    "fieldLabel": "输入代码",
+    "emailSent": "我们向 {email} 发送了一封电子邮件。",
+    "invalidEmail": "在验证代码之前输入有效的电子邮件",
+    "verifyingCode": "验证码"
+  },
+  "PasswordUpdateFormComponent": {
+    "title": "更新您的密码"
+  },
+  "AccountDropdownMenu": {
+    "accountSettings": "账户设置",
+    "billing": "计费",
+    "myProfile": "轮廓"
+  },
+  "ThemeChangerMenu": {
+    "title": "主题",
+    "light": "光",
+    "dark": "黑暗的",
+    "system": "系统"
+  },
+  "Attribution": {
+    "builtWith": "内置"
+  },
+  "MarketingDemo": {
+    "trustedOrganisations": "受到顶级组织的信赖"
+  },
+  "MarketingMetadata": {
+    "home": {
+      "title": "科鲁内特",
+      "description": "用于加强本地联系、共享对话、群组和活动的社区平台。"
+    },
+    "legal": {
+      "title": "合法的",
+      "description": "阅读 Korunet 的使用条款、隐私政策和第三方 cookie 政策。"
+    },
+    "pricing": {
+      "title": "定价",
+      "description": "了解 Korunet 定价并为您的社区选择合适的计划。"
+    },
+    "license": {
+      "title": "执照",
+      "description": "了解 Supacharger 源许可证、归属要求、商业许可和第三方依赖项。"
+    },
+    "whatsIncluded": {
+      "title": "包含什么",
+      "description": "探索 Supacharger 包含的产品基础和开发人员功能。"
+    },
+    "paywallDemos": {
+      "title": "付费墙演示",
+      "description": "预览受保护产品功能的订阅和一次性购买提示。"
+    }
+  },
+  "MarketingFeaturePages": {
+    "whatsIncluded": {
+      "title": "Supacharger 实际包含什么",
+      "description": "为身份、计费、个人资料、本地化以及扩展产品所需的工具提供可复用的基础。",
+      "fullFeatureSet": "",
+      "capabilitiesTitle": "产品基础能力已完成连接",
+      "capabilitiesDescription": "这些是已经实现的路由、策略、数据库契约和组件，并非路线图中的占位内容。",
+      "items": [
+        {
+          "title": "验证",
+          "description": "电子邮件、无密码、OAuth、确认、恢复和受保护的路由基础。"
+        },
+        {
+          "title": "简介和组织",
+          "description": "共享个人资料合同、入职政策、私人媒体和组织就绪服务。"
+        },
+        {
+          "title": "计费和访问",
+          "description": "订阅状态、权利、结账流程和可配置的付费专区边界。"
+        },
+        {
+          "title": "本土化",
+          "description": "应用程序拥有的区域设置策略、目录、持久性和语言切换支持。"
+        },
+        {
+          "title": "营销基础",
+          "description": "响应式导航、元数据、爬虫发现、主题和可访问的演示组件。"
+        },
+        {
+          "title": "开发者工具",
+          "description": "类型化合同、数据库迁移、验证套件、升级元数据和存储库指南。"
+        }
+      ],
+      "boundariesTitle": "清晰的所有权让更新更安全",
+      "boundariesDescription": "该 starter 将 CLI 管理的实现与应用自主管理的品牌、策略、翻译、样式和演示界面明确分离。",
+      "boundaries": [
+        {
+          "title": "CLI 管理的核心",
+          "description": "共享的身份验证、个人资料、路由、数据库、计费和兼容性代码可以作为一个受保护的基础统一升级。"
+        },
+        {
+          "title": "开发者自主管理的扩展点",
+          "description": "产品配置、区域设置策略、语言目录、项目样式和演示组件始终由应用自行控制。"
+        },
+        {
+          "title": "数据库与集成契约",
+          "description": "包含 Supabase 迁移、私有应用表、公共 API RPC、可信服务 RPC、Stripe 路由和图像处理。"
+        }
+      ],
+      "stackTitle": "已安装的技术栈",
+      "stackDescription": "页面直接从 package.json 读取准确的依赖版本。共享运行时软件包采用固定版本，确保 CLI 更新可复现。",
+      "stackGroups": [{ "title": "应用运行时" }, { "title": "数据与计费" }, { "title": "界面工具" }],
+      "packageTitle": "您将获得的 package.json",
+      "packageDescription": "这是代码库当前使用的文件，直接从源文件渲染，完整展示所有脚本、依赖项、开发工具和覆盖配置。",
+      "packageFile": "package.json",
+      "copyPackage": "复制 package.json",
+      "copiedPackage": "已复制",
+      "copyFailed": "复制失败"
+    },
+    "paywallDemos": {
+      "title": "不同购买旅程的付费专区模式",
+      "description": "无需登录即可比较公共升级提示。仅当访问者继续进入特定于帐户的购买流程时才需要进行身份验证。",
+      "heroImageAlt": "Korunet 产品工作区显示社区计费功能",
+      "galleryTitle": "选择适合当下的计费边界",
+      "galleryDescription": "七种交互模式展示了访问、升级、产品、服务和支付如何出现在产品内部。",
+      "items": [
+        {
+          "id": "莫代尔",
+          "title": "以模态方式升级",
+          "description": "在解释他们选择的行动所需的计划时，让人们了解具体情况。",
+          "cta": "打开模态"
+        },
+        {
+          "id": "重定向",
+          "title": "重定向至产品页面",
+          "description": "向访问者发送完整的公共计划比较，而不要求他们先进行身份验证。",
+          "cta": "浏览产品"
+        },
+        {
+          "id": "工具提示",
+          "title": "解释禁用的功能",
+          "description": "保持不可用的控件可见，并解释哪个计划将其包含在悬停或键盘焦点上。",
+          "cta": "显示计划要求"
+        },
+        {
+          "id": "服务",
+          "title": "改变计划的服务",
+          "description": "让客户添加托管服务并立即显示生成的计划和每月总计。",
+          "cta": "添加服务"
+        },
+        {
+          "id": "大车",
+          "title": "一次性产品购物车",
+          "description": "在不中断页面的情况下添加单独定价的产品，然后在侧面板中查看它。",
+          "cta": "添加到购物车"
+        },
+        {
+          "id": "应用内",
+          "title": "应用内购买",
+          "description": "提供小型上下文购买，其中价值在应用程序内已经很明确。",
+          "cta": "在应用程序中购买"
+        },
+        {
+          "id": "条纹",
+          "title": "Stripe嵌入式支付",
+          "description": "通过明确标记的嵌入式结帐集成边界将付款保留在产品内部。",
+          "cta": "预览付款"
+        }
+      ],
+      "modal": {
+        "title": "解锁组织控制",
+        "description": "社区计划提供高级角色和多个组织者。",
+        "plan": "社区计划",
+        "price": "每月 19 美元",
+        "priceCaption": "帐户创建并确认后开始计费。",
+        "dismiss": "现在不要",
+        "continue": "继续报名"
+      },
+      "modalExample": {
+        "title": "",
+        "code": "",
+        "copy": "",
+        "copied": "",
+        "copyFailed": "",
+        "agentNote": ""
+      },
+      "products": {
+        "plan": "公共产品目录",
+        "caption": "创建帐户之前比较计划、包含的功能和购买类型。"
+      },
+      "tooltip": {
+        "feature": "出口组织报告",
+        "explanation": "在组织计划中可用。升级为导出报告并管理多个社区。"
+      },
+      "services": {
+        "basePlan": "社区",
+        "expandedPlan": "组织",
+        "basePrice": 19,
+        "planLabel": "结果计划",
+        "monthly": "在此演示中每月",
+        "options": [
+          {
+            "id": "入职",
+            "name": "受管入职",
+            "description": "组织者的指导设置",
+            "price": 12
+          },
+          {
+            "id": "适度",
+            "name": "审核支持",
+            "description": "定期支持服务",
+            "price": 24
+          },
+          {
+            "id": "迁移",
+            "name": "内容迁移",
+            "description": "导入现有社区数据",
+            "price": 18
+          }
+        ]
+      },
+      "cart": {
+        "title": "你的购物车",
+        "description": "在继续创建帐户之前查看一次性产品。",
+        "product": "社区启动套件",
+        "license": "一次性产品许可证",
+        "price": "$79",
+        "checkout": "继续报名",
+        "imageAlt": "社区启动套件中包含 Korunet 移动入门屏幕"
+      },
+      "inApp": {
+        "product": "活动推广助力",
+        "price": "一次性 4.99 美元",
+        "ready": "准备好",
+        "status": "购买移交已准备就绪。生产应用程序现在将调用其平台计费适配器。"
+      },
+      "stripe": {
+        "emailLabel": "电子邮件",
+        "cardLabel": "卡详情",
+        "cardPlaceholder": "4242 4242 4242 4242",
+        "disclaimer": "仅交互式演示。没有提交付款数据。实时集成使用服务器创建的客户端密钥安装 Stripe Embedded Checkout。",
+        "status": "预览完成。连接 Stripe Checkout 会话以接受真实付款。"
+      },
+      "billingCta": {
+        "title": "使用您自己的帐户查看实际计费情况",
+        "description": "创建帐户，然后直接继续进入订阅流程以测试经过身份验证的计费旅程。",
+        "label": "注册计费",
+        "href": "/account/create?next=%2Faccount%2Fbilling%2Fsubscribe%3Ffull%3D1"
+      }
+    }
+  },
+  "MarketingNavigation": {
+    "overview": "概述",
+    "features": "特征",
+    "integrations": "集成",
+    "benefits": "好处",
+    "reviews": "评论",
+    "pricing": "定价",
+    "inPageAnchors": "页面中的锚点",
+    "supachargerFeatures": "超级充电器特点",
+    "whatsIncluded": "包含什么",
+    "whatsIncludedDescription": "从核心产品功能到开发人员规范。",
+    "paywallDemos": "付费墙演示",
+    "paywallDemosDescription": "了解号召性用语如何鼓励用户订阅。",
+    "licenseInformation": "许可证信息",
+    "licenseInformationDescription": "了解源许可证、归属要求和第三方组件。",
+    "license": "执照",
+    "supacharger": "超级充电器",
+    "opensInNewTab": "在新选项卡中打开",
+    "login": "登录",
+    "createAccount": "创建账户",
+    "openNavigation": "打开导航",
+    "mobileNavigation": "手机导航"
+  },
+  "LocaleSwitcher": {
+    "changeLanguage": "切换语言",
+    "changeFailed": "无法切换语言，请重试。",
+    "english": "英语",
+    "spanish": "西班牙语",
+    "chinese": "中文"
+  },
+  "MarketingFooter": {
+    "tagline": "一个用于对话、群组、活动和附近人员的共享社区平台。",
+    "navigation": "导航",
+    "information": "信息",
+    "overview": "概述",
+    "features": "特征",
+    "integrations": "集成",
+    "benefits": "好处",
+    "reviews": "评论",
+    "pricing": "定价",
+    "faq": "常问问题",
+    "termsOfUse": "使用条款",
+    "license": "执照",
+    "login": "登录",
+    "createAccount": "创建账户",
+    "allRightsReserved": "版权所有。",
+    "firstBuiltIn": "首先内置",
+    "newZealand": "新西兰",
+    "by": "经过"
+  },
+  "LicensePage": {
+    "eyebrow": "开源许可",
+    "title": "使用 Supacharger 并注明归属，或选择商业许可证。",
+    "introduction": "本页总结了存储库许可证及其直接依赖项声明的许可证。它是实用指南，不能替代管理许可文本。",
+    "nonAttributionCta": "获得非归属许可",
+    "readLicense": "阅读 CC BY-NC-SA 4.0",
+    "coreTitle": "Supacharger 源许可证",
+    "coreBody": "存储库许可证将 Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International 应用到 Supacharger 拥有的源。需要归属，该公共许可证不允许商业使用，并且改编必须使用相同的许可证。",
+    "commercialBody": "单独的付费许可是商业或非归属用途的途径。其条款与公共存储库许可证是分开的，在商业产品中使用 Supacharger 之前应进行审查。",
+    "notLegalAdvice": "许可证摘要可以省略重要的条件和例外情况。阅读全文并获取针对您的用例的法律建议。",
+    "dependenciesTitle": "直接依赖许可证快照",
+    "dependenciesIntro": "安装的直接运行时和开发依赖项大多是经过许可的。这些组基于当前锁定文件中的包元数据和捆绑许可证文件，而不是法律意见或完整的传递依赖通知。",
+    "groups": {
+      "mit": {
+        "title": "麻省理工学院",
+        "description": "许可通常要求在重新分发的副本中保留版权和许可声明。"
+      },
+      "apache": {
+        "title": "阿帕奇-2.0",
+        "description": "具有通知要求和明确专利授予的许可。"
+      },
+      "isc": {
+        "title": "ISC 和 MIT 的图标血统",
+        "description": "Lucide 宣布获得 ISC 许可，并根据 MIT 条款包含一些源自 Feather 的图标作品。"
+      },
+      "mpl": {
+        "title": "MPL-2.0",
+        "description": "Vercel Analytics 声明文件级 Copyleft 许可证。修改后的涵盖文件在分发时可能会承担源可用性义务。"
+      }
+    },
+    "importsTitle": "进口算作分销吗？",
+    "importsBody": "仅导入语法并不能回答这个问题。客户端构建可以将依赖项代码复制到浏览器捆绑包中，部署或源存档可以包含包文件。远程托管脚本可能无法复制到 Supacharger 中，但其服务条款仍然适用。合规性遵循实际复制、修改和分发的内容。",
+    "scopeTitle": "此次审计涵盖的内容",
+    "scopeBody": "此快照对 package.json 中的直接包声明的许可证进行分组。锁定文件还包含传递包，并且资产、字体、托管服务和用户添加的代码可能具有单独的术语。在每次发布之前重新运行正式的通知审核。",
+    "auditDate": "根据 2026 年 8 月 22 日设置的存储库依赖项进行审核。",
+    "ccSoftwareFaq": "知识共享软件常见问题解答",
+    "repositoryLicense": "存储库许可证",
+    "legalPage": "Korunet 法律页面"
+  },
+  "MarketingLanding": {
+    "createAccount": "创建账户",
+    "exploreFeatures": "探索功能",
+    "trustedOrganisations": "受到顶级组织的信赖",
+    "getStarted": "开始使用",
+    "mostPopular": "最受欢迎",
+    "roleAtOrganisation": "{role} 于 {organisation}",
+    "hero": {
+      "title": "加强本地联系的社区平台。",
+      "description": "将对话、群组、活动和值得信赖的本地联系带入一个为真实社区打造的平静、共享的场所。"
+    },
+    "overview": {
+      "title": "您周围社区的一处场所",
+      "description": "保持每个社区周围的人员、环境和活动可见，而无需将一组不相关的工具拼接在一起。"
+    },
+    "features": {
+      "title": "适合您社区的平台",
+      "description": "从一个重点小组开始，然后随着社区的发展添加所需的对话、活动和结构。"
+    },
+    "integrations": {
+      "title": "使用人们已经知道的工具",
+      "description": "连接熟悉的服务，而 Korunet 仍然是成员返回进行社区活动的共享场所。"
+    },
+    "benefitsSection": {
+      "title": "本地连接的灵活基础",
+      "description": "为现实世界的群体提供他们所需的结构，同时保持产品温暖、清晰且易于参与。"
+    },
+    "experiences": {
+      "title": "您的社区保持联系所需的一切",
+      "description": "在发现、有组织的群组和直接对话之间移动，而不会丢失使每个连接有用的上下文。"
+    },
+    "reviewsSection": {
+      "title": "受到社区运作人士的信任",
+      "description": "清晰的社区体验有助于组织者花更少的时间管理工具，而花更多的时间将人们聚集在一起。"
+    },
+    "pricingSection": {
+      "title": "与您的社区一起增长的定价",
+      "description": "从今天您的社区需要的形状开始，然后随着参与的增加添加更多的协调和支持。"
+    },
+    "faqSection": {
+      "title": "前进所需的一切",
+      "description": "有关空间、隐私、访问、语言以及启动您的第一个社区的要点。"
+    },
+    "cta": {
+      "title": "让您的社区更加紧密地联系在一起",
+      "description": "为当地重要的人员、对话和活动创建一个集中的空间。"
+    },
+    "images": {
+      "messagingWorkspace": "Korunet 社区消息传递工作区",
+      "mobileScreens": "Korunet 移动社区屏幕",
+      "neighboursAtNight": "当地邻居晚上聚集在共享社区空间",
+      "mobileExperience": "跨移动屏幕的 Korunet 社区体验"
+    },
+    "communityPillars": [
+      {
+        "title": "共享对话",
+        "description": "让每一次对话都易于查找且易于理解。"
+      },
+      {
+        "title": "真实社区",
+        "description": "将成员、邻居和组织者带入一个值得信赖的空间。"
+      },
+      {
+        "title": "连接的事件",
+        "description": "无需分散的工具即可协调活动和定期聚会。"
+      },
+      {
+        "title": "内在的信任",
+        "description": "使用清晰的控制来保持每个组的私密性和可管理性。"
+      }
+    ],
+    "platformFeatures": [
+      {
+        "title": "发现您的社区",
+        "description": "将附近的团体、组织者和共同利益纳入一个清晰的视图中。",
+        "imageAlt": "Korunet 社区发现屏幕"
+      },
+      {
+        "title": "一个共享工作区",
+        "description": "让每个屏幕上的消息、个人资料和社区活动保持联系。",
+        "imageAlt": "Korunet 社区消息传递工作区"
+      },
+      {
+        "title": "持续参与",
+        "description": "为会员提供一个聚会、贡献和参与的温馨场所。",
+        "imageAlt": "当地邻居聚集在共享的社区空间"
+      }
+    ],
+    "connectedExperiences": [
+      {
+        "title": "找到你周围的人和团体",
+        "description": "查找相关的群体、人员和活动，而无需跨断开连接的服务进行搜索。",
+        "cta": "探索发现",
+        "imageAlt": "Korunet 社区概况和发现经验"
+      },
+      {
+        "title": "在一个干净的家中协调活动",
+        "description": "规划活动、分享最新动态，并让每个成员都能进行完整的对话。",
+        "cta": "查看社区工具",
+        "imageAlt": "包含消息和活动的 Korunet 社区工作区"
+      },
+      {
+        "title": "将介绍转化为参与",
+        "description": "让新成员轻松了解他们属于哪里以及如何参与。",
+        "cta": "创建账户",
+        "imageAlt": "Korunet移动社区体验"
+      }
+    ],
+    "benefits": [
+      {
+        "title": "本地化设计",
+        "description": "围绕地点、事业、兴趣或共同目标创建空间。"
+      },
+      {
+        "title": "灵活的控制",
+        "description": "设置角色和权限，而不会减慢组织者的速度。"
+      },
+      {
+        "title": "快速发现",
+        "description": "通过一次清晰的搜索查找人员、对话和群组。"
+      },
+      {
+        "title": "有用的通知",
+        "description": "让会员随时了解情况，而不是将每次更新变成噪音。"
+      },
+      {
+        "title": "隐私第一",
+        "description": "通过私人空间和明确的选择来保护个人详细信息。"
+      },
+      {
+        "title": "准备成长",
+        "description": "在一个平台上支持小圈子和更大的组织。"
+      }
+    ],
+    "testimonials": [
+      {
+        "avatarAlt": "玛雅·奥卡福的肖像",
+        "organisation": "北区邻居",
+        "name": "玛雅·奥卡福",
+        "quote": "Korunet 将我们的活动、会员更新和本地对话带到了人们实际查看的地方。",
+        "role": "邻里组织者"
+      },
+      {
+        "avatarAlt": "卢卡·莫雷蒂的肖像",
+        "organisation": "共同点",
+        "name": "卢卡·莫雷蒂",
+        "quote": "新会员从第一天起就知道该去哪里、该问谁以及如何参与。",
+        "role": "社区主持人"
+      },
+      {
+        "avatarAlt": "Sora Kim 的肖像",
+        "organisation": "滨江网络",
+        "name": "金素拉",
+        "quote": "我们花更少的时间追逐信息，花更多的时间帮助邻居将好想法变成现实。",
+        "role": "志愿者协调员"
+      },
+      {
+        "avatarAlt": "托马斯·科瓦尔斯基的肖像",
+        "organisation": "门户开放集体",
+        "name": "托马斯·科瓦尔斯基",
+        "quote": "私人空间和明确的角色让我们的志愿者充满自信地工作，而不会让平台感觉复杂。",
+        "role": "节目主持人"
+      },
+      {
+        "avatarAlt": "埃利亚斯·诺瓦克的肖像",
+        "organisation": "市场巷",
+        "name": "埃利亚斯·诺瓦克",
+        "quote": "现在，附近的群组可以分享机会并组织聚会，而无需每次对话都消失在另一个应用程序中。",
+        "role": "当地企业主"
+      },
+      {
+        "avatarAlt": "卡米尔·洛朗的肖像",
+        "organisation": "马赛克屋",
+        "name": "卡米尔·洛朗",
+        "quote": "Korunet 为每个项目提供了足够的结构，同时保持社区温暖、可见且易于加入。",
+        "role": "文化网络协调员"
+      }
+    ],
+    "plans": [
+      {
+        "name": "起动机",
+        "price": "自由的",
+        "description": "建立一个重点小组并将第一批成员聚集在一起。",
+        "features": ["核心社区空间", "直接对话", "活动策划", "会员简介"]
+      },
+      {
+        "name": "社区",
+        "price": "9.99 美元/月",
+        "description": "通过更多的控制和协作来运营一个活跃的社区。",
+        "features": ["一切都在启动器中", "高级角色", "多个主办方", "优先支持"]
+      },
+      {
+        "name": "组织",
+        "price": "风俗",
+        "description": "通过量身定制的支持和治理来协调多个社区。",
+        "features": ["一切尽在社区", "组织控制", "自定义入职", "专注支持"]
+      }
+    ],
+    "compliance": {
+      "title": "信任是产品的一部分",
+      "description": "明确的权限、私人空间和负责任的默认设置使成员能够控制自己的参与方式。",
+      "items": ["私人空间", "明确角色", "数据控制", "安全访问", "会员选择", "负责任的默认行为"]
+    },
+    "faqs": [
+      {
+        "question": "我可以使用 Korunet 管理什么？",
+        "answer": "Korunet 将社区对话、直接消息、群组、活动和成员发现整合到一个共享平台中。"
+      },
+      {
+        "question": "社区可以保持私有吗？",
+        "answer": "是的。社区可以控制谁加入、成员可以看到什么以及哪些角色可以组织或管理每个空间。"
+      },
+      {
+        "question": "Korunet 适合谁？",
+        "answer": "Korunet 专为社区团体、聚会、倡导网络、当地企业和大型社区组织而设计。"
+      },
+      {
+        "question": "Korunet 支持多种语言吗？",
+        "answer": "会员可以从页眉或页脚切换界面语言。目前的演示包括英语、西班牙语和中文。"
+      },
+      {
+        "question": "我该如何开始？",
+        "answer": "创建一个帐户，设置您的个人资料，然后从一个重点小组开始。随着社区的发展，您可以添加更多空间。"
+      }
+    ]
+  },
+  "PricingPage": {
+    "title": "定价",
+    "description": "为新团体、活跃社区或协调多个空间的组织选择灵活的计划。",
+    "included": "包括",
+    "getStarted": "开始使用",
+    "plans": [
+      {
+        "name": "起动机",
+        "description": "对于个人和小团队",
+        "price": "每月 10 美元",
+        "features": ["50 名社区成员", "10 个活动空间"]
+      },
+      {
+        "name": "专业的",
+        "description": "对于不断发展的社区",
+        "price": "每月 20 美元",
+        "features": ["100 名社区成员", "20 个活动空间", "优先支持"]
+      },
+      {
+        "name": "商业",
+        "description": "对于组织和大型团队",
+        "price": "每月 100 美元",
+        "features": ["300 名社区成员", "100 个活动空间", "100名团队成员", "先进的控制"]
+      }
+    ],
+    "lifetime": {
+      "title": "终身账户无限制",
+      "description": "一次性付款即可永久访问核心社区体验。",
+      "included": "包含什么",
+      "features": ["私人论坛访问", "会员资源", "参加年会", "官方会员衬衫"],
+      "access": "无限访问，永久",
+      "price": "500 美元",
+      "getStarted": "开始使用"
+    }
+  },
+  "LegalPage": {
+    "eyebrow": "政策",
+    "title": "法律信息",
+    "description": "管理 Korunet 使用并解释如何处理个人信息和 cookie 的条款和政策。",
+    "lastUpdated": "最后更新日期：2025 年 6 月 4 日",
+    "tabs": {
+      "terms": "使用条款",
+      "privacy": "隐私政策",
+      "cookies": "第三方 cookie"
+    },
+    "terms": {
+      "title": "科鲁网使用条款",
+      "sections": [
+        {
+          "title": "使用服务",
+          "body": "仅将 Korunet 用于合法目的。对帐户凭据保密，提供准确的帐户信息，并且不干扰服务的运行或安全。"
+        },
+        {
+          "title": "你的内容",
+          "body": "您保留对您提交的内容的所有权。您授予 Korunet 托管、显示和处理该内容所需的权限以运营该服务。"
+        },
+        {
+          "title": "可用性和保修",
+          "body": "该服务按可用情况提供。功能可能会更改、暂停或终止，并且不承诺不间断或无错误的操作。"
+        },
+        {
+          "title": "结束访问",
+          "body": "当违反这些条款、服务被滥用或继续访问会产生法律或安全风险时，访问可能会被暂停或终止。"
+        }
+      ]
+    },
+    "privacy": {
+      "title": "科鲁网隐私政策",
+      "sections": [
+        {
+          "title": "收集的信息",
+          "body": "Korunet 可能会收集帐户详细信息、个人资料信息、使用数据、设备信息以及您联系支持人员时提供的信息。"
+        },
+        {
+          "title": "如何使用信息",
+          "body": "信息用于提供和保护服务、个性化体验、与用户沟通、了解产品使用情况以及履行法律义务。"
+        },
+        {
+          "title": "分享和保留",
+          "body": "个人信息不会被出售。它可能会在需要时与服务提供商、法律机构或您指示的其他方共享。仅在实现这些目的所需的时间内保留信息。"
+        },
+        {
+          "title": "您的选择",
+          "body": "根据适用法律，您可以请求访问、更正、导出或删除个人信息，并可以选择退出营销传播。"
+        }
+      ]
+    },
+    "cookies": {
+      "title": "第三方 cookie 政策",
+      "sections": [
+        {
+          "title": "为什么使用cookie",
+          "body": "Cookie 和类似存储可以保证会话安全、记住偏好、衡量性能并帮助了解服务的使用方式。"
+        },
+        {
+          "title": "第三方服务",
+          "body": "用于身份验证、支付、分析或嵌入内容的提供商可以根据其政策设置自己的 cookie。"
+        },
+        {
+          "title": "管理cookies",
+          "body": "浏览器控件可以阻止或删除 cookie。禁用必要的 cookie 可能会导致登录或服务的其他部分无法正常工作。"
+        }
+      ]
+    }
+  },
+  "AccountPages": {
+    "billing": {
+      "title": "计费",
+      "noAccount": "没有计费帐户",
+      "startSubscription": "开始订阅",
+      "createAccountHelp": "开始结帐时创建一个计费帐户。",
+      "accountTitle": "{type} 计费",
+      "manageBilling": "管理账单",
+      "noSubscriptions": "此计费帐户未附加任何订阅。",
+      "status": "状态：{status}",
+      "unknownStatus": "未知",
+      "features": "特征"
+    },
+    "notifications": {
+      "title": "通知",
+      "saved": "您的通知设置已保存。",
+      "pushTitle": "推送通知",
+      "pushLabel": "启用推送通知",
+      "pushDescription": "在您的设备上接收通知",
+      "emailTitle": "电子邮件通知",
+      "dailyLabel": "每日总结",
+      "dailyDescription": "获取您的每日活动摘要",
+      "weeklyLabel": "周报",
+      "weeklyDescription": "接收您的统计数据的每周摘要",
+      "marketingLabel": "营销电子邮件",
+      "marketingDescription": "接收有关新功能和促销活动的更新",
+      "save": "保存首选项"
+    },
+    "privacy": {
+      "title": "隐私设置",
+      "saved": "您的隐私偏好已保存。",
+      "preferences": "隐私偏好",
+      "profileLabel": "个人资料可见性",
+      "profileDescription": "让其他用户可以看到您的个人资料",
+      "activityLabel": "活动状态",
+      "activityDescription": "显示您何时在平台上活跃",
+      "searchLabel": "搜索可见性",
+      "searchDescription": "让其他人在搜索结果中找到您",
+      "save": "保存隐私设置"
+    },
+    "editProfile": {
+      "title": "编辑个人资料",
+      "saved": "您的个人资料已成功更新。",
+      "open": "打开",
+      "confirmTitle": "你绝对确定吗？",
+      "confirmDescription": "此操作无法撤消。它将永久删除您的帐户并从我们的服务器中删除您的数据。",
+      "firstName": "名",
+      "lastName": "姓",
+      "aboutMe": "关于我",
+      "save": "保存更改"
+    },
+    "account": {
+      "title": "帐户和安全设置",
+      "authenticatedWith": "您已通过身份验证",
+      "email": "电子邮件",
+      "emailAddress": "帐户电子邮件地址",
+      "save": "保存更改",
+      "twoFactor": "双因素身份验证",
+      "noTwoFactor": "未找到双因素身份验证方法。",
+      "setupTwoFactor": "设置双因素身份验证",
+      "language": "语言",
+      "languagePreference": "语言偏好",
+      "selectLanguage": "选择语言",
+      "english": "英语",
+      "spanish": "西班牙语",
+      "chinese": "中国人",
+      "cancelAccount": "取消账户",
+      "cancelDescription": "这将永久关闭您的帐户并删除对其数据的访问权限。"
+    },
+    "setupProfile": {
+      "metadataTitle": "设置个人资料",
+      "title": "设置您的个人资料",
+      "description": "告诉我们如何识别您的帐户。"
+    },
+    "setupWizard": {
+      "title": "设置向导",
+      "sourceTitle": "您是如何得知我们的？",
+      "sourceDescription": "告诉我们您是如何找到我们的，以便我们改进服务并覆盖更多像您这样的人。",
+      "selectOption": "选择一个选项",
+      "pleaseChoose": "请选择",
+      "friend": "朋友或家人",
+      "social": "社交媒体",
+      "search": "搜索引擎",
+      "advertisement": "网上广告",
+      "event": "活动或会议",
+      "other": "其他",
+      "submit": "提交",
+      "continue": "继续",
+      "completeTitle": "完成您的个人资料",
+      "completeDescription": "完成您的个人资料设置，以便我们为您提供个性化体验。",
+      "fullName": "姓名",
+      "fullNamePlaceholder": "输入您的全名",
+      "email": "电子邮件",
+      "emailPlaceholder": "输入您的电子邮件",
+      "bio": "简短的个人简介",
+      "bioPlaceholder": "告诉我们一些关于你自己的信息",
+      "saveProfile": "保存个人资料",
+      "back": "后退",
+      "done": "完毕"
+    }
+  },
+  "SessionNavigation": {
+    "openNavigation": "打开导航菜单",
+    "navigationMenu": "导航菜单",
+    "mainNavigation": "主导航",
+    "dashboard": "仪表板",
+    "deals": "优惠",
+    "connections": "连接",
+    "userMenu": "{name} 的用户菜单",
+    "preferences": "偏好设置",
+    "language": "语言"
+  },
+  "SessionFooter": {
+    "terms": "条款和条件",
+    "fairUse": "合理使用政策",
+    "allRightsReserved": "版权所有。"
+  },
+  "ProfilePage": {
+    "sampleBio": "社区成员、组织者和邻居。对当地项目、有用的对话以及帮助人们建立联系感兴趣。",
+    "bannerAlt": "简介横幅",
+    "avatarAlt": "{username} 的头像",
+    "followers": "追随者",
+    "following": "下列的",
+    "follow": "跟随",
+    "aboutMe": "关于我"
+  },
+  "UserDashboard": {
+    "accountConfirmed": "账户已确认",
+    "title": "来自您网络的更新",
+    "compose": "撰写新帖子",
+    "placeholder": "在这里输入您的帖子",
+    "publish": "发布",
+    "byAuthor": "通过 {author}",
+    "viewMore": "查看更多",
+    "posts": [
+      {
+        "title": "奥克兰中央商务区优质办公空间收益率为 7%",
+        "author": "简·史密斯",
+        "summary": "探索奥克兰市中心的优质写字楼投资，回报稳定，租期长。"
+      },
+      {
+        "title": "NZX科技股有30%的上涨潜力",
+        "author": "马克·李",
+        "summary": "分析师预计这只鲜为人知的 NZX 科技股将出现强劲增长，并解释其背后的因素。"
+      },
+      {
+        "title": "皇后镇湖畔公寓预售",
+        "author": "索菲·特纳",
+        "summary": "拥有预售价格的新湖滨公寓的早期机会。"
+      },
+      {
+        "title": "多元化投资基金稳健成长",
+        "author": "亚历克斯·金",
+        "summary": "专注于可持续增长和风险管理的多元化基金本季度向新投资者开放。"
+      },
+      {
+        "title": "个人理财应用开放抢先体验",
+        "author": "普莉娅·帕特尔",
+        "summary": "尝试使用新的应用程序来管理财务、跟踪投资和养成更好的储蓄习惯。"
+      },
+      {
+        "title": "惠灵顿高收益商业地产",
+        "author": "利亚姆·布朗",
+        "summary": "惠灵顿商业区拥有完全出租的商业地产。"
+      },
+      {
+        "title": "绿色能源投资债券公开发行",
+        "author": "艾米丽·格林",
+        "summary": "通过现已开放认购的新固定回报绿色债券支持可再生能源。"
+      }
+    ]
+  },
+  "ProfileOnboardingForm": {
+    "nameError": "输入您的名字和姓氏。",
+    "usernameError": "选择用户名以继续。",
+    "firstName": "名",
+    "lastName": "姓",
+    "username": "用户名",
+    "optional": "（选修的）",
+    "usernameHelp": "使用字母、数字、下划线或连字符。",
+    "continue": "继续"
+  },
+  "MagicLinkForm": {
+    "failed": "无法发送登录链接。",
+    "sent": "登录链接已发送。检查您的收件箱。",
+    "emailPlaceholder": "输入您的电子邮件",
+    "submit": "提交"
+  },
+  "AccountTabs": {
+    "title": "账户设置",
+    "accountSecurity": "账户与安全",
+    "editProfile": "编辑个人资料",
+    "notifications": "通知",
+    "privacy": "隐私",
+    "billing": "计费"
+  },
+  "AvatarEditor": {
+    "title": "设置头像",
+    "validationError": "图像必须正好为 400 x 400 像素且小于 10 MB。",
+    "avatarAlt": "阿凡达",
+    "noImage": "无图像",
+    "requirements": "必须为 400 x 400 像素，最大 10 MB",
+    "upload": "上传新的",
+    "saving": "保存...",
+    "save": "节省"
+  },
+  "AccountMetadata": {
+    "title": "账户设置",
+    "description": "管理帐户安全、个人资料详细信息、通知、隐私和计费。"
+  },
+  "AuthenticatedMetadata": {
+    "description": "您的 Korunet 帐户和社区工作区。"
+  },
+  "ErrorPage": {
+    "notFound": {
+      "status": "404错误",
+      "title": "找不到页面",
+      "description": "抱歉，我们找不到您要查找的页面。"
+    },
+    "unexpected": {
+      "status": "出了点问题",
+      "title": "我们无法加载此页面",
+      "description": "该页面遇到了问题。从主页重试，或者如果这种情况持续发生，请联系支持人员。"
+    },
+    "goHome": "回家吧",
+    "contactSupport": "联系支持人员"
+  }
+}

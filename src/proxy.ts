@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isSupportedLocale, LOCALE_COOKIE_NAME } from './i18n/config';
 import { updateSession } from './lib/supabase/middleware';
 import { copySupabaseResponseState } from './supacharger/auth/proxy-response';
-import { pathMatches } from './supacharger/auth/route-policy';
+import { pathMatches, shouldCheckPostSignInOnboarding } from './supacharger/auth/route-policy';
 import { SC_CONFIG } from './supacharger/supacharger-config';
 
 const localeCookieOptions = {
@@ -75,14 +75,16 @@ export async function proxy(request: NextRequest) {
    */
 
   const { pathname } = request.nextUrl;
+  const isPublicPath = pathMatches(pathname, SC_CONFIG.PATH_AUTH_GUARD.UNAUTHED_USER.ALLOWED);
 
   if (
-    isAuthenticated &&
-    SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED &&
-    pathname !== '/error' &&
-    pathname !== SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH &&
-    !pathname.startsWith('/api/') &&
-    !pathname.startsWith('/auth/')
+    shouldCheckPostSignInOnboarding({
+      isAuthenticated,
+      isPublicPath,
+      pathname,
+      redirectPath: SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH,
+      required: SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED,
+    })
   ) {
     const { data: profileComplete, error: profileError } = await supabase
       .schema('api')
@@ -100,7 +102,7 @@ export async function proxy(request: NextRequest) {
 
   if (!isAuthenticated) {
     if (SC_CONFIG.AUTH_ONLY_APP) {
-      if (!pathMatches(pathname, SC_CONFIG.PATH_AUTH_GUARD.UNAUTHED_USER.ALLOWED)) {
+      if (!isPublicPath) {
         if (pathname.startsWith('/api/')) {
           return copySupabaseResponseState(
             response,
@@ -139,5 +141,7 @@ export async function proxy(request: NextRequest) {
 
 // Example matcher to exclude static files and images
 export const config = {
-  matcher: ['/((?!\\.well-known(?:/.*)?|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: [
+    '/((?!\\.well-known(?:/.*)?|_next/static|_next/image|favicon.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };
