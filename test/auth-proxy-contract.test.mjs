@@ -5,6 +5,10 @@ import test from 'node:test';
 import { copySupabaseResponseState } from '../src/supacharger/auth/proxy-response.ts';
 import { pathMatches } from '../src/supacharger/auth/route-policy.ts';
 import { getSafeNextPath, withNextPath } from '../src/supacharger/auth/safe-next-path.js';
+import {
+  hasSensitiveAuthQuery,
+  removeSensitiveAuthQuery,
+} from '../src/supacharger/auth/sensitive-auth-query.ts';
 
 function responseDouble(cookies = [], headers = {}) {
   const writtenCookies = [];
@@ -91,4 +95,23 @@ test('auth return paths accept internal URLs and reject external redirects', () 
   assert.equal(getSafeNextPath('//attacker.example/invite'), null);
   assert.equal(getSafeNextPath('/%2f%2fattacker.example/invite'), null);
   assert.equal(getSafeNextPath('/\\attacker.example/invite'), null);
+});
+
+test('sensitive authentication fields are removed without discarding safe return data', () => {
+  const searchParams = new URLSearchParams({
+    email: 'security-test@example.invalid',
+    lang: 'en',
+    password: 'not-a-real-password',
+    returnTo: '/auth/oauth/consent?authorization_id=security-check',
+  });
+
+  assert.equal(hasSensitiveAuthQuery('/auth/login', searchParams), true);
+  assert.equal(hasSensitiveAuthQuery('/projects', searchParams), false);
+
+  removeSensitiveAuthQuery(searchParams);
+
+  assert.equal(searchParams.has('email'), false);
+  assert.equal(searchParams.has('password'), false);
+  assert.equal(searchParams.get('lang'), 'en');
+  assert.equal(searchParams.get('returnTo'), '/auth/oauth/consent?authorization_id=security-check');
 });

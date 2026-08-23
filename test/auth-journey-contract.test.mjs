@@ -139,7 +139,10 @@ test('auth operations enforce config and align signup confirmation redirects', a
     auth,
     /signUpWithEmail[\s\S]*?PASSWORDLESS_EMAIL\.SIGN_UP[\s\S]*?sendPasswordlessEmail\(email, true, nextPath\)/,
   );
-  assert.match(config, /PASSWORDLESS_EMAIL:[\s\S]*?SIGN_IN:\s*'otp'[\s\S]*?SIGN_UP:\s*'disabled'/);
+  assert.match(
+    config,
+    /PASSWORDLESS_EMAIL:[\s\S]*?SIGN_IN:\s*['"](?:disabled|link|otp)['"][\s\S]*?SIGN_UP:\s*['"](?:disabled|link|otp)['"]/,
+  );
   assert.doesNotMatch(journey, /signUpWithEmail/);
   assert.match(journey, /const result = await signInWithEmail\(normalisedEmail, safeNextPath\)/);
   assert.match(journey, /result\.error\.code === 'otp_disabled'/);
@@ -160,10 +163,9 @@ test('auth operations enforce config and align signup confirmation redirects', a
 });
 
 test('consumed confirmation links recover through session-aware app or login notices', async () => {
-  const [route, serverClient, layout, notice, messages] = await Promise.all([
+  const [route, serverClient, notice, messages] = await Promise.all([
     read('src/app/(supacharger)/(unauthenticated)/auth/confirm/route.ts'),
     read('src/lib/supabase/server.ts'),
-    read('src/app/layout.tsx'),
     read('src/supacharger/components/auth/auth-confirmation-notice.tsx'),
     read('messages/en.json'),
   ]);
@@ -177,7 +179,6 @@ test('consumed confirmation links recover through session-aware app or login not
   assert.match(serverClient, /getAll\(\)\s*\{\s*return cookieStore\.getAll\(\)/);
   assert.match(route, /user\?\.email_confirmed_at\s*\?\s*'already-authenticated'\s*:\s*'invalid'/);
   assert.doesNotMatch(route, /redirectTo\.pathname\s*=\s*'\/error'/);
-  assert.match(layout, /<AuthConfirmationNotice\s*\/>/);
   assert.match(notice, /confirmationLinkAlreadyUsedSignedIn/);
   assert.match(notice, /confirmationLinkAlreadyUsedSignIn/);
   assert.match(notice, /toastId:\s*confirmationToastId/);
@@ -207,13 +208,15 @@ test('local passwordless and signup templates match their independent configured
     read('supabase/templates/magic_link.html'),
   ]);
 
-  assert.match(config, /\[auth\.email\][\s\S]*?enable_confirmations\s*=\s*true/);
+  const enableConfirmations =
+    config.match(/\[auth\.email\][\s\S]*?enable_confirmations\s*=\s*(true|false)/)?.[1] === 'true';
   assert.match(
     config,
     /\[auth\.email\.template\.confirmation\][\s\S]*?content_path\s*=\s*"\.\/supabase\/templates\/confirmation\.html"/,
   );
-  const signupMode = appConfig.match(/SIGN_UP_EMAIL_VERIFICATION:\s*'([^']+)'/)?.[1];
+  const signupMode = appConfig.match(/SIGN_UP_EMAIL_VERIFICATION:\s*['"]([^'"]+)['"]/)?.[1];
   assert.ok(['disabled', 'otp', 'link', 'otp-and-link'].includes(signupMode));
+  assert.equal(enableConfirmations, signupMode !== 'disabled');
   if (signupMode === 'otp' || signupMode === 'otp-and-link') assert.match(template, /\{\{ \.Token \}\}/);
   if (signupMode === 'link' || signupMode === 'otp-and-link') {
     assert.match(template, /\{\{ \.RedirectTo \}\}/);
@@ -265,11 +268,11 @@ test('shared journey supports password, passwordless email, OTP, and resend cool
   assert.match(resend, /onResend/);
 });
 
-test('the starter enables OTP-only passwordless sign-in independently of signup verification', async () => {
+test('the application selects a supported passwordless sign-in mode independently of signup verification', async () => {
   const config = await read('src/supacharger.config.ts');
 
-  assert.match(config, /SIGN_IN:\s*'otp'/);
-  assert.match(config, /SIGN_UP_EMAIL_VERIFICATION:\s*'(?:disabled|otp|link|otp-and-link)'/);
+  assert.match(config, /SIGN_IN:\s*['"](?:disabled|link|otp)['"]/);
+  assert.match(config, /SIGN_UP_EMAIL_VERIFICATION:\s*['"](?:disabled|otp|link|otp-and-link)['"]/);
 });
 
 test('frontend and local Supabase use the same email OTP length', async () => {

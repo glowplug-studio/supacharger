@@ -5,6 +5,7 @@ import { updateSession } from './lib/supabase/supacharger/proxy';
 import { copySupabaseResponseState } from './supacharger/auth/proxy-response';
 import { pathMatches } from './supacharger/auth/route-policy';
 import { withNextPath } from './supacharger/auth/safe-next-path';
+import { hasSensitiveAuthQuery, removeSensitiveAuthQuery } from './supacharger/auth/sensitive-auth-query';
 import { SC_CONFIG } from './supacharger/supacharger-config';
 
 const localeCookieOptions = {
@@ -29,6 +30,19 @@ export async function proxy(request: NextRequest) {
 
   if (acceptedHandoffLocale) {
     request.cookies.set(LOCALE_COOKIE_NAME, acceptedHandoffLocale);
+  }
+
+  if (hasSensitiveAuthQuery(request.nextUrl.pathname, request.nextUrl.searchParams)) {
+    const redirectUrl = request.nextUrl.clone();
+    removeSensitiveAuthQuery(redirectUrl.searchParams);
+    redirectUrl.searchParams.delete('lang');
+    const response = NextResponse.redirect(redirectUrl);
+
+    if (acceptedHandoffLocale) {
+      response.cookies.set(LOCALE_COOKIE_NAME, acceptedHandoffLocale, localeCookieOptions);
+    }
+
+    return response;
   }
 
   const { isAuthenticated, response } = await updateSession(request);

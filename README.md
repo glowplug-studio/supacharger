@@ -16,7 +16,7 @@ This is a SaaS starter built with modern technologies.
 
 ### What's included
 
-- Next.js 16.3
+- Next.js 16.3.2
 - [Supabase](https://supabase.com) - Postgres database & user authentication
 - [Stripe](https://stripe.com) - [Checkout](https://stripe.com/docs/payments/checkout), [subscriptions](https://stripe.com/docs/billing/subscriptions/overview), and [customer portal](https://stripe.com/docs/customer-management)
 - [Brevo](https://brevo.com) - Marketing and transactional emails
@@ -96,7 +96,7 @@ A page can use Next.js `title.absolute` when it deliberately needs to bypass the
 
 Public content pages should expose page-specific canonical and social metadata and appear in `src/app/sitemap.ts`. Keep authenticated and authentication routes out of the sitemap. `src/app/robots.ts` follows `METADATA.INDEXING_ENABLED`. Proxy must bypass the complete `/_next/` framework namespace, `/robots.txt`, `/sitemap.xml`, `/.well-known/`, and public metadata such as `.webmanifest` files so framework assets, HMR, crawlers, association documents, and install manifests receive their direct responses rather than authentication redirects. Development also permits the narrow `127.0.0.1` hostname through `allowedDevOrigins` for loopback-origin asset requests.
 
-Authentication uses one request-scoped SSR client and exactly one `getClaims()` verification call in Proxy. Anonymous Auth users are excluded unless the application deliberately enables them:
+Authentication uses one request-scoped SSR client and exactly one `getClaims()` verification call in Proxy. Before the Auth client runs, the protected Proxy removes password, email, MFA and organisation-registration fields that a non-hydrated Auth form might accidentally submit in the URL; safe return parameters remain intact. Anonymous Auth users are excluded unless the application deliberately enables them:
 
 ```ts
 AUTH_SESSION: {

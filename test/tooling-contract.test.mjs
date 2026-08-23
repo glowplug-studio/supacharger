@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readdir, readFile } from 'node:fs/promises';
+import { access, readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -46,7 +46,13 @@ test('root tool configuration uses explicit module formats', () => {
 });
 
 test('Next development assets accept the documented loopback hostname', async () => {
-  const { default: nextConfig } = await import('../next.config.js');
+  const javascriptConfig = new URL('../next.config.js', import.meta.url);
+  const typescriptConfig = new URL('../next.config.ts', import.meta.url);
+  const configUrl = await access(javascriptConfig).then(
+    () => javascriptConfig,
+    () => typescriptConfig,
+  );
+  const { default: nextConfig } = await import(configUrl);
 
   assert.ok(nextConfig.allowedDevOrigins?.includes('127.0.0.1'));
 });

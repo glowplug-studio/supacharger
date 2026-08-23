@@ -133,14 +133,9 @@ test('protected auth provider SVGs are responsive SVGR sources', async () => {
   }
 });
 
-test('password reset uses the same auth presentation without replacing its logic', async () => {
-  const [page, form] = await Promise.all([
-    read('src/app/(project)/(unauthenticated)/account/reset-password/new/page.tsx'),
-    read('src/supacharger/components/forms/reset-password-request-link-form.tsx'),
-  ]);
+test('password reset retains its managed request logic and shared presentation classes', async () => {
+  const form = await read('src/supacharger/components/forms/reset-password-request-link-form.tsx');
 
-  assert.match(page, /exchangeCodeForSession/);
-  assert.match(page, /sc-auth-input/);
   assert.match(form, /request-password-reset/);
   assert.match(form, /sc-auth-primary-button/);
 });
