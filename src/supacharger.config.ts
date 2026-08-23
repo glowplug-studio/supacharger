@@ -196,10 +196,6 @@ export const SC_CONFIG: SupachargerConfig = {
     FEATURE_LOOKUP_KEY: null as string | null,
     REDIRECT_PATH: '/account/billing/subscribe?full=1',
   },
-  /** @deprecated Use BILLING_ACCESS.REQUIRED. */
-  ACCOUNT_FORCE_SUBSCRIPTION: false,
-  /** @deprecated Use BILLING_ACCESS.REDIRECT_PATH. */
-  ACCOUNT_ENFORCE_SUBSCRIPTION_PATH: '/account/billing/subscribe?full=1',
   // Is there a required terms checkbox? null if not needed
   ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH: null,
 

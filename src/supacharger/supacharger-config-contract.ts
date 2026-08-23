@@ -136,8 +136,6 @@ export type SupachargerConfig = {
     FEATURE_LOOKUP_KEY: string | null;
     REDIRECT_PATH: string;
   };
-  ACCOUNT_FORCE_SUBSCRIPTION: boolean;
-  ACCOUNT_ENFORCE_SUBSCRIPTION_PATH: string;
   ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH: string | null;
   EMAIL_ALLOW_PLUSADDRESSING: boolean;
   EMAIL_RESEND_COOLDOWN_SECONDS: number;

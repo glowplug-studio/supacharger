@@ -56,7 +56,10 @@ const authProviderIconFiles = [
 ];
 
 test('configuration exposes the canonical authentication and onboarding policies', async () => {
-  const contract = await read('src/supacharger/supacharger-config-contract.ts');
+  const [contract, config] = await Promise.all([
+    read('src/supacharger/supacharger-config-contract.ts'),
+    read('src/supacharger.config.ts'),
+  ]);
   assert.match(contract, /EmailPasswordlessMode = 'disabled' \| 'link' \| 'otp'/);
   assert.match(contract, /EmailOtpLength = 6 \| 7 \| 8 \| 9 \| 10/);
   assert.match(contract, /SignUpEmailVerificationMode = EmailPasswordlessMode \| 'otp-and-link'/);
@@ -69,6 +72,10 @@ test('configuration exposes the canonical authentication and onboarding policies
   assert.match(contract, /MOBILE_DEEP_LINKING/);
   assert.match(contract, /APP_IDS:\s*readonly string\[\]/);
   assert.match(contract, /SHA256_CERT_FINGERPRINTS:\s*readonly string\[\]/);
+  for (const source of [contract, config]) {
+    assert.doesNotMatch(source, /ACCOUNT_FORCE_SUBSCRIPTION/);
+    assert.doesNotMatch(source, /ACCOUNT_ENFORCE_SUBSCRIPTION_PATH/);
+  }
 });
 
 test('the application origin comes only from NEXT_PUBLIC_SITE_URL', async () => {
