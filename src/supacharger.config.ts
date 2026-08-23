@@ -190,14 +190,14 @@ export const SC_CONFIG: SupachargerConfig = {
     AUTHENTICATION_HANDLE: 'disabled',
   },
   BILLING_ACCESS: {
-    REQUIRED: true,
+    REQUIRED: false,
     // null means any active/trialling subscription. Set a feature lookup key
     // to authorise from the entitlement projection instead.
     FEATURE_LOOKUP_KEY: null as string | null,
     REDIRECT_PATH: '/account/billing/subscribe?full=1',
   },
   /** @deprecated Use BILLING_ACCESS.REQUIRED. */
-  ACCOUNT_FORCE_SUBSCRIPTION: true,
+  ACCOUNT_FORCE_SUBSCRIPTION: false,
   /** @deprecated Use BILLING_ACCESS.REDIRECT_PATH. */
   ACCOUNT_ENFORCE_SUBSCRIPTION_PATH: '/account/billing/subscribe?full=1',
   // Is there a required terms checkbox? null if not needed
