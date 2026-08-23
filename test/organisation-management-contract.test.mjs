@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync,readFileSync } from 'node:fs';
 import test from 'node:test';
 
-const migration = readFileSync(
-  new URL('../supabase/migrations/20260824100000_add_organisation_management.sql', import.meta.url),
-  'utf8',
-);
+const migrationsDirectory = new URL('../supabase/migrations/', import.meta.url);
+const organisationMigrations = readdirSync(migrationsDirectory)
+  .filter((file) => file.endsWith('_add_organisation_management.sql'));
+assert.equal(organisationMigrations.length, 1, 'expected one immutable organisation-management migration');
+const migration = readFileSync(new URL(organisationMigrations[0], migrationsDirectory), 'utf8');
 const types = readFileSync(new URL('../src/lib/supabase/types.ts', import.meta.url), 'utf8');
 const bruno = readFileSync(
   new URL('../docs/bruno/supacharger-rpc/organisations.bru', import.meta.url),
