@@ -10,6 +10,11 @@ interface LogoutLinkProps {
   children?: React.ReactNode;
 }
 
+type LogoutResponse = {
+  success: boolean;
+  redirectTo?: string;
+};
+
 export default function LogoutLink({ className, children = 'Logout' }: LogoutLinkProps) {
   const t = useTranslations('Toasts');
   const [isRequesting, setIsRequesting] = useState(false);
@@ -27,17 +32,18 @@ export default function LogoutLink({ className, children = 'Logout' }: LogoutLin
           'Content-Type': 'application/json',
         },
       });
+      const logoutResult = (await response.json()) as LogoutResponse;
 
-      if (response.ok) {
+      if (response.ok && logoutResult.success && typeof logoutResult.redirectTo === 'string') {
         toast.success(t('logoutSucceeded'), SC_CONFIG.TOAST_CONFIG);
         setTimeout(() => {
-          window.location.href = response.url;
+          window.location.assign(logoutResult.redirectTo!);
         }, 800);
       } else {
         toast.error(t('logoutFailed'));
         setIsRequesting(false);
       }
-    } catch (error) {
+    } catch {
       toast.error(t('logoutFailed'));
       setIsRequesting(false);
     }

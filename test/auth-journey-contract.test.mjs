@@ -392,14 +392,24 @@ test('signup is exposed through the canonical journey rather than a public JSON 
 });
 
 test('logout uses the server route from a single dropdown control', async () => {
-  const [button, menu] = await Promise.all([
+  const [button, menu, route] = await Promise.all([
     read('src/supacharger/components/buttons/logout-button.tsx'),
     read('src/components/sc_demo/sc_account-menu.tsx'),
+    read('src/app/(supacharger)/(unauthenticated)/account/logout/route.ts'),
   ]);
 
   assert.match(button, /fetch\('\/account\/logout'/);
+  assert.match(button, /await response\.json\(\)/);
+  assert.match(button, /window\.location\.assign\(logoutResult\.redirectTo/);
+  assert.doesNotMatch(button, /response\.url/);
   assert.doesNotMatch(button, /createClient|auth\.signOut/);
   assert.match(menu, /<DropdownMenuItem asChild>[\s\S]*?<LogoutButton/);
+  assert.match(route, /getSafeNextPath/);
+  assert.match(route, /status:\s*303/);
+  assert.match(route, /Location:\s*logoutResult\.redirectTo/);
+  assert.match(route, /export async function POST\(\): Promise<NextResponse>/);
+  assert.match(route, /NextResponse\.json\(logoutResult/);
+  assert.doesNotMatch(route, /getURL|nextUrl\.origin/);
 });
 
 test('local development accepts the shared localhost auth-cookie budget', async () => {
