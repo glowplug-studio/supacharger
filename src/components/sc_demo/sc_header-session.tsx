@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { BarChart3, FolderKanban, Inbox, LayoutDashboard, ListChecks, Menu, Plus, Users } from 'lucide-react';
+import { BarChart3, FolderKanban, Inbox, LayoutDashboard, ListChecks, Menu, Users } from 'lucide-react';
 
 import SCAccountMenu from '@/components/sc_demo/sc_account-menu';
 import { Button } from '@/components/ui/button';
@@ -54,15 +54,6 @@ export function SCHeaderSession() {
 
           <span aria-hidden='true' className='bg-border mx-2 h-5 w-px shrink-0' />
 
-          <Button
-            asChild
-            className='bg-foreground text-background hover:bg-foreground/90 h-9 shrink-0 gap-2 rounded-sm px-3 shadow-none'
-          >
-            <Link href='/#quick-create'>
-              <Plus aria-hidden='true' className='size-4' />
-              {t('quickCreate')}
-            </Link>
-          </Button>
           <Link
             className='text-muted-foreground hover:bg-accent hover:text-foreground inline-flex h-9 shrink-0 items-center gap-2 rounded-sm px-3 text-sm font-medium transition-colors'
             href='/#inbox'
@@ -115,15 +106,6 @@ export function SCHeaderSession() {
                   </SheetClose>
                 ))}
                 <div className='bg-border my-2 h-px' />
-                <SheetClose asChild>
-                  <Link
-                    className='bg-foreground text-background flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm font-medium'
-                    href='/#quick-create'
-                  >
-                    <Plus aria-hidden='true' className='size-4' />
-                    {t('quickCreate')}
-                  </Link>
-                </SheetClose>
                 <SheetClose asChild>
                   <Link
                     className='hover:bg-accent flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm font-medium'

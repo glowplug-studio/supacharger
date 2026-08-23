@@ -12,7 +12,6 @@ import {
   Inbox,
   LayoutDashboard,
   ListChecks,
-  Plus,
   Search,
   Settings,
   Users,
@@ -94,22 +93,11 @@ function DemoSidebar() {
         <SidebarGroup>
           <SidebarGroupContent className='flex flex-col gap-2'>
             <SidebarMenu>
-              <SidebarMenuItem className='flex items-center gap-2'>
-                <SidebarMenuButton
-                  className='bg-foreground text-background hover:bg-foreground/90 hover:text-background active:bg-foreground/90 active:text-background'
-                  tooltip={t('quickCreate')}
-                >
-                  <Plus aria-hidden='true' />
-                  <span>{t('quickCreate')}</span>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip={t('inbox')}>
+                  <Inbox aria-hidden='true' />
+                  <span>{t('inbox')}</span>
                 </SidebarMenuButton>
-                <Button
-                  aria-label={t('inbox')}
-                  className='size-8 shrink-0 rounded-sm group-data-[collapsible=icon]:hidden'
-                  size='icon'
-                  variant='outline'
-                >
-                  <Inbox aria-hidden='true' className='size-4' />
-                </Button>
               </SidebarMenuItem>
             </SidebarMenu>
             <LinkGroup items={primaryItems} />

@@ -254,7 +254,7 @@ export function SCDashboard() {
   return (
     <main className='bg-background text-foreground flex-1' id='dashboard'>
       <div className='mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-6 sm:px-6 lg:gap-6 lg:px-8 lg:py-8'>
-        <section className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
+        <section>
           <div>
             <div className='text-primary mb-3 flex items-center gap-2 text-sm font-medium'>
               <Activity aria-hidden='true' className='size-4' />
@@ -263,12 +263,6 @@ export function SCDashboard() {
             <h1 className='text-[2.25rem] leading-[1.08] font-normal tracking-[-0.04em]'>{t('title')}</h1>
             <p className='text-muted-foreground mt-3 max-w-2xl text-sm leading-6 sm:text-base'>{t('description')}</p>
           </div>
-          <Button
-            className='bg-foreground text-background hover:bg-foreground/90 h-10 rounded-sm px-4 shadow-none active:scale-[0.98]'
-            id='quick-create'
-          >
-            {t('quickCreate')}
-          </Button>
         </section>
 
         <section
