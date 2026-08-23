@@ -24,6 +24,12 @@ The manifest byte-protects the Route Handlers, not application table shapes. Str
 
 Product catalogue content, tax registrations, payment-method Dashboard settings, entitlement definitions, copy, branding, account-subject provisioning, and organisation membership remain developer-owned policy. Consumers must adapt their product model to `billing_accounts`; they must not fork the core back to user-owned subscriptions.
 
+## Test ownership boundary
+
+The CLI-managed `test/billing-schema-contract.test.mjs` verifies only the reusable billing contract: account-based ownership, canonical Stripe customer mapping identifiers, shared RPC argument and grant conventions, generated database type alignment, and entitlement-based access. Keep it byte-identical across Core, SnapScreen, and Wakekeeper.
+
+Application product catalogues, application-only tables, RPCs, policies, and entitlement definitions remain developer-owned. Test them in `test/project-billing-schema-contract.test.mjs`, not in the managed shared test. A consumer with that file extends its merge-managed `test:billing-schema` package script to execute both tests, so Core updates can replace the shared assertions without discarding or absorbing product behaviour.
+
 ## Checkout and lifecycle
 
 - Stripe Node `22.5.0` and API `2026-07-29.dahlia` are the supported tuple.

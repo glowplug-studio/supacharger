@@ -38,7 +38,9 @@ Every Supacharger application exposes the same option contract in `supacharger.c
 
 ### Core update ownership
 
-The version 2 `.supacharger/managed-files.json` contract separates exact managed files, merge-managed configuration, forward-only migrations, and developer-owned paths. Exact paths—including `postcss.config.mjs`, the protected route/runtime trees, and contract tests—must be byte-identical in managed consumers. Package files, `supabase/config.toml`, and `tailwind.config.ts` are merged without discarding product settings. Migration histories are append-only. Product and account routes live under `src/app/(project)/`; reusable handlers remain under `src/app/(supacharger)/`.
+The version 2 `.supacharger/managed-files.json` contract separates exact managed files, merge-managed configuration, forward-only migrations, and developer-owned paths. Exact paths—including `postcss.config.mjs`, the protected route/runtime trees, and shared contract tests—must be byte-identical in managed consumers. Package files, `supabase/config.toml`, and `tailwind.config.ts` are merged without discarding product settings. Migration histories are append-only. Product and account routes live under `src/app/(project)/`; reusable handlers remain under `src/app/(supacharger)/`.
+
+Managed contract tests contain only reusable Core assertions. Keep product-specific catalogue, table, RPC, and policy checks in `test/project-billing-schema-contract.test.mjs`, which is an explicit developer-owned seam, and extend the consumer's merge-managed `test:billing-schema` script to run it beside the protected shared test.
 
 ### Input validation
 
@@ -92,7 +94,7 @@ export const metadata = createSupachargerPageMetadata(SC_CONFIG, {
 
 A page can use Next.js `title.absolute` when it deliberately needs to bypass the global template. Google Analytics is disabled when `NEXT_PUBLIC_GOOGLE_ANALYTICS_ID` is empty and is loaded through Next.js's `@next/third-parties/google` integration when configured. A GA4 measurement ID is public configuration, not a secret; use a different value per deployment where required.
 
-Public content pages should expose page-specific canonical and social metadata and appear in `src/app/sitemap.ts`. Keep authenticated and authentication routes out of the sitemap. `src/app/robots.ts` follows `METADATA.INDEXING_ENABLED`, and both `/robots.txt` and `/sitemap.xml` must bypass Proxy so crawlers receive direct text/XML responses rather than an authentication redirect.
+Public content pages should expose page-specific canonical and social metadata and appear in `src/app/sitemap.ts`. Keep authenticated and authentication routes out of the sitemap. `src/app/robots.ts` follows `METADATA.INDEXING_ENABLED`. Proxy must bypass the complete `/_next/` framework namespace, `/robots.txt`, `/sitemap.xml`, `/.well-known/`, and public metadata such as `.webmanifest` files so framework assets, HMR, crawlers, association documents, and install manifests receive their direct responses rather than authentication redirects. Development also permits the narrow `127.0.0.1` hostname through `allowedDevOrigins` for loopback-origin asset requests.
 
 Authentication uses one request-scoped SSR client and exactly one `getClaims()` verification call in Proxy. Anonymous Auth users are excluded unless the application deliberately enables them:
 
@@ -356,6 +358,8 @@ Checkout uses flexible billing mode and Stripe Dynamic Payment Methods. `payment
 Use `createCheckoutAction({ items, billingAccountId })` for multi-item Checkout. The server resolves every Price directly from Stripe, requires active recurring Prices, validates positive quantities and one currency, and verifies that the current user can manage the billing account.
 
 Do not use Price IDs or unvalidated Product metadata directly as access control. Define stable feature lookup keys and map Stripe Products through Stripe Entitlements or `app.product_features`. Stripe grants are projected into `app.entitlement_grants`; manual and promotional grants use the same read model and survive Stripe refreshes. Set `SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY` to require a feature, or leave it `null` for the compatibility policy of any active/trialling Subscription.
+
+The shared billing contract test covers this reusable account, mapping, RPC, grant, type, and entitlement-access contract. Product catalogue RPCs and application-only billing tables or policies remain application-owned and are tested separately in `test/project-billing-schema-contract.test.mjs`.
 
 Then you can make use of it like this:
 

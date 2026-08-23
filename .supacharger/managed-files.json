@@ -35,6 +35,7 @@
   ],
   "developerOwnedPaths": [
     ".supacharger/core-lock.json",
+    "test/project-billing-schema-contract.test.mjs",
     "messages",
     "supabase/functions/_shared/image-targets.ts",
     "supabase/templates",

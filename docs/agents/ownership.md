@@ -20,6 +20,12 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 
 Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. Product routes and account presentation live under `src/app/(project)/`; the protected route group contains reusable Route Handlers and framework boundaries only.
 
+### Shared and project contract tests
+
+Exact managed contract tests assert only reusable Supacharger behaviour. `test/billing-schema-contract.test.mjs` covers the shared account-based billing model, canonical Stripe customer mapping identifiers, exposed RPC argument conventions and grants, generated type alignment, and entitlement-based access repair. It must remain byte-identical in CLI-managed consumers.
+
+Product catalogue RPCs, product tables, application-only policies, and other consumer-specific database behaviour do not belong in that managed file. Put those assertions in the developer-owned `test/project-billing-schema-contract.test.mjs` seam and extend the consumer's merge-managed `test:billing-schema` package script to run both files. The project test may be absent when a consumer has no product-specific billing assertions. Core updates preserve it when present.
+
 ## Merge-managed contracts
 
 `package.json`, `package-lock.json`, `supabase/config.toml`, and `tailwind.config.ts` are not byte-replaced. The CLI merges canonical dependency requirements into the application package while preserving product dependencies and scripts, then regenerates the lock through the package manager. Supabase local configuration and Tailwind configuration retain project-specific values and require contract-aware merge logic. A changed Core file is not permission to overwrite the consumer copy wholesale.

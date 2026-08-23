@@ -24,6 +24,12 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('package.json').ownership, 'merge-managed-contract');
   assert.equal(classifyPath('tailwind.config.ts').ownership, 'merge-managed-contract');
   assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'forward-only-history');
+  assert.equal(classifyPath('test/billing-schema-contract.test.mjs').ownership, 'cli-managed-core');
+  assert.equal(
+    classifyPath('test/project-billing-schema-contract.test.mjs').ownership,
+    'developer-owned-contract-test',
+  );
+  assert.match(classifyPath('test/project-billing-schema-contract.test.mjs').guidance, /package script/);
   assert.equal(classifyPath('postcss.config.mjs').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/process-image-upload/index.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/_shared/image-transform.ts').ownership, 'cli-managed-core');
@@ -56,6 +62,12 @@ test('searches the localisation guidance exposed to the MCP', async () => {
 test('searches the billing guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('STRIPE_EVENT_PROCESSOR_SECRET');
   assert.ok(matches.some((match) => match.path === 'docs/agents/billing.md'));
+});
+
+test('searches the billing test ownership guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('project-billing-schema-contract');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/billing.md'));
+  assert.ok(matches.some((match) => match.path === 'docs/agents/ownership.md'));
 });
 
 test('searches the image transformation guidance exposed to the MCP', async () => {

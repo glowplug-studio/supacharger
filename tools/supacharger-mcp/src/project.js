@@ -109,6 +109,22 @@ export function classifyPath(inputPath) {
     };
   }
 
+  if (relativePath === 'test/billing-schema-contract.test.mjs') {
+    return {
+      ownership: 'cli-managed-core',
+      guidance:
+        'Byte-identical shared billing contract test. Keep only reusable Core assertions here; put product catalogue, table, RPC, and policy assertions in test/project-billing-schema-contract.test.mjs.',
+    };
+  }
+
+  if (relativePath === 'test/project-billing-schema-contract.test.mjs') {
+    return {
+      ownership: 'developer-owned-contract-test',
+      guidance:
+        'Application billing contract test seam. Core updates preserve this file; add it to the consumer\'s merge-managed test:billing-schema package script when present.',
+    };
+  }
+
   if (
     relativePath === 'src/lib/stripe' ||
     relativePath.startsWith('src/lib/stripe/') ||

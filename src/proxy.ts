@@ -98,6 +98,6 @@ export async function proxy(request: NextRequest) {
 // Example matcher to exclude static files and images
 export const config = {
   matcher: [
-    '/((?!\\.well-known(?:/.*)?|_next/static|_next/image|favicon.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!\\.well-known(?:/.*)?|_next(?:/.*)?|favicon.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp|webmanifest)$).*)',
   ],
 };

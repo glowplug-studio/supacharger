@@ -18,6 +18,8 @@ Respect file ownership before making changes.
 
 The version 2 manifest distinguishes four update modes. `managedPaths` are exact, byte-identical replacement files; `mergeManagedPaths` require contract-aware merging; `forwardOnlyMigrationPaths` accept only new migration files; and `developerOwnedPaths` are preserved. Never infer byte-replacement authority from a file being reusable Core code.
 
+Keep protected contract tests limited to reusable Supacharger behaviour. Product-specific database, catalogue, table, RPC, or policy assertions belong in the developer-owned `test/project-billing-schema-contract.test.mjs` seam, with the consumer's merge-managed package script running both shared and project tests.
+
 ### CLI-managed core
 
 Treat these directories as protected implementation owned by Supacharger and updated by the CLI:

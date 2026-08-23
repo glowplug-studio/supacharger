@@ -10,7 +10,7 @@ Whenever `@supabase/ssr` changes auth cookies, preserve the mutated request cook
 
 Route configuration is `PATH_AUTH_GUARD` (the former `PATH_AUTH_GARD` spelling is not supported). Use `src/supacharger/auth/route-policy.ts` for exact paths, `:param` segments, and trailing `:param*` wildcards. Paths declared in `UNAUTHED_USER.ALLOWED` are public marketing or authentication surfaces. Protected API paths return JSON `401` responses; page paths may redirect with a safe relative `next` destination. Product-specific public routes remain developer configuration or adapters outside the session adapter.
 
-Keep Next.js crawler metadata endpoints outside Proxy matching. `/robots.txt` and `/sitemap.xml` must return their direct text/XML responses without session refresh, localisation, authentication, onboarding, rewrite, or redirect handling, just like the platform association documents under `/.well-known/`.
+Keep the complete Next.js `/_next/` framework namespace outside Proxy matching so development assets and HMR never enter authentication routing. Keep crawler and application metadata outside it as well: `/robots.txt`, `/sitemap.xml`, platform association documents under `/.well-known/`, and `.webmanifest` files must return their direct responses without session refresh, localisation, authentication, onboarding, rewrite, or redirect handling. Permit only the narrow `127.0.0.1` hostname through `allowedDevOrigins` when loopback-origin development requests need to reach a server started on `localhost`.
 
 ## Configured authentication journey
 

@@ -57,11 +57,13 @@ test('protected layout enforces profile and billing access on the server', async
   assert.match(access, /has_billing_access_by_current_user/);
 });
 
-test('crawler metadata endpoints bypass Proxy authentication and redirects', async () => {
+test('framework, crawler and application metadata endpoints bypass Proxy authentication and redirects', async () => {
   const proxy = await readFile(new URL('../src/proxy.ts', import.meta.url), 'utf8');
 
+  assert.ok(proxy.includes('_next(?:/.*)?'));
   assert.ok(proxy.includes('robots\\\\.txt'));
   assert.ok(proxy.includes('sitemap\\\\.xml'));
+  assert.ok(proxy.includes('webmanifest'));
 });
 
 test('response-state copy preserves refreshed cookies and cache headers only', () => {

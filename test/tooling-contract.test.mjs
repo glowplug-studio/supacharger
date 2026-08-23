@@ -45,6 +45,12 @@ test('root tool configuration uses explicit module formats', () => {
   assert.equal(postcss.status, 0, postcss.stderr);
 });
 
+test('Next development assets accept the documented loopback hostname', async () => {
+  const { default: nextConfig } = await import('../next.config.js');
+
+  assert.ok(nextConfig.allowedDevOrigins?.includes('127.0.0.1'));
+});
+
 test('uses the canonical class-name utility module', async () => {
   const components = JSON.parse(await readFile(new URL('../components.json', import.meta.url), 'utf8'));
   const utility = await readFile(new URL('../src/utils/cn.ts', import.meta.url), 'utf8');
@@ -70,6 +76,7 @@ test('keeps the root layout editable and the root document implementation manage
   assert.ok(!manifest.managedPaths.includes('supabase/config.toml'));
   assert.ok(!manifest.managedPaths.includes('supabase/migrations'));
   assert.ok(!manifest.managedPaths.includes('tailwind.config.ts'));
+  assert.ok(manifest.developerOwnedPaths.includes('test/project-billing-schema-contract.test.mjs'));
   assert.match(rootDocument, /createSupachargerMetadata/);
   assert.match(rootDocument, /createSupachargerPageMetadata/);
   assert.match(rootDocument, /@next\/third-parties\/google/);

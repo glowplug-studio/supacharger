@@ -9,6 +9,13 @@ const migrations = readdirSync(migrationsDirectory)
   .map((fileName) => readFileSync(new URL(fileName, migrationsDirectory), 'utf8'))
   .join('\n');
 const generatedTypes = readFileSync(new URL('../src/lib/supabase/types.ts', import.meta.url), 'utf8');
+const billingAccessRepairMigration = readFileSync(
+  new URL(
+    '../supabase/migrations/20260823062732_repair_billing_access_feature_lookup_column.sql',
+    import.meta.url,
+  ),
+  'utf8',
+);
 
 test('uses an unambiguous Stripe customer mapping table and local key', () => {
   assert.match(migrations, /alter table app\.stripe_customers rename to stripe_customer_mappings;/);
@@ -37,4 +44,13 @@ test('renames exposed RPC arguments while preserving service-only grants', () =>
     migrations,
     /grant execute on function api_edge\.billing_get_account_by_customer\(text\)\s+to service_role;/,
   );
+});
+
+test('keeps the billing access argument distinct from the entitlement column', () => {
+  assert.match(
+    billingAccessRepairMigration,
+    /api\.has_billing_access_by_current_user\(\s*input_feature_lookup_key text default null\s*\)/,
+  );
+  assert.match(billingAccessRepairMigration, /entitlement\.feature_lookup_key = \$1/);
+  assert.doesNotMatch(billingAccessRepairMigration, /\.input_feature_lookup_key/);
 });
