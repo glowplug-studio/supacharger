@@ -119,7 +119,7 @@ AUTHENTICATION: {
     OTP_LENGTH: 6, // 6 through 10
   },
   SIGN_UP_EMAIL_VERIFICATION: 'otp', // also supports 'otp-and-link'
-  MFA_TOTP: { ENABLED: false },
+  MFA_TOTP: { ENABLED: false, REQUIRED_FOR_SIGN_IN: false },
 },
 PROFILE_IDENTITY: {
   USERNAME: 'disabled', // 'disabled' | 'optional' | 'required'

@@ -82,6 +82,7 @@ export type SupachargerConfig = {
     SIGN_UP_EMAIL_VERIFICATION: SignUpEmailVerificationMode;
     MFA_TOTP: {
       ENABLED: boolean;
+      REQUIRED_FOR_SIGN_IN: boolean;
     };
   };
   MOBILE_DEEP_LINKING: {

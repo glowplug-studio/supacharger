@@ -71,6 +71,7 @@ export const SC_CONFIG: SupachargerConfig = {
     SIGN_UP_EMAIL_VERIFICATION: 'otp',
     MFA_TOTP: {
       ENABLED: false,
+      REQUIRED_FOR_SIGN_IN: false,
     },
   },
   // Enable this only after the production HTTPS domain and native identifiers

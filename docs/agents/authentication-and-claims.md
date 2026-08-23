@@ -1,5 +1,13 @@
 # Authentication, Proxy, roles, and custom claims
 
+## Authenticator assurance
+
+`AUTHENTICATION.MFA_TOTP.ENABLED` exposes managed Supabase Auth TOTP enrolment and factor management at `/account/security`. `REQUIRED_FOR_SIGN_IN` checks `getAuthenticatorAssuranceLevel()` after password and email-OTP sign-in and in the OAuth/PKCE callback. An enrolled AAL1 session is sent to the managed `/account/mfa` challenge with only an allowlisted relative `next` path. Challenge success raises the session to AAL2 before navigation resumes.
+
+Use Supabase Auth factors only: list, enrol, challenge/verify, and unenrol. Never create an application MFA table or persist the TOTP secret. Treat unverified factors as incomplete enrolments, allow cancellation, and require a fresh code for factor removal when the session must step up. `REQUIRED_FOR_SIGN_IN` cannot manufacture a factor; a user with no verified factor has no AAL2 challenge until enrolment.
+
+Email and password settings are separate from profile details. Their managed server routes authenticate with `getUser()`, validate payloads with Zod, and reauthenticate the current password before `updateUser`. OAuth-only accounts must show password-dependent controls as unavailable.
+
 ## Proxy contract
 
 `src/proxy.ts` and `src/lib/supabase/supacharger/proxy.ts` are shared core behaviour distributed by the CLI. Create one request-scoped Supabase server client and perform exactly one `getClaims()` identity check. Exclude `is_anonymous` identities unless `ALLOW_ANONYMOUS_USERS` is true. Proxy must not call database RPCs or perform profile, onboarding, billing, organisation, or product lookups.
@@ -22,7 +30,7 @@ Keep the complete Next.js `/_next/` framework namespace outside Proxy matching s
 
 The public user-facing routes `/account/login`, `/account/create`, `/account/login-magic`, `/account/reset-password`, and `/account/reset-password/new` live under `src/app/(supacharger)/(unauthenticated)/` and are exact managed Core. `/auth/callback`, `/auth/confirm`, and `/auth/error` are managed protocol/error routes. Do not add duplicate public paths under another route group because Next.js cannot resolve two pages to the same URL. The route shell and forms expose stable `sc-auth-*` hooks, import `AuthSidecar` and `AuthMobileBrand` from the developer-owned adapter, and receive presentation from `src/styles/supacharger-auth.css`. The CLI installs the adapter and stylesheet only when absent and preserves them on later updates.
 
-`AUTHENTICATION` is the canonical feature policy. `EMAIL_PASSWORD.SIGN_IN` and `SIGN_UP` gate password operations. `PASSWORDLESS_EMAIL.SIGN_IN` and `SIGN_UP` independently select one exclusive mode: `disabled`, `otp`, or `link`; they never request both credentials in one passwordless email. A sign-in request always sets `shouldCreateUser: false`, while a configured passwordless signup may create the user. `PASSWORDLESS_EMAIL.OTP_LENGTH` is an integer from 6 through 10 and controls every rendered OTP field. `SIGN_UP_EMAIL_VERIFICATION` remains a separate password-signup policy and accepts `disabled`, `otp`, `link`, or `otp-and-link`. `MFA_TOTP.ENABLED` advertises whether the application supplies a second-factor journey. UI and server actions must enforce these values.
+`AUTHENTICATION` is the canonical feature policy. `EMAIL_PASSWORD.SIGN_IN` and `SIGN_UP` gate password operations. `PASSWORDLESS_EMAIL.SIGN_IN` and `SIGN_UP` independently select one exclusive mode: `disabled`, `otp`, or `link`; they never request both credentials in one passwordless email. A sign-in request always sets `shouldCreateUser: false`, while a configured passwordless signup may create the user. `PASSWORDLESS_EMAIL.OTP_LENGTH` is an integer from 6 through 10 and controls every rendered OTP field. `SIGN_UP_EMAIL_VERIFICATION` remains a separate password-signup policy and accepts `disabled`, `otp`, `link`, or `otp-and-link`. `MFA_TOTP.ENABLED` exposes the managed factor journey and `REQUIRED_FOR_SIGN_IN` enforces AAL2 for enrolled accounts. UI and server actions must enforce these values.
 
 `NEXT_PUBLIC_SITE_URL` is the single runtime source for the canonical application origin. Read it through `getSiteUrl()` and construct paths with `getURL(path)`; never add a localhost or production fallback in application code. Missing configuration must fail clearly. Supabase's hosted URL allow-list remains separately configured, while a local `config.toml` may reference the same environment variable.
 

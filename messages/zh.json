@@ -99,6 +99,7 @@
     "title": "计费"
   },
   "AuthJourney": {
+    "mfaStatusFailed": "",
     "heroTitle": "发展您自己的社区",
     "welcomeBack": "欢迎回来",
     "createAccountTitle": "创建您的帐户",
@@ -212,6 +213,32 @@
     "productProfile": {"title": "", "description": "", "open": ""},
     "cancellation": {"title": "", "description": "", "planned": "", "action": ""},
     "validation": {"invalidJson": "", "checkFields": "", "firstName": "", "lastName": "", "username": "", "language": "", "extension": "", "authentication": "", "verifyEmail": "", "usernameTaken": "", "profileUpdate": "", "languageUpdate": "", "extensionUpdate": "", "summaryLoad": ""}
+  },
+  "AccountSecurity": {
+    "providers": { "title": "", "description": "" },
+    "currentPassword": "",
+    "saving": "",
+    "email": { "title": "", "description": "", "passwordUnavailable": "", "new": "", "save": "", "sent": "" },
+    "password": { "title": "", "description": "", "unavailable": "", "new": "", "repeat": "", "save": "", "saved": "" },
+    "errors": {
+      "invalidRequest": "",
+      "unauthenticated": "",
+      "passwordIdentityRequired": "",
+      "emailUnchanged": "",
+      "emailUpdateFailed": "",
+      "oldPasswordRequired": "",
+      "provided_password_mismatch": "",
+      "oldPasswordIncorrect": "",
+      "passwordUpdateFailed": ""
+    },
+    "mfa": {
+      "title": "", "description": "", "setup": "", "authenticator": "", "qrAlt": "", "manualKey": "", "code": "", "enable": "", "cancel": "", "loading": "", "empty": "", "added": "", "removeCode": "", "remove": "", "enabled": "", "cancelled": "", "removed": "",
+      "errors": { "load": "", "enroll": "", "cancel": "", "code": "", "verify": "", "remove": "" }
+    },
+    "mfaChallenge": {
+      "title": "", "description": "", "code": "", "checking": "", "verify": "",
+      "errors": { "load": "", "missing": "", "code": "", "verify": "" }
+    }
   },
   "ThemeChangerMenu": {
     "title": "主题",

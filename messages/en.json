@@ -100,6 +100,7 @@
     "title": "Billing"
   },
   "AuthJourney": {
+    "mfaStatusFailed": "Two-factor authentication status could not be checked.",
     "heroTitle": "Grow your own community",
     "welcomeBack": "Welcome back",
     "createAccountTitle": "Create your account",
@@ -273,6 +274,82 @@
       "languageUpdate": "The language preference could not be updated.",
       "extensionUpdate": "The product profile fields could not be updated.",
       "summaryLoad": "The updated account could not be loaded."
+    }
+  },
+  "AccountSecurity": {
+    "providers": {
+      "title": "Sign-in methods",
+      "description": "These providers can sign in to your account."
+    },
+    "currentPassword": "Current password",
+    "saving": "Saving…",
+    "email": {
+      "title": "Email address",
+      "description": "Confirm your current password, then verify the message sent to the new address.",
+      "passwordUnavailable": "Email changes need an email-and-password sign-in method.",
+      "new": "New email address",
+      "save": "Update email",
+      "sent": "Check your new email address to confirm the change."
+    },
+    "password": {
+      "title": "Password",
+      "description": "Use your current password to protect this change.",
+      "unavailable": "Password changes are unavailable for an account that only uses external providers.",
+      "new": "New password",
+      "repeat": "Repeat new password",
+      "save": "Update password",
+      "saved": "Your password was updated."
+    },
+    "errors": {
+      "invalidRequest": "Check the submitted values.",
+      "unauthenticated": "You must be signed in to update security settings.",
+      "passwordIdentityRequired": "Add or use an email-and-password sign-in method for this change.",
+      "emailUnchanged": "Enter a different email address.",
+      "emailUpdateFailed": "The email address could not be updated.",
+      "oldPasswordRequired": "Enter your current password.",
+      "provided_password_mismatch": "The new passwords do not match.",
+      "oldPasswordIncorrect": "The current password is incorrect.",
+      "passwordUpdateFailed": "The password could not be updated."
+    },
+    "mfa": {
+      "title": "Authenticator app",
+      "description": "Use time-based one-time codes as a second sign-in step.",
+      "setup": "Set up authenticator",
+      "authenticator": "Authenticator app",
+      "qrAlt": "Authenticator setup QR code",
+      "manualKey": "Manual setup key",
+      "code": "Six-digit code",
+      "enable": "Enable",
+      "cancel": "Cancel",
+      "loading": "Checking authenticator factors…",
+      "empty": "No authenticator app is linked.",
+      "added": "Added {date}",
+      "removeCode": "Current code",
+      "remove": "Remove",
+      "enabled": "Authenticator verification is enabled.",
+      "cancelled": "Authenticator setup was cancelled.",
+      "removed": "The authenticator factor was removed.",
+      "errors": {
+        "load": "Authenticator status could not be loaded.",
+        "enroll": "Authenticator setup could not be started.",
+        "cancel": "Authenticator setup could not be cancelled.",
+        "code": "Enter the current six-digit code.",
+        "verify": "The authenticator code could not be verified.",
+        "remove": "The authenticator factor could not be removed."
+      }
+    },
+    "mfaChallenge": {
+      "title": "Two-factor verification",
+      "description": "Enter the current code from your authenticator app to finish signing in.",
+      "code": "Verification code",
+      "checking": "Checking…",
+      "verify": "Verify and continue",
+      "errors": {
+        "load": "Two-factor status could not be checked.",
+        "missing": "No verified authenticator factor is available.",
+        "code": "Enter the current six-digit code.",
+        "verify": "The code could not be verified."
+      }
     }
   },
   "ThemeChangerMenu": {
