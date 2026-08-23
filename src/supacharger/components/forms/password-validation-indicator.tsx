@@ -156,9 +156,9 @@ export default function PasswordValidationIndicator({
   }, [value, allValid, onValidationChange]);
 
   return (
-    <div className="space-y-2 relative">
+    <div className='sc-auth-password-strength'>
       {/* Password Input */}
-      <div className="relative">
+      <div className='sc-auth-password-control'>
         <Input
           id={id}
           name={name}
@@ -168,7 +168,7 @@ export default function PasswordValidationIndicator({
           onChange={onChange}
           maxLength={30}
           placeholder={placeholder}
-          className="sc-auth-input pr-16"
+          className='sc-auth-input sc-auth-password-input'
           onFocus={() => {
             setIsFocused(true);
             setShowTooltip(true);
@@ -179,16 +179,15 @@ export default function PasswordValidationIndicator({
           }}
         />
         {allValid && value.length > 0 && (
-          <span className="pointer-events-none absolute left-[calc(100%+0.5rem)] top-1/2 flex -translate-y-1/2 items-center">
-            <Check className="text-green-500" size={17} strokeWidth={2.5} />
+          <span className='sc-auth-field-valid'>
+            <Check className='sc-auth-field-valid-icon' size={17} strokeWidth={2.5} />
           </span>
         )}
 
         {/* Requirements bar (bars inside input) */}
         <div
-          className={`absolute inset-x-5 bottom-2 flex gap-2 transition-opacity duration-200 ${
-            showCriteria ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+          className='sc-auth-password-meter'
+          data-visible={showCriteria ? 'true' : 'false'}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
           aria-label={tStrengthComponent("passwordRequirementsLabel")}
@@ -197,10 +196,8 @@ export default function PasswordValidationIndicator({
           {validations.map((isValid, idx) => (
             <div
               key={validationItems[idx].key}
-              className={`
-                h-1 flex-1 rounded-full transition-colors duration-300
-                ${isValid ? "bg-green-500" : "bg-gray-300"}
-              `}
+              className='sc-auth-password-meter-segment'
+              data-valid={isValid ? 'true' : 'false'}
             />
           ))}
         </div>
@@ -208,14 +205,13 @@ export default function PasswordValidationIndicator({
 
       {/* Tooltip */}
       {showTooltip && showCriteria && (
-        <div className="absolute z-50 mt-2 w-72 rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-900 shadow-lg dark:border-white/10 dark:bg-[#1a1919] dark:text-white">
-          <ul className="space-y-1">
+        <div className='sc-auth-password-tooltip'>
+          <ul className='sc-auth-password-requirements'>
             {validationItems.map((item, idx) => (
-              <li key={item.key} className="flex items-center">
+              <li key={item.key} className='sc-auth-password-requirement'>
                 <span
-                  className={`mr-2 ${
-                    validations[idx] ? "text-green-500" : "text-gray-400"
-                  }`}
+                  className='sc-auth-password-requirement-icon'
+                  data-valid={validations[idx] ? 'true' : 'false'}
                 >
                   {validations[idx] ? (
                     <Check size={15} />

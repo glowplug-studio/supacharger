@@ -9,6 +9,8 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/i18n/request.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('messages/en.json').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/styles/supacharger-auth.css').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/supacharger.adapters/auth/auth-sidecar.tsx').ownership, 'developer-owned');
   assert.equal(classifyPath('src/assets/svgr/ui/inline-loader.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/assets/svgr/ui/inline-loader-dark.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger/styles/supacharger.css').ownership, 'cli-managed-core');

@@ -72,17 +72,16 @@ export default function ResetPasswordForm() {
   };
 
   return (
-    <form className='max-w-md' onSubmit={handleSubmit}>
+    <form className='sc-auth-form' onSubmit={handleSubmit}>
       <div
-        className={`
-          overflow-hidden transition-all duration-500 ease-in-out
-          ${hideEmailField ? 'max-h-0 opacity-0' : 'max-h-32 space-y-2 px-1 pb-6 opacity-100'}
-        `}
+        className='sc-auth-collapsible-field'
+        data-hidden={hideEmailField ? 'true' : 'false'}
+        aria-hidden={hideEmailField}
       >
-        <label htmlFor='email' className='text-md block text-white/80'>
+        <label htmlFor='email' className='sc-auth-label'>
           {tPasswordResetPage('description')}
         </label>
-        <div className='mt-2'>
+        <div className='sc-auth-control'>
           <Input
             className='sc-auth-input'
             type='email'
@@ -96,7 +95,7 @@ export default function ResetPasswordForm() {
           />
         </div>
       </div>
-      <div className='flex items-center justify-between px-1'>
+      <div className='sc-auth-actions sc-auth-actions-between'>
         <SaveButton
           isLoading={isLoading}
           isSuccess={isSuccess}
@@ -106,7 +105,7 @@ export default function ResetPasswordForm() {
           disabled={isSuccess || isLoading}
           className='sc-auth-primary-button'
         />
-        <Link className='text-primary text-sm font-semibold hover:text-primary/80' href='/account/login'>
+        <Link className='sc-auth-link' href='/account/login'>
           {tAuthTerms('backToSignIn')}
         </Link>
       </div>

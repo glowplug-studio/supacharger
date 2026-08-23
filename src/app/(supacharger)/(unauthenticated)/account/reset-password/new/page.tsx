@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
-import SCSiteLogo from '@/components/sc_demo/sc_site-logo';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { createClient } from '@/lib/supabase/client';
 import SaveButton from '@/supacharger/components/buttons/form-save-button';
@@ -15,7 +14,6 @@ import { supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
 
 export default function ResetPasswordFormPage() {
   const tPasswordResetPage = useTranslations('PasswordResetPage');
-  const tGlobal = useTranslations('Global');
   const tGlobalUI = useTranslations('GlobalUI');
   const tAuthTerms = useTranslations('AuthTerms');
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
@@ -73,14 +71,14 @@ export default function ResetPasswordFormPage() {
       const localised = supabaseErrorCodeLocalisation(error.code || 'genericError');
       const translated = tSupabaseErrorCodes(localised);
       toast.error(translated);
-      setStatus(error.message);
+      setStatus(translated);
       setIsLoading(false);
       return;
     }
     toast.success(tAuthTerms('passwordUpdated'));
     setIsSuccess(true);
     setSuccess(true);
-    setStatus('Password updated!');
+    setStatus(tAuthTerms('passwordUpdated'));
     setIsLoading(false);
     setTimer(3);
   }
@@ -100,31 +98,24 @@ export default function ResetPasswordFormPage() {
 
   return (
     <>
-      <main id='sc_account-password-reset-page' className='w-full max-w-md text-white'>
-        <div className='flex items-center gap-2 lg:hidden'>
-          <div className='mb-6 w-40'>
-            <SCSiteLogo showSiteTitle={true} darkMode={true} />
-          </div>
-        </div>
-        <div className='flex flex-col gap-2 px-1'>
-          <h1 className='mb-6 text-3xl font-semibold tracking-tight text-white'>{tPasswordResetPage('title')}</h1>
-        </div>
+      <main id='sc_account-password-reset-new-page' className='sc-auth-page' data-sc-auth-page='new-password'>
+        <header className='sc-auth-page-header'>
+          <h1 className='sc-auth-page-title'>{tPasswordResetPage('title')}</h1>
+        </header>
 
         <div>
           {isPending && (
-            <div className='flex items-center gap-3 rounded bg-gray-100 px-4 py-3'>
-              <LoadingSpinner className='h-5 w-5' />
-              <span className='text-gray-600'>{tPasswordResetPage('verifyingCode') || 'Verifying code...'}</span>
+            <div className='sc-auth-pending' role='status'>
+              <LoadingSpinner className='sc-auth-pending-icon' />
+              <span>{tPasswordResetPage('verifyingCode')}</span>
             </div>
           )}
 
           {/* If there is no code and not pending, show message and link */}
           {!isPending && !code && (
-            <div className='sc_message sc_message-error flex flex-col gap-2'>
-              <span className='text-sm'>
-                {tPasswordResetPage('noCode') || 'No reset code found. Please request a new password reset link.'}
-              </span>
-              <Link className='text-sm font-semibold hover:text-indigo-500' href='/account/reset-password'>
+            <div className='sc_message sc_message-error sc-auth-error-block'>
+              <span>{tPasswordResetPage('noCode')}</span>
+              <Link className='sc-auth-link' href='/account/reset-password'>
                 {tAuthTerms('backToRequestLink')}
               </Link>
             </div>
@@ -132,19 +123,21 @@ export default function ResetPasswordFormPage() {
 
           {/* Only show the rest if not pending and code exists */}
           {!isPending && code && (
-            <div className='space-y-4'>
+            <div className='sc-auth-reset-state'>
               {!isCodeValid && status && (
-                <div className='sc_message sc_message-error flex flex-col gap-2'>
+                <div className='sc_message sc_message-error sc-auth-error-block'>
                   <span>{status}</span>
-                  <Link className='text-sm font-semibold hover:text-indigo-500' href='/account/login'>
+                  <Link className='sc-auth-link' href='/account/login'>
                     {tAuthTerms('backToSignIn')}
                   </Link>
                 </div>
               )}
               {isCodeValid && !success && (
-                <form onSubmit={handlePasswordReset} className='space-y-4'>
-                  <label className='mb-2 block font-medium'>{tAuthTerms('newPassword')}</label>
+                <form onSubmit={handlePasswordReset} className='sc-auth-form'>
+                  <label className='sc-auth-label' htmlFor='new-password'>{tAuthTerms('newPassword')}</label>
                   <input
+                    id='new-password'
+                    name='newPassword'
                     type='password'
                     required
                     minLength={8}
@@ -159,12 +152,12 @@ export default function ResetPasswordFormPage() {
                     initialLabel={tGlobalUI('buttonSaveChanges')}
                     savingLabel={tGlobalUI('buttonSaving')}
                     completeLabel={tGlobalUI('buttonSaved')}
-                    className='sc-auth-primary-button w-full'
+                    className='sc-auth-primary-button sc-auth-submit'
                   />
                 </form>
               )}
               {success && (
-                <div className='mt-4 rounded-sm bg-green-100 py-4 text-center font-medium text-green-800'>
+                <div className='sc_message sc_message-positive sc-auth-reset-success' role='status'>
                   <div>
                     {tPasswordResetPage('redirectingIn')} {timer}
                   </div>

@@ -204,25 +204,25 @@ export function CreateAccountForm() {
   return (
     <>
       {!accountCreated && AuthProviderButtons && (
-        <div className='social-auth-container'>
+        <div className='sc-auth-provider-section'>
           <AuthProviderButtons />
         </div>
       )}
 
       {!accountCreated && (
-        <form onSubmit={handleSubmit(onSubmit)} className={AuthProviderButtons ? 'mt-6' : ''} noValidate>
-          <div className='my-2'>
-            <label htmlFor='email' className='text-md block px-1'>
+        <form onSubmit={handleSubmit(onSubmit)} className='sc-auth-form' data-has-providers={AuthProviderButtons ? 'true' : 'false'} noValidate>
+          <div className='sc-auth-field'>
+            <label htmlFor='email' className='sc-auth-label'>
               {tAuthTerms('emailAddress')}
             </label>
-            <div className='mt-2 px-1'>
+            <div className='sc-auth-control'>
               <Input
                 id='email'
                 type='email'
                 maxLength={30}
                 required
                 autoComplete='email'
-                className='input'
+                className='sc-auth-input'
                 aria-invalid={!!formError && formError.toLowerCase().includes("email")}
                 aria-describedby={getAriaError("email")}
                 {...register('email', {
@@ -236,14 +236,13 @@ export function CreateAccountForm() {
           </div>
           <div
             id='sc_passwords-submit'
-            className={`
-              transition-all duration-500
-              ${passwordSectionOpen ? 'max-h-[1000px]' : 'max-h-0 overflow-hidden'}
-            `}
+            className='sc-auth-password-section'
+            data-open={passwordSectionOpen ? 'true' : 'false'}
           >
-            <div className='mb-4 mt-2'>
-              <div className='mt-2 flex items-center'>
-                <div className='flex-1'>
+            <div className='sc-auth-field'>
+              <label htmlFor='password' className='sc-auth-label'>{tAuthTerms('password')}</label>
+              <div className='sc-auth-password-control'>
+                <div className='sc-auth-password-strength-wrap'>
                   <PasswordValidationIndicator
                     value={password}
                     onChange={handlePasswordChange}
@@ -255,7 +254,7 @@ export function CreateAccountForm() {
                 </div>
                 <button
                   type='button'
-                  className='ml-2 mt-4 text-gray-400 hover:text-slate-800'
+                  className='sc-auth-password-visibility sc-auth-password-visibility-inline'
                   aria-label={showPassword ? tAuthJourney('hidePassword') : tAuthJourney('showPassword')}
                   aria-expanded={!showPassword}
                   aria-controls='embedded-signup-password-confirmation'
@@ -272,12 +271,12 @@ export function CreateAccountForm() {
               height={showPassword ? 0 : 'auto'}
               animateOpacity
             >
-              <div className='my-2'>
-                <label htmlFor='retypePassword' className='text-md block px-1'>
+              <div className='sc-auth-field sc-auth-password-confirmation'>
+                <label htmlFor='retypePassword' className='sc-auth-label'>
                   {tAuthTerms('retypePassword')}
                 </label>
-                <div className='mt-2 px-1'>
-                  <div className='relative'>
+                <div className='sc-auth-control'>
+                  <div className='sc-auth-password-control'>
                     <Input
                       id='retypePassword'
                       type='password'
@@ -292,8 +291,8 @@ export function CreateAccountForm() {
                       })}
                     />
                     {passwordsMatch ? (
-                      <span className='pointer-events-none absolute left-[calc(100%+0.5rem)] top-1/2 flex -translate-y-1/2 items-center'>
-                        <Check aria-hidden='true' className='text-green-500' size={17} strokeWidth={2.5} />
+                      <span className='sc-auth-field-valid'>
+                        <Check aria-hidden='true' className='sc-auth-field-valid-icon' size={17} strokeWidth={2.5} />
                       </span>
                     ) : null}
                   </div>
@@ -306,12 +305,12 @@ export function CreateAccountForm() {
             {BrevoNewsletterRegistrationCheckbox && <BrevoNewsletterRegistrationCheckbox />}
             {/* General password errors */}
             {formError && formError.toLowerCase().includes("password") && !formError.toLowerCase().includes("retype") && (
-              <div id="password-error" className="sc_message sc_message-error mx-1">{formError}</div>
+              <div id="password-error" className="sc_message sc_message-error">{formError}</div>
             )}
-            <div className='mt-4 px-1'>
+            <div className='sc-auth-actions'>
               <SaveButton
                 type='submit'
-                className='w-full h-12'
+                className='sc-auth-primary-button sc-auth-submit'
                 isLoading={isSubmitting}
                 isSuccess={isSubmitSuccess}
                 initialLabel={tAuthTerms('signUp')}
@@ -330,11 +329,11 @@ export function CreateAccountForm() {
       )}
 
       {!accountCreated && (
-        <div className='mt-4 flex flex-col gap-2 px-1 md:flex-row md:items-center md:justify-between md:gap-0'>
+        <div className='sc-auth-existing-account'>
           <div>
-            <span className='text-sm font-normal'>{tCreateAccountFormComponent('iAlreadyHaveAnAccount')} </span>
-            <Link href='/account/login' className='text-sm font-normal'>
-              <span className='font-semibold'>{tAuthTerms('logIn')}</span>
+            <span>{tCreateAccountFormComponent('iAlreadyHaveAnAccount')} </span>
+            <Link href='/account/login' className='sc-auth-link'>
+              <span>{tAuthTerms('logIn')}</span>
             </Link>
           </div>
         </div>

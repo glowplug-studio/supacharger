@@ -35,17 +35,21 @@ export function LoginMagicLinkUI() {
   }
 
   return (
-    <form onSubmit={handleEmailSubmit}>
+    <form className='sc-auth-form' onSubmit={handleEmailSubmit}>
+      <label className='sc-auth-label' htmlFor='magic-link-email'>
+        {t('emailLabel')}
+      </label>
       <input
+        id='magic-link-email'
         type="email"
         name="email"
         placeholder={t('emailPlaceholder')}
         aria-label={t('emailPlaceholder')}
         autoFocus
-        className="input"
+        className='sc-auth-input'
       />
-      <div className="mt-4 flex justify-end gap-2">
-        <button className="btn bg-primary" type="submit" disabled={pending}>
+      <div className='sc-auth-actions sc-auth-actions-end'>
+        <button className='sc-auth-primary-button' type='submit' disabled={pending}>
           {t('submit')}
         </button>
       </div>

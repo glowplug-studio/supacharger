@@ -316,7 +316,7 @@ test('direct auth routes prefer providers while email-only authentication opens 
   assert.doesNotMatch(journey, /showProvidersInEmailMode/);
   assert.match(providerButtons, /export function EnabledAuthProviderIcons/);
   assert.match(providerButtons, /slice\(0, limit\)/);
-  assert.match(providerButtons, /-space-x-2/);
+  assert.match(providerButtons, /sc-auth-provider-stack/);
   assert.match(englishMessages, /"useSocialAuth":\s*"Use social auth"/);
 });
 
@@ -377,11 +377,11 @@ test('password signup uses the validated Server Action and one explicit verifica
 });
 
 test('auth buttons and inputs share the canonical control dimensions', async () => {
-  const styles = await read('src/supacharger/styles/supacharger.css');
+  const styles = await read('src/styles/supacharger-auth.css');
 
   assert.match(
     styles,
-    /\.sc-auth-surface-button,\s*\.sc-auth-primary-button,\s*\.sc-auth-input\s*\{[\s\S]*?height:\s*3\.5rem\s*!important;[\s\S]*?padding:\s*0\.75rem 1\.25rem\s*!important;/,
+    /\.sc-auth-surface-button,\s*\.sc-auth-primary-button,\s*\.sc-auth-input\s*\{[\s\S]*?min-height:\s*3\.5rem;[\s\S]*?padding:\s*0\.75rem 1\.25rem;/,
   );
 });
 

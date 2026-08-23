@@ -86,34 +86,34 @@ export function ResendVerificationEmail({
   }
 
   return (
-    <div className='space-y-3'>
-      <div className='flex items-center justify-between gap-4'>
-        <p className='text-sm text-white/90'>{t('didNotReceive')}</p>
+    <div className='sc-auth-resend-row'>
+      <div className='sc-auth-resend-controls'>
+        <p className='sc-auth-resend-copy'>{t('didNotReceive')}</p>
         {secondsRemaining > 0 ? (
-          <span className='shrink-0 text-sm font-semibold text-white/50' role='timer'>
+          <span className='sc-auth-resend-timer' role='timer'>
             {t('sendAgainIn', { seconds: secondsRemaining })}
           </span>
         ) : (
           <button
             type='button'
-            className='text-primary hover:text-primary/80 focus-visible:outline-primary disabled:text-primary inline-flex shrink-0 items-center gap-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4'
+            className='sc-auth-link sc-auth-resend-button'
             disabled={isSending}
             onClick={resend}
           >
-            {isSending ? <Loader2 className='h-4 w-4' aria-hidden='true' /> : null}
+            {isSending ? <Loader2 className='sc-auth-icon' aria-hidden='true' /> : null}
             <span>{t('sendAnother')}</span>
-            <ArrowRight className='h-4 w-4' aria-hidden='true' />
+            <ArrowRight className='sc-auth-icon' aria-hidden='true' />
           </button>
         )}
       </div>
       {message ? (
         <div
-          className={`sc_message flex items-center gap-3 ${message.kind === 'success' ? 'sc_message-positive' : 'sc_message-error'}`}
+          className={`sc_message sc-auth-message ${message.kind === 'success' ? 'sc_message-positive' : 'sc_message-error'}`}
           role={message.kind === 'success' ? 'status' : 'alert'}
         >
           {message.kind === 'success' ? (
-            <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-600'>
-              <MailCheck className='h-4 w-4 text-white' aria-hidden='true' />
+            <div className='sc-auth-status-icon sc-auth-status-icon-success'>
+              <MailCheck className='sc-auth-icon' aria-hidden='true' />
             </div>
           ) : null}
           <span>{message.text}</span>

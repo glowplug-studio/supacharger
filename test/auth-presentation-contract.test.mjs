@@ -1,8 +1,60 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { access, readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+
+test('public authentication pages are managed and expose semantic presentation hooks', async () => {
+  const managedRoutes = [
+    'src/app/(supacharger)/(unauthenticated)/account/layout.tsx',
+    'src/app/(supacharger)/(unauthenticated)/account/login/page.tsx',
+    'src/app/(supacharger)/(unauthenticated)/account/create/page.tsx',
+    'src/app/(supacharger)/(unauthenticated)/account/login-magic/page.tsx',
+    'src/app/(supacharger)/(unauthenticated)/account/reset-password/page.tsx',
+    'src/app/(supacharger)/(unauthenticated)/account/reset-password/new/page.tsx',
+    'src/app/(supacharger)/(unauthenticated)/auth/error/page.tsx',
+  ];
+
+  await Promise.all(managedRoutes.map((route) => access(new URL(`../${route}`, import.meta.url))));
+  await Promise.all(
+    managedRoutes
+      .filter((route) => route.includes('/account/'))
+      .map((route) =>
+        assert.rejects(
+          access(new URL(`../${route.replace('/(supacharger)/', '/(project)/')}`, import.meta.url)),
+          `${route} must not have a developer-owned duplicate`,
+        ),
+      ),
+  );
+
+  for (const route of [managedRoutes[1], managedRoutes[2], managedRoutes[6]]) {
+    assert.match(
+      await read(route),
+      /export const instant = false;/,
+      `${route} must explicitly allow blocking request-time data`,
+    );
+  }
+
+  const formFiles = [
+    'auth-entry.tsx',
+    'create-account-form.tsx',
+    'login-magic-link-ui.tsx',
+    'login-user-form.tsx',
+    'otp-fields-verify-form.tsx',
+    'password-validation-indicator.tsx',
+    'resend-verification-email.tsx',
+    'reset-password-request-link-form.tsx',
+  ];
+  for (const filename of formFiles) {
+    const source = await read(`src/supacharger/components/forms/${filename}`);
+    const staticClassValues = [...source.matchAll(/className=['"]([^'"]+)['"]/g)].map((match) => match[1]);
+    for (const classValue of staticClassValues) {
+      for (const token of classValue.split(/\s+/)) {
+        assert.match(token, /^sc(?:-|_)/, `${filename} contains inline presentation utility ${token}`);
+      }
+    }
+  }
+});
 
 test('every static AuthJourney key has non-empty English source copy', async () => {
   const [journey, resend, englishMessages] = await Promise.all([
@@ -49,19 +101,25 @@ test('passwordless OTP login uses login-code copy without changing signup confir
 });
 
 test('auth journey retains the promoted SnapScreen presentation', async () => {
-  const [entry, form, styles, leftPanel] = await Promise.all([
+  const [shell, entry, form, styles, adapter] = await Promise.all([
+    read('src/supacharger/components/auth/auth-shell.tsx'),
     read('src/supacharger/components/forms/auth-entry.tsx'),
     read('src/supacharger/components/forms/login-user-form.tsx'),
-    read('src/supacharger/styles/supacharger.css'),
-    read('src/components/sc_demo/sc_account-login-left.tsx'),
+    read('src/styles/supacharger-auth.css'),
+    read('src/supacharger.adapters/auth/auth-sidecar.tsx'),
   ]);
 
   assert.match(entry, /Typewriter/);
-  assert.match(entry, /space-y-10 px-2 pt-8/);
-  assert.match(entry, /SCSiteLogo/);
-  assert.match(entry, /justify-center px-2 lg:hidden/);
-  assert.match(entry, /showSiteTitle=\{true\} darkMode=\{true\}/);
-  assert.match(leftPanel, /hidden[\s\S]*?lg:flex/);
+  assert.match(entry, /sc-auth-entry-header/);
+  assert.doesNotMatch(entry, /SCSiteLogo|sc_demo/);
+  assert.match(shell, /data-sc-auth-shell/);
+  assert.match(shell, /AuthSidecar/);
+  assert.match(shell, /AuthMobileBrand/);
+  assert.match(adapter, /export function AuthSidecar/);
+  assert.match(adapter, /export function AuthMobileBrand/);
+  assert.match(styles, /\.sc-auth-shell/);
+  assert.match(styles, /min-height:\s*100dvh/);
+  assert.match(styles, /\.sc-auth-mobile-brand/);
   assert.match(form, /AnimateHeight/);
   assert.match(form, /sc-auth-surface-button/);
   assert.match(form, /sc-auth-primary-button/);
@@ -74,7 +132,7 @@ test('auth journey retains the promoted SnapScreen presentation', async () => {
 test('OTP fields retain an independent placeholder for each empty slot', async () => {
   const [field, styles] = await Promise.all([
     read('src/components/ui/otp-field.tsx'),
-    read('src/supacharger/styles/supacharger.css'),
+    read('src/styles/supacharger-auth.css'),
   ]);
 
   assert.match(field, /placeholder \?\? '0'\.repeat\(length\)/);
@@ -167,8 +225,8 @@ test('matching password confirmation shows a green tick', async () => {
   for (const form of [journey, embeddedSignup]) {
     assert.match(form, /passwordsMatch/);
     assert.match(form, /retypePassword\.length > 0|passwordAgain\.length > 0/);
-    assert.match(form, /left-\[calc\(100%\+0\.5rem\)\]/);
-    assert.match(form, /text-green-500/);
+    assert.match(form, /sc-auth-field-valid/);
+    assert.match(form, /sc-auth-field-valid-icon/);
     assert.match(form, /size=\{17\}/);
     assert.match(form, /strokeWidth=\{2\.5\}/);
     assert.match(form, /<Check/);
@@ -202,25 +260,25 @@ test('social-auth logos use the auth colours and the compact stack stays left-al
   const [providers, journey, styles] = await Promise.all([
     read('src/supacharger/components/buttons/auth-provider-buttons.tsx'),
     read('src/supacharger/components/forms/login-user-form.tsx'),
-    read('src/supacharger/styles/supacharger.css'),
+    read('src/styles/supacharger-auth.css'),
   ]);
 
   assert.equal((providers.match(/className='sc-auth-provider-avatar/g) ?? []).length, 2);
   assert.doesNotMatch(providers, /border-slate-950 bg-white/);
   assert.match(providers, /className='sc-auth-surface-button sc-auth-provider-button/);
   assert.match(journey, /className='sc-auth-surface-button sc-auth-provider-switcher/);
-  assert.match(journey, /<span className='justify-self-start'>[\s\S]*?<EnabledAuthProviderIcons limit=\{3\}/);
+  assert.match(journey, /<span className='sc-auth-provider-switcher-icons'>[\s\S]*?<EnabledAuthProviderIcons limit=\{3\}/);
   assert.match(
     styles,
     /\.sc-auth-provider-avatar\s*\{[\s\S]*?background:\s*var\(--auth-input-background,[\s\S]*?border-color:\s*var\(--auth-surface-background,/,
   );
   assert.match(
     styles,
-    /\.sc-auth-provider-button\s*\{[\s\S]*?display:\s*grid\s*!important;[\s\S]*?grid-template-columns:\s*2rem minmax\(0, 1fr\) 2rem;[\s\S]*?align-items:\s*center;/,
+    /\.sc-auth-provider-button\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*2rem minmax\(0, 1fr\) 2rem;[\s\S]*?align-items:\s*center;/,
   );
   assert.match(
     styles,
-    /\.sc-auth-provider-switcher\s*\{[\s\S]*?display:\s*grid\s*!important;[\s\S]*?grid-template-columns:\s*4rem minmax\(0, 1fr\) 4rem;[\s\S]*?align-items:\s*center;/,
+    /\.sc-auth-provider-switcher\s*\{[\s\S]*?display:\s*grid;[\s\S]*?grid-template-columns:\s*4rem minmax\(0, 1fr\) 4rem;[\s\S]*?align-items:\s*center;/,
   );
 });
 
@@ -228,32 +286,35 @@ test('email verification follows the SnapScreen OTP presentation', async () => {
   const [journey, resend, styles, englishMessages] = await Promise.all([
     read('src/supacharger/components/forms/login-user-form.tsx'),
     read('src/supacharger/components/forms/resend-verification-email.tsx'),
-    read('src/supacharger/styles/supacharger.css'),
+    read('src/styles/supacharger-auth.css'),
     read('messages/en.json'),
   ]);
 
-  assert.match(journey, /sc-auth-surface space-y-4 px-4 py-6 text-center sm:px-6/);
-  assert.match(journey, /sc-auth-surface space-y-5/);
-  assert.match(journey, /<LoadingSpinner className='h-6 w-6 text-white'/);
-  assert.match(journey, /otpVerificationSucceeded \? 'scale-95 opacity-0'/);
-  assert.match(journey, /otpVerificationSucceeded \? 'scale-100 opacity-100'/);
-  assert.match(journey, /rounded-full bg-green-600/);
-  assert.match(journey, /<Check className='h-7 w-7 text-white'/);
+  assert.match(journey, /sc-auth-surface sc-auth-verification-summary/);
+  assert.match(journey, /sc-auth-surface sc-auth-code-panel/);
+  assert.match(journey, /<LoadingSpinner className='sc-auth-code-loader'/);
+  assert.match(journey, /data-succeeded=\{otpVerificationSucceeded/);
+  assert.match(journey, /data-visible=\{otpVerificationSucceeded/);
+  assert.match(journey, /sc-auth-code-success-icon/);
+  assert.match(journey, /<Check className='sc-auth-code-success-check'/);
   assert.match(journey, /OTP_SUCCESS_REDIRECT_DELAY_MS/);
   assert.match(journey, /t\.has\('loginHere'\)/);
   assert.match(journey, /'Login Here'/);
-  assert.match(resend, /justify-between/);
-  assert.match(resend, /text-primary/);
+  assert.match(resend, /sc-auth-resend-controls/);
+  assert.match(resend, /sc-auth-link sc-auth-resend-button/);
   assert.match(resend, /<ArrowRight/);
   assert.match(resend, /t\('sendAnother'\)/);
   assert.match(resend, /secondsRemaining > 0 \? \(/);
-  assert.match(resend, /text-white\/50/);
+  assert.match(resend, /sc-auth-resend-timer/);
   assert.match(resend, /t\('sendAgainIn', \{ seconds: secondsRemaining \}\)/);
   assert.match(resend, /<MailCheck/);
-  assert.match(resend, /rounded-full bg-green-600/);
-  assert.match(resend, /h-4 w-4 text-white/);
+  assert.match(resend, /sc-auth-status-icon-success/);
+  assert.match(resend, /sc-auth-icon/);
   assert.match(resend, /sc_message-positive/);
-  assert.match(styles, /\.sc_message-positive[\s\S]*?bg-green-100/);
+  assert.match(
+    styles,
+    /\.sc-auth-status-icon-success\s*\{[\s\S]*?background:\s*#16a34a;/,
+  );
   assert.match(englishMessages, /"codeAndLinkSent":\s*"We sent an email to \{email\}\."/);
   assert.match(englishMessages, /"enterCodeOption":\s*"Enter the Code here"/);
   assert.match(englishMessages, /"sendAnother":\s*"Send again"/);
@@ -271,7 +332,7 @@ test('magic-link delivery uses one icon-led success message', async () => {
   assert.match(checkEmailState[1], /sc_message sc_message-positive/);
   assert.match(checkEmailState[1], /role='status'/);
   assert.match(checkEmailState[1], /<MailCheck/);
-  assert.match(checkEmailState[1], /rounded-full bg-green-600/);
+  assert.match(checkEmailState[1], /sc-auth-status-icon-success/);
   assert.match(checkEmailState[1], /t\('linkSent', \{ email: verificationEmail \}\)/);
   assert.doesNotMatch(checkEmailState[1], /<h2/);
   assert.match(
@@ -289,15 +350,15 @@ test('failed password sign in shows an icon-led create-account recovery', async 
   assert.match(journey, /messageKey === 'invalidCredentials'/);
   assert.match(journey, /setLoginFailed\(mode === 'signin'/);
   assert.match(journey, /<X/);
-  assert.match(journey, /rounded-full bg-red-600/);
-  assert.match(journey, /h-4 w-4 text-white/);
+  assert.match(journey, /sc-auth-status-icon-error/);
+  assert.match(journey, /className='sc-auth-icon'/);
   assert.match(journey, /t\.has\('createAccountInstead'\)/);
   assert.match(journey, /'Create Account instead'/);
   assert.match(journey, /onClick=\{\(\) => switchAuthMode\('signup'\)\}/);
   assert.match(journey, /<ArrowRight/);
   assert.match(journey, /sc_message sc_message-error/);
-  assert.match(journey, /flex items-center justify-center gap-3/);
-  assert.match(journey, /sc-auth-recovery-link text-primary/);
+  assert.match(journey, /sc-auth-message sc-auth-message-centred/);
+  assert.match(journey, /sc-auth-link sc-auth-recovery-link/);
   assert.doesNotMatch(journey, /\{!loginFailed \? \(/);
   assert.match(englishMessages, /"createAccountInstead":\s*"Create Account instead"/);
 });
@@ -314,7 +375,7 @@ test('unverified password sign in offers a fresh verification email and enters t
   assert.match(journey, /setStep\('verify-email'\)/);
   assert.match(journey, /emailNotConfirmed && error/);
   assert.equal((journey.match(/sc-auth-recovery-link/g) ?? []).length, 2);
-  assert.match(journey, /space-y-3/);
+  assert.match(journey, /sc-auth-error-stack/);
   assert.match(journey, /getVerificationLinkLabel/);
   assert.match(englishMessages, /"getVerificationLink":\s*"Get verification link"/);
 });

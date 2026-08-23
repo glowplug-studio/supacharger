@@ -10,11 +10,8 @@ import { getURL } from '@/supacharger/utils/helpers';
 import 'server-only';
 
 export async function resolveAuthCallbackFailure(context: AuthCallbackFailureContext): Promise<string | URL> {
-  if (context.reason === 'missing-code') {
-    return getURL();
-  }
-
-  return getURL(SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION);
+  void context;
+  return getURL('/auth/error');
 }
 
 export async function resolveAuthCallbackSuccess({

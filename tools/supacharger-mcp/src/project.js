@@ -197,6 +197,22 @@ export function classifyPath(inputPath) {
     };
   }
 
+  if (relativePath === 'src/styles/supacharger-auth.css') {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Authentication presentation seam for managed sc-auth-* markup. The CLI installs a missing starter and preserves established product CSS.',
+    };
+  }
+
+  if (relativePath === 'src/supacharger.adapters/auth/auth-sidecar.tsx') {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Authentication branding seam. Export AuthSidecar and AuthMobileBrand; the CLI installs a missing starter and preserves product presentation.',
+    };
+  }
+
   if (relativePath === '.supacharger/managed-files.json') {
     return {
       ownership: 'cli-managed-core',

@@ -111,6 +111,7 @@ export const SC_CONFIG: SupachargerConfig = {
         '/legal',
         '/license',
         '/error',
+        '/auth/error',
 
         // Defaults
         '/',

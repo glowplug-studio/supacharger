@@ -410,32 +410,32 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const backButton = (
     <button
       type='button'
-      className='inline-flex items-center gap-2 text-sm font-semibold text-white/60 transition-colors hover:text-white'
+      className='sc-auth-back'
       onClick={returnToEmail}
     >
-      <ArrowLeft className='h-4 w-4' />
+      <ArrowLeft className='sc-auth-icon' />
       {t('back')}
     </button>
   );
 
   function renderChooseOptions(includeEmailButton: boolean) {
     return (
-      <div className='space-y-3'>
+      <div className='sc-auth-option-list'>
         <AuthProviderButtons />
         {includeEmailButton && emailJourneyAvailable ? (
           <>
-            {providerJourneyAvailable ? <UIDivider text='or' className='py-1' /> : null}
+            {providerJourneyAvailable ? <UIDivider text='or' className='sc-auth-divider' /> : null}
             <Button
               type='button'
               variant='ghost'
-              className='sc-auth-surface-button grid w-full grid-cols-[1.75rem_1fr_1.75rem]'
+              className='sc-auth-surface-button sc-auth-email-option'
               onClick={() => {
                 setStep('email');
                 onFormHeadingChange?.(mode === 'signup' ? t('signUp') : t('signIn'));
               }}
             >
-              <Mail className='h-5 w-5 justify-self-start' />
-              <span className='justify-self-center'>{t('continueEmail')}</span>
+              <Mail className='sc-auth-option-icon' />
+              <span className='sc-auth-provider-label'>{t('continueEmail')}</span>
               <span aria-hidden='true' />
             </Button>
           </>
@@ -446,10 +446,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
 
   if (step === 'verify-email') {
     return (
-      <div className='space-y-8 text-white'>
+      <div className='sc-auth-verification'>
         {backButton}
-        <div className='sc-auth-surface space-y-4 px-4 py-6 text-center sm:px-6'>
-          <p className='text-base text-white/90'>
+        <div className='sc-auth-surface sc-auth-verification-summary'>
+          <p className='sc-auth-verification-copy'>
             {verificationPurpose === 'signin'
               ? getSignInDeliveryMessage()
               : offersOtpAndLink
@@ -457,19 +457,18 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                 : t('codeSent', { email: verificationEmail, length: otpLength })}
           </p>
           {offersOtpAndLink ? (
-            <p className='text-sm leading-relaxed text-white/70'>{t('openLinkInstructions')}</p>
+            <p className='sc-auth-verification-help'>{t('openLinkInstructions')}</p>
           ) : null}
         </div>
-        <div className='sc-auth-surface space-y-5 px-4 py-6 sm:px-6'>
-          <p className='text-center text-base font-medium'>{t('enterCodeOption')}</p>
-          <div className='relative flex min-h-16 items-center justify-center'>
+        <div className='sc-auth-surface sc-auth-code-panel'>
+          <p className='sc-auth-code-title'>{t('enterCodeOption')}</p>
+          <div className='sc-auth-code-stage'>
             <div
-              className={`flex items-center justify-center transition-all duration-150 motion-reduce:transition-none ${
-                otpVerificationSucceeded ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
-              }`}
+              className='sc-auth-code-entry'
+              data-succeeded={otpVerificationSucceeded ? 'true' : 'false'}
             >
               {pendingAction === 'otp' ? (
-                <LoadingSpinner className='h-6 w-6 text-white' label={t('verifyingCode')} />
+                <LoadingSpinner className='sc-auth-code-loader' label={t('verifyingCode')} />
               ) : (
                 <OTPField
                   className='sc-auth-otp'
@@ -486,15 +485,14 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               )}
             </div>
             <div
-              className={`absolute flex items-center justify-center transition-all duration-150 motion-reduce:transition-none ${
-                otpVerificationSucceeded ? 'scale-100 opacity-100' : 'pointer-events-none scale-75 opacity-0'
-              }`}
+              className='sc-auth-code-success'
+              data-visible={otpVerificationSucceeded ? 'true' : 'false'}
               role={otpVerificationSucceeded ? 'status' : undefined}
               aria-label={otpVerificationSucceeded ? tAuthTerms('accountEmailVerified') : undefined}
               aria-hidden={!otpVerificationSucceeded}
             >
-              <span className='flex h-12 w-12 items-center justify-center rounded-full bg-green-600'>
-                <Check className='h-7 w-7 text-white' strokeWidth={3} aria-hidden='true' />
+              <span className='sc-auth-status-icon sc-auth-code-success-icon'>
+                <Check className='sc-auth-code-success-check' strokeWidth={3} aria-hidden='true' />
               </span>
             </div>
           </div>
@@ -510,10 +508,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
         {otpFailure && verificationPurpose === 'signup' ? (
           <Link
             href={withNextPath('/account/login', safeNextPath)}
-            className='text-primary hover:text-primary/80 inline-flex items-center gap-2 text-sm font-semibold transition-colors'
+            className='sc-auth-link'
           >
             <span>{loginHereLabel}</span>
-            <ArrowRight className='h-4 w-4' aria-hidden='true' />
+            <ArrowRight className='sc-auth-icon' aria-hidden='true' />
           </Link>
         ) : (
           <ResendVerificationEmail
@@ -529,13 +527,13 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
 
   if (step === 'check-email') {
     return (
-      <div className='space-y-5 text-white'>
+      <div className='sc-auth-check-email'>
         {backButton}
-        <div className='sc_message sc_message-positive flex items-start gap-3 text-sm leading-relaxed' role='status'>
-          <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-600'>
-            <MailCheck className='h-4 w-4 text-white' aria-hidden='true' />
+        <div className='sc_message sc_message-positive sc-auth-message sc-auth-message-start' role='status'>
+          <div className='sc-auth-status-icon sc-auth-status-icon-success'>
+            <MailCheck className='sc-auth-icon' aria-hidden='true' />
           </div>
-          <p className='pt-1'>{t('linkSent', { email: verificationEmail })}</p>
+          <p className='sc-auth-message-copy'>{t('linkSent', { email: verificationEmail })}</p>
         </div>
         <ResendVerificationEmail
           email={verificationEmail}
@@ -562,88 +560,104 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
       ) : null}
 
       <AnimateHeight duration={260} height={step === 'email' ? 'auto' : 0}>
-        <form onSubmit={submitPassword} className='space-y-4'>
+        <form onSubmit={submitPassword} className='sc-auth-form'>
           {providerJourneyAvailable ? (
             <Button
               type='button'
               variant='ghost'
-              className='sc-auth-surface-button sc-auth-provider-switcher mb-6 w-full'
+              className='sc-auth-surface-button sc-auth-provider-switcher sc-auth-provider-switcher-spaced'
               onClick={showProviderChoices}
             >
-              <span className='justify-self-start'>
+              <span className='sc-auth-provider-switcher-icons'>
                 <EnabledAuthProviderIcons limit={3} />
               </span>
-              <span className='justify-self-center'>{useSocialAuthLabel}</span>
+              <span className='sc-auth-provider-label'>{useSocialAuthLabel}</span>
               <span aria-hidden='true' />
             </Button>
           ) : null}
 
-          <div className='mb-4 flex items-center justify-end gap-4'>
+          <div className='sc-auth-mode-switch'>
             <button
               type='button'
-              className='text-primary hover:text-primary/80 inline-flex items-center gap-2 text-sm font-semibold transition-colors'
+              className='sc-auth-link'
               onClick={() => switchAuthMode(mode === 'signin' ? 'signup' : 'signin')}
             >
-              {mode === 'signin' ? <UserPlus className='h-4 w-4' /> : <LogIn className='h-4 w-4' />}
+              {mode === 'signin' ? <UserPlus className='sc-auth-icon' /> : <LogIn className='sc-auth-icon' />}
               {mode === 'signin' ? t('createAccount') : t('signIn')}
             </button>
           </div>
 
-          <Input
-            id='email'
-            className='sc-auth-input'
-            type='email'
-            name='email'
-            maxLength={80}
-            required
-            autoComplete='email'
-            placeholder={t('email')}
-            value={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setError(null);
-              setEmailNotConfirmed(false);
-            }}
-          />
+          <div className='sc-auth-field'>
+            <label className='sc-auth-label' htmlFor='email'>{t('email')}</label>
+            <Input
+              id='email'
+              className='sc-auth-input'
+              type='email'
+              name='email'
+              maxLength={80}
+              required
+              autoComplete='email'
+              placeholder={t('email')}
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setError(null);
+                setEmailNotConfirmed(false);
+              }}
+            />
+          </div>
 
           {passwordModeAvailable && mode === 'signin' ? (
             <>
-              <Input
-                id='password'
-                className='sc-auth-input'
-                name='password'
-                maxLength={80}
-                type='password'
-                placeholder={t('password')}
-                required
-                autoComplete='current-password'
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                  setError(null);
-                }}
-              />
-              {SC_CONFIG.ORGANISATIONS.ENABLED && SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE !== 'disabled' ? (
+              <div className='sc-auth-field'>
+                <label className='sc-auth-label' htmlFor='password'>{t('password')}</label>
                 <Input
+                  id='password'
                   className='sc-auth-input'
-                  type='text'
-                  autoComplete='organization'
-                  placeholder={
-                    SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'
-                      ? t('organisationHandle')
-                      : t('organisationHandleOptional')
-                  }
-                  value={organisationHandle}
-                  onChange={(event) =>
-                    setOrganisationHandle(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
-                  }
-                  required={SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'}
+                  name='password'
+                  maxLength={80}
+                  type='password'
+                  placeholder={t('password')}
+                  required
+                  autoComplete='current-password'
+                  value={password}
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                    setError(null);
+                  }}
                 />
+              </div>
+              {SC_CONFIG.ORGANISATIONS.ENABLED && SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE !== 'disabled' ? (
+                <div className='sc-auth-field'>
+                  <label className='sc-auth-label' htmlFor='organisation-handle'>
+                    {SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'
+                      ? t('organisationHandle')
+                      : t('organisationHandleOptional')}
+                  </label>
+                  <Input
+                    id='organisation-handle'
+                    name='organisationHandle'
+                    className='sc-auth-input'
+                    type='text'
+                    autoComplete='organization'
+                    placeholder={
+                      SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'
+                        ? t('organisationHandle')
+                        : t('organisationHandleOptional')
+                    }
+                    value={organisationHandle}
+                    onChange={(event) =>
+                      setOrganisationHandle(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
+                    }
+                    required={SC_CONFIG.ORGANISATIONS.AUTHENTICATION_HANDLE === 'required'}
+                  />
+                </div>
               ) : null}
             </>
           ) : passwordModeAvailable ? (
-            <div>
-              <div className='relative w-full'>
+            <div className='sc-auth-password-create'>
+              <label className='sc-auth-label' htmlFor='password'>{t('password')}</label>
+              <div className='sc-auth-password-control'>
                 <PasswordValidationIndicator
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
@@ -655,7 +669,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                 />
                 <button
                   type='button'
-                  className='absolute top-7 right-5 -translate-y-1/2 text-gray-400 hover:text-white'
+                  className='sc-auth-password-visibility'
                   aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                   aria-expanded={!showPassword}
                   aria-controls='signup-password-confirmation'
@@ -671,9 +685,12 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                 height={showPassword ? 0 : 'auto'}
                 animateOpacity
               >
-                <div className='pt-4'>
-                  <div className='relative'>
+                <div className='sc-auth-password-confirmation'>
+                  <label className='sc-auth-label' htmlFor='password-confirmation'>{t('repeatPassword')}</label>
+                  <div className='sc-auth-password-control'>
                     <Input
+                      id='password-confirmation'
+                      name='passwordConfirmation'
                       className='sc-auth-input'
                       type='password'
                       autoComplete='new-password'
@@ -684,8 +701,8 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                       disabled={showPassword}
                     />
                     {passwordsMatch ? (
-                      <span className='pointer-events-none absolute top-1/2 left-[calc(100%+0.5rem)] flex -translate-y-1/2 items-center'>
-                        <Check aria-hidden='true' className='text-green-500' size={17} strokeWidth={2.5} />
+                      <span className='sc-auth-field-valid'>
+                        <Check aria-hidden='true' className='sc-auth-field-valid-icon' size={17} strokeWidth={2.5} />
                       </span>
                     ) : null}
                   </div>
@@ -695,38 +712,38 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           ) : null}
 
           {emailNotConfirmed && error ? (
-            <div className='space-y-3'>
+            <div className='sc-auth-error-stack'>
               <div className='sc_message sc_message-error' role='alert'>
                 {error}
               </div>
               <button
                 type='button'
-                className='sc-auth-recovery-link text-primary hover:text-primary/80 mx-auto flex items-center justify-center gap-2 text-sm font-bold underline-offset-4 transition-colors hover:underline'
+                className='sc-auth-link sc-auth-recovery-link'
                 disabled={pendingAction !== null}
                 onClick={() => void requestVerificationEmail()}
               >
-                {pendingAction === 'verification-email' ? <LoadingSpinner className='h-4 w-4' /> : null}
+                {pendingAction === 'verification-email' ? <LoadingSpinner className='sc-auth-icon' /> : null}
                 <span>{getVerificationLinkLabel}</span>
-                <ArrowRight className='h-4 w-4' aria-hidden='true' />
+                <ArrowRight className='sc-auth-icon' aria-hidden='true' />
               </button>
             </div>
           ) : error && loginFailed ? (
-            <div className='space-y-3'>
+            <div className='sc-auth-error-stack'>
               <div className='sc_message sc_message-error' role='alert'>
-                <div className='flex items-center justify-center gap-3'>
-                  <div className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-600'>
-                    <X className='h-4 w-4 text-white' aria-hidden='true' />
+                <div className='sc-auth-message sc-auth-message-centred'>
+                  <div className='sc-auth-status-icon sc-auth-status-icon-error'>
+                    <X className='sc-auth-icon' aria-hidden='true' />
                   </div>
                   <span>{error}</span>
                 </div>
               </div>
               <button
                 type='button'
-                className='sc-auth-recovery-link text-primary hover:text-primary/80 mx-auto flex items-center justify-center gap-2 text-sm font-bold transition-colors'
+                className='sc-auth-link sc-auth-recovery-link'
                 onClick={() => switchAuthMode('signup')}
               >
                 <span>{createAccountInsteadLabel}</span>
-                <ArrowRight className='h-4 w-4' aria-hidden='true' />
+                <ArrowRight className='sc-auth-icon' aria-hidden='true' />
               </button>
             </div>
           ) : error ? (
@@ -738,7 +755,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           {passwordModeAvailable ? (
             <Button
               type='submit'
-              className='sc-auth-primary-button w-full gap-3'
+              className='sc-auth-primary-button sc-auth-submit'
               disabled={
                 pendingAction !== null ||
                 !parsedEmail.success ||
@@ -748,11 +765,11 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               }
             >
               {pendingAction === 'password' ? (
-                <LoadingSpinner className='h-4 w-4' variant='dark' />
+                <LoadingSpinner className='sc-auth-icon' variant='dark' />
               ) : mode === 'signin' ? (
-                <LogIn className='h-4 w-4' />
+                <LogIn className='sc-auth-icon' />
               ) : (
-                <UserPlus className='h-4 w-4' />
+                <UserPlus className='sc-auth-icon' />
               )}
               {mode === 'signin' ? t('signIn') : t('signUp')}
             </Button>
@@ -761,7 +778,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           {passwordModeAvailable && mode === 'signin' ? (
             <Link
               href='/account/reset-password'
-              className='block text-center text-sm font-semibold text-white/70 transition-colors hover:text-white'
+              className='sc-auth-secondary-link'
             >
               {t('forgotPassword')}
             </Link>
@@ -769,17 +786,17 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
 
           {passwordlessEmailAvailable ? (
             <>
-              {passwordModeAvailable ? <UIDivider text='or' className='my-5' /> : null}
+              {passwordModeAvailable ? <UIDivider text='or' className='sc-auth-divider sc-auth-divider-spaced' /> : null}
               <Button
                 type='button'
-                className='sc-auth-primary-button w-full gap-3'
+                className='sc-auth-primary-button sc-auth-submit'
                 disabled={pendingAction !== null || !parsedEmail.success}
                 onClick={sendPasswordlessEmail}
               >
                 {pendingAction === 'passwordless-email' ? (
-                  <LoadingSpinner className='h-4 w-4' variant='dark' />
+                  <LoadingSpinner className='sc-auth-icon' variant='dark' />
                 ) : (
-                  <WandSparkles className='h-4 w-4' />
+                  <WandSparkles className='sc-auth-icon' />
                 )}
                 {passwordlessButtonLabel}
               </Button>

@@ -1147,6 +1147,7 @@
   "MagicLinkForm": {
     "failed": "The sign-in link could not be sent.",
     "sent": "Sign-in link sent. Check your inbox.",
+    "emailLabel": "Email address",
     "emailPlaceholder": "Enter your email",
     "submit": "Submit"
   },

@@ -1081,6 +1081,7 @@
   "MagicLinkForm": {
     "failed": "无法发送登录链接。",
     "sent": "登录链接已发送。检查您的收件箱。",
+    "emailLabel": "",
     "emailPlaceholder": "输入您的电子邮件",
     "submit": "提交"
   },

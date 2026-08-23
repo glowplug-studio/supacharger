@@ -5,12 +5,14 @@ type CreateAccountPageProps = {
   searchParams?: Promise<{ next?: string }>;
 };
 
+export const instant = false;
+
 export default async function CreateAccountPage({ searchParams }: CreateAccountPageProps) {
   const params = await searchParams;
   const nextPath = getSafeNextPath(params?.next);
 
   return (
-    <main id='sc_account-create-page' className='w-full max-w-md'>
+    <main id='sc_account-create-page' className='sc-auth-page' data-sc-auth-page='create'>
       <AuthEntry initialMode='signup' nextPath={nextPath} />
     </main>
   );

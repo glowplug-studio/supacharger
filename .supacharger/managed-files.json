@@ -49,6 +49,7 @@
     "src/assets/svgr/ui/inline-loader-dark.svg",
     "src/assets/svgr/ui/inline-loader.svg",
     "src/styles/project.css",
+    "src/styles/supacharger-auth.css",
     "src/supacharger.adapters",
     "src/supacharger.config.ts"
   ],

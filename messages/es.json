@@ -1112,6 +1112,7 @@
   "MagicLinkForm": {
     "failed": "No se pudo enviar el enlace de inicio de sesión.",
     "sent": "Enlace de inicio de sesión enviado. Revisa tu bandeja de entrada.",
+    "emailLabel": "",
     "emailPlaceholder": "Introduce tu correo electrónico",
     "submit": "Entregar"
   },

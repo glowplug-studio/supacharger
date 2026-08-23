@@ -75,19 +75,19 @@ export function OtpFieldsForm({ email }: { email: string }) {
   };
 
   return (
-    <div id='sc_otp-fields-verification-form' className='space-y-3'>
-      <h2 className='mb-2 text-xl font-bold tracking-tight'>{tOTPFormComponent('title')}</h2>
-      <p className='text-xs'>{tOTPFormComponent('emailSent', { email })}</p>
-      <p className='text-xs'>{tOTPFormComponent('description')}</p>
+    <div id='sc_otp-fields-verification-form' className='sc-auth-otp-form'>
+      <h2 className='sc-auth-otp-title'>{tOTPFormComponent('title')}</h2>
+      <p className='sc-auth-otp-copy'>{tOTPFormComponent('emailSent', { email })}</p>
+      <p className='sc-auth-otp-copy'>{tOTPFormComponent('description')}</p>
 
-      <LabelPrimitive.Root htmlFor='otp-group' className='mb-2 block font-medium'>
+      <LabelPrimitive.Root htmlFor='otp-group' className='sc-auth-label'>
         {tOTPFormComponent('fieldLabel')}
       </LabelPrimitive.Root>
 
-      <div className='flex flex-col items-center justify-center rounded-md border bg-gray-100 p-5 h-28'>
+      <div className='sc-auth-otp-stage'>
         {loading ? (
-          <div className='flex flex-col items-center'>
-            <LoadingSpinner className='h-10 w-10 text-gray-500' label={tOTPFormComponent('verifyingCode')} />
+          <div className='sc-auth-otp-loading'>
+            <LoadingSpinner className='sc-auth-otp-loading-icon' label={tOTPFormComponent('verifyingCode')} />
           </div>
         ) : (
           <OTPField

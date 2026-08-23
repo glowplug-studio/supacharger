@@ -20,7 +20,7 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 - the exact protected contract tests listed in the manifest
 - `.supacharger/managed-files.json`
 
-Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. Product routes and account presentation live under `src/app/(project)/`; the protected route group contains reusable Route Handlers and framework boundaries only.
+Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. Reusable authentication and account routes live under `src/app/(supacharger)/`; product routes and extensions live under `src/app/(project)/`. Authentication presentation is customised through the explicit developer seams below, not by duplicating a managed public route.
 
 ### Shared and project contract tests
 
@@ -56,6 +56,8 @@ The approved social-provider migration is the narrow exception for the expanded 
 
 `src/styles/project.css` is the application styling seam. It contains the named project's theme tokens, element defaults, global overrides, and product-specific classes. CLI updates must preserve it. It must not import Tailwind because the protected entrypoint already does so.
 
+`src/styles/supacharger-auth.css` is the authentication presentation seam. The managed authentication shell and forms expose semantic `sc-auth-*` hooks; this file assigns product colours, dimensions, responsive layout, and interaction presentation. The CLI copies the starter only when the file is absent and preserves established application CSS during later updates.
+
 `src/assets/svgr/ui/inline-loader.svg` is the primary application-owned inline loading animation, and `src/assets/svgr/ui/inline-loader-dark.svg` is its optional black variant. The shared loading component uses the primary asset. Replace either file in place to brand it; do not rename it or put UI SVGs in `public`. Import UI SVGs as SVGR components rather than `<img>`, `next/image`, or public URL strings unless an external URL contract explicitly requires otherwise. Both supplied loaders accept an SVGR `fill` prop, while a custom asset may hard-code colours and ignore that prop without breaking callers. CLI updates preserve both files.
 
 ### UI SVG ownership and responsive sizing
@@ -70,7 +72,7 @@ Before changing sizing classes, inspect the rendered `<svg>` to confirm that SVG
 
 `src/app/error/page.tsx`, `src/app/not-found.tsx`, and `src/components/error-page/` are application-owned error presentation. Keep them outside the protected `(supacharger)` route group. The canonical starter verifies the user on the server, adds the existing authenticated header and footer only for a verified session, and otherwise renders a standalone full-viewport state. Use the developer-owned semantic theme tokens (`primary`, `primary-foreground`, `foreground`, `muted-foreground`, `accent`, and `ring`) rather than product-specific colour literals. Resolve copy from the developer-owned `ErrorPage` namespace without calling `getTranslations` for a namespace that may be absent: the shared resolver must fall back field-by-field to its protected English copy so preserved or stale catalogues cannot break the error boundary. When `AUTH_ONLY_APP` is enabled, the developer config must explicitly allow `/error` for unauthenticated visitors. Proxy must also let `/error` bypass post-sign-in profile onboarding so another redirect cannot conceal the error.
 
-`src/supacharger.adapters/` is the developer-owned extension seam for additional authentication fields and post-sign-in onboarding operations. Core interfaces may evolve, but the CLI must not overwrite implementations in this directory.
+`src/supacharger.adapters/` is the developer-owned extension seam for additional authentication fields and post-sign-in onboarding operations. `auth/auth-sidecar.tsx` must export `AuthSidecar` and `AuthMobileBrand` for the managed authentication shell. Core interfaces may evolve, but the CLI installs a missing starter and must not overwrite established implementations in this directory.
 
 `supabase/functions/_shared/image-targets.ts` is the developer-owned image-processing policy. It maps request target names to fixed buckets, user-relative path prefixes, output formats, resize dimensions, encoding settings, visibility, and limits. The CLI installs a starter only when this file is absent, then preserves it. The managed endpoint and transformer may import this file, but callers must never override its values in request data.
 
@@ -82,7 +84,7 @@ The root `tsconfig.json` belongs to the Next.js application runtime and must exc
 
 ## Styling ownership
 
-`src/supacharger/styles/globals.css` is the CLI-managed Tailwind entrypoint. Keep it structural: import Tailwind once, then `supacharger.css`, then the developer-owned `src/styles/project.css`.
+`src/supacharger/styles/globals.css` is the CLI-managed Tailwind entrypoint. Keep it structural: import Tailwind once, then `supacharger.css`, then the developer-owned `src/styles/supacharger-auth.css`, then `src/styles/project.css`.
 
 The root `tailwind.config.ts` is merge-managed because applications may own font and theme choices. `postcss.config.mjs` is exact managed and uses an explicit ESM export for reliable Next.js/Turbopack loading. Preserve the `@config` path and do not set the whole package to ESM solely to load Tailwind configuration.
 
