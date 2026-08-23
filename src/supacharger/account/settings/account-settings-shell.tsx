@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -11,6 +12,7 @@ import { cn } from '@/utils/cn';
 export function AccountSettingsShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations('AccountSettings');
+  const navigationListRef = useRef<HTMLUListElement>(null);
   const baseItems = [
     { id: 'details', href: '/account', label: t('navigation.details'), order: 10 },
     { id: 'security', href: '/account/security', label: t('navigation.security'), order: 20 },
@@ -42,6 +44,11 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
     ...accountNavigationExtensions,
   ].sort((left, right) => left.order - right.order);
 
+  useEffect(() => {
+    navigationListRef.current?.querySelector<HTMLElement>('[aria-current="page"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [pathname]);
+
   return (
     <main className='mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8' data-sc-account-shell>
       <header className='mb-8 space-y-2' data-sc-account-header>
@@ -50,7 +57,7 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
       </header>
       <div className='grid gap-8 md:grid-cols-[13rem_minmax(0,1fr)]'>
         <nav aria-label={t('navigation.label')} className='min-w-0' data-sc-account-navigation>
-          <ul className='flex gap-2 overflow-x-auto pb-2 md:flex-col md:overflow-visible'>
+          <ul className='flex gap-2 overflow-x-auto pb-2 md:flex-col md:overflow-visible' ref={navigationListRef}>
             {baseItems.map((item) => {
               const active = item.href === '/account' ? pathname === item.href : pathname.startsWith(item.href);
               return (

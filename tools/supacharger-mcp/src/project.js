@@ -20,6 +20,7 @@ const guidanceFiles = {
   loading_ui: 'docs/agents/loading-ui.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
   account_settings: 'docs/agents/account-settings.md',
+  organisations: 'docs/agents/organisation-settings.md',
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
   instructions: 'AGENTS.md',
@@ -144,6 +145,23 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'developer-owned',
       guidance: 'Application configuration seam. CLI updates must preserve this file.',
+    };
+  }
+
+  if (
+    relativePath === 'src/supacharger/organisations' ||
+    relativePath.startsWith('src/supacharger/organisations/') ||
+    relativePath === 'src/app/(supacharger)/(authenticated)/account/organisation' ||
+    relativePath.startsWith('src/app/(supacharger)/(authenticated)/account/organisation/') ||
+    relativePath === 'src/app/(supacharger)/(authenticated)/[handle]/settings' ||
+    relativePath.startsWith('src/app/(supacharger)/(authenticated)/[handle]/settings/') ||
+    relativePath === 'src/app/(supacharger)/api/organisations' ||
+    relativePath.startsWith('src/app/(supacharger)/api/organisations/')
+  ) {
+    return {
+      ownership: 'cli-managed-core',
+      guidance:
+        'Canonical organisation chooser, settings, service, or server-validation behaviour. Land changes in Core first, keep exact managed consumers byte-identical, and preserve product-only UI through adapters.',
     };
   }
 

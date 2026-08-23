@@ -25,6 +25,7 @@ const guidanceTopics = [
   'loading_ui',
   'profile',
   'account_settings',
+  'organisations',
   'billing',
   'workflow',
   'instructions',

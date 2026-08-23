@@ -1192,6 +1192,38 @@
   "AuthenticatedMetadata": {
     "description": "Tu cuenta de Korunet y espacio de trabajo comunitario."
   },
+  "Organisations": {
+    "common": {"save":"","saving":"","working":""},
+    "roles": {"owner":"","admin":"","member":""},
+    "navigation": {"label":"","back":"","profile":"","team":"","billing":""},
+    "chooser": {
+      "title":"","description":"","membershipsTitle":"","membershipsDescription":"","emptyTitle":"","emptyDescription":"",
+      "memberCount":"","active":"","select":"","openSettings":"","createTitle":"","createDescription":"","create":"",
+      "requestTitle":"","requestDescription":"","request":"","accessRequested":"","invitationTitle":"",
+      "invitationDescription":"","acceptInvitation":"","invitationAccepted":""
+    },
+    "profile": {
+      "title":"","description":"","memberReadOnly":"","name":"","handle":"","handleHelp":"","handleAvailable":"",
+      "handleUnavailable":"","bio":"","bioHelp":"","noBio":"","colour":"","accessPolicy":"","accessClosed":"",
+      "accessRequest":"","avatarTitle":"","headerTitle":"","avatarUpload":"","headerUpload":"","mediaHelp":"",
+      "mediaInvalid":"","mediaUploadFailed":"","removeMedia":"","saved":""
+    },
+    "team": {
+      "title":"","descriptionManager":"","descriptionMember":"","membersTitle":"","unnamedMember":"","roleFor":"",
+      "remove":"","memberRemoved":"","roleUpdated":"","inviteTitle":"","inviteDescription":"","email":"","inviteRole":"",
+      "invite":"","invitationCreated":"","copyInviteOnce":"","inviteLink":"","copy":"","expires":"","revoke":"",
+      "invitationRevoked":"","noInvitations":"","requestsTitle":"","requestsDescription":"","noRequests":"",
+      "requestedOn":"","approve":"","reject":"","requestApproved":"","requestRejected":""
+    },
+    "billing": {
+      "title":"","description":"","portalError":"","noAccount":"","noAccountHelp":"","noSubscriptions":"",
+      "status":"","unknown":"","manage":"","managerOnly":""
+    },
+    "errors": {
+      "disabled":"","invalidRequest":"","invalidField":"","checkFields":"","extension":"","handleUnavailable":"",
+      "lastOwner":"","invitationInvalid":"","forbidden":"","actionFailed":""
+    }
+  },
   "ErrorPage": {
     "notFound": {
       "status": "error 404",
