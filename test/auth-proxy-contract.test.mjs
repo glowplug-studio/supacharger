@@ -147,15 +147,17 @@ test('canonical recovery routes do not inherit the requirement they recover', as
   const setupPage = await findRoutePage('/account/setup-profile');
   if (setupPage) {
     const setupLayouts = await readAncestorLayouts(setupPage);
-    assert.doesNotMatch(setupLayouts, /requireOnboardedUser|requireAppAccess/);
-    assert.match(setupLayouts, /requireVerifiedUser/);
+    const setupBoundary = `${await readFile(setupPage, 'utf8')}\n${setupLayouts}`;
+    assert.doesNotMatch(setupBoundary, /requireOnboardedUser|requireAppAccess/);
+    assert.match(setupBoundary, /requireVerifiedUser/);
   }
 
   const billingPage = await findRoutePage('/account/billing/subscribe');
   if (billingPage) {
     const billingLayouts = await readAncestorLayouts(billingPage);
-    assert.doesNotMatch(billingLayouts, /requireAppAccess/);
-    assert.match(billingLayouts, /requireOnboardedUser/);
+    const billingBoundary = `${await readFile(billingPage, 'utf8')}\n${billingLayouts}`;
+    assert.doesNotMatch(billingBoundary, /requireAppAccess/);
+    assert.match(billingBoundary, /requireOnboardedUser/);
   }
 });
 
