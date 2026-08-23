@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
@@ -16,29 +15,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { createClient } from '@/lib/supabase/client';
+import { useAccountSummary } from '@/supacharger/account/use-account-summary';
 import LogoutButton from '@/supacharger/components/buttons/logout-button';
-import { projectProfileIdentity } from '@/supacharger/profile/profile-identity';
-import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
 type AccountMenuTrigger = 'avatar' | 'wide';
-
-type AccountProfile = {
-  avatar_path?: string | null;
-  email?: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
-  username?: string | null;
-};
 
 const menuItemClassName =
   'group text-foreground focus:bg-accent focus:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground flex min-h-10 cursor-pointer items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium outline-none transition-colors [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-muted-foreground';
 
 export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: AccountMenuTrigger }) {
-  const [profile, setProfile] = useState<AccountProfile>({});
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const identity = projectProfileIdentity(profile, SC_CONFIG.PROFILE_IDENTITY.USERNAME, { ownerView: true });
+  const { summary } = useAccountSummary();
+  const displayName = summary?.displayName ?? 'Account';
+  const initials = summary?.initials ?? 'A';
   const { setTheme, theme } = useTheme();
 
   const tAuthTerms = useTranslations('AuthTerms');
@@ -46,39 +35,14 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
   const tTheme = useTranslations('ThemeChangerMenu');
   const tMenu = useTranslations('SessionNavigation');
 
-  useEffect(() => {
-    let cancelled = false;
-    const supabase = createClient();
-
-    void supabase
-      .schema('api')
-      .rpc('get_account_profile_by_current_user')
-      .then(async ({ data }) => {
-        if (cancelled) return;
-        const nextProfile = (data?.[0] ?? {}) as AccountProfile;
-        setProfile(nextProfile);
-
-        if (!nextProfile.avatar_path) return;
-        const { data: signedAvatar } = await supabase.storage
-          .from('user-avatars')
-          .createSignedUrl(nextProfile.avatar_path, 60 * 60);
-
-        if (!cancelled) setAvatarUrl(signedAvatar?.signedUrl ?? null);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const profileHref = identity.username ? `/profile/${identity.username}` : '/account';
-  const subtitle = [profile.email, identity.username ? `@${identity.username}` : null].filter(Boolean).join('  ');
+  const profileHref = summary?.profileHref ?? '/account';
+  const subtitle = [summary?.email, summary?.username ? `@${summary.username}` : null].filter(Boolean).join('  ');
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          aria-label={tMenu('userMenu', { name: identity.displayName })}
+          aria-label={tMenu('userMenu', { name: displayName })}
           className={cn(
             'focus-visible:ring-ring inline-flex items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
             trigger === 'wide'
@@ -88,14 +52,14 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
           type='button'
         >
           <Avatar className='border-border size-9 shrink-0 border'>
-            <AvatarImage alt={identity.displayName} src={avatarUrl ?? undefined} />
+            <AvatarImage alt={displayName} src={summary?.avatarUrl ?? undefined} />
             <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
-              {identity.initials}
+              {initials}
             </AvatarFallback>
           </Avatar>
           {trigger === 'wide' ? (
             <span className='min-w-0 flex-1 group-data-[collapsible=icon]:hidden'>
-              <span className='block truncate text-sm font-medium'>{identity.displayName}</span>
+              <span className='block truncate text-sm font-medium'>{displayName}</span>
               {subtitle ? <span className='block truncate text-xs opacity-65'>{subtitle}</span> : null}
             </span>
           ) : null}
@@ -110,13 +74,13 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
         <DropdownMenuLabel className='bg-muted p-0 font-normal'>
           <Link className='hover:bg-accent flex items-center gap-3 px-4 py-3 transition-colors' href={profileHref}>
             <Avatar className='border-border size-10 shrink-0 border'>
-              <AvatarImage alt={identity.displayName} src={avatarUrl ?? undefined} />
+              <AvatarImage alt={displayName} src={summary?.avatarUrl ?? undefined} />
               <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
-                {identity.initials}
+                {initials}
               </AvatarFallback>
             </Avatar>
             <span className='min-w-0'>
-              <span className='text-foreground block truncate text-sm font-semibold'>{identity.displayName}</span>
+              <span className='text-foreground block truncate text-sm font-semibold'>{displayName}</span>
               {subtitle ? (
                 <span className='text-muted-foreground mt-0.5 block truncate text-xs font-normal'>{subtitle}</span>
               ) : null}

@@ -32,6 +32,10 @@ Identity display uses the shared projection in this order: first and last name; 
 
 The current-user RPC may return the owner's email and complete shared profile fields. `api.get_user_profiles_by_identifiers()` is the safe general projection for verified authenticated users: it matches UUID or username and returns only ID, names, username, avatar path, and header path. Never add email to this projection.
 
+Application chrome uses `api.get_account_summary_by_current_user()` rather than composing separate profile and organisation queries in the browser. It returns one JSON object containing the authenticated user ID, email, names, username, avatar storage path, active organisation, and organisation count. The RPC never signs media and maps the active role to `owner`, `admin`, or `member`. `src/supacharger/account/account-summary.ts` verifies Auth once, validates the RPC payload, derives display identity, and batch-signs only the media the summary needs. The managed `GET /api/account/summary` route exposes that safe result with private no-store caching.
+
+Menus remain developer-owned but consume the managed `useAccountSummary()` hook. After a successful profile or avatar database mutation, call `publishAccountSummaryChanged()`; it emits `supacharger:account-summary-changed` and causes mounted consumers to reload the canonical summary. An optimistic caller may publish a complete replacement summary. Do not dispatch product-specific profile-refresh events or make menus query profile tables directly.
+
 ## Private media
 
 The `user-avatars` bucket is private and accepts JPEG, PNG, and WebP files up to 5 MB. Canonical object keys are:
@@ -39,7 +43,7 @@ The `user-avatars` bucket is private and accepts JPEG, PNG, and WebP files up to
 - `<auth-user-id>/avatar-<unique-name>`; and
 - `<auth-user-id>/headers/header-<unique-name>`.
 
-Only the owner may insert, update, or delete within those prefixes. Verified authenticated users may read allowed profile objects from the private bucket and clients render them with signed URLs. A consumer may add a server-side signing proxy for intentionally public product profiles, but must not make the bucket public or store permanent public URLs.
+Only the owner may insert, update, or delete within those prefixes. Verified authenticated users may read allowed profile objects from the private bucket and clients render them with signed URLs. Use the shared signed-media resolver when a server surface needs several private objects: it groups paths by bucket and uses `createSignedUrls()` once per bucket instead of issuing one request per image. A consumer may add a server-side signing proxy for intentionally public product profiles, but must not make the bucket public or store permanent public URLs.
 
 Use the authenticated `process-image-upload` Edge Function for shared resizing/re-encoding. Its `profile_avatar` and `profile_header` targets generate these canonical paths with the caller's RLS-scoped Storage client. The request never supplies a bucket or path. See `docs/agents/image-transformation.md` for the target and extension contract.
 

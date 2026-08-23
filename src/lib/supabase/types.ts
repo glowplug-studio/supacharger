@@ -34,6 +34,7 @@ export type Database = {
           username: string
         }[]
       }
+      get_account_summary_by_current_user: { Args: never; Returns: Json }
       get_active_products: {
         Args: never
         Returns: {

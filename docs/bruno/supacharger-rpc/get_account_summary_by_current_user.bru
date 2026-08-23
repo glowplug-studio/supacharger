@@ -1,0 +1,27 @@
+meta {
+  name: get account summary by current user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/get_account_summary_by_current_user
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {}
+}
+
+docs {
+  Returns the authenticated account identity and active organisation summary in one database query. Avatar values are private storage paths; the application signs only the media required by the current interface.
+}
