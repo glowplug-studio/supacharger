@@ -200,7 +200,7 @@ Applications own their locale policy and translations:
 
 The protected `/api/intl` endpoint also persists authenticated language changes to `app.profiles.language_code`. The field accepts lowercase two-letter codes; application support remains controlled by `SUPPORTED_LOCALES`. The Supacharger CLI installs starter files for a new application, then preserves all of these paths during `coreupdate`. When adding or changing localised copy, always update `messages/en.json`; leave secondary-language values empty or untouched unless translation into those languages is explicitly requested. Core release notes identify required English keys and any empty secondary placeholders needed for structural compatibility. See the [localisation guide](https://supacharger.dev/docs/Application%20Development/localisation) for setup and extension details.
 
-Canonical client-callable database RPC examples live in the Supacharger-only Bruno collection at `docs/bruno/supacharger-rpc/`. Run `npm run check:bruno-rpcs` after an `api` RPC migration; consumer-specific endpoints do not belong in this collection.
+Canonical client-callable database RPC examples live in the CLI-managed Bruno collection at `docs/bruno/supacharger-rpc/`. Run `npm run check:bruno-rpcs` after an `api` RPC migration. Core requires every current `api` RPC; managed consumers require the canonical subset and may keep product RPCs separately.
 
 ## Live Demo
 

@@ -143,10 +143,18 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 - Preserve unrelated worktree changes in this repository and every consuming application.
 - Read `docs/agents/authentication-and-claims.md` before changing Proxy, SSR cookies, Auth Hooks, roles, custom claims, or JWT-based RLS. Preserve the one-verification response-state invariant and keep resource authorisation authoritative in current database state.
 
-### Bruno RPC parity
+<!-- BEGIN:shared-bruno-rpc-guidance -->
 
-- `docs/bruno/supacharger-rpc/` is the canonical Supacharger-only Bruno collection for client-callable functions in the `api` schema.
-- Add, update, rename, or remove the matching Bruno request in the same change as every Supacharger `api` RPC contract change. Run `npm run check:bruno-rpcs` before reporting completion.
+## Bruno RPC maintenance
+
+- Treat `docs/bruno/supacharger-rpc/` and `scripts/check-bruno-rpc-parity.mjs` as exact CLI-managed Core assets. Keep them byte-identical to the installed Core lock in every managed consumer.
+- Add, update, rename, or remove the matching canonical Bruno request in the same change as every reusable client-callable `api` RPC contract change. Keep method, URL, schema headers, authentication, arguments, body, example, response expectations, status behaviour, and embedded documentation aligned.
+- Run `npm run check:bruno-rpcs` before reporting an RPC or Core-alignment task complete. The Core check requires documentation for every current Core `api` RPC. In a consumer it requires every canonical Supacharger RPC while allowing additional product-owned RPCs.
+- Keep consumer-specific RPC requests in the owning application's developer-managed Bruno collection and verification command. Do not add them to `docs/bruno/supacharger-rpc/` unless the RPC is first approved and implemented as a reusable Core contract.
+- Never commit access tokens, service-role keys, secret keys, or customer data to a Bruno request or environment.
+- The CLI must install the shared checker, collection, and missing required package script, run the declared parity check, and refuse to advance `.supacharger/core-lock.json` when parity fails.
+
+<!-- END:shared-bruno-rpc-guidance -->
 
 ### PostgreSQL RPC argument naming
 

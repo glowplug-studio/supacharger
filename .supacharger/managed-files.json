@@ -3,7 +3,9 @@
   "managedPaths": [
     ".supacharger/managed-files.json",
     "components.json",
+    "docs/bruno/supacharger-rpc",
     "postcss.config.mjs",
+    "scripts/check-bruno-rpc-parity.mjs",
     "src/app/(supacharger)",
     "src/lib/supabase/supacharger",
     "src/proxy.ts",

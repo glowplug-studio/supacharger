@@ -15,6 +15,8 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 - `supabase/functions/_shared/image-target-contract.ts`
 - `supabase/functions/_shared/image-transform.ts`
 - `supabase/functions/process-image-upload/`
+- `docs/bruno/supacharger-rpc/`
+- `scripts/check-bruno-rpc-parity.mjs`
 - the exact protected contract tests listed in the manifest
 - `.supacharger/managed-files.json`
 
@@ -28,7 +30,7 @@ Product catalogue RPCs, product tables, application-only policies, and other con
 
 ## Merge-managed contracts
 
-`package.json`, `package-lock.json`, `supabase/config.toml`, and `tailwind.config.ts` are not byte-replaced. The CLI merges canonical dependency requirements into the application package while preserving product dependencies and scripts, then regenerates the lock through the package manager. Supabase local configuration and Tailwind configuration retain project-specific values and require contract-aware merge logic. A changed Core file is not permission to overwrite the consumer copy wholesale.
+`package.json`, `package-lock.json`, `supabase/config.toml`, and `tailwind.config.ts` are not byte-replaced. The CLI merges canonical dependency requirements and any missing manifest-required package scripts while preserving existing product dependencies and scripts, then regenerates the lock through the package manager when dependencies change. Supabase local configuration and Tailwind configuration retain project-specific values and require contract-aware merge logic. A changed Core file is not permission to overwrite the consumer copy wholesale.
 
 ## Forward-only migration history
 
