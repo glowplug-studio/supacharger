@@ -7,6 +7,8 @@ interface SignInPageProps {
   searchParams?: Promise<{ mode?: string; next?: string }>;
 }
 
+export const instant = false;
+
 export default async function SignInPage({ searchParams }: SignInPageProps) {
   const params = await searchParams;
   const nextPath = getSafeNextPath(params?.next);
