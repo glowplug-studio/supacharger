@@ -1018,11 +1018,14 @@
   "AccountPages": {
     "billing": {
       "title": "Billing",
+      "description": "View your personal subscription, entitlements, and payment settings.",
       "noAccount": "No billing account",
       "startSubscription": "Start a subscription",
       "createAccountHelp": "Create a billing account when you start checkout.",
       "accountTitle": "{type} billing",
+      "personalAccountTitle": "Personal billing",
       "manageBilling": "Manage billing",
+      "portalError": "Billing management is temporarily unavailable. Please try again.",
       "noSubscriptions": "No subscriptions are attached to this billing account.",
       "status": "Status: {status}",
       "unknownStatus": "Unknown",

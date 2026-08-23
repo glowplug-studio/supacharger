@@ -902,11 +902,14 @@
   "AccountPages": {
     "billing": {
       "title": "计费",
+      "description": "",
       "noAccount": "没有计费帐户",
       "startSubscription": "开始订阅",
       "createAccountHelp": "开始结帐时创建一个计费帐户。",
       "accountTitle": "{type} 计费",
+      "personalAccountTitle": "",
       "manageBilling": "管理账单",
+      "portalError": "",
       "noSubscriptions": "此计费帐户未附加任何订阅。",
       "status": "状态：{status}",
       "unknownStatus": "未知",

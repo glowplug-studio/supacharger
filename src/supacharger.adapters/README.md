@@ -7,3 +7,5 @@ Use it for application-specific authentication context and post-sign-in onboardi
 Do not place credentials here or rely on client-side adapter checks for authorisation.
 
 `auth/auth-sidecar.tsx` owns the product side of the managed split authentication shell. Export `AuthSidecar` for the desktop sidecar and `AuthMobileBrand` for the compact brand shown above forms on smaller screens. The CLI preserves both exports during updates.
+
+`billing/acquisition.tsx` supplies the product catalogue shown by the managed personal acquisition route. `billing/database.ts` adapts the application's installed forward-only billing RPC signatures. `billing/organisation.ts` resolves an organisation billing account only after product membership authorisation. The managed service still performs its own billing-manager check. The CLI installs these files only when missing and preserves application implementations thereafter.

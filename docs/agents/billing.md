@@ -14,17 +14,20 @@ Supacharger defines the reusable billing behaviour through:
 
 - `src/lib/stripe/`;
 - `src/features/pricing/`;
-- the named billing controllers in `src/features/account/controllers/`;
+- `src/supacharger/billing/` for subject validation, scoped overview reads, Checkout, and Customer Portal orchestration;
+- developer-owned `src/supacharger.adapters/billing/` modules for product acquisition, historical database signatures, and authorised organisation-account resolution;
 - `src/app/(supacharger)/api/webhooks/` and the protected Stripe processor/reconciliation routes;
 - exact protected Stripe webhook, processor, and reconciliation Route Handlers under `src/app/(supacharger)/`;
-- developer-owned billing/account pages under `src/app/(project)/`, with acquisition under an onboarded-only route group and full billing-management surfaces under the full-app guard;
+- exact managed personal billing, Portal, and acquisition route scaffolds under `src/app/(supacharger)/`, with acquisition checked by `requireOnboardedUser()` and billing management checked by `requireAppAccess()`;
 - billing objects in `src/lib/supabase/types.ts` and `supabase/migrations/`.
 
-The manifest byte-protects the Route Handlers, not application table shapes. Stripe libraries, generated types, and billing controllers are application integration code that must satisfy the protected handlers' stable interfaces while adapting product schemas. Migration histories are forward-only and must never be byte-replaced.
+The manifest byte-protects the managed billing service and route scaffolds, not application table shapes. Stripe libraries, generated types, catalogue components, and billing adapters are application integration code that must satisfy the protected service interfaces while adapting product schemas. Migration histories are forward-only and must never be byte-replaced.
 
 Product catalogue content, tax registrations, payment-method Dashboard settings, entitlement definitions, copy, branding, account-subject provisioning, and organisation membership remain developer-owned policy. Consumers must adapt their product model to `billing_accounts`; they must not fork the core back to user-owned subscriptions.
 
 The configured `BILLING_ACCESS.REDIRECT_PATH` must inherit `requireOnboardedUser()`, not `requireAppAccess()`. This lets a verified, profile-complete user without billing access acquire it while still keeping incomplete and unauthenticated users out. Checkout query parameters and return state are never proof of access.
+
+`BILLING.ACCOUNT_SUBJECTS.PERSONAL` and `ORGANISATION` control settings surfaces, not application entitlements. Personal operations derive the subject from the authenticated user and must not accept a browser billing-account ID. Organisation operations accept an organisation UUID, resolve it through the developer adapter, and then independently require `owner` or `billing_admin` authority on the resolved billing account. Overview reads filter the current-user RPC result by both subject type and subject ID to prevent cross-organisation disclosure.
 
 ## Test ownership boundary
 
@@ -36,6 +39,7 @@ Application product catalogues, application-only tables, RPCs, policies, and ent
 
 - Stripe Node `22.5.0` and API `2026-07-29.dahlia` are the supported tuple.
 - Checkout accepts 1–20 active recurring Prices in one currency and creates flexible-billing-mode subscriptions.
+- Validate Checkout items and billing subjects with the managed Zod schemas at every Server Action or Route Handler entry.
 - Omit `payment_method_types` so Stripe Dynamic Payment Methods can select eligible local methods from Dashboard configuration. A product may explicitly restrict methods only through a documented application policy.
 - `SC_CONFIG.BILLING` owns Automatic Tax, address collection, and promotion-code switches. Enabling Automatic Tax also requires correct Stripe registrations and product tax codes.
 - Checkout metadata carries `supachargerBillingAccountId`; it never treats a user ID as the billing owner.

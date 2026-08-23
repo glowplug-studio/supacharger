@@ -933,11 +933,14 @@
   "AccountPages": {
     "billing": {
       "title": "Facturación",
+      "description": "",
       "noAccount": "Sin cuenta de facturación",
       "startSubscription": "Iniciar una suscripción",
       "createAccountHelp": "Cree una cuenta de facturación cuando comience a pagar.",
       "accountTitle": "Facturación {type}",
+      "personalAccountTitle": "",
       "manageBilling": "Administrar facturación",
+      "portalError": "",
       "noSubscriptions": "No hay suscripciones adjuntas a esta cuenta de facturación.",
       "status": "Estado: {status}",
       "unknownStatus": "Desconocido",
