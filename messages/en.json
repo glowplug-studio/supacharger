@@ -199,7 +199,9 @@
   "AccountDropdownMenu": {
     "accountSettings": "Account Settings",
     "billing": "Billing",
-    "myProfile": "Profile"
+    "myProfile": "Profile",
+    "viewProfile": "View profile",
+    "help": "Help"
   },
   "ThemeChangerMenu": {
     "title": "Theme",
@@ -1007,6 +1009,131 @@
         "summary": "Support renewable energy through new fixed-return green bonds now open for subscription."
       }
     ]
+  },
+  "DashboardDemo": {
+    "accountConfirmed": "Account confirmed",
+    "sampleData": "Sample data",
+    "title": "Dashboard",
+    "description": "Track performance, review active work, and keep the team moving from one focused workspace.",
+    "horizontalNav": "Horizontal Nav",
+    "sidebarNav": "Sidebar Nav",
+    "layoutNavigation": "Dashboard layouts",
+    "quickCreate": "Quick Create",
+    "inbox": "Inbox",
+    "dashboard": "Dashboard",
+    "lifecycle": "Lifecycle",
+    "analytics": "Analytics",
+    "projects": "Projects",
+    "team": "Team",
+    "overview": "Overview",
+    "metricsLabel": "Dashboard metrics",
+    "metrics": [
+      {
+        "label": "Total revenue",
+        "value": "$84,320",
+        "trend": "+12.5%",
+        "direction": "up",
+        "detail": "Revenue continued to grow across active plans."
+      },
+      {
+        "label": "New customers",
+        "value": "1,284",
+        "trend": "+8.2%",
+        "direction": "up",
+        "detail": "Acquisition improved after the latest campaign."
+      },
+      {
+        "label": "Active accounts",
+        "value": "45,672",
+        "trend": "+4.1%",
+        "direction": "up",
+        "detail": "Weekly engagement remains above the target."
+      },
+      {
+        "label": "Support load",
+        "value": "3.8%",
+        "trend": "-2.4%",
+        "direction": "down",
+        "detail": "Fewer accounts needed direct assistance."
+      }
+    ],
+    "chart": {
+      "title": "Audience activity",
+      "description": "Desktop and mobile sessions across the selected period.",
+      "desktop": "Desktop",
+      "mobile": "Mobile"
+    },
+    "ranges": {
+      "days90": "90 days",
+      "days30": "30 days",
+      "days7": "7 days"
+    },
+    "table": {
+      "title": "Active work",
+      "description": "The latest deliverables moving through your team.",
+      "searchLabel": "Search active work",
+      "searchPlaceholder": "Search deliverables",
+      "columns": {
+        "item": "Deliverable",
+        "type": "Type",
+        "status": "Status",
+        "progress": "Progress",
+        "owner": "Owner",
+        "actions": "Actions"
+      },
+      "rows": [
+        {
+          "item": "Product narrative",
+          "type": "Strategy",
+          "status": "Complete",
+          "progress": "100%",
+          "owner": "Maya Okafor"
+        },
+        {
+          "item": "Lifecycle review",
+          "type": "Operations",
+          "status": "In progress",
+          "progress": "72%",
+          "owner": "Luca Moretti"
+        },
+        { "item": "Mobile onboarding", "type": "Design", "status": "Review", "progress": "88%", "owner": "Sora Kim" },
+        {
+          "item": "Analytics baseline",
+          "type": "Research",
+          "status": "Complete",
+          "progress": "100%",
+          "owner": "Tomasz Kowalski"
+        },
+        {
+          "item": "Partner launch",
+          "type": "Marketing",
+          "status": "In progress",
+          "progress": "54%",
+          "owner": "Elias Novak"
+        },
+        {
+          "item": "Team handbook",
+          "type": "Documentation",
+          "status": "Review",
+          "progress": "91%",
+          "owner": "Camille Laurent"
+        }
+      ],
+      "rowActions": "Actions for {item}",
+      "summary": "Showing {count} sample deliverables",
+      "viewAll": "View all"
+    },
+    "documents": {
+      "title": "Documents",
+      "dataLibrary": "Data Library",
+      "reports": "Reports",
+      "assistant": "Writing Assistant"
+    },
+    "secondary": {
+      "settings": "Settings",
+      "help": "Get Help",
+      "search": "Search"
+    }
   },
   "ProfileOnboardingForm": {
     "nameError": "Enter your first and last name.",

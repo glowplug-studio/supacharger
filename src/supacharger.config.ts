@@ -179,7 +179,7 @@ export const SC_CONFIG: SupachargerConfig = {
   // The route belongs to the application. Supacharger only decides whether an
   // authenticated account must visit it before entering protected product routes.
   POST_SIGN_IN_ONBOARDING: {
-    REQUIRED: true,
+    REQUIRED: false,
     REDIRECT_PATH: '/account/setup-profile',
   },
 

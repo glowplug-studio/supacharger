@@ -198,7 +198,9 @@
   "AccountDropdownMenu": {
     "accountSettings": "账户设置",
     "billing": "计费",
-    "myProfile": "轮廓"
+    "myProfile": "轮廓",
+    "viewProfile": "",
+    "help": ""
   },
   "ThemeChangerMenu": {
     "title": "主题",
@@ -1020,6 +1022,52 @@
         "summary": "通过现已开放认购的新固定回报绿色债券支持可再生能源。"
       }
     ]
+  },
+  "DashboardDemo": {
+    "accountConfirmed": "",
+    "sampleData": "",
+    "title": "",
+    "description": "",
+    "horizontalNav": "",
+    "sidebarNav": "",
+    "layoutNavigation": "",
+    "quickCreate": "",
+    "inbox": "",
+    "dashboard": "",
+    "lifecycle": "",
+    "analytics": "",
+    "projects": "",
+    "team": "",
+    "overview": "",
+    "metricsLabel": "",
+    "metrics": [
+      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
+      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
+      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
+      { "label": "", "value": "", "trend": "", "direction": "down", "detail": "" }
+    ],
+    "chart": { "title": "", "description": "", "desktop": "", "mobile": "" },
+    "ranges": { "days90": "", "days30": "", "days7": "" },
+    "table": {
+      "title": "",
+      "description": "",
+      "searchLabel": "",
+      "searchPlaceholder": "",
+      "columns": { "item": "", "type": "", "status": "", "progress": "", "owner": "", "actions": "" },
+      "rows": [
+        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
+        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
+        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
+        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
+        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
+        { "item": "", "type": "", "status": "", "progress": "", "owner": "" }
+      ],
+      "rowActions": "",
+      "summary": "",
+      "viewAll": ""
+    },
+    "documents": { "title": "", "dataLibrary": "", "reports": "", "assistant": "" },
+    "secondary": { "settings": "", "help": "", "search": "" }
   },
   "ProfileOnboardingForm": {
     "nameError": "输入您的名字和姓氏。",

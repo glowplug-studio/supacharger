@@ -1,0 +1,289 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import {
+  Activity,
+  ArrowDownRight,
+  ArrowUpRight,
+  ChevronRight,
+  CircleCheck,
+  Clock3,
+  MoreHorizontal,
+  Search,
+} from 'lucide-react';
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { type ChartConfig,ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/utils/cn';
+
+const chartData = [
+  { date: '2026-05-26', desktop: 186, mobile: 104 },
+  { date: '2026-06-02', desktop: 242, mobile: 128 },
+  { date: '2026-06-09', desktop: 208, mobile: 151 },
+  { date: '2026-06-16', desktop: 296, mobile: 167 },
+  { date: '2026-06-23', desktop: 274, mobile: 193 },
+  { date: '2026-06-30', desktop: 338, mobile: 184 },
+  { date: '2026-07-07', desktop: 312, mobile: 218 },
+  { date: '2026-07-14', desktop: 384, mobile: 236 },
+  { date: '2026-07-21', desktop: 356, mobile: 248 },
+  { date: '2026-07-28', desktop: 426, mobile: 267 },
+  { date: '2026-08-04', desktop: 398, mobile: 292 },
+  { date: '2026-08-11', desktop: 472, mobile: 314 },
+  { date: '2026-08-18', desktop: 448, mobile: 336 },
+];
+
+type Metric = {
+  detail: string;
+  direction: 'down' | 'up';
+  label: string;
+  trend: string;
+  value: string;
+};
+
+type DashboardRow = {
+  item: string;
+  owner: string;
+  progress: string;
+  status: 'Complete' | 'In progress' | 'Review';
+  type: string;
+};
+
+function MetricCard({ metric }: { metric: Metric }) {
+  const TrendIcon = metric.direction === 'up' ? ArrowUpRight : ArrowDownRight;
+
+  return (
+    <Card className='border-border bg-card rounded-sm shadow-none'>
+      <CardHeader className='gap-4 p-5'>
+        <div className='flex items-start justify-between gap-3'>
+          <CardDescription className='text-muted-foreground text-sm'>{metric.label}</CardDescription>
+          <Badge
+            className='border-border bg-background text-foreground rounded-sm font-normal shadow-none'
+            variant='outline'
+          >
+            <TrendIcon aria-hidden='true' className='size-3.5' />
+            {metric.trend}
+          </Badge>
+        </div>
+        <CardTitle className='text-3xl font-normal tracking-[-0.04em] tabular-nums'>{metric.value}</CardTitle>
+        <p className='text-muted-foreground text-sm leading-5'>{metric.detail}</p>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function PerformanceChart() {
+  const t = useTranslations('DashboardDemo');
+  const [range, setRange] = useState('90');
+  const visibleData = useMemo(() => chartData.slice(range === '7' ? -2 : range === '30' ? -5 : 0), [range]);
+  const chartConfig = {
+    desktop: { label: t('chart.desktop'), color: 'hsl(var(--primary))' },
+    mobile: { label: t('chart.mobile'), color: 'hsl(var(--secondary))' },
+  } satisfies ChartConfig;
+
+  return (
+    <Card className='border-border bg-card rounded-sm shadow-none' id='analytics'>
+      <CardHeader className='gap-5 border-b p-5 sm:flex-row sm:items-start sm:justify-between lg:p-6'>
+        <div>
+          <CardTitle className='text-xl font-medium tracking-[-0.025em]'>{t('chart.title')}</CardTitle>
+          <CardDescription className='mt-2 max-w-xl leading-6'>{t('chart.description')}</CardDescription>
+        </div>
+        <Tabs onValueChange={setRange} value={range}>
+          <TabsList className='bg-muted h-9 rounded-sm p-1'>
+            <TabsTrigger className='rounded-sm px-3 text-xs' value='90'>
+              {t('ranges.days90')}
+            </TabsTrigger>
+            <TabsTrigger className='rounded-sm px-3 text-xs' value='30'>
+              {t('ranges.days30')}
+            </TabsTrigger>
+            <TabsTrigger className='rounded-sm px-3 text-xs' value='7'>
+              {t('ranges.days7')}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </CardHeader>
+      <CardContent className='px-2 pt-6 sm:px-5 lg:px-6'>
+        <ChartContainer className='aspect-auto h-[280px] w-full' config={chartConfig}>
+          <AreaChart accessibilityLayer data={visibleData} margin={{ left: 2, right: 12, top: 8 }}>
+            <defs>
+              <linearGradient id='scDesktopFill' x1='0' x2='0' y1='0' y2='1'>
+                <stop offset='0%' stopColor='var(--color-desktop)' stopOpacity={0.34} />
+                <stop offset='100%' stopColor='var(--color-desktop)' stopOpacity={0.02} />
+              </linearGradient>
+              <linearGradient id='scMobileFill' x1='0' x2='0' y1='0' y2='1'>
+                <stop offset='0%' stopColor='var(--color-mobile)' stopOpacity={0.3} />
+                <stop offset='100%' stopColor='var(--color-mobile)' stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray='3 5' vertical={false} />
+            <XAxis
+              axisLine={false}
+              dataKey='date'
+              minTickGap={28}
+              tickFormatter={(value) =>
+                new Date(value).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+              }
+              tickLine={false}
+              tickMargin={12}
+            />
+            <ChartTooltip content={<ChartTooltipContent indicator='line' />} cursor={false} />
+            <Area
+              dataKey='mobile'
+              fill='url(#scMobileFill)'
+              stroke='var(--color-mobile)'
+              strokeWidth={2}
+              type='natural'
+            />
+            <Area
+              dataKey='desktop'
+              fill='url(#scDesktopFill)'
+              stroke='var(--color-desktop)'
+              strokeWidth={2}
+              type='natural'
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
+function statusClasses(status: DashboardRow['status']) {
+  if (status === 'Complete') return 'border-primary/20 bg-primary/10 text-primary';
+  if (status === 'Review') return 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300';
+  return 'border-border bg-muted text-muted-foreground';
+}
+
+function ActivityTable() {
+  const t = useTranslations('DashboardDemo');
+  const rows = t.raw('table.rows') as DashboardRow[];
+
+  return (
+    <section className='border-border bg-card overflow-hidden rounded-sm border' id='projects'>
+      <span className='block scroll-mt-20' id='inbox' />
+      <span className='block scroll-mt-20' id='team' />
+      <div className='border-border flex flex-col gap-4 border-b p-5 sm:flex-row sm:items-center sm:justify-between lg:p-6'>
+        <div>
+          <h2 className='text-xl font-medium tracking-[-0.025em]'>{t('table.title')}</h2>
+          <p className='text-muted-foreground mt-2 text-sm'>{t('table.description')}</p>
+        </div>
+        <div className='relative w-full sm:w-64'>
+          <Search
+            aria-hidden='true'
+            className='text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2'
+          />
+          <Input
+            aria-label={t('table.searchLabel')}
+            className='h-10 rounded-sm pl-9 shadow-none'
+            placeholder={t('table.searchPlaceholder')}
+          />
+        </div>
+      </div>
+      <div className='overflow-x-auto'>
+        <table className='w-full min-w-[760px] text-left text-sm'>
+          <thead className='bg-muted/60 text-muted-foreground'>
+            <tr>
+              <th className='px-5 py-3 font-medium lg:px-6'>{t('table.columns.item')}</th>
+              <th className='px-4 py-3 font-medium'>{t('table.columns.type')}</th>
+              <th className='px-4 py-3 font-medium'>{t('table.columns.status')}</th>
+              <th className='px-4 py-3 font-medium'>{t('table.columns.progress')}</th>
+              <th className='px-4 py-3 font-medium'>{t('table.columns.owner')}</th>
+              <th className='w-14 px-4 py-3'>
+                <span className='sr-only'>{t('table.columns.actions')}</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr className='border-border border-t first:border-t-0' key={row.item}>
+                <td className='px-5 py-4 font-medium lg:px-6'>{row.item}</td>
+                <td className='text-muted-foreground px-4 py-4'>{row.type}</td>
+                <td className='px-4 py-4'>
+                  <Badge
+                    className={cn('rounded-sm font-normal shadow-none', statusClasses(row.status))}
+                    variant='outline'
+                  >
+                    {row.status === 'Complete' ? (
+                      <CircleCheck aria-hidden='true' className='size-3.5' />
+                    ) : (
+                      <Clock3 aria-hidden='true' className='size-3.5' />
+                    )}
+                    {row.status}
+                  </Badge>
+                </td>
+                <td className='px-4 py-4 font-medium tabular-nums'>{row.progress}</td>
+                <td className='text-muted-foreground px-4 py-4'>{row.owner}</td>
+                <td className='px-4 py-4'>
+                  <Button
+                    aria-label={t('table.rowActions', { item: row.item })}
+                    className='size-8 rounded-sm'
+                    size='icon'
+                    variant='ghost'
+                  >
+                    <MoreHorizontal aria-hidden='true' className='size-4' />
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className='border-border flex items-center justify-between border-t px-5 py-4 lg:px-6'>
+        <p className='text-muted-foreground text-sm'>{t('table.summary', { count: rows.length })}</p>
+        <Button asChild className='rounded-sm' size='sm' variant='outline'>
+          <Link href='#projects'>
+            {t('table.viewAll')}
+            <ChevronRight aria-hidden='true' className='size-4' />
+          </Link>
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+export function SCDashboard() {
+  const t = useTranslations('DashboardDemo');
+  const metrics = t.raw('metrics') as Metric[];
+
+  return (
+    <main className='bg-background text-foreground flex-1' id='dashboard'>
+      <div className='mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-4 py-6 sm:px-6 lg:gap-6 lg:px-8 lg:py-8'>
+        <section className='flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between'>
+          <div>
+            <div className='text-primary mb-3 flex items-center gap-2 text-sm font-medium'>
+              <Activity aria-hidden='true' className='size-4' />
+              {t('sampleData')}
+            </div>
+            <h1 className='text-[2.25rem] leading-[1.08] font-normal tracking-[-0.04em]'>{t('title')}</h1>
+            <p className='text-muted-foreground mt-3 max-w-2xl text-sm leading-6 sm:text-base'>{t('description')}</p>
+          </div>
+          <Button
+            className='bg-foreground text-background hover:bg-foreground/90 h-10 rounded-sm px-4 shadow-none active:scale-[0.98]'
+            id='quick-create'
+          >
+            {t('quickCreate')}
+          </Button>
+        </section>
+
+        <section
+          className='grid scroll-mt-20 gap-4 md:grid-cols-2 xl:grid-cols-4'
+          aria-label={t('metricsLabel')}
+          id='lifecycle'
+        >
+          {metrics.map((metric) => (
+            <MetricCard key={metric.label} metric={metric} />
+          ))}
+        </section>
+
+        <PerformanceChart />
+        <ActivityTable />
+      </div>
+    </main>
+  );
+}
