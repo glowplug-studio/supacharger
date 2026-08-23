@@ -11,6 +11,7 @@ const ignoredTreeNames = new Set(['.git', '.next', '.turbo', '.vercel', 'build',
 const guidanceFiles = {
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
+  cli_upgrades: 'docs/agents/cli-upgrades.md',
   localisation: 'docs/agents/localisation.md',
   authentication: 'docs/agents/authentication-and-claims.md',
   mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
@@ -111,6 +112,14 @@ export function classifyPath(inputPath) {
     };
   }
 
+  if (relativePath === '.supacharger/migration-aliases.json') {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Audited canonical-to-consumer mapping for an intentionally adapted immutable migration. The CLI validates targets and preserves this file.',
+    };
+  }
+
   if (relativePath === 'test/billing-schema-contract.test.mjs') {
     return {
       ownership: 'cli-managed-core',
@@ -205,7 +214,7 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'developer-owned',
       guidance:
-        'Application localisation seam. The CLI installs starters, then preserves locale configuration and the complete messages directory.',
+        'Application localisation seam. The CLI preserves locale configuration and secondary catalogues, and merges only missing or empty canonical English keys.',
     };
   }
 

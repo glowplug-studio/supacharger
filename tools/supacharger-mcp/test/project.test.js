@@ -33,6 +33,7 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('package.json').ownership, 'merge-managed-contract');
   assert.equal(classifyPath('tailwind.config.ts').ownership, 'merge-managed-contract');
   assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'forward-only-history');
+  assert.equal(classifyPath('.supacharger/migration-aliases.json').ownership, 'developer-owned');
   assert.equal(classifyPath('test/billing-schema-contract.test.mjs').ownership, 'cli-managed-core');
   assert.equal(
     classifyPath('test/project-billing-schema-contract.test.mjs').ownership,
@@ -81,6 +82,11 @@ test('searches the account settings guidance exposed to the MCP', async () => {
 test('searches the organisation settings guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('Invitation links are displayed once');
   assert.ok(matches.some((match) => match.path === 'docs/agents/organisation-settings.md'));
+});
+
+test('searches the CLI upgrade guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('migration-aliases.json');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/cli-upgrades.md'));
 });
 
 test('searches the billing test ownership guidance exposed to the MCP', async () => {

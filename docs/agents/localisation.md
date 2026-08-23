@@ -8,7 +8,7 @@ Supacharger uses `next-intl` without locale-based routing. Route paths are langu
 - `src/i18n/request.ts` resolves the request locale and loads its catalogue.
 - `messages/` contains the application's translation catalogues.
 
-The CLI installs these starter paths for a new application. After installation, `coreupdate` must ignore them during integrity checks and preserve them byte-for-byte. When `messages/` already exists, an update must not add, replace, or remove any catalogue within it.
+The CLI installs these starter paths for a new application. After installation, `coreupdate` ignores locale configuration and catalogues during exact-file integrity checks. It preserves locale configuration and every secondary catalogue byte-for-byte. It may recursively add a missing canonical key or fill an empty English value in `messages/en.json`, while preserving all existing non-empty application wording.
 
 The developer-owned root-layout template obtains locale and messages from `next-intl/server`; it must not import a catalogue directly. `ROOT_PROVIDERS.INTERNATIONALISATION` controls whether the template mounts `NextIntlClientProvider`. The protected `/api/intl` endpoint validates requested locales against the developer-owned configuration, stores the choice in an HTTP-only, same-site cookie, and writes the two-letter code to the authenticated user's `app.profiles.language_code` profile field.
 
@@ -37,4 +37,4 @@ The effective precedence is accepted `lang` handoff, explicit cookie preference,
 
 ## Upgrade consequence
 
-Because application catalogues are not CLI-managed, a core release that adds or renames a message key must document the required English edit and any secondary catalogue placeholders needed for structural compatibility. Do not translate those placeholders unless the human explicitly requests it. Do not hide missing keys by overwriting catalogues or accepting unvalidated cookie values.
+Because application catalogues are not exact CLI-managed files, a core release that adds or renames a message key must keep canonical English complete. The updater merges missing/empty English source values without removing product keys. Add secondary placeholders only when catalogue structure requires them, and never translate them unless the human explicitly requests it. Do not hide missing keys by overwriting non-empty product wording or accepting unvalidated cookie values.

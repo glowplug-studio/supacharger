@@ -34,7 +34,7 @@ Application developers should consume these modules through their documented int
 ### Developer-owned extension points
 
 - `src/supacharger.config.ts` contains application settings and must survive every CLI update.
-- `src/i18n/config.ts`, `src/i18n/request.ts`, and `messages/` contain the application's locale policy and translations. The CLI installs starters for a new application but must preserve these paths during core updates.
+- `src/i18n/config.ts`, `src/i18n/request.ts`, and `messages/` contain the application's locale policy and translations. The CLI installs starters for a new application, preserves locale configuration and every secondary catalogue during updates, and may merge only missing or empty canonical English keys into `messages/en.json` without replacing existing application wording.
 - `src/styles/project.css` contains application theme tokens, global defaults, overrides, and product-specific styles. Keep its `Project: ...` header accurate and preserve it during every CLI update.
 - `src/components/sc_demo/` contains replaceable example presentation code.
 - Application-specific routes, features, assets, and presentation outside protected paths belong to the consuming application unless explicitly designated as shared.

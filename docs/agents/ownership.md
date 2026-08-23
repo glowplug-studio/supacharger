@@ -36,6 +36,8 @@ Product catalogue RPCs, product tables, application-only policies, and other con
 
 `supabase/migrations/` is permanent per-project history. Core updates may copy a new canonical migration only when its filename is absent. A differing migration with the same filename is a conflict and must halt safely. The CLI must never replace, delete, reorder, or rewrite an installed migration, and a file backup is not a database rollback.
 
+When a consumer has already landed an intentionally adapted equivalent under a different immutable filename, declare the exact canonical-to-local mapping in developer-owned `.supacharger/migration-aliases.json`. The updater validates that the replacement exists, reports the alias in `--plan`, and does not copy or apply the canonical file. Never use an alias to conceal an unreviewed or partially equivalent migration.
+
 Stripe libraries under `src/lib/stripe/`, billing controllers under `src/features/`, and generated database types are application integration code unless a future manifest explicitly classifies an individual path. They may implement the same shared behaviour with application schema adapters; exact protected Route Handlers depend on their stable interfaces rather than owning product table shapes.
 
 ## Developer-owned paths
@@ -52,7 +54,7 @@ The approved social-provider migration is the narrow exception for the expanded 
 
 `src/i18n/config.ts` and `src/i18n/request.ts` are the application localisation seam. They define supported locales, the default locale, cookie policy, and request-time message loading. CLI updates must preserve them.
 
-`messages/` contains application-owned translation catalogues. If the directory exists, the CLI must preserve the complete directory and must not add, replace, or remove individual locale files during a core update.
+`messages/` contains application-owned translation catalogues. The CLI never creates, replaces, or deletes secondary locale files during an update. It recursively adds missing canonical English keys to `messages/en.json`, fills an empty English value from Core, and preserves every existing non-empty application value. This keeps managed routes runnable without standardising product wording or inventing translations.
 
 `src/styles/project.css` is the application styling seam. It contains the named project's theme tokens, element defaults, global overrides, and product-specific classes. CLI updates must preserve it. It must not import Tailwind because the protected entrypoint already does so.
 
@@ -72,7 +74,7 @@ Before changing sizing classes, inspect the rendered `<svg>` to confirm that SVG
 
 `src/app/error/page.tsx`, `src/app/not-found.tsx`, and `src/components/error-page/` are application-owned error presentation. Keep them outside the protected `(supacharger)` route group. The canonical starter verifies the user on the server, adds the existing authenticated header and footer only for a verified session, and otherwise renders a standalone full-viewport state. Use the developer-owned semantic theme tokens (`primary`, `primary-foreground`, `foreground`, `muted-foreground`, `accent`, and `ring`) rather than product-specific colour literals. Resolve copy from the developer-owned `ErrorPage` namespace without calling `getTranslations` for a namespace that may be absent: the shared resolver must fall back field-by-field to its protected English copy so preserved or stale catalogues cannot break the error boundary. When `AUTH_ONLY_APP` is enabled, the developer config must explicitly allow `/error` for unauthenticated visitors. Proxy must also let `/error` bypass post-sign-in profile onboarding so another redirect cannot conceal the error.
 
-`src/supacharger.adapters/` is the developer-owned extension seam for additional authentication fields and post-sign-in onboarding operations. `auth/auth-sidecar.tsx` must export `AuthSidecar` and `AuthMobileBrand` for the managed authentication shell. Core interfaces may evolve, but the CLI installs a missing starter and must not overwrite established implementations in this directory.
+`src/supacharger.adapters/` is the developer-owned extension seam for authentication, account, billing, and organisation integrations. `auth/auth-sidecar.tsx` must export `AuthSidecar` and `AuthMobileBrand`; `organisations/profile-fields.tsx` and `organisations/profile-extension.ts` form the organisation profile UI/server pair. Core interfaces may evolve, but the CLI installs each missing starter and must not overwrite established implementations in this directory.
 
 `supabase/functions/_shared/image-targets.ts` is the developer-owned image-processing policy. It maps request target names to fixed buckets, user-relative path prefixes, output formats, resize dimensions, encoding settings, visibility, and limits. The CLI installs a starter only when this file is absent, then preserves it. The managed endpoint and transformer may import this file, but callers must never override its values in request data.
 

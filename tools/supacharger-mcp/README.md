@@ -40,6 +40,8 @@ The account-settings resource records the managed `/account` shell and mutation 
 
 The organisations resource records the managed chooser and root-handle settings routes, disabled-route behaviour, session refresh before context navigation, owner/admin/member visibility, hashed invitation and reviewed-access UX, private media paths, organisation billing visibility, `FormProvider` extension seam with authoritative server Zod validation, Specdrive compatibility redirects, and the exclusion of product usage and agent-licence surfaces from Core.
 
+The CLI-upgrades resource records the version 2 ownership flow, disabled-safe configuration migration, missing-only English merge, one-time developer adapter starters, explicit adapted-migration aliases, post-update checks, lock advancement, and read-only doctor findings.
+
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 
 The image-transformation resource records the authenticated `process-image-upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, safe path and format limits, PNG/JPEG encoding contract, and the rule that request data never supplies destinations or transform settings.
