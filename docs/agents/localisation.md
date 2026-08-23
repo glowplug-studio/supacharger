@@ -12,6 +12,8 @@ The CLI installs these starter paths for a new application. After installation, 
 
 The developer-owned root-layout template obtains locale and messages from `next-intl/server`; it must not import a catalogue directly. `ROOT_PROVIDERS.INTERNATIONALISATION` controls whether the template mounts `NextIntlClientProvider`. The protected `/api/intl` endpoint validates requested locales against the developer-owned configuration, stores the choice in an HTTP-only, same-site cookie, and writes the two-letter code to the authenticated user's `app.profiles.language_code` profile field.
 
+Every Supacharger application enables Next.js Cache Components in its merge-managed Next configuration. Because the validated locale cookie determines both `<html lang>` and the messages provider before the document can render, the developer-owned root layout exports `instant = false` as the single intentional blocking boundary. Do not restore `dynamic = 'force-dynamic'`; Cache Components makes request-time data dynamic by default. Prefer `Suspense` around narrower runtime work and `use cache` only for genuinely reusable data. Add another `instant = false` only when development navigation validation proves that a specific project route must block.
+
 ## Translation authoring
 
 - Add or update every new or changed English source value in `messages/en.json` in the same change as the consuming UI.

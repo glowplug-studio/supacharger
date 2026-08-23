@@ -6,8 +6,6 @@ import { getUser } from '@/lib/supabase/supacharger/supabase-auth';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getURL } from '@/supacharger/utils/helpers';
 
-export const dynamic = 'force-dynamic';
-
 export async function GET(request: Request) {
   // Use try/catch for your logic, but NOT for redirect()
   let url: string | null = null;

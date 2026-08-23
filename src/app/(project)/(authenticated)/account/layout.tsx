@@ -5,8 +5,6 @@ import { getTranslations } from 'next-intl/server';
 import { AccountLayout } from  '@/app/(project)/(authenticated)/account/account-layout';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-export const dynamic = 'force-dynamic';
-
 const site_title = SC_CONFIG.SITE_TITLE;
 
 export async function generateMetadata(): Promise<Metadata> {

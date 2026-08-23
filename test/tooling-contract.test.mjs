@@ -45,16 +45,27 @@ test('root tool configuration uses explicit module formats', () => {
   assert.equal(postcss.status, 0, postcss.stderr);
 });
 
-test('Next development assets accept the documented loopback hostname', async () => {
+test('Next uses Cache Components and accepts the documented loopback hostname', async () => {
   const javascriptConfig = new URL('../next.config.js', import.meta.url);
   const typescriptConfig = new URL('../next.config.ts', import.meta.url);
   const configUrl = await access(javascriptConfig).then(
     () => javascriptConfig,
     () => typescriptConfig,
   );
-  const { default: nextConfig } = await import(configUrl);
+  const result = spawnSync(
+    process.execPath,
+    [
+      '--experimental-strip-types',
+      '--input-type=module',
+      '--eval',
+      `const {default: config} = await import(${JSON.stringify(configUrl.href)});` +
+        `if (!config.allowedDevOrigins?.includes('127.0.0.1')) throw new Error('missing loopback origin');` +
+        `if (config.cacheComponents !== true) throw new Error('Cache Components must be enabled');`,
+    ],
+    { cwd: projectRoot, encoding: 'utf8' },
+  );
 
-  assert.ok(nextConfig.allowedDevOrigins?.includes('127.0.0.1'));
+  assert.equal(result.status, 0, result.stderr);
 });
 
 test('uses the canonical class-name utility module', async () => {

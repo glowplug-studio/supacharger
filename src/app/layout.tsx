@@ -18,7 +18,9 @@ import { cn } from '@/utils/cn';
 
 import '@/supacharger/styles/globals.css';
 
-export const dynamic = 'force-dynamic';
+// Locale and messages are selected from a request cookie before the document
+// can render, so the root is intentionally allowed to block.
+export const instant = false;
 
 const hostGrotesk = Host_Grotesk({
   variable: '--font-host-grotesk',

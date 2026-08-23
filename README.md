@@ -188,6 +188,8 @@ The private `app.user_roles` table and custom access-token hook add a compact `u
 
 Supacharger uses `next-intl` with locale-neutral routes. A signed-in page keeps the same URL in every language—for example, `/account` never becomes `/en/account`. The request locale comes from the validated `supacharger_locale` cookie, then the signed-in user's saved profile preference, and finally English.
 
+All canonical applications enable Next.js Cache Components. The locale cookie determines `<html lang>` and the active messages before the document can render, so the developer-owned root layout is the single intentional `instant = false` boundary. Do not use the obsolete `dynamic = 'force-dynamic'` route export with Cache Components. Stream narrower request-time work through `Suspense`, opt reusable reads into `use cache`, and add lower route-level `instant = false` declarations only for project routes that development navigation validation proves must block.
+
 A separate marketing site can hand off a language by linking to the SaaS with a standard query parameter such as `https://app.example.com/login?lang=es`. Supacharger accepts only a locale listed in `SUPPORTED_LOCALES`, stores it as the active preference, synchronises the locale code to `app.profiles.language_code` when the user is signed in, and redirects to the same URL without `lang`. If the visitor signs in later, the cookie preference is synchronised after authentication. Other query parameters are preserved. The demo catalogues currently cover English (`en`), Spanish (`es`), and Simplified Chinese (`zh`).
 
 Applications own their locale policy and translations:

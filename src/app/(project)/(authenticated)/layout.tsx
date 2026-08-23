@@ -6,8 +6,6 @@ import { AuthenticatedAppShell } from '@/app/(project)/authenticated-app-shell';
 import { requireAppAccess } from '@/supacharger/auth/server-access';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-export const dynamic = 'force-dynamic';
-
 const site_title = SC_CONFIG.SITE_TITLE;
 
 export async function generateMetadata(): Promise<Metadata> {
