@@ -21,6 +21,8 @@
     "test:account-security": "node --test test/account-security-contract.test.mjs",
     "test:account-preferences": "node --test test/account-preferences-contract.test.mjs",
     "test:account-billing-subjects": "node --test test/account-billing-subject-contract.test.mjs",
+    "test:organisation-management": "supabase test db",
+    "test:organisation-contract": "node --test test/organisation-management-contract.test.mjs",
     "test:image-transform": "node --no-warnings --experimental-strip-types --test test/image-transform-contract.test.mjs",
     "test:image-transform-runtime": "npx -y deno@2.9.5 test --no-lock --node-modules-dir=auto --allow-read supabase/functions/_shared/image-transform-runtime.test.ts",
     "test:tooling": "node --test test/tooling-contract.test.mjs",

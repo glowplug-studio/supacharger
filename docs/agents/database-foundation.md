@@ -24,9 +24,15 @@ Consumers may add application-specific fields to `app.profiles` or a one-to-one 
 
 Identity display uses the shared projection in this order: first and last name; populated username when policy permits it; owner-only email; `Account`. Email never enters the general/public profile projection.
 
-## Dormant organisation foundation
+## Optional organisation management
 
-`app.organisations`, `app.organisation_members`, and `app.user_session_contexts` are installed in every aligned application. They have RLS, no browser table grants, and narrow Auth-hook/service-role access. `ORGANISATIONS.ENABLED` controls whether application routes and adapters expose the capability. Disabling it does not drop schema. Authenticated application code calls `api.organisations(input_payload)` with `action: 'create'` or `action: 'switch'`; the dispatcher derives the current user and Auth `session_id` from the verified JWT and delegates to service-only `api_edge` functions. Clients never supply identity or session IDs.
+`app.organisations`, `app.organisation_members`, `app.organisation_invitations`, `app.organisation_access_requests`, and `app.user_session_contexts` are installed in every aligned application. They have RLS, no browser table grants, and narrow Auth-hook/service-role access. `ORGANISATIONS.ENABLED` controls whether application routes and adapters expose the capability. Disabling it does not drop schema.
+
+Authenticated application code calls `api.organisations(input_payload)`. The dispatcher derives the current user, verified email, and Auth `session_id` from the JWT and supports list, handle availability, create, switch, read, update, member management, invitation management, and access-request review. Clients never supply identity or session IDs. Roles are `owner`, `admin`, and `member`; the last owner cannot be removed or demoted. Specdrive's semantic adapter maps Core `member` to its existing product `contributor` value without changing Core's contract.
+
+Handles are normalised and rejected when they collide with reserved application routes. Invitations store only a SHA-256 token hash, normalise the recipient email, expire, can be revoked, and are single use. Acceptance requires the signed-in Auth email to match. An organisation with `access_policy: 'request'` creates a pending request for manager review; requesting access never creates membership directly.
+
+The private `organisation-logos` bucket accepts JPEG, PNG, WebP, and GIF objects up to 5 MB. Organisation managers control writes under the organisation UUID prefix; members can read their organisation's media. Creating an organisation synchronises its organisation billing subject. Membership and role changes invalidate stale active contexts, while context-changing actions return `requiresSessionRefresh` so callers refresh the Supabase session before trusting organisation claims.
 
 ## Profile visibility
 

@@ -203,6 +203,10 @@ export type Database = {
         Args: { input_billing_account_id: string; input_user_id: string }
         Returns: boolean
       }
+      bind_organisation_billing_account: {
+        Args: { organisation_id: string }
+        Returns: string
+      }
       claim_stripe_event: { Args: { input_event_id: string }; Returns: Json }
       complete_stripe_event: {
         Args: {
@@ -226,6 +230,14 @@ export type Database = {
         Returns: {
           event_id: string
         }[]
+      }
+      organisation_details: {
+        Args: { organisation_id: string; session_id: string; user_id: string }
+        Returns: Json
+      }
+      organisation_summary: {
+        Args: { organisation_id: string; session_id: string; user_id: string }
+        Returns: Json
       }
       select_organisation_context: {
         Args: {
@@ -430,6 +442,100 @@ export type Database = {
           },
         ]
       }
+      organisation_access_requests: {
+        Row: {
+          created_at: string
+          id: string
+          organisation_id: string
+          requested_by: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["app"]["Enums"]["organisation_access_request_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organisation_id: string
+          requested_by: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["app"]["Enums"]["organisation_access_request_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organisation_id?: string
+          requested_by?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["app"]["Enums"]["organisation_access_request_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_access_requests_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string
+          organisation_id: string
+          revoked_at: string | null
+          role: Database["app"]["Enums"]["organisation_role"]
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by: string
+          organisation_id: string
+          revoked_at?: string | null
+          role?: Database["app"]["Enums"]["organisation_role"]
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string
+          organisation_id?: string
+          revoked_at?: string | null
+          role?: Database["app"]["Enums"]["organisation_role"]
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_invitations_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organisation_members: {
         Row: {
           created_at: string
@@ -464,25 +570,40 @@ export type Database = {
       }
       organisations: {
         Row: {
+          access_policy: Database["app"]["Enums"]["organisation_access_policy"]
+          avatar_path: string | null
+          bio: string | null
+          colour_hex: string
           created_at: string
           created_by: string
           handle: string
+          header_image_path: string | null
           id: string
           name: string
           updated_at: string
         }
         Insert: {
+          access_policy?: Database["app"]["Enums"]["organisation_access_policy"]
+          avatar_path?: string | null
+          bio?: string | null
+          colour_hex?: string
           created_at?: string
           created_by: string
           handle: string
+          header_image_path?: string | null
           id?: string
           name: string
           updated_at?: string
         }
         Update: {
+          access_policy?: Database["app"]["Enums"]["organisation_access_policy"]
+          avatar_path?: string | null
+          bio?: string | null
+          colour_hex?: string
           created_at?: string
           created_by?: string
           handle?: string
+          header_image_path?: string | null
           id?: string
           name?: string
           updated_at?: string
@@ -968,14 +1089,32 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_manage_organisation: {
+        Args: { organisation_id: string; user_id?: string }
+        Returns: boolean
+      }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      is_organisation_member: {
+        Args: { organisation_id: string; user_id?: string }
+        Returns: boolean
+      }
       normalise_organisation_handle: {
         Args: { p_value: string }
         Returns: string
       }
+      organisation_handle_is_reserved: {
+        Args: { value: string }
+        Returns: boolean
+      }
     }
     Enums: {
       application_role: "user" | "admin"
+      organisation_access_policy: "closed" | "request"
+      organisation_access_request_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "cancelled"
       organisation_role: "owner" | "admin" | "member"
       pricing_plan_interval: "day" | "week" | "month" | "year"
       pricing_type: "one_time" | "recurring"
@@ -1139,6 +1278,13 @@ export const Constants = {
   app: {
     Enums: {
       application_role: ["user", "admin"],
+      organisation_access_policy: ["closed", "request"],
+      organisation_access_request_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "cancelled",
+      ],
       organisation_role: ["owner", "admin", "member"],
       pricing_plan_interval: ["day", "week", "month", "year"],
       pricing_type: ["one_time", "recurring"],

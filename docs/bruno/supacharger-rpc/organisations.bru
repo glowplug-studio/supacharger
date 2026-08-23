@@ -1,5 +1,5 @@
 meta {
-  name: switch organisation context
+  name: manage organisations
   type: http
   seq: 15
 }
@@ -21,14 +21,36 @@ headers {
 body:json {
   {
     "input_payload": {
-      "action": "switch",
+      "action": "list",
       "handle": "example-organisation"
     }
   }
 }
 
 docs {
-  Creates or switches the authenticated user's active organisation context. The RPC derives the user and session identifiers from the verified JWT; clients must not supply either identifier.
+  Authenticated organisation management boundary. The RPC derives user and session identity from the verified JWT; clients must never supply either identifier. Anonymous users cannot execute it.
 
-  For creation, send action "create" with title and handle. For selection, send action "switch" with handle. The selected organisation must already include the authenticated user as a member.
+  Read and context actions:
+  - "list"
+  - "create" with name, handle, and optional colourHex
+  - "switch" with handle
+  - "read" with handle or organisationId
+  - "handle.available" with handle; returns false for existing, invalid, or reserved handles
+
+  Manager actions:
+  - "update" with handle or organisationId plus any of name, handle, bio, colourHex, avatarPath, headerImagePath, or accessPolicy ("closed" or "request")
+  - "members.list"
+  - "members.add" with userId and role
+  - "members.updateRole" with userId and role
+  - "members.remove" with userId
+  - "invites.list"
+  - "invites.create" with email and role; the raw inviteToken is returned once and only its SHA-256 hash is stored
+  - "invites.revoke" with invitationId
+  - "access.list", "access.approve", or "access.reject" with requestId
+
+  Account actions:
+  - "invites.accept" with token; the signed-in Auth email must equal the normalised invitation email and the token must be unexpired, unrevoked, and unused
+  - "access.request" with handle; allowed only when that organisation's accessPolicy is "request"
+
+  Canonical roles are "owner", "admin", and "member". The last owner cannot be removed or demoted. Creation, switching, invitation acceptance, handle changes, and role changes return requiresSessionRefresh when the browser must refresh its Supabase session before relying on organisation JWT claims.
 }
