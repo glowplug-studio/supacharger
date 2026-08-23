@@ -19,6 +19,7 @@ const guidanceFiles = {
   image_transforms: 'docs/agents/image-transformation.md',
   loading_ui: 'docs/agents/loading-ui.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
+  account_settings: 'docs/agents/account-settings.md',
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
   instructions: 'AGENTS.md',

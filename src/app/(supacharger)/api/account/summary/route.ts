@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+import { connection, NextResponse } from 'next/server';
 
 import { loadAccountSummary } from '@/supacharger/account/account-summary';
 
-export const dynamic = 'force-dynamic';
+export const instant = false;
 
 export async function GET() {
+  await connection();
   try {
     const summary = await loadAccountSummary();
     if (!summary) return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });

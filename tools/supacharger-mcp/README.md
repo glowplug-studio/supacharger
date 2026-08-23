@@ -13,7 +13,7 @@ The server uses stdio and is registered for Codex by the repository's `.codex/co
 
 ## Capabilities
 
-- Read curated mission, ownership, localisation, authentication, profile/onboarding, database, input-validation, image-transformation, inline-loading UI, billing, workflow, and agent guidance resources.
+- Read curated mission, ownership, localisation, authentication, profile/onboarding, account-settings, database, input-validation, image-transformation, inline-loading UI, billing, workflow, and agent guidance resources.
 - Classify repository paths before editing them.
 - Render a filtered project tree.
 - Search curated guidance without exposing environment files.
@@ -35,6 +35,8 @@ The MCP is descriptive and read-only. It does not supersede `AGENTS.md`, edit fi
 The localisation resource records the locale-neutral routing contract, English-only copy-authoring default, empty or untouched secondary-language policy unless translation is explicitly requested, the transient `?lang=<two-letter-code>` marketing handoff, profile persistence in `app.profiles.language_code`, and the precedence used to restore a preference. It also identifies `src/i18n/` plus `messages/` as developer-owned paths that the CLI must preserve.
 
 The database and profile resources record the one-profile-per-Auth-user model, three-state username policy, post-sign-in onboarding guard, dormant organisation schema, private `user-avatars` paths, the one-query account-summary RPC/service and standard browser refresh event, batched signed-media resolution, safe identity fallback/general projection, and `app`/`api`/`api_edge` schema boundary.
+
+The account-settings resource records the managed `/account` shell and mutation boundary, profile media cleanup order, language persistence, visible cancellation policy, and preserved navigation, field, persistence, and presentation adapters.
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 

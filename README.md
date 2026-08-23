@@ -123,6 +123,8 @@ AUTHENTICATION: {
 },
 PROFILE_IDENTITY: {
   USERNAME: 'disabled', // 'disabled' | 'optional' | 'required'
+  AVATAR: 'optional',
+  HEADER_IMAGE: 'optional',
 },
 POST_SIGN_IN_ONBOARDING: {
   REQUIRED: true,
@@ -131,6 +133,14 @@ POST_SIGN_IN_ONBOARDING: {
 ORGANISATIONS: {
   ENABLED: false,
   AUTHENTICATION_HANDLE: 'disabled', // 'disabled' | 'optional' | 'required'
+  CHOOSER_PATH: '/account/organisation',
+  ROUTE_MODE: 'root-handle',
+  PROFILE_MEDIA: true,
+},
+ACCOUNT_SETTINGS: {
+  LANGUAGE: true,
+  CANCEL_ACCOUNT: 'disabled',
+  PRODUCT_PROFILE_PATH: null,
 },
 ```
 

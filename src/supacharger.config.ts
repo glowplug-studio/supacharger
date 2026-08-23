@@ -175,6 +175,14 @@ export const SC_CONFIG: SupachargerConfig = {
   // controls whether the application requests, displays, or requires the value.
   PROFILE_IDENTITY: {
     USERNAME: 'disabled',
+    AVATAR: 'optional',
+    HEADER_IMAGE: 'optional',
+  },
+
+  ACCOUNT_SETTINGS: {
+    LANGUAGE: true,
+    CANCEL_ACCOUNT: 'disabled',
+    PRODUCT_PROFILE_PATH: null,
   },
 
   // The route belongs to the application. Supacharger only decides whether an
@@ -189,6 +197,9 @@ export const SC_CONFIG: SupachargerConfig = {
   ORGANISATIONS: {
     ENABLED: false,
     AUTHENTICATION_HANDLE: 'disabled',
+    CHOOSER_PATH: '/account/organisation',
+    ROUTE_MODE: 'root-handle',
+    PROFILE_MEDIA: true,
   },
   BILLING_ACCESS: {
     REQUIRED: false,
@@ -270,6 +281,10 @@ export const SC_CONFIG: SupachargerConfig = {
     AUTOMATIC_TAX: false,
     BILLING_ADDRESS_COLLECTION: 'auto' as 'auto' | 'required',
     ALLOW_PROMOTION_CODES: true,
+    ACCOUNT_SUBJECTS: {
+      PERSONAL: true,
+      ORGANISATION: false,
+    },
   },
 
   /**

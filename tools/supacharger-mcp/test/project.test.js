@@ -11,6 +11,7 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/supacharger-auth.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger.adapters/auth/auth-sidecar.tsx').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/supacharger.adapters/account/navigation.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('src/assets/svgr/ui/inline-loader.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/assets/svgr/ui/inline-loader-dark.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger/styles/supacharger.css').ownership, 'cli-managed-core');
@@ -64,6 +65,11 @@ test('searches the localisation guidance exposed to the MCP', async () => {
 test('searches the billing guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('STRIPE_EVENT_PROCESSOR_SECRET');
   assert.ok(matches.some((match) => match.path === 'docs/agents/billing.md'));
+});
+
+test('searches the account settings guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('supacharger:account-summary-changed');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/account-settings.md'));
 });
 
 test('searches the billing test ownership guidance exposed to the MCP', async () => {

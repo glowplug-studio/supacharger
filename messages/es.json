@@ -202,6 +202,17 @@
     "viewProfile": "",
     "help": ""
   },
+  "AccountSettings": {
+    "title": "",
+    "description": "",
+    "navigation": {"label": "", "details": "", "security": "", "billing": "", "organisations": "", "productProfile": ""},
+    "details": {"title": "", "description": "", "firstName": "", "lastName": "", "email": "", "emailHelp": "", "username": "", "usernameHelp": "", "language": "", "save": "", "saving": "", "saved": ""},
+    "languages": {"en": "", "fr": "", "es": "", "zh": ""},
+    "media": {"avatar": "", "header": "", "avatarHelp": "", "headerHelp": "", "invalidFile": "", "uploadFailed": "", "saveFailed": "", "saving": "", "save": "", "choose": "", "preview": ""},
+    "productProfile": {"title": "", "description": "", "open": ""},
+    "cancellation": {"title": "", "description": "", "planned": "", "action": ""},
+    "validation": {"invalidJson": "", "checkFields": "", "firstName": "", "lastName": "", "username": "", "language": "", "extension": "", "authentication": "", "verifyEmail": "", "usernameTaken": "", "profileUpdate": "", "languageUpdate": "", "extensionUpdate": "", "summaryLoad": ""}
+  },
   "ThemeChangerMenu": {
     "title": "Tema",
     "light": "Luz",

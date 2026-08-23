@@ -203,6 +203,78 @@
     "viewProfile": "View profile",
     "help": "Help"
   },
+  "AccountSettings": {
+    "title": "Account settings",
+    "description": "Manage your shared identity, profile media, language, and security.",
+    "navigation": {
+      "label": "Account settings",
+      "details": "Details",
+      "security": "Security",
+      "billing": "Billing",
+      "organisations": "Organisations",
+      "productProfile": "Product profile"
+    },
+    "details": {
+      "title": "Account details",
+      "description": "These details are shared across your account and signed-in application menus.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "emailHelp": "Change and verify your email from Security.",
+      "username": "Username",
+      "usernameHelp": "Use 3–40 letters, numbers, underscores, or hyphens.",
+      "language": "Preferred language",
+      "save": "Save changes",
+      "saving": "Saving…",
+      "saved": "Your account details were updated."
+    },
+    "languages": {
+      "en": "English",
+      "fr": "French",
+      "es": "Spanish",
+      "zh": "Chinese"
+    },
+    "media": {
+      "avatar": "Avatar",
+      "header": "Header image",
+      "avatarHelp": "Upload a JPG, PNG, or WebP image up to 5 MB.",
+      "headerHelp": "Upload a wide JPG, PNG, or WebP image up to 5 MB.",
+      "invalidFile": "Choose a JPG, PNG, or WebP image no larger than 5 MB.",
+      "uploadFailed": "The image could not be processed.",
+      "saveFailed": "The image was uploaded but could not be attached to your profile.",
+      "saving": "Saving…",
+      "save": "Save {label}",
+      "choose": "Choose {label}",
+      "preview": "{label} preview"
+    },
+    "productProfile": {
+      "title": "Product profile",
+      "description": "Open the application-specific profile fields managed by this product.",
+      "open": "Open product profile"
+    },
+    "cancellation": {
+      "title": "Cancel account",
+      "description": "Account deletion needs an approved retention, billing, and ownership-transfer policy.",
+      "planned": "Not available yet",
+      "action": "Cancel account"
+    },
+    "validation": {
+      "invalidJson": "The request body must be valid JSON.",
+      "checkFields": "Check the highlighted fields.",
+      "firstName": "Enter a first name of 100 characters or fewer.",
+      "lastName": "Enter a last name of 100 characters or fewer.",
+      "username": "Enter a valid username.",
+      "language": "Choose a supported language.",
+      "extension": "Check the product profile fields.",
+      "authentication": "You must be signed in to update your account.",
+      "verifyEmail": "Verify your email before changing account details.",
+      "usernameTaken": "That username is already in use.",
+      "profileUpdate": "The profile could not be updated.",
+      "languageUpdate": "The language preference could not be updated.",
+      "extensionUpdate": "The product profile fields could not be updated.",
+      "summaryLoad": "The updated account could not be loaded."
+    }
+  },
   "ThemeChangerMenu": {
     "title": "Theme",
     "light": "Light",

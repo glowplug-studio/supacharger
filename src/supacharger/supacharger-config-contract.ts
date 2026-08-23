@@ -122,6 +122,8 @@ export type SupachargerConfig = {
   ACCOUNT_CONFIRMED_PATH: string;
   PROFILE_IDENTITY: {
     USERNAME: 'disabled' | 'optional' | 'required';
+    AVATAR: 'disabled' | 'optional';
+    HEADER_IMAGE: 'disabled' | 'optional';
   };
   POST_SIGN_IN_ONBOARDING: {
     REQUIRED: boolean;
@@ -130,6 +132,14 @@ export type SupachargerConfig = {
   ORGANISATIONS: {
     ENABLED: boolean;
     AUTHENTICATION_HANDLE: 'disabled' | 'optional' | 'required';
+    CHOOSER_PATH: '/account/organisation';
+    ROUTE_MODE: 'root-handle';
+    PROFILE_MEDIA: boolean;
+  };
+  ACCOUNT_SETTINGS: {
+    LANGUAGE: boolean;
+    CANCEL_ACCOUNT: 'hidden' | 'disabled' | 'enabled';
+    PRODUCT_PROFILE_PATH: string | null;
   };
   BILLING_ACCESS: {
     REQUIRED: boolean;
@@ -152,6 +162,10 @@ export type SupachargerConfig = {
     AUTOMATIC_TAX: boolean;
     BILLING_ADDRESS_COLLECTION: 'auto' | 'required';
     ALLOW_PROMOTION_CODES: boolean;
+    ACCOUNT_SUBJECTS: {
+      PERSONAL: boolean;
+      ORGANISATION: boolean;
+    };
   };
   TOAST_CONFIG: {
     position:

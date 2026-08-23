@@ -24,6 +24,7 @@ const guidanceTopics = [
   'image_transforms',
   'loading_ui',
   'profile',
+  'account_settings',
   'billing',
   'workflow',
   'instructions',
@@ -68,7 +69,7 @@ export function createServer() {
     {
       title: 'Get Supacharger guidance',
       description:
-        'Read the canonical mission, ownership, localisation, authentication, mobile deep-linking, database, input validation, image transformation, inline-loading UI, profile, billing, workflow, or complete repository guidance.',
+        'Read the canonical mission, ownership, localisation, authentication, mobile deep-linking, database, input validation, image transformation, inline-loading UI, profile, account settings, billing, workflow, or complete repository guidance.',
       inputSchema: {
         topic: z.enum(guidanceTopics).describe('Guidance topic to read.'),
       },
