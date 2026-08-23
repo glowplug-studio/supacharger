@@ -25,3 +25,11 @@ Keep an extension's client and server schemas aligned. The managed route validat
 `ACCOUNT_SETTINGS`, profile media policies, organisation chooser settings, and billing subjects are required fields in the typed `SupachargerConfig` contract. The values remain developer-owned. Managed account code and tests must be byte-identical in CLI-installed consumers, while messages and account adapters remain preserved developer paths.
 
 Specdrive consumes the non-visual contracts but retains its licensed presentation through the details-page and passthrough adapters. Do not copy that presentation into Core.
+
+## Privacy and notification preferences
+
+`/account/privacy` and `/account/notifications` are managed descriptor-driven routes. `preferenceSurfaceSchema` accepts plain-text labels/descriptions, boolean option values, and an explicit `enabled` or `disabled` availability. The managed mutation authenticates the current user, parses the submitted boolean record with Zod, reloads the authoritative descriptor, rejects missing or extra option IDs, and only then invokes the developer persistence adapter.
+
+Developer-owned `privacy.ts` and `notifications.ts` adapters must return honest availability. The default starters are disabled and their update functions throw; they never simulate a save. Product adapters must validate again against their own domain identifiers, authorise through their server boundary and database policies, and persist real state. Descriptions are rendered as text, not injected HTML.
+
+Wakekeeper's privacy adapter maps its RLS-protected vessel RPC to this shared renderer and validates UUID keys before calling `upsert_trip_log_privacy`. Its vessel/trip-log tables remain product-owned. No consumer currently supplies a notification persistence service, so notifications render an explicit unavailable state.

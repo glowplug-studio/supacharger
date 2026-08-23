@@ -19,6 +19,7 @@
     "test:account-summary": "node --test test/account-summary-contract.test.mjs",
     "test:account-settings": "node --test test/account-settings-contract.test.mjs",
     "test:account-security": "node --test test/account-security-contract.test.mjs",
+    "test:account-preferences": "node --test test/account-preferences-contract.test.mjs",
     "test:image-transform": "node --no-warnings --experimental-strip-types --test test/image-transform-contract.test.mjs",
     "test:image-transform-runtime": "npx -y deno@2.9.5 test --no-lock --node-modules-dir=auto --allow-read supabase/functions/_shared/image-transform-runtime.test.ts",
     "test:tooling": "node --test test/tooling-contract.test.mjs",

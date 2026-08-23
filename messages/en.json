@@ -211,6 +211,8 @@
       "label": "Account settings",
       "details": "Details",
       "security": "Security",
+      "privacy": "Privacy",
+      "notifications": "Notifications",
       "billing": "Billing",
       "organisations": "Organisations",
       "productProfile": "Product profile"
@@ -274,6 +276,32 @@
       "languageUpdate": "The language preference could not be updated.",
       "extensionUpdate": "The product profile fields could not be updated.",
       "summaryLoad": "The updated account could not be loaded."
+    }
+  },
+  "AccountPreferences": {
+    "save": "Save preferences",
+    "saving": "Saving…",
+    "saved": "Your preferences were saved.",
+    "unavailable": "This application has not configured persistence for these preferences.",
+    "empty": "No preferences are available.",
+    "errors": {
+      "invalidRequest": "Check the submitted preferences.",
+      "unauthenticated": "You must be signed in to update preferences.",
+      "notFound": "That preference type does not exist.",
+      "adapterInvalid": "The application preference adapter is invalid.",
+      "unavailable": "These preferences are not available.",
+      "invalidOptions": "The submitted preferences do not match the available options.",
+      "saveFailed": "The preferences could not be saved."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "description": "Manage product privacy choices supplied by this application.",
+      "disabled": "No privacy controls are configured for this application."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage product notification choices supplied by this application.",
+      "disabled": "Notifications are unavailable until this application connects a persistence service."
     }
   },
   "AccountSecurity": {

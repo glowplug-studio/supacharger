@@ -36,7 +36,7 @@ The localisation resource records the locale-neutral routing contract, English-o
 
 The database and profile resources record the one-profile-per-Auth-user model, three-state username policy, post-sign-in onboarding guard, dormant organisation schema, private `user-avatars` paths, the one-query account-summary RPC/service and standard browser refresh event, batched signed-media resolution, safe identity fallback/general projection, and `app`/`api`/`api_edge` schema boundary.
 
-The account-settings resource records the managed `/account` shell and mutation boundary, profile media cleanup order, language persistence, visible cancellation policy, and preserved navigation, field, persistence, and presentation adapters.
+The account-settings resource records the managed `/account` shell and mutation boundary, profile media cleanup order, language persistence, visible cancellation policy, descriptor-driven privacy/notification surfaces, honest disabled defaults, and preserved navigation, field, persistence, and presentation adapters.
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 

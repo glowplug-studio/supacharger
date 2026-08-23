@@ -14,8 +14,10 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
   const baseItems = [
     { id: 'details', href: '/account', label: t('navigation.details'), order: 10 },
     { id: 'security', href: '/account/security', label: t('navigation.security'), order: 20 },
+    { id: 'privacy', href: '/account/privacy', label: t('navigation.privacy'), order: 30 },
+    { id: 'notifications', href: '/account/notifications', label: t('navigation.notifications'), order: 40 },
     ...(SC_CONFIG.BILLING.ACCOUNT_SUBJECTS.PERSONAL
-      ? [{ id: 'billing', href: '/account/billing', label: t('navigation.billing'), order: 30 }]
+      ? [{ id: 'billing', href: '/account/billing', label: t('navigation.billing'), order: 50 }]
       : []),
     ...(SC_CONFIG.ORGANISATIONS.ENABLED
       ? [
@@ -23,7 +25,7 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
             id: 'organisations',
             href: SC_CONFIG.ORGANISATIONS.CHOOSER_PATH,
             label: t('navigation.organisations'),
-            order: 40,
+            order: 60,
           },
         ]
       : []),
@@ -33,7 +35,7 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
             id: 'product-profile',
             href: SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH,
             label: t('navigation.productProfile'),
-            order: 50,
+            order: 70,
           },
         ]
       : []),
