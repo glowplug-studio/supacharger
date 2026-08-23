@@ -86,7 +86,7 @@ function DemoSidebar() {
     <Sidebar className='border-sidebar-border' collapsible='icon' variant='inset'>
       <SidebarHeader className='border-sidebar-border border-b p-3'>
         <div className='overflow-hidden px-1 py-1 group-data-[collapsible=icon]:px-0'>
-          <SCSiteLogo showSiteTitle={true} />
+          <SCSiteLogo showSiteTitle={true} titleClassName='group-data-[collapsible=icon]:hidden' />
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -117,7 +117,7 @@ function DemoSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className='border-sidebar-border border-t p-3'>
+      <SidebarFooter className='border-sidebar-border border-t p-3 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:p-2'>
         <SCAccountMenu trigger='wide' />
       </SidebarFooter>
       <SidebarRail />

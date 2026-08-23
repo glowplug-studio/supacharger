@@ -33,7 +33,7 @@ type AccountProfile = {
 };
 
 const menuItemClassName =
-  'group flex min-h-10 cursor-pointer items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium text-white outline-none transition-colors focus:bg-white/10 focus:text-white data-[highlighted]:bg-white/10 data-[highlighted]:text-white [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-white/65';
+  'group text-foreground focus:bg-accent focus:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground flex min-h-10 cursor-pointer items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium outline-none transition-colors [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-muted-foreground';
 
 export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: AccountMenuTrigger }) {
   const [profile, setProfile] = useState<AccountProfile>({});
@@ -82,19 +82,19 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
           className={cn(
             'focus-visible:ring-ring inline-flex items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
             trigger === 'wide'
-              ? 'bg-foreground text-background hover:bg-foreground/90 w-full gap-3 p-1 pr-3 text-left'
+              ? 'border-border bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:text-foreground group-data-[collapsible=icon]:hover:bg-accent w-full gap-3 border p-1 pr-3 text-left group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0'
               : 'hover:bg-accent p-1',
           )}
           type='button'
         >
-          <Avatar className='size-9 shrink-0 border border-white/10'>
+          <Avatar className='border-border size-9 shrink-0 border'>
             <AvatarImage alt={identity.displayName} src={avatarUrl ?? undefined} />
             <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
               {identity.initials}
             </AvatarFallback>
           </Avatar>
           {trigger === 'wide' ? (
-            <span className='min-w-0 flex-1'>
+            <span className='min-w-0 flex-1 group-data-[collapsible=icon]:hidden'>
               <span className='block truncate text-sm font-medium'>{identity.displayName}</span>
               {subtitle ? <span className='block truncate text-xs opacity-65'>{subtitle}</span> : null}
             </span>
@@ -104,21 +104,21 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
 
       <DropdownMenuContent
         align='end'
-        className='w-72 overflow-hidden rounded-sm border border-white/10 bg-[#171a18] p-0 text-white shadow-2xl'
+        className='border-border bg-popover text-popover-foreground w-72 overflow-hidden rounded-sm border p-0 shadow-2xl'
         sideOffset={8}
       >
-        <DropdownMenuLabel className='bg-[#282d2a] p-0 font-normal'>
-          <Link className='flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/5' href={profileHref}>
-            <Avatar className='size-10 shrink-0 border border-white/10'>
+        <DropdownMenuLabel className='bg-muted p-0 font-normal'>
+          <Link className='hover:bg-accent flex items-center gap-3 px-4 py-3 transition-colors' href={profileHref}>
+            <Avatar className='border-border size-10 shrink-0 border'>
               <AvatarImage alt={identity.displayName} src={avatarUrl ?? undefined} />
               <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
                 {identity.initials}
               </AvatarFallback>
             </Avatar>
             <span className='min-w-0'>
-              <span className='block truncate text-sm font-semibold text-white'>{identity.displayName}</span>
+              <span className='text-foreground block truncate text-sm font-semibold'>{identity.displayName}</span>
               {subtitle ? (
-                <span className='mt-0.5 block truncate text-xs font-normal text-white/55'>{subtitle}</span>
+                <span className='text-muted-foreground mt-0.5 block truncate text-xs font-normal'>{subtitle}</span>
               ) : null}
             </span>
           </Link>
@@ -145,10 +145,10 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
-        <DropdownMenuSeparator className='m-0 bg-white/10' />
+        <DropdownMenuSeparator className='bg-border m-0' />
         <div className='flex items-center justify-between gap-3 px-4 py-3'>
-          <span className='text-sm font-medium text-white'>{tTheme('title')}</span>
-          <div aria-label={tTheme('title')} className='flex rounded-sm bg-white/10 p-1' role='group'>
+          <span className='text-foreground text-sm font-medium'>{tTheme('title')}</span>
+          <div aria-label={tTheme('title')} className='bg-muted flex rounded-sm p-1' role='group'>
             {(
               [
                 { icon: Sun, key: 'light' },
@@ -160,8 +160,8 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
                 aria-label={tTheme(key)}
                 aria-pressed={theme === key}
                 className={cn(
-                  'inline-flex size-8 items-center justify-center rounded-sm text-white/55 transition-colors hover:bg-white/10 hover:text-white',
-                  theme === key && 'bg-white text-[#171a18] hover:bg-white hover:text-[#171a18]',
+                  'text-muted-foreground hover:bg-accent hover:text-foreground inline-flex size-8 items-center justify-center rounded-sm transition-colors',
+                  theme === key && 'bg-background text-foreground hover:bg-background hover:text-foreground shadow-sm',
                 )}
                 key={key}
                 onClick={(event) => {
@@ -176,7 +176,7 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
           </div>
         </div>
 
-        <DropdownMenuSeparator className='m-0 bg-white/10' />
+        <DropdownMenuSeparator className='bg-border m-0' />
         <DropdownMenuGroup className='p-1.5'>
           <DropdownMenuItem asChild className={menuItemClassName}>
             <Link href='/whats-included'>
@@ -186,7 +186,7 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
-        <DropdownMenuSeparator className='m-0 bg-white/10' />
+        <DropdownMenuSeparator className='bg-border m-0' />
         <DropdownMenuItem asChild>
           <LogoutButton className={cn(menuItemClassName, 'm-1.5 w-[calc(100%-0.75rem)] text-left')}>
             <LogOut aria-hidden='true' />

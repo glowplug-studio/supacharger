@@ -7,9 +7,10 @@ import { cn } from '@/utils/cn';
 interface LogoProps {
   showSiteTitle?: boolean | null;
   darkMode?: boolean | null;
+  titleClassName?: string;
 }
 
-export default function SCSiteLogo({ showSiteTitle, darkMode }: LogoProps) {
+export default function SCSiteLogo({ showSiteTitle, darkMode, titleClassName }: LogoProps) {
   return (
     //@TODO handle session state - switch this href using values from src/supacharger.config.ts.
     <Link href='/' className='flex w-fit items-center gap-1.5 hover:no-underline'>
@@ -23,6 +24,7 @@ export default function SCSiteLogo({ showSiteTitle, darkMode }: LogoProps) {
               : darkMode === false
                 ? 'text-foreground hover:text-foreground/80'
                 : 'text-foreground hover:text-foreground/80',
+            titleClassName,
           )}
         >
           {SC_CONFIG.SITE_TITLE}
