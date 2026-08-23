@@ -2,8 +2,7 @@ import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import SCFooterSession from '@/components/sc_demo/sc_footer-session';
-import { SCHeaderSession } from '@/components/sc_demo/sc_header-session';
+import { AuthenticatedAppShell } from '@/app/(project)/authenticated-app-shell';
 import { requireAppAccess } from '@/supacharger/auth/server-access';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
@@ -19,15 +18,5 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: PropsWithChildren) {
   await requireAppAccess();
 
-  return (
-    <div className='m-auto flex h-full flex-col'>
-      <SCHeaderSession />
-      <main className='relative flex-1'>
-        <div className='relative h-full'>
-          {children}
-        </div>
-      </main>
-      <SCFooterSession />
-    </div>
-  );
+  return <AuthenticatedAppShell>{children}</AuthenticatedAppShell>;
 }

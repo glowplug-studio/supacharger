@@ -17,12 +17,14 @@ Supacharger defines the reusable billing behaviour through:
 - the named billing controllers in `src/features/account/controllers/`;
 - `src/app/(supacharger)/api/webhooks/` and the protected Stripe processor/reconciliation routes;
 - exact protected Stripe webhook, processor, and reconciliation Route Handlers under `src/app/(supacharger)/`;
-- developer-owned billing/account pages under `src/app/(project)/(authenticated)/account/billing/`;
+- developer-owned billing/account pages under `src/app/(project)/`, with acquisition under an onboarded-only route group and full billing-management surfaces under the full-app guard;
 - billing objects in `src/lib/supabase/types.ts` and `supabase/migrations/`.
 
 The manifest byte-protects the Route Handlers, not application table shapes. Stripe libraries, generated types, and billing controllers are application integration code that must satisfy the protected handlers' stable interfaces while adapting product schemas. Migration histories are forward-only and must never be byte-replaced.
 
 Product catalogue content, tax registrations, payment-method Dashboard settings, entitlement definitions, copy, branding, account-subject provisioning, and organisation membership remain developer-owned policy. Consumers must adapt their product model to `billing_accounts`; they must not fork the core back to user-owned subscriptions.
+
+The configured `BILLING_ACCESS.REDIRECT_PATH` must inherit `requireOnboardedUser()`, not `requireAppAccess()`. This lets a verified, profile-complete user without billing access acquire it while still keeping incomplete and unauthenticated users out. Checkout query parameters and return state are never proof of access.
 
 ## Test ownership boundary
 

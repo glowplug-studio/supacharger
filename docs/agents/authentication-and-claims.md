@@ -4,7 +4,9 @@
 
 `src/proxy.ts` and `src/lib/supabase/supacharger/proxy.ts` are shared core behaviour distributed by the CLI. Create one request-scoped Supabase server client and perform exactly one `getClaims()` identity check. Exclude `is_anonymous` identities unless `ALLOW_ANONYMOUS_USERS` is true. Proxy must not call database RPCs or perform profile, onboarding, billing, organisation, or product lookups.
 
-Use `src/supacharger/auth/server-access.ts` from protected server layouts and handlers for `requireVerifiedUser()`, `readAppAccessState()`, and `requireAppAccess()`. These checks are authoritative at the server boundary but do not replace handler-specific authorisation, grants, or RLS.
+Use `src/supacharger/auth/server-access.ts` from protected server layouts and handlers. `requireVerifiedUser()` performs no profile or billing RPC, `requireOnboardedUser()` applies the configured profile-completion policy without a billing RPC, and `requireAppAccess()` applies onboarding first and then configured billing access. `readAppAccessState()` exposes the same ordered state for server consumers. These checks are authoritative navigation boundaries but do not replace handler-specific authorisation, grants, or RLS.
+
+Recovery destinations must sit outside the guard they recover: profile setup belongs under a verified-only layout, billing acquisition under an onboarded layout, and full product routes under `requireAppAccess()`. Use route groups to preserve public URLs. Do not add pathname exceptions to the generic access helpers.
 
 Whenever `@supabase/ssr` changes auth cookies, preserve the mutated request cookies, response cookies, and its `Cache-Control`, `Expires`, and `Pragma` headers on every continuation, redirect, rewrite, and error response. Use `src/supacharger/auth/proxy-response.ts` and its `copySupabaseResponseState`; do not create a replacement response that drops this state.
 

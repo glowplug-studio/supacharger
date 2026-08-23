@@ -22,20 +22,25 @@ export async function resolveAuthCallbackSuccess({
   supabase,
 }: AuthCallbackContext): Promise<string | URL> {
   if (SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED) {
-    const { data: profileComplete } = await supabase.schema('api').rpc('is_profile_complete_by_current_user', {
+    const { data: profileComplete, error: profileError } = await supabase.schema('api').rpc('is_profile_complete_by_current_user', {
       input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
     });
 
-    if (profileComplete === false) {
+    if (profileError) throw profileError;
+
+    if (profileComplete !== true) {
       return getURL(withNextPath(SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH, nextPath));
     }
   }
 
   if (SC_CONFIG.BILLING_ACCESS.REQUIRED) {
-    const { data: hasAccess } = await supabase.schema('api').rpc('has_billing_access_by_current_user', {
+    const { data: hasAccess, error: billingError } = await supabase.schema('api').rpc('has_billing_access_by_current_user', {
       input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
     });
-    if (!hasAccess) {
+
+    if (billingError) throw billingError;
+
+    if (hasAccess !== true) {
       return getURL(withNextPath(SC_CONFIG.BILLING_ACCESS.REDIRECT_PATH, nextPath));
     }
   }

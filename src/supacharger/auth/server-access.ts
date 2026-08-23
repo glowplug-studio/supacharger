@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
+import { decideAccess } from '@/supacharger/auth/access-decision';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import 'server-only';
@@ -13,6 +14,10 @@ export type VerifiedUserIdentity = {
 export type AppAccessState = VerifiedUserIdentity & {
   hasBillingAccess: boolean;
   isProfileComplete: boolean;
+};
+
+export type OnboardedUserIdentity = VerifiedUserIdentity & {
+  isProfileComplete: true;
 };
 
 export async function requireVerifiedUser(): Promise<VerifiedUserIdentity> {
@@ -38,37 +43,86 @@ export async function readAppAccessState(): Promise<AppAccessState> {
   const identity = await requireVerifiedUser();
   const supabase = await createClient();
 
-  const [profileResult, billingResult] = await Promise.all([
-    SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED
-      ? supabase.schema('api').rpc('is_profile_complete_by_current_user', {
-          input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
-        })
-      : Promise.resolve({ data: true, error: null }),
-    SC_CONFIG.BILLING_ACCESS.REQUIRED
-      ? supabase.schema('api').rpc('has_billing_access_by_current_user', {
-          input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
-        })
-      : Promise.resolve({ data: true, error: null }),
-  ]);
+  const profileResult = SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED
+    ? await supabase.schema('api').rpc('is_profile_complete_by_current_user', {
+        input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
+      })
+    : { data: true, error: null };
 
   if (profileResult.error) throw profileResult.error;
+
+  const isProfileComplete = profileResult.data === true;
+  const billingResult = SC_CONFIG.BILLING_ACCESS.REQUIRED
+    ? await supabase.schema('api').rpc('has_billing_access_by_current_user', {
+        input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
+      })
+    : { data: true, error: null };
+
   if (billingResult.error) throw billingResult.error;
 
   return {
     ...identity,
     hasBillingAccess: billingResult.data === true,
-    isProfileComplete: profileResult.data === true,
+    isProfileComplete,
   };
 }
 
-export async function requireAppAccess(): Promise<AppAccessState> {
-  const access = await readAppAccessState();
+export async function requireOnboardedUser(): Promise<OnboardedUserIdentity> {
+  const identity = await requireVerifiedUser();
 
-  if (!access.isProfileComplete) {
+  if (!SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED) {
+    return { ...identity, isProfileComplete: true };
+  }
+
+  const supabase = await createClient();
+  const profileResult = await supabase.schema('api').rpc('is_profile_complete_by_current_user', {
+    input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
+  });
+
+  if (profileResult.error) throw profileResult.error;
+
+  const decision = decideAccess({
+    billingRequired: false,
+    boundary: 'onboarded',
+    hasBillingAccess: true,
+    isProfileComplete: profileResult.data === true,
+    isVerified: true,
+    onboardingRequired: true,
+  });
+
+  if (decision === 'onboarding') {
     redirect(SC_CONFIG.POST_SIGN_IN_ONBOARDING.REDIRECT_PATH);
   }
 
-  if (!access.hasBillingAccess) {
+  return { ...identity, isProfileComplete: true };
+}
+
+export async function requireAppAccess(): Promise<AppAccessState> {
+  const identity = await requireOnboardedUser();
+  const supabase = await createClient();
+  const billingResult = SC_CONFIG.BILLING_ACCESS.REQUIRED
+    ? await supabase.schema('api').rpc('has_billing_access_by_current_user', {
+        input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
+      })
+    : { data: true, error: null };
+
+  if (billingResult.error) throw billingResult.error;
+
+  const access = {
+    ...identity,
+    hasBillingAccess: billingResult.data === true,
+  };
+
+  const decision = decideAccess({
+    billingRequired: SC_CONFIG.BILLING_ACCESS.REQUIRED,
+    boundary: 'app',
+    hasBillingAccess: access.hasBillingAccess,
+    isProfileComplete: true,
+    isVerified: true,
+    onboardingRequired: false,
+  });
+
+  if (decision === 'billing') {
     redirect(SC_CONFIG.BILLING_ACCESS.REDIRECT_PATH);
   }
 

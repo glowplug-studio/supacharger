@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
+import path from 'node:path';
 import test from 'node:test';
 
+import { decideAccess } from '../src/supacharger/auth/access-decision.ts';
 import { copySupabaseResponseState } from '../src/supacharger/auth/proxy-response.ts';
 import { pathMatches } from '../src/supacharger/auth/route-policy.ts';
 import { getSafeNextPath, withNextPath } from '../src/supacharger/auth/safe-next-path.js';
@@ -9,6 +11,51 @@ import {
   hasSensitiveAuthQuery,
   removeSensitiveAuthQuery,
 } from '../src/supacharger/auth/sensitive-auth-query.ts';
+
+const appDirectory = new URL('../src/app/', import.meta.url);
+
+async function findRoutePage(publicPath) {
+  const expectedSegments = publicPath.split('?')[0].split('/').filter(Boolean);
+  const pages = [];
+
+  async function walk(directory) {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) await walk(entryPath);
+      else if (/^page\.(?:js|jsx|ts|tsx)$/.test(entry.name)) pages.push(entryPath);
+    }
+  }
+
+  await walk(appDirectory.pathname);
+
+  return pages.find((pagePath) => {
+    const relativeDirectory = path.relative(appDirectory.pathname, path.dirname(pagePath));
+    const routeSegments = relativeDirectory
+      .split(path.sep)
+      .filter((segment) => segment && !(segment.startsWith('(') && segment.endsWith(')')));
+    return routeSegments.length === expectedSegments.length &&
+      routeSegments.every((segment, index) => segment === expectedSegments[index]);
+  }) ?? null;
+}
+
+async function readAncestorLayouts(pagePath) {
+  const sources = [];
+  let directory = path.dirname(pagePath);
+
+  while (directory.startsWith(appDirectory.pathname)) {
+    for (const extension of ['tsx', 'ts', 'jsx', 'js']) {
+      try {
+        sources.push(await readFile(path.join(directory, `layout.${extension}`), 'utf8'));
+      } catch (error) {
+        if (error?.code !== 'ENOENT') throw error;
+      }
+    }
+    if (directory === appDirectory.pathname.replace(/\/$/, '')) break;
+    directory = path.dirname(directory);
+  }
+
+  return sources.join('\n');
+}
 
 function responseDouble(cookies = [], headers = {}) {
   const writtenCookies = [];
@@ -57,8 +104,88 @@ test('protected layout enforces profile and billing access on the server', async
   ]);
 
   assert.match(layout, /await requireAppAccess\(\)/);
+  assert.match(access, /requireOnboardedUser/);
   assert.match(access, /is_profile_complete_by_current_user/);
   assert.match(access, /has_billing_access_by_current_user/);
+});
+
+test('access decisions preserve verified, onboarded, and full-app boundaries', () => {
+  const defaults = {
+    billingRequired: true,
+    hasBillingAccess: false,
+    isProfileComplete: false,
+    isVerified: true,
+    onboardingRequired: true,
+  };
+
+  assert.equal(decideAccess({ ...defaults, boundary: 'verified' }), 'allow');
+  assert.equal(decideAccess({ ...defaults, boundary: 'onboarded' }), 'onboarding');
+  assert.equal(decideAccess({ ...defaults, boundary: 'app' }), 'onboarding');
+  assert.equal(decideAccess({ ...defaults, boundary: 'onboarded', isProfileComplete: true }), 'allow');
+  assert.equal(decideAccess({ ...defaults, boundary: 'app', isProfileComplete: true }), 'billing');
+  assert.equal(
+    decideAccess({ ...defaults, boundary: 'app', hasBillingAccess: true, isProfileComplete: true }),
+    'allow',
+  );
+  assert.equal(decideAccess({ ...defaults, boundary: 'verified', isVerified: false }), 'login');
+  assert.equal(
+    decideAccess({ ...defaults, boundary: 'app', isProfileComplete: false, onboardingRequired: false }),
+    'billing',
+  );
+  assert.equal(
+    decideAccess({
+      ...defaults,
+      billingRequired: false,
+      boundary: 'app',
+      isProfileComplete: true,
+    }),
+    'allow',
+  );
+});
+
+test('canonical recovery routes do not inherit the requirement they recover', async () => {
+  const setupPage = await findRoutePage('/account/setup-profile');
+  if (setupPage) {
+    const setupLayouts = await readAncestorLayouts(setupPage);
+    assert.doesNotMatch(setupLayouts, /requireOnboardedUser|requireAppAccess/);
+    assert.match(setupLayouts, /requireVerifiedUser/);
+  }
+
+  const billingPage = await findRoutePage('/account/billing/subscribe');
+  if (billingPage) {
+    const billingLayouts = await readAncestorLayouts(billingPage);
+    assert.doesNotMatch(billingLayouts, /requireAppAccess/);
+    assert.match(billingLayouts, /requireOnboardedUser/);
+  }
+});
+
+test('a full-app denial terminates at the matching recovery boundary', () => {
+  const incomplete = {
+    billingRequired: true,
+    hasBillingAccess: false,
+    isProfileComplete: false,
+    isVerified: true,
+    onboardingRequired: true,
+  };
+  const unpaid = { ...incomplete, isProfileComplete: true };
+
+  assert.equal(decideAccess({ ...incomplete, boundary: 'app' }), 'onboarding');
+  assert.equal(decideAccess({ ...incomplete, boundary: 'verified' }), 'allow');
+  assert.equal(decideAccess({ ...unpaid, boundary: 'app' }), 'billing');
+  assert.equal(decideAccess({ ...unpaid, boundary: 'onboarded' }), 'allow');
+});
+
+test('server and callback access checks surface RPC errors and preserve onboarding order', async () => {
+  const [access, callback] = await Promise.all([
+    readFile(new URL('../src/supacharger/auth/server-access.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../src/supacharger.adapters/auth-callback.ts', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(access, /if \(profileResult\.error\) throw profileResult\.error/);
+  assert.match(access, /if \(billingResult\.error\) throw billingResult\.error/);
+  assert.ok(callback.indexOf('is_profile_complete_by_current_user') < callback.indexOf('has_billing_access_by_current_user'));
+  assert.match(callback, /if \(profileError\) throw profileError/);
+  assert.match(callback, /if \(billingError\) throw billingError/);
 });
 
 test('framework, crawler and application metadata endpoints bypass Proxy authentication and redirects', async () => {

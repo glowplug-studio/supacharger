@@ -104,7 +104,9 @@ AUTH_SESSION: {
 },
 ```
 
-Every Proxy redirect preserves refreshed cookies and Supabase's auth anti-cache headers. Proxy is an optimistic navigation layer only and performs no database RPCs. `src/supacharger/auth/server-access.ts` enforces verified identity, onboarding, and billing access in protected server layouts and handlers; handler checks and RLS remain authoritative.
+Every Proxy redirect preserves refreshed cookies and Supabase's auth anti-cache headers. Proxy is an optimistic navigation layer only and performs no database RPCs. `src/supacharger/auth/server-access.ts` exposes three explicit server boundaries: `requireVerifiedUser()` for recovery routes that need only a verified identity, `requireOnboardedUser()` for billing acquisition without an entitlement check, and `requireAppAccess()` for full product access. Onboarding is evaluated before billing, disabled policies issue no corresponding RPC, and handler checks plus RLS remain authoritative.
+
+A recovery destination must not inherit the guard for the condition it recovers. Keep profile setup under a verified-only route group, billing acquisition under an onboarded route group, and ordinary protected product routes under the full-app guard. Next.js route groups do not change the public URLs.
 
 Authentication, identity, onboarding, and organisations are application policy behind one shared contract:
 
