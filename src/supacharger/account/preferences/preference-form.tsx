@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
+import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Label } from '@/supacharger/components/primitives/label';
 
@@ -28,7 +29,9 @@ export function PreferenceForm({ kind, surface }: { kind: PreferenceKind; surfac
     });
     const result = await response.json() as { ok: boolean; error?: string };
     if (result.ok) setSavedValues({ ...values });
-    setNotice({ error: !result.ok, text: result.ok ? t('saved') : t(`errors.${result.error ?? 'saveFailed'}`) });
+    const text = result.ok ? t('saved') : t(`errors.${result.error ?? 'saveFailed'}`);
+    setNotice({ error: !result.ok, text });
+    showActionToast(result.ok ? 'success' : 'error', text);
     setPending(false);
   }
 

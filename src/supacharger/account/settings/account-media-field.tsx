@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import { createClient } from '@/lib/supabase/client';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
+import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { cn } from '@/utils/cn';
@@ -38,7 +39,9 @@ export function AccountMediaField({
     setError(null);
     if (!nextFile) return;
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(nextFile.type) || nextFile.size > 5 * 1024 * 1024) {
-      setError(t('invalidFile'));
+      const message = t('invalidFile');
+      setError(message);
+      showActionToast('error', message);
       return;
     }
     if (previewRef.current) URL.revokeObjectURL(previewRef.current);
@@ -59,7 +62,9 @@ export function AccountMediaField({
     const nextPath = data?.path;
 
     if (uploadError || data?.error || !nextPath) {
-      setError(t('uploadFailed'));
+      const message = t('uploadFailed');
+      setError(message);
+      showActionToast('error', message);
       setIsSaving(false);
       return;
     }
@@ -70,7 +75,9 @@ export function AccountMediaField({
     const { error: mutationError } = await mutation;
     if (mutationError) {
       await supabase.storage.from('user-avatars').remove([nextPath]);
-      setError(t('saveFailed'));
+      const message = t('saveFailed');
+      setError(message);
+      showActionToast('error', message);
       setIsSaving(false);
       return;
     }
@@ -82,6 +89,7 @@ export function AccountMediaField({
     setUrl(data.signed_url ?? null);
     setFile(null);
     setIsSaving(false);
+    showActionToast('success', t('saved', { label }));
     publishAccountSummaryChanged();
     router.refresh();
   }

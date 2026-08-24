@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
+import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
@@ -35,10 +36,12 @@ export function OrganisationTeam({ initialOrganisation }: { initialOrganisation:
   function applyResult(result: OrganisationMutationResponse, successMessage: string) {
     if (!result.ok) {
       setMessage({ kind: 'error', text: result.message });
+      showActionToast('error', result.message);
       return false;
     }
     setOrganisation(result.organisation as unknown as OrganisationDetails);
     setMessage({ kind: 'success', text: successMessage });
+    showActionToast('success', successMessage);
     return true;
   }
 

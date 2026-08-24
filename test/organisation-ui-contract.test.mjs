@@ -55,6 +55,18 @@ test('covers context refresh, invitations, access review, and role protections',
   assert.match(contract, /\['owner', 'admin', 'member'\]/);
 });
 
+test('organisation mutations retain inline feedback and emit action toasts', async () => {
+  const sources = await Promise.all([
+    read('src/supacharger/organisations/organisation-chooser.tsx'),
+    read('src/supacharger/organisations/organisation-profile-form.tsx'),
+    read('src/supacharger/organisations/organisation-team.tsx'),
+  ]);
+  for (const source of sources) {
+    assert.match(source, /role=.*(?:alert|status)|role='(?:alert|status)'/);
+    assert.match(source, /showActionToast/);
+  }
+});
+
 test('keeps the active account navigation item visible on narrow screens', async () => {
   const shell = await read('src/supacharger/account/settings/account-settings-shell.tsx');
   assert.match(shell, /scrollIntoView\(\{ block: 'nearest', inline: 'nearest' \}\)/);

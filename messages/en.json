@@ -247,6 +247,7 @@
       "saveFailed": "The image was uploaded but could not be attached to your profile.",
       "saving": "Saving…",
       "save": "Save {label}",
+      "saved": "{label} saved.",
       "choose": "Choose {label}",
       "preview": "{label} preview"
     },

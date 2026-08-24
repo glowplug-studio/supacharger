@@ -52,6 +52,20 @@ test('profile media commits the path before deleting the prior object and refres
   assert.match(media, /process-image-upload/);
   assert.match(media, /publishAccountSummaryChanged\(\)/);
   assert.match(media, /router\.refresh\(\)/);
+  assert.match(media, /showActionToast\('success'/);
+  assert.match(media, /showActionToast\('error'/);
+});
+
+test('managed account mutations retain inline feedback and emit action toasts', async () => {
+  const sources = await Promise.all([
+    read('src/supacharger/account/preferences/preference-form.tsx'),
+    read('src/supacharger/account/settings/account-details-form.tsx'),
+    read('src/supacharger/account/settings/account-media-field.tsx'),
+  ]);
+  for (const source of sources) {
+    assert.match(source, /role=.*(?:alert|status)|role='(?:alert|status)'/);
+    assert.match(source, /showActionToast/);
+  }
 });
 
 test('approved account settings configuration and complete English copy are present', async () => {

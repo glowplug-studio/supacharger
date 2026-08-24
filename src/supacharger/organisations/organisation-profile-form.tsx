@@ -7,6 +7,7 @@ import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 
 import { createClient } from '@/lib/supabase/client';
 import { OrganisationProfileFields } from '@/supacharger.adapters/organisations/profile-fields';
+import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
@@ -69,11 +70,14 @@ export function OrganisationProfileForm({
         methods.setError(field as keyof OrganisationProfileValues, { message: fieldMessage });
       }
       setMessage({ kind: 'error', text: result.message });
+      showActionToast('error', result.message);
       setIsSaving(false);
       return;
     }
     methods.reset(values);
-    setMessage({ kind: 'success', text: t('profile.saved') });
+    const successMessage = t('profile.saved');
+    setMessage({ kind: 'success', text: successMessage });
+    showActionToast('success', successMessage);
     setIsSaving(false);
     const nextHandle = String(result.organisation.handle || values.handle);
     if (nextHandle !== organisation.handle) router.replace(`/${encodeURIComponent(nextHandle)}/settings`);
@@ -172,7 +176,9 @@ function OrganisationMediaField({ initialUrl, kind, organisationId }: {
   async function upload(file: File) {
     setError(null);
     if (file.size > 5 * 1024 * 1024 || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
-      setError(t('profile.mediaInvalid'));
+      const message = t('profile.mediaInvalid');
+      setError(message);
+      showActionToast('error', message);
       return;
     }
     setUploading(true);
@@ -182,7 +188,9 @@ function OrganisationMediaField({ initialUrl, kind, organisationId }: {
     const supabase = createClient();
     const { error: uploadError } = await supabase.storage.from('organisation-logos').upload(path, file, { upsert: false });
     if (uploadError) {
-      setError(t('profile.mediaUploadFailed'));
+      const message = t('profile.mediaUploadFailed');
+      setError(message);
+      showActionToast('error', message);
       setUploading(false);
       return;
     }

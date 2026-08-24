@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
@@ -37,6 +38,11 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
   const [joinHandle, setJoinHandle] = useState('');
   const [handleStatus, setHandleStatus] = useState<'available' | 'unavailable' | null>(null);
 
+  function announce(kind: 'error' | 'success', text: string) {
+    setMessage({ kind, text });
+    showActionToast(kind, text);
+  }
+
   async function checkHandle(value: string) {
     const normalised = value.trim().toLowerCase();
     if (!/^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$/.test(normalised)) {
@@ -54,7 +60,7 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
     setMessage(null);
     const result = await mutateOrganisation({ action: 'switch', handle: organisation.handle });
     if (!result.ok) {
-      setMessage({ kind: 'error', text: result.message });
+      announce('error', result.message);
       setBusy(null);
       return;
     }
@@ -68,13 +74,13 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
     setMessage(null);
     const normalisedHandle = handle.trim().toLowerCase();
     if (!await checkHandle(normalisedHandle)) {
-      setMessage({ kind: 'error', text: t('errors.handleUnavailable') });
+      announce('error', t('errors.handleUnavailable'));
       setBusy(null);
       return;
     }
     const result = await mutateOrganisation({ action: 'create', handle: normalisedHandle, name });
     if (!result.ok) {
-      setMessage({ kind: 'error', text: result.message });
+      announce('error', result.message);
       setBusy(null);
       return;
     }
@@ -88,9 +94,9 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
     setMessage(null);
     const result = await mutateOrganisation({ action: 'access.request', handle: joinHandle.trim().toLowerCase() });
     if (!result.ok) {
-      setMessage({ kind: 'error', text: result.message });
+      announce('error', result.message);
     } else {
-      setMessage({ kind: 'success', text: t('chooser.accessRequested') });
+      announce('success', t('chooser.accessRequested'));
       setJoinHandle('');
     }
     setBusy(null);
@@ -102,13 +108,13 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
     setMessage(null);
     const result = await mutateOrganisation({ action: 'invites.accept', token: inviteToken });
     if (!result.ok) {
-      setMessage({ kind: 'error', text: result.message });
+      announce('error', result.message);
       setBusy(null);
       return;
     }
     const accepted = result.organisation as unknown as OrganisationSummary;
     setOrganisations((current) => [...current.filter((item) => item.id !== accepted.id), accepted]);
-    setMessage({ kind: 'success', text: t('chooser.invitationAccepted') });
+    announce('success', t('chooser.invitationAccepted'));
     setBusy(null);
     router.replace(organisationSettingsPath(accepted.handle));
     router.refresh();

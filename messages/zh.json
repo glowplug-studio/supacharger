@@ -209,7 +209,7 @@
     "navigation": {"label": "", "details": "", "security": "", "privacy": "", "notifications": "", "billing": "", "organisations": "", "productProfile": ""},
     "details": {"title": "", "description": "", "firstName": "", "lastName": "", "email": "", "emailHelp": "", "username": "", "usernameHelp": "", "language": "", "save": "", "saving": "", "saved": ""},
     "languages": {"en": "", "fr": "", "es": "", "zh": ""},
-    "media": {"avatar": "", "header": "", "avatarHelp": "", "headerHelp": "", "invalidFile": "", "uploadFailed": "", "saveFailed": "", "saving": "", "save": "", "choose": "", "preview": ""},
+    "media": {"avatar": "", "header": "", "avatarHelp": "", "headerHelp": "", "invalidFile": "", "uploadFailed": "", "saveFailed": "", "saving": "", "save": "", "saved": "", "choose": "", "preview": ""},
     "productProfile": {"title": "", "description": "", "open": ""},
     "cancellation": {"title": "", "description": "", "planned": "", "action": ""},
     "validation": {"invalidJson": "", "checkFields": "", "firstName": "", "lastName": "", "username": "", "language": "", "extension": "", "authentication": "", "verifyEmail": "", "usernameTaken": "", "profileUpdate": "", "languageUpdate": "", "extensionUpdate": "", "summaryLoad": ""}

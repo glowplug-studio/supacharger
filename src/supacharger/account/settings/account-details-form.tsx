@@ -9,6 +9,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { SUPPORTED_LOCALES } from '@/i18n/config';
 import { AccountProfileFields } from '@/supacharger.adapters/account/profile-fields';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
+import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
@@ -59,12 +60,15 @@ export function AccountDetailsForm(props: AccountDetailsFormProps) {
         methods.setError(field as keyof AccountDetailsFormValues, { message: fieldMessage });
       }
       setMessage({ kind: 'error', text: result.message });
+      showActionToast('error', result.message);
       setIsSaving(false);
       return;
     }
 
     methods.reset(values);
-    setMessage({ kind: 'success', text: t('details.saved') });
+    const successMessage = t('details.saved');
+    setMessage({ kind: 'success', text: successMessage });
+    showActionToast('success', successMessage);
     setIsSaving(false);
     publishAccountSummaryChanged(result.summary);
     router.refresh();
