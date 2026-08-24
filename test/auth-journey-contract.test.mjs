@@ -87,7 +87,7 @@ test('server-importable configuration contains no react-toastify runtime values'
 
   assert.doesNotMatch(contract, /from 'react-toastify'/);
   assert.doesNotMatch(config, /from 'react-toastify'|\bFlip\b/);
-  assert.match(config, /transition:\s*'flip'/);
+  assert.match(config, /transition:\s*['"]flip['"]/);
   assert.match(resolver, /flip:\s*Flip/);
 });
 
