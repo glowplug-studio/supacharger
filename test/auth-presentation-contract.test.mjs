@@ -75,6 +75,27 @@ test('every static AuthJourney key has non-empty English source copy', async () 
   }
 });
 
+test('managed account, organisation, and auth controls do not import product-styled primitives', async () => {
+  const roots = [
+    new URL('../src/supacharger/account/', import.meta.url),
+    new URL('../src/supacharger/components/', import.meta.url),
+    new URL('../src/supacharger/organisations/', import.meta.url),
+  ];
+
+  async function collect(directory) {
+    const entries = await readdir(directory, { withFileTypes: true });
+    return (await Promise.all(entries.map(async (entry) => {
+      const url = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
+      return entry.isDirectory() ? collect(url) : entry.name.endsWith('.tsx') ? [url] : [];
+    }))).flat();
+  }
+
+  for (const file of (await Promise.all(roots.map(collect))).flat()) {
+    const source = await readFile(file, 'utf8');
+    assert.doesNotMatch(source, /@\/components\/ui\/(?:button|input|label|textarea|select|checkbox|switch)/, file.pathname);
+  }
+});
+
 test('new passwordless copy has safe English fallbacks during catalogue hot reloads', async () => {
   const journey = await read('src/supacharger/components/forms/login-user-form.tsx');
 
@@ -123,7 +144,7 @@ test('auth journey retains the promoted SnapScreen presentation', async () => {
   assert.match(form, /AnimateHeight/);
   assert.match(form, /sc-auth-surface-button/);
   assert.match(form, /sc-auth-primary-button/);
-  assert.match(form, /OTPField/);
+  assert.match(form, /OtpField/);
   assert.match(form, /ResendVerificationEmail/);
   assert.match(styles, /\.sc-auth-input/);
   assert.match(styles, /\.sc-auth-otp input/);
@@ -131,7 +152,7 @@ test('auth journey retains the promoted SnapScreen presentation', async () => {
 
 test('OTP fields retain an independent placeholder for each empty slot', async () => {
   const [field, styles] = await Promise.all([
-    read('src/components/ui/otp-field.tsx'),
+    read('src/supacharger/components/primitives/otp-field.tsx'),
     read('src/styles/supacharger-auth.css'),
   ]);
 
@@ -140,15 +161,15 @@ test('OTP fields retain an independent placeholder for each empty slot', async (
   assert.match(field, /focusedIndex !== index/);
   assert.match(field, /onFocus=\{\(\) => setFocusedIndex\(index\)\}/);
   assert.match(field, /onBlur=/);
-  assert.match(field, /otp-field-placeholder/);
+  assert.match(field, /sc-otp-placeholder/);
   assert.doesNotMatch(field, /placeholder=\{resolvedPlaceholder\}/);
   assert.match(field, /index=\{index\}/);
   assert.match(field, /aria-hidden='true'/);
-  assert.match(styles, /\.sc-auth-otp \.otp-field-placeholder/);
+  assert.match(styles, /\.sc-auth-otp \.sc-otp-placeholder/);
   assert.match(styles, /aspect-ratio: 1 \/ 1/);
   assert.match(styles, /clamp\(2\.25rem, 12vw, 3\.75rem\)/);
   assert.match(styles, /color: rgb\(255 255 255 \/ 0\.18\)/);
-  assert.doesNotMatch(field, /otp-field-separator/);
+  assert.match(field, /sc-otp-separator/);
 });
 
 test('bright auth actions use the black inline-loader variant', async () => {

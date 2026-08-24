@@ -2,6 +2,22 @@ import assert from 'node:assert/strict';
 import { readdirSync,readFileSync } from 'node:fs';
 import test from 'node:test';
 
+const claimsExtensionMigration = new URL(
+  '../supabase/migrations/20260824130917_add_custom_claims_extension_contract.sql',
+  import.meta.url,
+);
+
+test('custom claims have a protected developer extension seam', () => {
+  const sql = readFileSync(claimsExtensionMigration, 'utf8');
+
+  assert.match(sql, /app\.custom_access_token_claims_extension\(jsonb, jsonb\)/i);
+  assert.match(sql, /security invoker/i);
+  assert.match(sql, /to supabase_auth_admin/i);
+  assert.match(sql, /from public, anon, authenticated, service_role/i);
+  assert.match(sql, /custom claim name .* is reserved/i);
+  assert.match(sql, /claims := claims \|\| extension_claims/i);
+});
+
 const migrationsDirectory = new URL('../supabase/migrations/', import.meta.url);
 const organisationMigrations = readdirSync(migrationsDirectory)
   .filter((file) => file.endsWith('_add_organisation_management.sql'));

@@ -7,6 +7,8 @@
 @import 'tw-animate-css';
 @import './supacharger.css';
 @import '../../styles/supacharger-auth.css';
+@import '../../styles/supacharger-account.css';
+@import '../../styles/supacharger-organisations.css';
 @import '../../styles/project.css';
 
 @config '../../../tailwind.config.ts';

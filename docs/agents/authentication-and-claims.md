@@ -60,6 +60,10 @@ Proxy provides session refresh and optimistic page routing only. Route Handlers 
 
 Assign roles through reviewed migrations or a separately approved trusted administrative boundary. Never expose a self-assignment RPC. A role update does not change an already-issued JWT; require a session refresh and treat the database as authoritative when revocation must be immediate.
 
+Core calls `app.custom_access_token_claims_extension(event jsonb, canonical_claims jsonb)` after producing the canonical role and active-organisation claims. The default extension returns an empty object. Applications may replace only this function through a new forward migration and return compact product-owned claims. The managed hook rejects Supabase-required, optional, global-role, and active-organisation claim names so product code cannot override the Core trust contract.
+
+Keep the extension `security invoker`, grant execute only to `supabase_auth_admin`, and give that role only the table grants and RLS policy required by the product query. Use the developer-owned `supabase/templates/custom-access-token-claims-extension.sql` as a starting point. Never edit an applied migration, put personal data or unbounded collections into a JWT, or use `user_metadata` as an authorisation source.
+
 ## Resource-scoped roles and organisation context
 
 Do not force organisation, team, project, or account membership into `app.user_roles`. The canonical optional foundation is `app.organisations`, `app.organisation_members`, invitations, access requests, and `app.user_session_contexts`. `ORGANISATIONS.ENABLED` controls exposure, not installation. Every organisation action calls the authenticated `api.organisations(input_payload)` dispatcher, which derives identity, verified email, and session state from the JWT; never accept client-supplied user/session identifiers or place an organisation handle in arbitrary Auth metadata. A compact active-context claim may help navigation, but it is derived from server-owned session context, refreshed after switching or other context-changing mutations, bounded in size, and checked against current membership at the data boundary.

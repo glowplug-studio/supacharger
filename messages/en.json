@@ -307,7 +307,9 @@
   "AccountSecurity": {
     "providers": {
       "title": "Sign-in methods",
-      "description": "These providers can sign in to your account."
+      "description": "Linked methods that can sign in to this account.",
+      "signedInWith": "Signed in with {method}.",
+      "linkedLabel": "Linked sign-in methods"
     },
     "currentPassword": "Current password",
     "saving": "Saving…",
@@ -317,7 +319,8 @@
       "passwordUnavailable": "Email changes need an email-and-password sign-in method.",
       "new": "New email address",
       "save": "Update email",
-      "sent": "Check your new email address to confirm the change."
+      "sent": "Check your new email address to confirm the change.",
+      "pending": "Waiting for confirmation of {email}. Your current address stays active until Supabase confirms the change."
     },
     "password": {
       "title": "Password",
@@ -326,7 +329,9 @@
       "new": "New password",
       "repeat": "Repeat new password",
       "save": "Update password",
-      "saved": "Your password was updated."
+      "saved": "Your password was updated.",
+      "show": "Show new passwords",
+      "hide": "Hide new passwords"
     },
     "errors": {
       "invalidRequest": "Check the submitted values.",

@@ -21,10 +21,7 @@ import AnimateHeight from 'react-animate-height';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import OTPField from '@/components/ui/otp-field';
 import { createClient } from '@/lib/supabase/client';
 import {
   createUserByEmailPassword,
@@ -37,6 +34,10 @@ import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+import { Button } from '@/supacharger/components/primitives/button';
+import { Input } from '@/supacharger/components/primitives/input';
+import { OtpField } from '@/supacharger/components/primitives/otp-field';
 import { UIDivider } from '@/supacharger/components/ui/divider';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { EmailPasswordlessMode, SignUpEmailVerificationMode } from '@/supacharger/supacharger-config-contract';
@@ -262,15 +263,16 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
       setPendingAction('password');
       startAuthTransition(async () => {
         const result = await createUserByEmailPassword(formData);
-        setPendingAction(null);
 
         if (result.error) {
+          setPendingAction(null);
           setError(getAuthErrorMessage(result.error, 'authenticationFailed'));
           return;
         }
 
         if (result.data.userId && result.data.identityCount === 0) {
-          toast.warning(tSupabaseErrorCodes('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
+          setPendingAction(null);
+          toast.warning(tSupabaseErrorCodes('accountAlreadyExists'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
           setMode('signin');
           setStep('email');
           pushAuthRoute('signin');
@@ -283,9 +285,11 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
         setVerificationPurpose('signup');
         setVerificationDeliveryMode(signUpVerificationMode);
         if (signUpVerificationMode === 'otp' || signUpVerificationMode === 'otp-and-link') {
+          setPendingAction(null);
           setStep('verify-email');
           onFormHeadingChange?.(signUpVerificationMode === 'otp-and-link' ? t('verifyEmail') : t('enterCode'));
         } else if (signUpVerificationMode === 'link') {
+          setPendingAction(null);
           setStep('check-email');
           onFormHeadingChange?.(t('checkEmail'));
         } else {
@@ -303,9 +307,9 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     setPendingAction('password');
     startAuthTransition(async () => {
       const result = await loginUser(formData);
-      setPendingAction(null);
 
       if (result?.error) {
+        setPendingAction(null);
         const messageKey = supabaseErrorCodeLocalisation(result.error.code, result.error.status);
         setLoginFailed(mode === 'signin' && messageKey === 'invalidCredentials');
         setEmailNotConfirmed(mode === 'signin' && messageKey === 'emailNotConfirmed');
@@ -320,6 +324,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           body: JSON.stringify({ action: 'switch', handle: organisationHandle.trim() }),
         });
         if (!contextResponse.ok) {
+          setPendingAction(null);
           setError(t('organisationFailed'));
           return;
         }
@@ -486,7 +491,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               {pendingAction === 'otp' ? (
                 <LoadingSpinner className='sc-auth-code-loader' label={t('verifyingCode')} />
               ) : (
-                <OTPField
+                <OtpField
                   className='sc-auth-otp'
                   length={otpLength}
                   value={otp}

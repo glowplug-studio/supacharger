@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 interface LogoutLinkProps {
   className?: string | null;
@@ -35,7 +36,7 @@ export default function LogoutLink({ className, children = 'Logout' }: LogoutLin
       const logoutResult = (await response.json()) as LogoutResponse;
 
       if (response.ok && logoutResult.success && typeof logoutResult.redirectTo === 'string') {
-        toast.success(t('logoutSucceeded'), SC_CONFIG.TOAST_CONFIG);
+        toast.success(t('logoutSucceeded'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
         setTimeout(() => {
           window.location.assign(logoutResult.redirectTo!);
         }, 800);

@@ -21,10 +21,11 @@ import AnimateHeight from 'react-animate-height';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { Input } from '@/components/ui/input';
 import { createUserByEmailPassword } from '@/lib/supabase/supacharger/supabase-auth';
 import SaveButton from '@/supacharger/components/buttons/form-save-button';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+import { Input } from '@/supacharger/components/primitives/input';
 import { SCP_REGISTRY } from '@/supacharger/plugins/registry';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import {
@@ -123,38 +124,38 @@ export function CreateAccountForm() {
 
     // Required fields
     if (!data.email) {
-      toast.error(tCreateAccountFormComponent('missingEmail'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tCreateAccountFormComponent('missingEmail'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setFormError(tCreateAccountFormComponent('missingEmail'));
       return;
     }
     if (!data.password) {
-      toast.error(tCreateAccountFormComponent('missingPassword'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tCreateAccountFormComponent('missingPassword'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setFormError(tCreateAccountFormComponent('missingPassword'));
       return;
     }
     if (!showPassword && !data.retypePassword) {
-      toast.error(tCreateAccountFormComponent('missingRetypePassword'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tCreateAccountFormComponent('missingRetypePassword'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setFormError(tCreateAccountFormComponent('missingRetypePassword'));
       return;
     }
 
     // Email format
     if (!isValidEmail(data.email)) {
-      toast.error(tCreateAccountFormComponent('invalidEmail'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tCreateAccountFormComponent('invalidEmail'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setFormError(tCreateAccountFormComponent('invalidEmail'));
       return;
     }
 
     // Password strength
     if (!passwordIsValid) {
-      toast.error(tEvaluatePasswordStrengthComponent('passwordNotStrongEnough'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tEvaluatePasswordStrengthComponent('passwordNotStrongEnough'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setFormError(tEvaluatePasswordStrengthComponent('passwordNotStrongEnough'));
       return;
     }
 
     // Password match
     if (!showPassword && data.password !== data.retypePassword) {
-      toast.error(tCreateAccountFormComponent('passwordMismatch'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tCreateAccountFormComponent('passwordMismatch'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setFormError(tCreateAccountFormComponent('passwordMismatch'));
       return;
     }
@@ -180,13 +181,13 @@ export function CreateAccountForm() {
           ? tSupabaseErrorCodes(messageKey)
           : supabaseErrorCodeFallback(messageKey);
         setFormError(errorMessage);
-        toast.error(errorMessage, SC_CONFIG.TOAST_CONFIG);
+        toast.error(errorMessage, resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
         setIsSubmitSuccess(false);
       } else {
         if (result.data.userId && result.data.identityCount === 0) {
-          toast.warning(tAuthTerms('accountAlreadyExists'), SC_CONFIG.TOAST_CONFIG);
+          toast.warning(tAuthTerms('accountAlreadyExists'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
         } else {
-          toast.success(tAuthTerms('createAccountSuccess'), SC_CONFIG.TOAST_CONFIG);
+          toast.success(tAuthTerms('createAccountSuccess'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
           setVerificationEmail(data.email);
           setAccountCreated(true);
           setIsSubmitSuccess(true);
@@ -197,7 +198,7 @@ export function CreateAccountForm() {
       setIsSubmitting(false);
       setIsSubmitSuccess(false);
       setFormError(tSupabaseErrorCodes('genericError'));
-      toast.error(tSupabaseErrorCodes('genericError'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tSupabaseErrorCodes('genericError'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
     }
   };
 

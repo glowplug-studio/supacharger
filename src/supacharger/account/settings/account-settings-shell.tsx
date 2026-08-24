@@ -4,45 +4,42 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { Bell, Building2, CreditCard, IdCard, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 
-import { accountNavigationExtensions } from '@/supacharger.adapters/account/navigation';
+import { resolveAccountNavigation } from '@/supacharger.adapters/account/navigation';
+import type { AccountNavigationIconName, AccountNavigationItem } from '@/supacharger/account/settings/account-settings-contract';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { cn } from '@/utils/cn';
+
+const navigationIcons = {
+  profile: UserRound,
+  security: ShieldCheck,
+  privacy: LockKeyhole,
+  notifications: Bell,
+  billing: CreditCard,
+  organisations: Building2,
+  product: IdCard,
+} satisfies Record<AccountNavigationIconName, typeof UserRound>;
 
 export function AccountSettingsShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations('AccountSettings');
   const navigationListRef = useRef<HTMLUListElement>(null);
-  const baseItems = [
-    { id: 'details', href: '/account', label: t('navigation.details'), order: 10 },
-    { id: 'security', href: '/account/security', label: t('navigation.security'), order: 20 },
-    { id: 'privacy', href: '/account/privacy', label: t('navigation.privacy'), order: 30 },
-    { id: 'notifications', href: '/account/notifications', label: t('navigation.notifications'), order: 40 },
+  const baseItems: AccountNavigationItem[] = [
+    { id: 'details', href: '/account', label: t('navigation.details'), order: 10, icon: 'profile' },
+    { id: 'security', href: '/account/security', label: t('navigation.security'), order: 20, icon: 'security' },
+    { id: 'privacy', href: '/account/privacy', label: t('navigation.privacy'), order: 30, icon: 'privacy' },
+    { id: 'notifications', href: '/account/notifications', label: t('navigation.notifications'), order: 40, icon: 'notifications' },
     ...(SC_CONFIG.BILLING.ACCOUNT_SUBJECTS.PERSONAL
-      ? [{ id: 'billing', href: '/account/billing', label: t('navigation.billing'), order: 50 }]
+      ? [{ id: 'billing', href: '/account/billing', label: t('navigation.billing'), order: 50, icon: 'billing' as const }]
       : []),
     ...(SC_CONFIG.ORGANISATIONS.ENABLED
-      ? [
-          {
-            id: 'organisations',
-            href: SC_CONFIG.ORGANISATIONS.CHOOSER_PATH,
-            label: t('navigation.organisations'),
-            order: 60,
-          },
-        ]
+      ? [{ id: 'organisations', href: SC_CONFIG.ORGANISATIONS.CHOOSER_PATH, label: t('navigation.organisations'), order: 60, icon: 'organisations' as const }]
       : []),
     ...(SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH
-      ? [
-          {
-            id: 'product-profile',
-            href: SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH,
-            label: t('navigation.productProfile'),
-            order: 70,
-          },
-        ]
+      ? [{ id: 'product-profile', href: SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH, label: t('navigation.productProfile'), order: 70, icon: 'product' as const }]
       : []),
-    ...accountNavigationExtensions,
-  ].sort((left, right) => left.order - right.order);
+  ];
+  const navigationItems = resolveAccountNavigation(baseItems);
 
   useEffect(() => {
     navigationListRef.current?.querySelector<HTMLElement>('[aria-current="page"]')
@@ -50,34 +47,29 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
   }, [pathname]);
 
   return (
-    <main className='mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8' data-sc-account-shell>
-      <header className='mb-8 space-y-2' data-sc-account-header>
-        <h1 className='text-3xl font-semibold tracking-tight'>{t('title')}</h1>
-        <p className='text-muted-foreground max-w-2xl text-sm sm:text-base'>{t('description')}</p>
+    <main className='sc-account-shell' data-sc-account-shell>
+      <header className='sc-account-header' data-sc-account-header>
+        <h1 className='sc-account-title'>{t('title')}</h1>
+        <p className='sc-account-description'>{t('description')}</p>
       </header>
-      <div className='grid gap-8 md:grid-cols-[13rem_minmax(0,1fr)]'>
-        <nav aria-label={t('navigation.label')} className='min-w-0' data-sc-account-navigation>
-          <ul className='flex gap-2 overflow-x-auto pb-2 md:flex-col md:overflow-visible' ref={navigationListRef}>
-            {baseItems.map((item) => {
+      <div className='sc-account-layout'>
+        <nav aria-label={t('navigation.label')} className='sc-account-navigation' data-sc-account-navigation>
+          <ul className='sc-account-navigation-list' ref={navigationListRef}>
+            {navigationItems.map((item) => {
               const active = item.href === '/account' ? pathname === item.href : pathname.startsWith(item.href);
+              const Icon = item.icon ? navigationIcons[item.icon] : null;
               return (
-                <li key={item.id}>
-                  <Link
-                    aria-current={active ? 'page' : undefined}
-                    className={cn(
-                      'focus-visible:ring-ring block min-h-10 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none',
-                      active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                    )}
-                    href={item.href}
-                  >
-                    {item.label}
+                <li className='sc-account-navigation-item' key={item.id}>
+                  <Link aria-current={active ? 'page' : undefined} className='sc-account-navigation-link' data-active={active ? 'true' : 'false'} href={item.href}>
+                    {Icon ? <Icon aria-hidden='true' className='sc-account-navigation-icon' /> : null}
+                    <span className='sc-account-navigation-label'>{item.label}</span>
                   </Link>
                 </li>
               );
             })}
           </ul>
         </nav>
-        <div className='min-w-0'>{children}</div>
+        <div className='sc-account-content'>{children}</div>
       </div>
     </main>
   );

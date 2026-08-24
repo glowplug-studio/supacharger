@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
 import { AUTH_CONFIRMATION_NOTICE_PARAM } from '@/supacharger/auth/confirmation-redirect';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export function AuthConfirmationNotice() {
@@ -21,7 +22,7 @@ export function AuthConfirmationNotice() {
 
     const confirmationToastId = `auth-confirmation:${notice ?? 'verified'}`;
     const toastOptions = {
-      ...SC_CONFIG.TOAST_CONFIG,
+      ...resolveToastOptions(SC_CONFIG.TOAST_CONFIG),
       toastId: confirmationToastId,
     };
 

@@ -1,6 +1,5 @@
 import type { ComponentType, SVGProps } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { signInWithOAuth } from '@/lib/supabase/supacharger/supabase-auth';
 import AppleLogo from '@/supacharger/assets/svgr/auth-providers/apple-icon.svg';
 import BitbucketLogo from '@/supacharger/assets/svgr/auth-providers/bitbucket-icon.svg';
@@ -22,6 +21,7 @@ import TwitterLogo from '@/supacharger/assets/svgr/auth-providers/twitter-icon.s
 import WorkOSLogo from '@/supacharger/assets/svgr/auth-providers/workos-icon.svg';
 import XLogo from '@/supacharger/assets/svgr/auth-providers/x-icon.svg';
 import ZoomLogo from '@/supacharger/assets/svgr/auth-providers/zoom-icon.svg';
+import { Button } from '@/supacharger/components/primitives/button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 

@@ -3,11 +3,11 @@ import { Host_Grotesk } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { ThemeProvider } from 'next-themes';
-import { ToastContainer } from 'react-toastify';
 
 import { AuthConfirmationNotice } from '@/supacharger/components/auth/auth-confirmation-notice';
 import { AuthLoginNotice } from '@/supacharger/components/auth/auth-login-notice';
 import { SmoothAnchorNavigation } from '@/supacharger/components/layout/smooth-anchor-navigation';
+import { SupachargerToastContainer } from '@/supacharger/components/notifications/supacharger-toast-container';
 import {
   createSupachargerMetadata,
   createSupachargerViewport,
@@ -61,7 +61,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       <body className={cn('font-sans antialiased', hostGrotesk.variable)}>
         <SmoothAnchorNavigation />
         {content}
-        {SC_CONFIG.ROOT_PROVIDERS.TOASTS ? <ToastContainer {...SC_CONFIG.TOAST_CONFIG} /> : null}
+        {SC_CONFIG.ROOT_PROVIDERS.TOASTS ? <SupachargerToastContainer config={SC_CONFIG.TOAST_CONFIG} /> : null}
         <SupachargerAnalytics config={SC_CONFIG} />
       </body>
     </html>

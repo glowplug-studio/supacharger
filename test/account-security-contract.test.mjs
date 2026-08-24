@@ -13,12 +13,16 @@ test('managed security routes use authenticated server boundaries', async () => 
   ]);
   assert.match(page, /SecurityPage/);
   assert.match(security, /auth\.getUser\(\)/);
+  assert.match(security, /auth\.getClaims\(\)/);
+  assert.match(security, /claims\.amr/);
+  assert.match(security, /user\.new_email/);
   assert.match(emailRoute, /z\.object/);
   assert.match(emailRoute, /auth\.getUser\(\)/);
   assert.match(emailRoute, /signInWithPassword/);
   assert.match(emailRoute, /auth\.updateUser/);
   assert.match(passwordRoute, /safeParse/);
   assert.match(passwordRoute, /signInWithPassword/);
+  assert.match(await read('src/supacharger/account/security/security-forms.tsx'), /PasswordValidationIndicator/);
 });
 
 test('TOTP management uses Supabase Auth without application secret storage', async () => {

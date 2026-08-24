@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { Button } from '@/components/ui/button';
 import { requireAppAccess } from '@/supacharger/auth/server-access';
 import { getBillingOverviewForSubject } from '@/supacharger/billing/billing-service';
+import { Button } from '@/supacharger/components/primitives/button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export async function PersonalBillingPage({ portalError = false }: { portalError?: boolean }) {

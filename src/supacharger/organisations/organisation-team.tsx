@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/supacharger/components/primitives/button';
+import { Input } from '@/supacharger/components/primitives/input';
+import { Label } from '@/supacharger/components/primitives/label';
 
 import type {
   OrganisationDetails,

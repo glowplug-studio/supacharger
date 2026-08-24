@@ -1,9 +1,21 @@
-export type AccountNavigationExtension = {
+export type AccountNavigationIconName =
+  | 'profile'
+  | 'security'
+  | 'privacy'
+  | 'notifications'
+  | 'billing'
+  | 'organisations'
+  | 'product';
+
+export type AccountNavigationItem = {
   id: string;
   href: string;
   label: string;
   order: number;
+  icon: AccountNavigationIconName | null;
 };
+
+export type AccountNavigationExtension = AccountNavigationItem;
 
 export type AccountProfileExtensionValues = Record<string, unknown>;
 

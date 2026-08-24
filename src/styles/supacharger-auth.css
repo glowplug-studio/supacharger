@@ -86,12 +86,10 @@
 
   .sc-auth-password-meter {
     pointer-events: none;
-    position: absolute;
-    right: 1.25rem;
-    bottom: 0.5rem;
-    left: 1.25rem;
+    position: relative;
     display: flex;
     gap: 0.5rem;
+    margin: 0.65rem 1.25rem 0;
     opacity: 0;
     transition: opacity 200ms ease;
   }
@@ -114,7 +112,7 @@
   }
 
   .sc-auth-password-tooltip {
-    position: absolute;
+    position: relative;
     z-index: 50;
     width: 18rem;
     margin-top: 0.5rem;
@@ -599,7 +597,8 @@
 
   .sc-auth-surface-button,
   .sc-auth-primary-button,
-  .sc-auth-input {
+  .sc-auth-input,
+  .sc-auth-page .sc-control-input {
     box-sizing: border-box;
     min-height: 3.5rem;
     padding: 0.75rem 1.25rem;
@@ -636,7 +635,8 @@
     transform: translateY(1px);
   }
 
-  .sc-auth-input {
+  .sc-auth-input,
+  .sc-auth-page .sc-control-input {
     width: 100%;
     border: 1px solid var(--auth-input-border, #46484f);
     border-radius: 10px;
@@ -647,16 +647,52 @@
     box-shadow: none;
   }
 
-  .sc-auth-input::placeholder {
+  .sc-auth-input::placeholder,
+  .sc-auth-page .sc-control-input::placeholder {
     color: rgb(255 255 255 / 0.5);
   }
 
   .sc-auth-input:focus-visible,
+  .sc-auth-page .sc-control-input:focus-visible,
   .sc-auth-primary-button:focus-visible,
   .sc-auth-surface-button:focus-visible,
   .sc-auth-link:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 3px;
+  }
+
+  .light .sc-auth-shell,
+  .light .sc-auth-panel {
+    --auth-panel-background: #f7f8fa;
+    --auth-surface-background: #ffffff;
+    --auth-surface-background-hover: #f0f2f5;
+    --auth-input-background: #ffffff;
+    --auth-input-border: #cfd4dc;
+    color: #17191d;
+  }
+
+  .light .sc-auth-page,
+  .light .sc-auth-entry-title,
+  .light .sc-auth-entry-mode,
+  .light .sc-auth-surface-button,
+  .light .sc-auth-input,
+  .light .sc-auth-page .sc-control-input,
+  .light .sc-auth-check-email,
+  .light .sc-auth-resend {
+    color: #17191d;
+  }
+
+  .light .sc-auth-label,
+  .light .sc-auth-error-description,
+  .light .sc-auth-verification-help,
+  .light .sc-auth-secondary-link,
+  .light .sc-auth-back {
+    color: rgb(23 25 29 / 72%);
+  }
+
+  .light .sc-auth-input::placeholder,
+  .light .sc-auth-page .sc-control-input::placeholder {
+    color: rgb(23 25 29 / 45%);
   }
 
   .sc-auth-provider-avatar {
@@ -715,10 +751,30 @@
     justify-content: stretch;
   }
 
-  .sc-auth-otp {
+  .sc-auth-otp,
+  .sc-otp-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     margin-inline: auto;
     gap: 0.25rem;
+  }
+
+  .sc-otp-slot {
+    position: relative;
+    display: flex;
+    flex: 0 1 3rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sc-otp-separator {
+    width: 0.75rem;
+    height: 1px;
+    flex: 0 0 0.75rem;
+    margin-inline: 0.125rem;
+    background: var(--auth-input-border, #46484f);
   }
 
   .sc-auth-otp-form {
@@ -761,7 +817,8 @@
     color: rgb(255 255 255 / 0.7);
   }
 
-  .sc-auth-otp input {
+  .sc-auth-otp input,
+  .sc-otp-input {
     width: clamp(2.25rem, 12vw, 3.75rem);
     min-width: 0;
     height: auto;
@@ -777,13 +834,21 @@
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
   }
 
-  .sc-auth-otp .otp-field-placeholder {
+  .sc-auth-otp .sc-otp-placeholder,
+  .sc-otp-placeholder {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: rgb(255 255 255 / 0.18);
     font-size: 1.5rem;
     font-weight: 600;
   }
 
-  .sc-auth-otp input:focus-visible {
+  .sc-auth-otp input:focus-visible,
+  .sc-otp-input:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 2px;
   }
@@ -811,7 +876,8 @@
       font-size: 2.25rem;
     }
 
-    .sc-auth-otp {
+    .sc-auth-otp,
+    .sc-otp-field {
       gap: 0.5rem;
     }
 

@@ -225,11 +225,11 @@
     "notifications": {"title": "", "description": "", "disabled": ""}
   },
   "AccountSecurity": {
-    "providers": { "title": "", "description": "" },
+    "providers": { "title": "", "description": "", "signedInWith": "", "linkedLabel": "" },
     "currentPassword": "",
     "saving": "",
-    "email": { "title": "", "description": "", "passwordUnavailable": "", "new": "", "save": "", "sent": "" },
-    "password": { "title": "", "description": "", "unavailable": "", "new": "", "repeat": "", "save": "", "saved": "" },
+    "email": { "title": "", "description": "", "passwordUnavailable": "", "new": "", "save": "", "sent": "", "pending": "" },
+    "password": { "title": "", "description": "", "unavailable": "", "new": "", "repeat": "", "save": "", "saved": "", "show": "", "hide": "" },
     "errors": {
       "invalidRequest": "",
       "unauthenticated": "",

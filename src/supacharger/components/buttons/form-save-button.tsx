@@ -1,7 +1,7 @@
 import { Check } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { Button } from '@/supacharger/components/primitives/button';
 
 interface SaveButtonProps {
   isLoading: boolean;

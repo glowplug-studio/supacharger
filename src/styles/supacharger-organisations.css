@@ -1,0 +1,4 @@
+/** Developer-owned organisation presentation for managed semantic classes. */
+@layer components {
+  .sc-organisation-shell { width: 100%; }
+}

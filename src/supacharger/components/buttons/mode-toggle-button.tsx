@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { MonitorCog, Moon, Sun } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from '@/supacharger/components/primitives/button';
 import { cn } from '@/utils/cn';
 
 type ThemeChoice = 'system' | 'light' | 'dark';

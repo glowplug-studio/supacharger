@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { createClient } from '@/lib/supabase/client';
 import { OrganisationProfileFields } from '@/supacharger.adapters/organisations/profile-fields';
+import { Button } from '@/supacharger/components/primitives/button';
+import { Input } from '@/supacharger/components/primitives/input';
+import { Label } from '@/supacharger/components/primitives/label';
+import { Textarea } from '@/supacharger/components/primitives/textarea';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import type { OrganisationDetails, OrganisationMutationResponse } from './organisation-contract';

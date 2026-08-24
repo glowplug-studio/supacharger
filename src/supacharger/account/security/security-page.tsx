@@ -13,7 +13,10 @@ function formatProvider(provider: string) {
 
 export async function SecurityPage() {
   const supabase = await createClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const [{ data: { user }, error }, claimsResult] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getClaims(),
+  ]);
   if (error || !user?.email) redirect('/account/login');
 
   const providerKeys = Array.from(new Set([
@@ -21,12 +24,21 @@ export async function SecurityPage() {
     ...(user.identities ?? []).map((identity) => identity.provider),
   ].filter((provider): provider is string => Boolean(provider))));
   const hasPasswordIdentity = providerKeys.includes('email');
+  const amr = Array.isArray(claimsResult.data?.claims.amr) ? claimsResult.data.claims.amr : [];
+  const primaryMethod = [...amr]
+    .reverse()
+    .find((entry) => entry && typeof entry === 'object' && 'method' in entry && entry.method !== 'totp' && entry.method !== 'token_refresh');
+  const currentMethod = primaryMethod && typeof primaryMethod === 'object' && 'method' in primaryMethod
+    ? formatProvider(String(primaryMethod.method))
+    : formatProvider(providerKeys[0] ?? 'unknown');
 
   return (
-    <div className='space-y-6' data-sc-account-security>
+    <div className='sc-account-security' data-sc-account-security>
       <SecurityForms
+        currentMethod={currentMethod}
         email={user.email}
         hasPasswordIdentity={hasPasswordIdentity}
+        pendingEmail={user.new_email ?? null}
         providers={providerKeys.map(formatProvider)}
       />
       {SC_CONFIG.AUTHENTICATION.MFA_TOTP.ENABLED ? <TotpPanel /> : null}

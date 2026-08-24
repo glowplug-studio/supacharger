@@ -47,4 +47,7 @@ test('menus consume the managed summary hook and the browser contract has one ev
   assert.match(events, /ACCOUNT_SUMMARY_CHANGED_EVENT/);
   assert.match(hook, /\/api\/account\/summary/);
   assert.match(hook, /addEventListener\(ACCOUNT_SUMMARY_CHANGED_EVENT/);
+  assert.match(hook, /let inFlightRequest:/);
+  assert.match(hook, /if \(inFlightRequest\) return inFlightRequest/);
+  assert.match(hook, /useSyncExternalStore/);
 });

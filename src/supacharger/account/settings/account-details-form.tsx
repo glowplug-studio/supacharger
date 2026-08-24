@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { SUPPORTED_LOCALES } from '@/i18n/config';
 import { AccountProfileFields } from '@/supacharger.adapters/account/profile-fields';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
+import { Button } from '@/supacharger/components/primitives/button';
+import { Input } from '@/supacharger/components/primitives/input';
+import { Label } from '@/supacharger/components/primitives/label';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import { AccountMediaField } from './account-media-field';

@@ -9,6 +9,7 @@ import {
   AUTH_LOGIN_NOTICE_PARAM,
   AUTH_LOGIN_NOTICE_VALUE,
 } from '@/supacharger/auth/login-redirect';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export function AuthLoginNotice() {
@@ -22,7 +23,7 @@ export function AuthLoginNotice() {
     if (!loggedIn) return;
 
     toast.success(t('loginSuccess'), {
-      ...SC_CONFIG.TOAST_CONFIG,
+      ...resolveToastOptions(SC_CONFIG.TOAST_CONFIG),
       toastId: 'auth-login:success',
     });
 

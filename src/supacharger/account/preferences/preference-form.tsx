@@ -3,8 +3,8 @@
 import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/supacharger/components/primitives/button';
+import { Label } from '@/supacharger/components/primitives/label';
 
 import type { PreferenceKind, PreferenceSurface } from './preference-contract';
 

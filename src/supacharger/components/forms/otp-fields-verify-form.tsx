@@ -6,8 +6,9 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import OTPField from '@/components/ui/otp-field';
 import { verifyOtp } from '@/lib/supabase/supacharger/supabase-auth';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+import { OtpField } from '@/supacharger/components/primitives/otp-field';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import {
   isValidEmail,
@@ -36,7 +37,7 @@ export function OtpFieldsForm({ email }: { email: string }) {
 
   const handleVerifyOtp = async (email: string, otpValue: string) => {
     if (!isValidEmail(email)) {
-      toast.error(tOTPFormComponent('invalidEmail'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tOTPFormComponent('invalidEmail'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       return;
     }
 
@@ -44,7 +45,7 @@ export function OtpFieldsForm({ email }: { email: string }) {
     try {
       const result = await verifyOtp(email, otpValue);
       if (!result) {
-        toast.error(tAuthTerms('loginSuccess'), SC_CONFIG.TOAST_CONFIG);
+        toast.error(tAuthTerms('loginSuccess'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
         setLoading(false); // Show form again
         return;
       }
@@ -53,16 +54,16 @@ export function OtpFieldsForm({ email }: { email: string }) {
         const errorMessage = tSupabaseErrorCodes.has(messageKey)
           ? tSupabaseErrorCodes(messageKey)
           : supabaseErrorCodeFallback(messageKey);
-        toast.error(errorMessage, SC_CONFIG.TOAST_CONFIG);
+        toast.error(errorMessage, resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
         setLoading(false); // Show form again
       } else {
-        toast.success(tAuthTerms('accountEmailVerified'), SC_CONFIG.TOAST_CONFIG);
+        toast.success(tAuthTerms('accountEmailVerified'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
         // Success: keep loading spinner, redirect
         // Do NOT setLoading(false) here!
         router.push(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.HOME_PATH);
       }
     } catch (err: any) {
-      toast.error(tSupabaseErrorCodes(supabaseErrorCodeLocalisation('genericError')), SC_CONFIG.TOAST_CONFIG);
+      toast.error(tSupabaseErrorCodes(supabaseErrorCodeLocalisation('genericError')), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setLoading(false); // Show form again
     }
   };
@@ -90,7 +91,7 @@ export function OtpFieldsForm({ email }: { email: string }) {
             <LoadingSpinner className='sc-auth-otp-loading-icon' label={tOTPFormComponent('verifyingCode')} />
           </div>
         ) : (
-          <OTPField
+          <OtpField
             length={6}
             onValueChange={handleOtpChange}
             ref={otpRef}

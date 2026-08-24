@@ -78,6 +78,19 @@ test('configuration exposes the canonical authentication and onboarding policies
   }
 });
 
+test('server-importable configuration contains no react-toastify runtime values', async () => {
+  const [contract, config, resolver] = await Promise.all([
+    read('src/supacharger/supacharger-config-contract.ts'),
+    read('src/supacharger.config.ts'),
+    read('src/supacharger/components/notifications/toast-options.ts'),
+  ]);
+
+  assert.doesNotMatch(contract, /from 'react-toastify'/);
+  assert.doesNotMatch(config, /from 'react-toastify'|\bFlip\b/);
+  assert.match(config, /transition:\s*'flip'/);
+  assert.match(resolver, /flip:\s*Flip/);
+});
+
 test('the application origin comes only from NEXT_PUBLIC_SITE_URL', async () => {
   const [siteUrl, config, helpers, auth] = await Promise.all([
     read('src/supacharger/utils/site-url.ts'),
@@ -335,7 +348,10 @@ test('an existing signup returns to sign in with the submitted credentials intac
 
   assert.ok(transition, 'expected an existing-account sign-in transition');
   assert.match(journey, /result\.data\.identityCount === 0/);
-  assert.match(journey, /toast\.warning\(tSupabaseErrorCodes\('accountAlreadyExists'\), SC_CONFIG\.TOAST_CONFIG\)/);
+  assert.match(
+    journey,
+    /toast\.warning\(tSupabaseErrorCodes\('accountAlreadyExists'\), resolveToastOptions\(SC_CONFIG\.TOAST_CONFIG\)\)/,
+  );
   assert.match(transition[1], /setMode\('signin'\)/);
   assert.match(transition[1], /setStep\('email'\)/);
   assert.match(transition[1], /pushAuthRoute\('signin'\)/);
@@ -381,7 +397,7 @@ test('auth buttons and inputs share the canonical control dimensions', async () 
 
   assert.match(
     styles,
-    /\.sc-auth-surface-button,\s*\.sc-auth-primary-button,\s*\.sc-auth-input\s*\{[\s\S]*?min-height:\s*3\.5rem;[\s\S]*?padding:\s*0\.75rem 1\.25rem;/,
+    /\.sc-auth-surface-button,\s*\.sc-auth-primary-button,\s*\.sc-auth-input,\s*\.sc-auth-page \.sc-control-input\s*\{[\s\S]*?min-height:\s*3\.5rem;[\s\S]*?padding:\s*0\.75rem 1\.25rem;/,
   );
 });
 

@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { type AppLocale, resolveLocale } from '@/i18n/config';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
@@ -42,7 +43,7 @@ export default function LocaleSwitcher({ appearance = 'default', className }: Lo
       window.location.reload();
     } catch {
       setPendingLocale(null);
-      toast.error(t('changeFailed'), SC_CONFIG.TOAST_CONFIG);
+      toast.error(t('changeFailed'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
     }
   };
 

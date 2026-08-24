@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { Button } from '@/components/ui/button';
 import { getBillingOverviewForSubject } from '@/supacharger/billing/billing-service';
+import { Button } from '@/supacharger/components/primitives/button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import type { OrganisationDetails } from './organisation-contract';

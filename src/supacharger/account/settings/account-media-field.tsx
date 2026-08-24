@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
+import { Button } from '@/supacharger/components/primitives/button';
+import { Input } from '@/supacharger/components/primitives/input';
 import { cn } from '@/utils/cn';
 
 type UploadResponse = { error?: string; path?: string; signed_url?: string | null };

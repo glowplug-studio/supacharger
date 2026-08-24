@@ -18,7 +18,8 @@ import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
-import { Input } from '@/components/ui/input';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+import { Input } from '@/supacharger/components/primitives/input';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import SaveButton from '../buttons/form-save-button';
@@ -58,14 +59,14 @@ export default function ResetPasswordForm() {
 
     try {
       await post('/api/account/request-password-reset', { email });
-      toast.success(tPasswordResetPage('emailSent'), SC_CONFIG.TOAST_CONFIG);
+      toast.success(tPasswordResetPage('emailSent'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setHideEmailField(true);
       setIsSuccess(true);
       timeoutRef.current = setTimeout(() => setIsSuccess(false), 24 * 60 * 60 * 1000);
     } catch (error: any) {
       const errorMsg =
         error?.error_description || error?.error || error?.message || tSupabaseErrorCodes('genericError');
-      toast.error(errorMsg, SC_CONFIG.TOAST_CONFIG);
+      toast.error(errorMsg, resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
     } finally {
       setIsLoading(false);
     }

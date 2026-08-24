@@ -1,5 +1,3 @@
-import { Flip, type ToastPosition } from 'react-toastify';
-
 import type { SupachargerConfig } from '@/supacharger/supacharger-config-contract';
 import { getSiteUrl } from '@/supacharger/utils/site-url';
 /**
@@ -177,7 +175,7 @@ export const SC_CONFIG: SupachargerConfig = {
   PROFILE_IDENTITY: {
     USERNAME: 'disabled',
     AVATAR: 'optional',
-    HEADER_IMAGE: 'enabled',
+    HEADER_IMAGE: 'optional',
   },
 
   ACCOUNT_SETTINGS: {
@@ -295,7 +293,7 @@ export const SC_CONFIG: SupachargerConfig = {
    */
 
   TOAST_CONFIG: {
-    position: 'bottom-center' as ToastPosition,
+    position: 'bottom-center',
     autoClose: 3000,
     hideProgressBar: true,
     closeOnClick: true,
@@ -303,6 +301,7 @@ export const SC_CONFIG: SupachargerConfig = {
     draggable: true,
     progress: undefined,
     theme: 'dark',
-    transition: Flip,
+    // Client code maps this serialisable key to react-toastify's transition component.
+    transition: 'flip',
   },
 };

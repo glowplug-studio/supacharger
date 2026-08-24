@@ -4,7 +4,7 @@ import React, { useEffect,useState } from "react";
 import { useTranslations } from "next-intl";
 import { Check, SquareDashed } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
+import { Input } from "@/supacharger/components/primitives/input";
 import { SC_CONFIG } from "@/supacharger/supacharger-config";
 import {
   evaluatePasswordStrength,
