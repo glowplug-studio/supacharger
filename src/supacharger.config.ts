@@ -177,7 +177,7 @@ export const SC_CONFIG: SupachargerConfig = {
   PROFILE_IDENTITY: {
     USERNAME: 'disabled',
     AVATAR: 'optional',
-    HEADER_IMAGE: 'optional',
+    HEADER_IMAGE: 'enabled',
   },
 
   ACCOUNT_SETTINGS: {
