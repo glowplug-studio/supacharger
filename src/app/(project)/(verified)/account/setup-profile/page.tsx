@@ -10,6 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('metadataTitle') };
 }
 
+export const instant = false;
+
 export default async function SetupProfilePage() {
   const t = await getTranslations('AccountPages.setupProfile');
   const supabase = await createClient();

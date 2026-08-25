@@ -4,6 +4,36 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
+function literalClassTokens(source) {
+  return [...source.matchAll(/className=['"]([^'"]+)['"]/g)].flatMap((match) => match[1].split(/\s+/));
+}
+
+test('managed account presentation uses only semantic developer CSS hooks', async () => {
+  const sources = await Promise.all([
+    read('src/app/(supacharger)/(verified)/account/mfa/page.tsx'),
+    read('src/supacharger/account/preferences/preference-form.tsx'),
+    read('src/supacharger/account/security/mfa-challenge-form.tsx'),
+    read('src/supacharger/account/security/security-forms.tsx'),
+    read('src/supacharger/account/security/security-page.tsx'),
+    read('src/supacharger/account/security/totp-panel.tsx'),
+    read('src/supacharger/account/settings/account-details-form.tsx'),
+    read('src/supacharger/account/settings/account-media-field.tsx'),
+    read('src/supacharger/account/settings/account-settings-shell.tsx'),
+  ]);
+  const tokens = sources.flatMap(literalClassTokens);
+  assert.ok(tokens.length > 0);
+  assert.deepEqual(
+    tokens.filter((token) => !token.startsWith('sc-')),
+    [],
+  );
+
+  const styles = await read('src/styles/supacharger-account.css');
+  assert.match(styles, /\.sc-account-shell/);
+  assert.match(styles, /\.sc-account-mfa-page/);
+  assert.match(styles, /\.sc-account-mfa-enrollment/);
+  assert.doesNotMatch(styles, /@layer/);
+});
+
 test('managed account routes use the canonical shell and server details boundary', async () => {
   const [page, layout, route, schema, manifestSource] = await Promise.all([
     read('src/app/(supacharger)/(authenticated)/account/page.tsx'),
@@ -45,7 +75,7 @@ test('profile extensions are developer-owned, typed, and server-validated', asyn
 test('profile media commits the path before deleting the prior object and refreshes menus', async () => {
   const media = await read('src/supacharger/account/settings/account-media-field.tsx');
   const mutationPosition = media.indexOf('await mutation');
-  const oldDeletePosition = media.indexOf("if (path && path !== nextPath)");
+  const oldDeletePosition = media.indexOf('if (path && path !== nextPath)');
 
   assert.ok(mutationPosition >= 0);
   assert.ok(oldDeletePosition > mutationPosition);

@@ -65,7 +65,6 @@ export type SupachargerConfig = {
     SIGN_UP_EMAIL_VERIFICATION: SignUpEmailVerificationMode;
     /** Supabase Auth authenticator-app MFA policy. */
     MFA_TOTP: {
-      /** Show enrolment and factor management. */ ENABLED: boolean;
       /** Require AAL2 after sign-in for accounts with a verified factor. */ REQUIRED_FOR_SIGN_IN: boolean;
     };
   };

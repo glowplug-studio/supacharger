@@ -4,7 +4,7 @@
 
 The managed chooser is `/account/organisation`. Root-handle mode exposes `/{handle}/settings`, `/{handle}/settings/team`, and, when organisation billing is enabled, `/{handle}/settings/billing`. Route helpers validate and encode handles. If `ORGANISATIONS.ENABLED` is false, the chooser and settings layout return a controlled not-found response and the account navigation omits the chooser.
 
-Specdrive is a semantic consumer: `/account/organisation` renders its existing authorised product chooser, while `/organisation` is a temporary allowlist-only redirect. Its existing `/{handle}/settings` presentation, usage, and agent-licence sections remain product-owned and must not be copied into Core.
+Specdrive is a semantic consumer: Core owns its `/account/organisation` and `/{handle}/settings` route identities and reusable structure, while developer-owned adapters preserve its authorised product chooser, application chrome, usage, and agent-licence behaviour. `/organisation` is a temporary allowlist-only redirect. Its licensed presentation remains confined to Specdrive's developer CSS and product components and must not be copied into Core.
 
 ## Managed chooser
 
@@ -13,6 +13,10 @@ The chooser lists memberships and their active context and role. It creates orga
 ## Profile extension seam
 
 The managed profile form owns `useForm`, `FormProvider`, canonical name/handle/bio/colour/access-policy/media fields, dirty state, and safe feedback. `src/supacharger.adapters/organisations/profile-fields.tsx` may call `useFormContext()` to register product fields. The paired `profile-extension.ts` must export the authoritative Zod schema, initial-value loader, and mutation. The `/api/organisations` route validates the extension on the server and invokes it only after the canonical RPC authorises and applies the owner/admin update.
+
+Core owns the `/account/organisation` and `/{handle}/settings` route identities. Products must not create parallel `page.tsx` files for those same public paths in another route group. Preserve product behaviour through `pages.tsx`: it can override chooser, team, and billing content or register product-only settings sections. Pair extra section IDs with `navigation.ts`; IDs are unique kebab-case values and cannot be `profile`, `team`, or `billing`. Use `chrome.tsx` for product application chrome and any stronger application access boundary. These adapters are developer-owned and installed only when missing.
+
+Every managed organisation component exposes only stable `sc-organisation-*` and shared `sc-control-*` presentation hooks. Layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling belong in the unlayered developer-owned `src/styles/supacharger-organisations.css`. The CLI installs that starter only when absent and preserves it on updates. Do not add Tailwind presentation utilities to managed organisation JSX or edit managed markup to carry branding. Licence-restricted product components and styles remain in the authorised consumer and must not be copied into Core.
 
 An extension cannot weaken role checks, handle validation, or Storage paths. Keep adapter values JSON-serialisable and do not simulate persistence in the default adapter.
 

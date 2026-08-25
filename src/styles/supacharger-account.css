@@ -1,53 +1,654 @@
-/** Developer-owned account presentation. Core renders semantic classes only. */
-@layer components {
-  .sc-control-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 2.5rem; border-radius: var(--radius, 0.5rem); padding: 0.5rem 1rem; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-size: 0.875rem; font-weight: 500; transition: opacity 160ms ease, background-color 160ms ease; }
-  .sc-control-button[data-variant='outline'] { border: 1px solid hsl(var(--border)); background: hsl(var(--background)); color: hsl(var(--foreground)); }
-  .sc-control-button[data-variant='ghost'] { background: transparent; color: hsl(var(--foreground)); }
-  .sc-control-button[data-variant='destructive'] { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
-  .sc-control-button[data-size='sm'] { min-height: 2rem; padding: 0.35rem 0.75rem; }
-  .sc-control-button[data-size='icon'] { width: 2.5rem; padding: 0; }
-  .sc-control-button:disabled { cursor: not-allowed; opacity: 0.5; }
-  .sc-control-input, .sc-control-textarea { width: 100%; border: 1px solid hsl(var(--border)); border-radius: var(--radius, 0.5rem); padding: 0.65rem 0.8rem; background: hsl(var(--background)); color: hsl(var(--foreground)); }
-  .sc-control-input { min-height: 2.75rem; }
-  .sc-control-textarea { min-height: 5rem; resize: vertical; }
-  .sc-control-label { font-size: 0.875rem; font-weight: 500; }
-  .sc-control-input:focus-visible, .sc-control-textarea:focus-visible, .sc-control-button:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
-  .sc-account-shell { width: 100%; max-width: 72rem; margin-inline: auto; padding: 2rem 1rem; }
-  .sc-account-header { margin-bottom: 2rem; }
-  .sc-account-title { font-size: 1.875rem; font-weight: 600; letter-spacing: -0.025em; }
-  .sc-account-description { max-width: 42rem; margin-top: 0.5rem; color: hsl(var(--muted-foreground)); font-size: 0.95rem; }
-  .sc-account-layout { display: grid; gap: 2rem; }
-  .sc-account-navigation { min-width: 0; }
-  .sc-account-navigation-list { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
-  .sc-account-navigation-link { display: flex; min-height: 2.5rem; align-items: center; gap: 0.65rem; border-radius: var(--radius, 0.5rem); padding: 0.5rem 0.75rem; color: hsl(var(--muted-foreground)); font-size: 0.875rem; font-weight: 500; white-space: nowrap; transition: color 160ms ease, background-color 160ms ease; }
-  .sc-account-navigation-link:hover { background: hsl(var(--muted)); color: hsl(var(--foreground)); }
-  .sc-account-navigation-link[data-active='true'] { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
-  .sc-account-navigation-link:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
-  .sc-account-navigation-icon { width: 1rem; height: 1rem; flex: none; }
-  .sc-account-content { min-width: 0; }
-  .sc-account-security { display: grid; gap: 1.5rem; }
-  .sc-account-section { border: 1px solid hsl(var(--border)); border-radius: var(--radius, 0.75rem); padding: 1.5rem; background: hsl(var(--card)); box-shadow: 0 1px 2px rgb(0 0 0 / 6%); }
-  .sc-account-section-title { font-size: 1.25rem; font-weight: 600; }
-  .sc-account-section-description { margin-top: 0.25rem; color: hsl(var(--muted-foreground)); font-size: 0.875rem; }
-  .sc-account-provider-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-  .sc-account-provider { border-radius: 999px; padding: 0.25rem 0.75rem; background: hsl(var(--muted)); font-size: 0.875rem; }
-  .sc-account-pending-email { margin-top: 1rem; border-radius: var(--radius, 0.5rem); padding: 0.75rem; background: hsl(var(--muted)); font-size: 0.875rem; }
-  .sc-account-form { display: grid; gap: 1rem; margin-top: 1.25rem; }
-  .sc-account-field { display: grid; gap: 0.5rem; }
-  .sc-account-label { font-size: 0.875rem; font-weight: 500; }
-  .sc-account-input { width: 100%; min-height: 2.75rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius, 0.5rem); padding: 0.65rem 0.8rem; background: hsl(var(--background)); color: hsl(var(--foreground)); }
-  .sc-account-input:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
-  .sc-account-input:disabled { cursor: not-allowed; opacity: 0.55; }
-  .sc-account-submit { justify-self: start; min-height: 2.5rem; border-radius: var(--radius, 0.5rem); padding: 0.5rem 1rem; background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); font-weight: 600; }
-  .sc-account-submit:disabled { cursor: not-allowed; opacity: 0.55; }
-  .sc-account-status { font-size: 0.875rem; }
-  .sc-account-status[data-kind='error'] { color: hsl(var(--destructive)); }
-  .sc-account-status[data-kind='success'] { color: #16a34a; }
-  .sc-account-password-grid { display: grid; gap: 1rem; }
-  .sc-account-password-control { position: relative; display: block; }
-  .sc-account-password-toggle { position: absolute; top: 0.7rem; right: 0.75rem; width: 1.25rem; height: 1.25rem; color: hsl(var(--muted-foreground)); }
-  .sc-account-password-toggle svg { width: 100%; height: 100%; }
-  @media (min-width: 640px) { .sc-account-shell { padding-inline: 1.5rem; } }
-  @media (min-width: 768px) { .sc-account-layout { grid-template-columns: 13rem minmax(0, 1fr); } .sc-account-navigation-list { flex-direction: column; overflow: visible; } .sc-account-password-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 1024px) { .sc-account-shell { padding-inline: 2rem; } }
+/**
+ * Project: Supacharger
+ *
+ * Developer-owned account presentation. The Supacharger CLI installs this
+ * file when absent and preserves it during updates.
+ */
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.5rem 1rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    opacity 160ms ease,
+    background-color 160ms ease;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button[data-variant='outline'] {
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button[data-variant='ghost'] {
+  background: transparent;
+  color: hsl(var(--foreground));
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button[data-variant='destructive'] {
+  background: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button[data-size='sm'] {
+  min-height: 2rem;
+  padding: 0.35rem 0.75rem;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button[data-size='icon'] {
+  width: 2.5rem;
+  padding: 0;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button:disabled,
+.sc-account-submit:disabled,
+.sc-account-input:disabled,
+.sc-account-select:disabled,
+.sc-account-preference-checkbox:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-input,
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-textarea,
+.sc-account-input,
+.sc-account-select {
+  width: 100%;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.65rem 0.8rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-input,
+.sc-account-input,
+.sc-account-select {
+  min-height: 2.75rem;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-label,
+.sc-account-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-input:focus-visible,
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-textarea:focus-visible,
+:where(
+    .sc-account-shell,
+    .sc-account-mfa-page,
+    .sc-account-section,
+    .sc-organisation-page,
+    .sc-organisation-settings,
+    .sc-organisation-chooser,
+    .sc-organisation-profile-form,
+    .sc-organisation-team,
+    .sc-organisation-billing
+  )
+  .sc-control-button:focus-visible,
+.sc-account-input:focus-visible,
+.sc-account-select:focus-visible,
+.sc-account-submit:focus-visible,
+.sc-account-preference-checkbox:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.sc-account-shell {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+}
+
+.sc-account-mfa-page {
+  display: flex;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.sc-account-header {
+  margin-bottom: 2rem;
+}
+
+.sc-account-title,
+.sc-account-mfa-challenge-title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.sc-account-description {
+  max-width: 42rem;
+  margin-top: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.95rem;
+}
+
+.sc-account-layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.sc-account-navigation,
+.sc-account-content {
+  min-width: 0;
+}
+
+.sc-account-navigation-list {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.sc-account-navigation-link {
+  display: flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: 0.65rem;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.5rem 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+
+.sc-account-navigation-link:hover {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.sc-account-navigation-link[data-active='true'] {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.sc-account-navigation-link:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.sc-account-navigation-icon {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+}
+
+.sc-account-details,
+.sc-account-security {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.sc-account-section,
+.sc-account-mfa-challenge {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.75rem);
+  padding: 1.5rem;
+  background: hsl(var(--card));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+}
+
+.sc-account-section-header {
+  margin-bottom: 1.5rem;
+}
+
+.sc-account-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.sc-account-section-description,
+.sc-account-field-help,
+.sc-account-media-help,
+.sc-account-preference-description,
+.sc-account-empty,
+.sc-account-mfa-factor-meta,
+.sc-account-mfa-challenge-description {
+  margin-top: 0.25rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.sc-account-section-action {
+  margin-top: 1rem;
+}
+
+.sc-account-cancellation {
+  border-color: color-mix(in srgb, hsl(var(--destructive)) 40%, transparent);
+}
+
+.sc-account-provider-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.sc-account-provider {
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  background: hsl(var(--muted));
+  font-size: 0.875rem;
+}
+
+.sc-account-pending-email,
+.sc-account-unavailable {
+  margin-top: 1rem;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.75rem 1rem;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.sc-account-form,
+.sc-account-preference-form {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.sc-account-field,
+.sc-account-media {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sc-account-field-grid,
+.sc-account-password-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.sc-account-password-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sc-account-submit {
+  justify-self: start;
+  min-height: 2.5rem;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.5rem 1rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-weight: 600;
+}
+
+.sc-account-status {
+  font-size: 0.875rem;
+}
+
+.sc-account-status[data-kind='error'] {
+  color: hsl(var(--destructive));
+}
+
+.sc-account-status[data-kind='success'] {
+  color: #16a34a;
+}
+
+.sc-account-password-control {
+  position: relative;
+  display: block;
+}
+
+.sc-account-password-toggle {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.75rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.sc-account-password-toggle svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sc-account-preference-option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  padding-bottom: 1.25rem;
+}
+
+.sc-account-preference-option:last-of-type {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sc-account-preference-label {
+  font-size: 1rem;
+}
+
+.sc-account-preference-checkbox {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
+  accent-color: hsl(var(--primary));
+  cursor: pointer;
+}
+
+.sc-account-media-preview {
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--muted));
+  background-position: center;
+  background-size: cover;
+}
+
+.sc-account-media-preview[data-kind='avatar'] {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 999px;
+}
+
+.sc-account-media-preview[data-kind='header'] {
+  width: 100%;
+  max-width: 36rem;
+  aspect-ratio: 8 / 3;
+  border-radius: var(--radius, 0.5rem);
+}
+
+.sc-account-mfa-challenge {
+  display: grid;
+  width: 100%;
+  max-width: 28rem;
+  gap: 1.25rem;
+}
+
+.sc-account-block-action {
+  width: 100%;
+}
+
+.sc-account-mfa-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sc-account-mfa-notice {
+  margin-top: 1rem;
+}
+
+.sc-account-mfa-enrollment {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.sc-account-mfa-qr {
+  display: flex;
+  width: 12.5rem;
+  height: 12.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.75rem;
+  background: white;
+}
+
+.sc-account-mfa-qr-image {
+  width: 100%;
+  height: 100%;
+}
+
+.sc-account-mfa-enrollment-controls {
+  display: grid;
+  gap: 1rem;
+}
+
+.sc-account-mfa-secret {
+  display: block;
+  overflow-wrap: anywhere;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.75rem;
+  background: hsl(var(--muted));
+  font-size: 0.875rem;
+}
+
+.sc-account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.sc-account-mfa-factor-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.sc-account-mfa-factor {
+  border-radius: var(--radius, 0.5rem);
+  padding: 1rem;
+  background: color-mix(in srgb, hsl(var(--muted)) 50%, transparent);
+}
+
+.sc-account-mfa-factor-name {
+  font-weight: 500;
+}
+
+.sc-account-mfa-factor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.sc-account-mfa-remove-field {
+  min-width: 12rem;
+  flex: 1 1 0%;
+}
+
+@media (min-width: 640px) {
+  .sc-account-shell {
+    padding-inline: 1.5rem;
+  }
+
+  .sc-account-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .sc-account-layout {
+    grid-template-columns: 13rem minmax(0, 1fr);
+  }
+
+  .sc-account-navigation-list {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .sc-account-mfa-enrollment {
+    grid-template-columns: 12.5rem minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .sc-account-shell {
+    padding-inline: 2rem;
+  }
 }

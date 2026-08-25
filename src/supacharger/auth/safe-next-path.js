@@ -34,7 +34,7 @@ export function getSafeNextPath(value) {
  * @param {string | null} nextPath
  */
 export function withNextPath(pathname, nextPath) {
-  if (!nextPath) {
+  if (!nextPath || nextPath === '/') {
     return pathname;
   }
 

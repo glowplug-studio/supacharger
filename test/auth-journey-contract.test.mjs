@@ -102,7 +102,7 @@ test('the application origin comes only from NEXT_PUBLIC_SITE_URL', async () => 
   assert.match(siteUrl, /process\.env\.NEXT_PUBLIC_SITE_URL/);
   assert.match(config, /SITE_URL:\s*getSiteUrl\(\)/);
   assert.match(helpers, /export \{ getSiteUrl, getURL \}/);
-  assert.match(auth, /redirectTo:\s*getURL\('\/account\/reset-password\/new'\)/);
+  assert.match(auth, /redirectTo:\s*getURL\('\/auth\/callback\?flow=recovery'\)/);
 
   for (const source of [siteUrl, helpers, auth]) {
     assert.doesNotMatch(source, /https?:\/\/localhost:\d+/);

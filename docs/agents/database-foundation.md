@@ -14,7 +14,7 @@ Reusable internal tables live in `app`. Browser-callable functions live in `api`
 - `language_code` for the validated two-letter preference; and
 - `created_at` and `updated_at`.
 
-Consumers may add application-specific fields to `app.profiles` or a one-to-one extension. They must not add a second shared user/profile table. The Auth insert and email-update triggers always upsert the canonical row, independently of routing configuration.
+Consumers may add application-specific fields to `app.profiles` or a one-to-one extension. They must not add a second shared user/profile table. The Auth insert and email-update triggers always upsert the canonical row, independently of routing configuration. The forward profile-repair migration also inserts any row missing from an older installation that created Auth users before those triggers existed. It leaves username null so the configured identity and onboarding policy remains authoritative, and never overwrites an existing profile.
 
 ## Profile identity and completion
 

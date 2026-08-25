@@ -9,7 +9,6 @@ import { publishAccountSummaryChanged } from '@/supacharger/account/account-summ
 import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
-import { cn } from '@/utils/cn';
 
 type UploadResponse = { error?: string; path?: string; signed_url?: string | null };
 
@@ -31,9 +30,12 @@ export function AccountMediaField({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => () => {
-    if (previewRef.current) URL.revokeObjectURL(previewRef.current);
-  }, []);
+  useEffect(
+    () => () => {
+      if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+    },
+    [],
+  );
 
   function selectFile(nextFile: File | undefined) {
     setError(null);
@@ -58,7 +60,9 @@ export function AccountMediaField({
     const body = new FormData();
     body.set('file', file);
     body.set('target', kind === 'avatar' ? 'profile_avatar' : 'profile_header');
-    const { data, error: uploadError } = await supabase.functions.invoke<UploadResponse>('process-image-upload', { body });
+    const { data, error: uploadError } = await supabase.functions.invoke<UploadResponse>('process-image-upload', {
+      body,
+    });
     const nextPath = data?.path;
 
     if (uploadError || data?.error || !nextPath) {
@@ -69,9 +73,12 @@ export function AccountMediaField({
       return;
     }
 
-    const mutation = kind === 'avatar'
-      ? supabase.schema('api').rpc('update_account_avatar_by_current_user', { input_avatar_path: nextPath })
-      : supabase.schema('api').rpc('update_account_header_image_by_current_user', { input_header_image_path: nextPath });
+    const mutation =
+      kind === 'avatar'
+        ? supabase.schema('api').rpc('update_account_avatar_by_current_user', { input_avatar_path: nextPath })
+        : supabase
+            .schema('api')
+            .rpc('update_account_header_image_by_current_user', { input_header_image_path: nextPath });
     const { error: mutationError } = await mutation;
     if (mutationError) {
       await supabase.storage.from('user-avatars').remove([nextPath]);
@@ -96,17 +103,15 @@ export function AccountMediaField({
 
   const label = kind === 'avatar' ? t('avatar') : t('header');
   return (
-    <section className='space-y-3' data-sc-account-media={kind}>
-      <div>
-        <h3 className='text-sm font-semibold'>{label}</h3>
-        <p className='text-muted-foreground text-sm'>{t(kind === 'avatar' ? 'avatarHelp' : 'headerHelp')}</p>
+    <section className='sc-account-media' data-sc-account-media={kind}>
+      <div className='sc-account-media-header'>
+        <h3 className='sc-account-media-title'>{label}</h3>
+        <p className='sc-account-media-help'>{t(kind === 'avatar' ? 'avatarHelp' : 'headerHelp')}</p>
       </div>
       <div
         aria-label={t('preview', { label })}
-        className={cn(
-          'border-border bg-muted bg-cover bg-center',
-          kind === 'avatar' ? 'size-24 rounded-full' : 'aspect-[8/3] w-full max-w-xl rounded-lg',
-        )}
+        className='sc-account-media-preview'
+        data-kind={kind}
         role='img'
         style={url ? { backgroundImage: `url(${JSON.stringify(url).slice(1, -1)})` } : undefined}
       />
@@ -116,7 +121,11 @@ export function AccountMediaField({
         onChange={(event) => selectFile(event.target.files?.[0])}
         type='file'
       />
-      {error ? <p className='text-destructive text-sm' role='alert'>{error}</p> : null}
+      {error ? (
+        <p className='sc-account-status' data-kind='error' role='alert'>
+          {error}
+        </p>
+      ) : null}
       <Button disabled={!file || isSaving} onClick={save} type='button' variant='secondary'>
         {isSaving ? t('saving') : t('save', { label })}
       </Button>

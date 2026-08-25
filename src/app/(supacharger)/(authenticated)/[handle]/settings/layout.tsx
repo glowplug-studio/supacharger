@@ -2,12 +2,16 @@ export const instant = false;
 
 import { notFound } from 'next/navigation';
 
+import { OrganisationSettingsChrome } from '@/supacharger.adapters/organisations/chrome';
 import { organisationHandleSchema } from '@/supacharger/organisations/organisation-contract';
 import { requireOrganisationDetails } from '@/supacharger/organisations/organisation-service';
 import { OrganisationSettingsShell } from '@/supacharger/organisations/organisation-settings-shell';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-export default async function Layout({ children, params }: {
+export default async function Layout({
+  children,
+  params,
+}: {
   children: React.ReactNode;
   params: Promise<{ handle: string }>;
 }) {
@@ -15,5 +19,9 @@ export default async function Layout({ children, params }: {
   const parsed = organisationHandleSchema.safeParse((await params).handle);
   if (!parsed.success) notFound();
   const organisation = await requireOrganisationDetails(parsed.data);
-  return <OrganisationSettingsShell organisation={organisation}>{children}</OrganisationSettingsShell>;
+  return (
+    <OrganisationSettingsChrome>
+      <OrganisationSettingsShell organisation={organisation}>{children}</OrganisationSettingsShell>
+    </OrganisationSettingsChrome>
+  );
 }

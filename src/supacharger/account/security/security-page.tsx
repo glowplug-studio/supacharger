@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
-import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import { SecurityForms } from './security-forms';
 import { TotpPanel } from './totp-panel';
@@ -41,7 +40,7 @@ export async function SecurityPage() {
         pendingEmail={user.new_email ?? null}
         providers={providerKeys.map(formatProvider)}
       />
-      {SC_CONFIG.AUTHENTICATION.MFA_TOTP.ENABLED ? <TotpPanel /> : null}
+      <TotpPanel />
     </div>
   );
 }

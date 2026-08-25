@@ -1,4 +1,460 @@
-/** Developer-owned organisation presentation for managed semantic classes. */
-@layer components {
-  .sc-organisation-shell { width: 100%; }
+/**
+ * Project: Supacharger
+ *
+ * Developer-owned organisation presentation. The Supacharger CLI installs
+ * this file when absent and preserves it during updates.
+ */
+
+.sc-organisation-shell,
+.sc-organisation-page {
+  width: 100%;
+}
+
+.sc-organisation-page,
+.sc-organisation-chooser,
+.sc-organisation-profile-form,
+.sc-organisation-team,
+.sc-organisation-billing {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.sc-organisation-page-header,
+.sc-organisation-section-header {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.sc-organisation-page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.sc-organisation-page-description,
+.sc-organisation-section-description,
+.sc-organisation-panel-description,
+.sc-organisation-empty-description,
+.sc-organisation-card-handle,
+.sc-organisation-card-meta,
+.sc-organisation-person-meta,
+.sc-organisation-person-role,
+.sc-organisation-subscription-description,
+.sc-organisation-media-help,
+.sc-organisation-field-help {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.sc-organisation-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.sc-organisation-panel,
+.sc-organisation-card,
+.sc-organisation-empty {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.75rem);
+  padding: 1.25rem;
+  background: hsl(var(--card));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+}
+
+.sc-organisation-panel-title,
+.sc-organisation-empty-title,
+.sc-organisation-subscription-title,
+.sc-organisation-person-name,
+.sc-organisation-card-title,
+.sc-organisation-media-title,
+.sc-organisation-details-value,
+.sc-organisation-invite-link-title {
+  font-weight: 600;
+}
+
+.sc-organisation-panel-description,
+.sc-organisation-empty-description,
+.sc-organisation-subscription-description {
+  margin-top: 0.25rem;
+}
+
+.sc-organisation-panel-action,
+.sc-organisation-billing-action {
+  margin-top: 1.25rem;
+}
+
+.sc-organisation-invitation {
+  border-color: color-mix(in srgb, hsl(var(--primary)) 30%, hsl(var(--border)));
+  background: color-mix(in srgb, hsl(var(--primary)) 5%, hsl(var(--card)));
+}
+
+.sc-organisation-status {
+  font-size: 0.875rem;
+}
+
+.sc-organisation-status[data-kind='error'],
+.sc-organisation-field-help[data-state='unavailable'] {
+  color: hsl(var(--destructive));
+}
+
+.sc-organisation-status[data-kind='success'] {
+  color: #16a34a;
+}
+
+.sc-organisation-field-help[data-state='available'] {
+  color: #16a34a;
+}
+
+.sc-organisation-memberships {
+  display: grid;
+  gap: 1rem;
+}
+
+.sc-organisation-empty {
+  border-style: dashed;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.sc-organisation-card-list,
+.sc-organisation-action-grid,
+.sc-organisation-field-grid,
+.sc-organisation-media-grid,
+.sc-organisation-details-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.sc-organisation-card-header,
+.sc-organisation-person,
+.sc-organisation-person-actions,
+.sc-organisation-invite-link-control,
+.sc-organisation-colour-control {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.sc-organisation-card-header {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sc-organisation-card-identity,
+.sc-organisation-person-identity {
+  min-width: 0;
+}
+
+.sc-organisation-card-title,
+.sc-organisation-card-handle,
+.sc-organisation-person-name,
+.sc-organisation-person-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sc-organisation-card-meta {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.sc-organisation-active-badge,
+.sc-organisation-settings__active {
+  flex: none;
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  background: color-mix(in srgb, hsl(var(--primary)) 10%, transparent);
+  color: hsl(var(--primary));
+  font-size: 0.75rem;
+}
+
+.sc-organisation-card-action {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.sc-organisation-form,
+.sc-organisation-fields {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.sc-organisation-fields {
+  gap: 1.25rem;
+}
+
+.sc-organisation-field,
+.sc-organisation-media-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.sc-organisation-colour-picker {
+  width: 3.5rem;
+  flex: none;
+  padding: 0.25rem;
+}
+
+.sc-organisation-select {
+  min-height: 2.5rem;
+  width: 100%;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.5rem 0.75rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+}
+
+.sc-organisation-select:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.sc-organisation-role-select {
+  min-height: 2.25rem;
+  width: auto;
+  padding-block: 0.25rem;
+}
+
+.sc-organisation-details-list {
+  margin-top: 1.25rem;
+}
+
+.sc-organisation-details-item {
+  min-width: 0;
+}
+
+.sc-organisation-details-term {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+}
+
+.sc-organisation-media-preview {
+  overflow: hidden;
+  border-radius: var(--radius, 0.75rem);
+  background: hsl(var(--muted));
+}
+
+.sc-organisation-media-preview[data-kind='avatar'] {
+  width: 5rem;
+  height: 5rem;
+}
+
+.sc-organisation-media-preview[data-kind='header'] {
+  width: 100%;
+  aspect-ratio: 8 / 3;
+}
+
+.sc-organisation-media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sc-organisation-people-list,
+.sc-organisation-subscription-list {
+  margin-top: 1rem;
+}
+
+.sc-organisation-person {
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 1px solid hsl(var(--border));
+  padding-block: 1rem;
+}
+
+.sc-organisation-person:first-child {
+  padding-top: 0;
+}
+
+.sc-organisation-person:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sc-organisation-person-actions {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.sc-organisation-invite-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.sc-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.sc-organisation-invite-link {
+  margin-top: 1rem;
+  border-radius: var(--radius, 0.5rem);
+  padding: 1rem;
+  background: hsl(var(--muted));
+}
+
+.sc-organisation-invite-link-control {
+  margin-top: 0.5rem;
+}
+
+.sc-organisation-invitation-list {
+  margin-top: 1.25rem;
+}
+
+.sc-organisation-subscription-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sc-organisation-subscription {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.5rem);
+  padding: 1rem;
+}
+
+.sc-organisation-settings {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 2rem 1rem;
+}
+
+.sc-organisation-settings__header {
+  margin-bottom: 2rem;
+}
+
+.sc-organisation-settings__back {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.sc-organisation-settings__back:hover {
+  color: hsl(var(--foreground));
+}
+
+.sc-organisation-settings__identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.sc-organisation-settings__title {
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.sc-organisation-settings__meta {
+  margin-top: 0.25rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+.sc-organisation-settings__layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.sc-organisation-settings__navigation,
+.sc-organisation-settings__content {
+  min-width: 0;
+}
+
+.sc-organisation-settings__navigation-list {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.sc-organisation-settings__navigation-link {
+  display: block;
+  min-height: 2.5rem;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.5rem 0.75rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sc-organisation-settings__navigation-link:hover {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.sc-organisation-settings__navigation-link[aria-current='page'] {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.sc-organisation-settings__navigation-link:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (min-width: 640px) {
+  .sc-organisation-card-list,
+  .sc-organisation-field-grid,
+  .sc-organisation-media-grid,
+  .sc-organisation-details-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sc-organisation-details-item[data-wide='true'] {
+    grid-column: span 2;
+  }
+
+  .sc-organisation-person {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .sc-organisation-invite-form {
+    grid-template-columns: minmax(0, 1fr) 9rem auto;
+  }
+
+  .sc-organisation-panel {
+    padding: 1.5rem;
+  }
+
+  .sc-organisation-settings {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .sc-organisation-settings__layout {
+    grid-template-columns: 13rem minmax(0, 1fr);
+  }
+
+  .sc-organisation-settings__navigation-list {
+    flex-direction: column;
+    overflow: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sc-organisation-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sc-organisation-settings {
+    padding-inline: 2rem;
+  }
 }

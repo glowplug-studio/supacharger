@@ -112,10 +112,12 @@
   }
 
   .sc-auth-password-tooltip {
-    position: relative;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
     z-index: 50;
-    width: 18rem;
-    margin-top: 0.5rem;
+    width: min(18rem, 100%);
+    margin-top: 0;
     border: 1px solid rgb(255 255 255 / 0.1);
     border-radius: 0.5rem;
     padding: 0.75rem;
@@ -344,7 +346,7 @@
     font-weight: 400;
   }
 
-  .sc-auth-email-option {
+  .sc-auth-page .sc-control-button.sc-auth-email-option {
     display: grid;
     width: 100%;
     grid-template-columns: 1.75rem minmax(0, 1fr) 1.75rem;
@@ -374,7 +376,8 @@
     justify-self: start;
   }
 
-  .sc-auth-submit {
+  .sc-auth-submit,
+  .sc-auth-page .sc-control-button.sc-auth-submit {
     display: inline-flex;
     width: 100%;
     align-items: center;
@@ -604,7 +607,15 @@
     padding: 0.75rem 1.25rem;
   }
 
-  .sc-auth-surface-button {
+  .sc-auth-page .sc-control-button.sc-auth-surface-button,
+  .sc-auth-page .sc-control-button.sc-auth-primary-button {
+    box-sizing: border-box;
+    min-height: 3.5rem;
+    padding: 0.75rem 1.25rem;
+  }
+
+  .sc-auth-surface-button,
+  .sc-auth-page .sc-control-button.sc-auth-surface-button {
     border-radius: 10px;
     background: var(--auth-surface-background, #1a1919);
     color: white;
@@ -613,12 +624,14 @@
     transition: background-color 160ms ease, color 160ms ease;
   }
 
-  .sc-auth-surface-button:hover {
+  .sc-auth-surface-button:hover,
+  .sc-auth-page .sc-control-button.sc-auth-surface-button:hover {
     background: var(--auth-surface-background-hover, #232222);
     color: white;
   }
 
-  .sc-auth-primary-button {
+  .sc-auth-primary-button,
+  .sc-auth-page .sc-control-button.sc-auth-primary-button {
     border-radius: 10px;
     background: hsl(var(--primary));
     color: var(--auth-primary-foreground, #080808);
@@ -627,11 +640,13 @@
     transition: filter 160ms ease, transform 120ms ease;
   }
 
-  .sc-auth-primary-button:hover {
+  .sc-auth-primary-button:hover,
+  .sc-auth-page .sc-control-button.sc-auth-primary-button:hover {
     filter: brightness(0.94);
   }
 
-  .sc-auth-primary-button:active {
+  .sc-auth-primary-button:active,
+  .sc-auth-page .sc-control-button.sc-auth-primary-button:active {
     transform: translateY(1px);
   }
 
@@ -655,7 +670,9 @@
   .sc-auth-input:focus-visible,
   .sc-auth-page .sc-control-input:focus-visible,
   .sc-auth-primary-button:focus-visible,
+  .sc-auth-page .sc-control-button.sc-auth-primary-button:focus-visible,
   .sc-auth-surface-button:focus-visible,
+  .sc-auth-page .sc-control-button.sc-auth-surface-button:focus-visible,
   .sc-auth-link:focus-visible {
     outline: 2px solid hsl(var(--primary));
     outline-offset: 3px;
@@ -735,7 +752,7 @@
     justify-self: center;
   }
 
-  .sc-auth-provider-button {
+  .sc-auth-page .sc-control-button.sc-auth-provider-button {
     display: grid;
     width: 100%;
     grid-template-columns: 2rem minmax(0, 1fr) 2rem;
@@ -743,7 +760,7 @@
     justify-content: stretch;
   }
 
-  .sc-auth-provider-switcher {
+  .sc-auth-page .sc-control-button.sc-auth-provider-switcher {
     display: grid;
     width: 100%;
     grid-template-columns: 4rem minmax(0, 1fr) 4rem;

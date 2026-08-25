@@ -139,7 +139,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const postAuthPath = safeNextPath ?? SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION;
 
   async function completeAuthenticatedNavigation(destination: string) {
-    if (SC_CONFIG.AUTHENTICATION.MFA_TOTP.ENABLED && SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
+    if (SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
       const { data: assurance, error: assuranceError } = await createClient().auth.mfa.getAuthenticatorAssuranceLevel();
       if (assuranceError) {
         setError(t('mfaStatusFailed'));

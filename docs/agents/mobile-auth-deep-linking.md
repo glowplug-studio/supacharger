@@ -10,7 +10,7 @@ Use Apple's current `appIDs` plus `components` AASA format without mixing it wit
 
 ## Authentication flow
 
-Six-digit email OTP verification remains an in-app code-entry flow. Magic links, link confirmation, and password reset use verified HTTPS callbacks. Keep the hosted Supabase Site URL and exact redirect allow-list aligned with the deployed host and the paths in `ASSOCIATED_PATHS`. Local `supabase/config.toml` does not change hosted Auth settings.
+Six-digit email OTP verification remains an in-app code-entry flow. Magic links, link confirmation, and password reset use verified HTTPS callbacks. Recovery returns through `/auth/callback?flow=recovery`; associate and allow-list `/auth/callback`, not the internal recovery-session-only `/account/reset-password/new` page. Keep the hosted Supabase Site URL and exact redirect allow-list aligned with the deployed host and the paths in `ASSOCIATED_PATHS`. Local `supabase/config.toml` does not change hosted Auth settings.
 
 Supacharger uses PKCE for SSR callbacks. The client that starts the flow owns the verifier and must complete the exchange:
 

@@ -7,10 +7,7 @@ import { decideAccess } from '../src/supacharger/auth/access-decision.ts';
 import { copySupabaseResponseState } from '../src/supacharger/auth/proxy-response.ts';
 import { pathMatches } from '../src/supacharger/auth/route-policy.ts';
 import { getSafeNextPath, withNextPath } from '../src/supacharger/auth/safe-next-path.js';
-import {
-  hasSensitiveAuthQuery,
-  removeSensitiveAuthQuery,
-} from '../src/supacharger/auth/sensitive-auth-query.ts';
+import { hasSensitiveAuthQuery, removeSensitiveAuthQuery } from '../src/supacharger/auth/sensitive-auth-query.ts';
 
 const appDirectory = new URL('../src/app/', import.meta.url);
 
@@ -28,14 +25,18 @@ async function findRoutePage(publicPath) {
 
   await walk(appDirectory.pathname);
 
-  return pages.find((pagePath) => {
-    const relativeDirectory = path.relative(appDirectory.pathname, path.dirname(pagePath));
-    const routeSegments = relativeDirectory
-      .split(path.sep)
-      .filter((segment) => segment && !(segment.startsWith('(') && segment.endsWith(')')));
-    return routeSegments.length === expectedSegments.length &&
-      routeSegments.every((segment, index) => segment === expectedSegments[index]);
-  }) ?? null;
+  return (
+    pages.find((pagePath) => {
+      const relativeDirectory = path.relative(appDirectory.pathname, path.dirname(pagePath));
+      const routeSegments = relativeDirectory
+        .split(path.sep)
+        .filter((segment) => segment && !(segment.startsWith('(') && segment.endsWith(')')));
+      return (
+        routeSegments.length === expectedSegments.length &&
+        routeSegments.every((segment, index) => segment === expectedSegments[index])
+      );
+    }) ?? null
+  );
 }
 
 async function readAncestorLayouts(pagePath) {
@@ -185,7 +186,9 @@ test('server and callback access checks surface RPC errors and preserve onboardi
 
   assert.match(access, /if \(profileResult\.error\) throw profileResult\.error/);
   assert.match(access, /if \(billingResult\.error\) throw billingResult\.error/);
-  assert.ok(callback.indexOf('is_profile_complete_by_current_user') < callback.indexOf('has_billing_access_by_current_user'));
+  assert.ok(
+    callback.indexOf('is_profile_complete_by_current_user') < callback.indexOf('has_billing_access_by_current_user'),
+  );
   assert.match(callback, /if \(profileError\) throw profileError/);
   assert.match(callback, /if \(billingError\) throw billingError/);
 });
@@ -220,6 +223,8 @@ test('auth return paths accept internal URLs and reject external redirects', () 
   const returnPath = '/events?filter=mine';
   assert.equal(getSafeNextPath(returnPath), returnPath);
   assert.equal(withNextPath('/account/login', returnPath), `/account/login?next=${encodeURIComponent(returnPath)}`);
+  assert.equal(withNextPath('/account/login', '/'), '/account/login');
+  assert.equal(withNextPath('/account/login', '/?notice=1'), '/account/login?next=%2F%3Fnotice%3D1');
   assert.equal(getSafeNextPath('https://attacker.example/invite'), null);
   assert.equal(getSafeNextPath('//attacker.example/invite'), null);
   assert.equal(getSafeNextPath('/%2f%2fattacker.example/invite'), null);

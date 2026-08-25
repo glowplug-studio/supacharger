@@ -6,13 +6,15 @@
 
 A real update must preserve every `developerOwnedPaths` entry, replace only `managedPaths`, and use an explicit strategy for each `mergeManagedPaths` entry. It installs missing starter adapters and styles once, never overwriting established product implementations. It removes an obsolete managed file only when the installed baseline owned it; locally changed legacy route wrappers require a manual move into an adapter.
 
+For the canonical MFA cleanup, the updater backs up the developer configuration, removes only obsolete `AUTHENTICATION.MFA_TOTP.ENABLED`, and preserves `REQUIRED_FOR_SIGN_IN`. It also enables `auth.mfa.totp.enroll_enabled` and `verify_enabled` in merge-managed local Supabase configuration. The developer must restart the local stack; hosted MFA capability remains separately configured in the Supabase Dashboard.
+
 ## Account-alignment migration
 
 The approved configuration migration inserts only missing keys. Profile media defaults are optional, account cancellation remains disabled, organisations remain disabled, the chooser uses `/account/organisation`, root-handle routing uses `/{handle}/settings`, and organisation billing remains disabled. Existing branding, routes, enabled policies, and other product values survive.
 
 The updater recursively merges Core's `messages/en.json` into the application's English catalogue. It adds a missing key or fills an empty English string, while preserving every existing non-empty value. It never creates, replaces, translates, or deletes a secondary catalogue during an update.
 
-The developer-owned organisation starter pair is `src/supacharger.adapters/organisations/profile-fields.tsx` and `profile-extension.ts`. The CLI copies a missing file but preserves any existing implementation. The same rule applies to auth, account, billing, CSS, root layout, and project routes.
+Developer-owned organisation starters include `chrome.tsx`, `navigation.ts`, `pages.tsx`, `profile-fields.tsx`, and `profile-extension.ts`. The CLI copies a missing file but preserves any existing implementation. The same rule applies to auth, account, billing, CSS, root layout, and project routes.
 
 ## Forward migrations
 
@@ -30,4 +32,4 @@ The target must exist. `--plan` reports the mapping and the updater skips the ca
 
 After file/config/catalogue work, the updater installs required dependency changes, previews pending linked migrations, obtains the separate database confirmation, verifies the linked ledger, runs every manifest check, and hashes every exact managed file. It advances the lock only after all work succeeds.
 
-`supacharger doctor` is read-only. It identifies obsolete `/auth/*` and `/organisation` pages, incomplete account/organisation configuration, missing managed organisation routes/tests/adapters, missing English namespaces, invalid migration aliases, absent shared migrations, hook drift, recovery-route ancestry errors, missing scripts, and Bruno parity assets. It does not contact or mutate a hosted project.
+`supacharger doctor` is read-only. It identifies duplicate App Router pages after route-group normalisation, obsolete `/auth/*` and `/organisation` pages, incomplete account/organisation configuration, obsolete MFA visibility config, disabled local TOTP APIs, missing managed organisation routes/tests/adapters, missing English namespaces, invalid migration aliases, absent shared migrations, hook drift, recovery-route ancestry errors, missing scripts, and Bruno parity assets. It does not contact or mutate a hosted project.

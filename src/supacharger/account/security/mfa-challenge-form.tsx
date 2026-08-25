@@ -62,17 +62,31 @@ export function MfaChallengeForm({ nextPath }: { nextPath: string | null }) {
   }
 
   return (
-    <form className='w-full max-w-md space-y-5 rounded-xl border bg-card p-6 shadow-sm' onSubmit={verify}>
-      <div>
-        <h1 className='text-2xl font-semibold'>{t('title')}</h1>
-        <p className='text-muted-foreground mt-2 text-sm'>{t('description')}</p>
+    <form className='sc-account-mfa-challenge' onSubmit={verify}>
+      <div className='sc-account-mfa-challenge-header'>
+        <h1 className='sc-account-mfa-challenge-title'>{t('title')}</h1>
+        <p className='sc-account-mfa-challenge-description'>{t('description')}</p>
       </div>
-      <div className='space-y-2'>
+      <div className='sc-account-field'>
         <Label htmlFor='mfa-challenge-code'>{t('code')}</Label>
-        <Input autoComplete='one-time-code' autoFocus id='mfa-challenge-code' inputMode='numeric' maxLength={6} onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} value={code} />
+        <Input
+          autoComplete='one-time-code'
+          autoFocus
+          id='mfa-challenge-code'
+          inputMode='numeric'
+          maxLength={6}
+          onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
+          value={code}
+        />
       </div>
-      {error ? <p className='text-destructive text-sm' role='alert'>{error}</p> : null}
-      <Button className='w-full' disabled={pending || !factorId} type='submit'>{pending ? t('checking') : t('verify')}</Button>
+      {error ? (
+        <p className='sc-account-status' data-kind='error' role='alert'>
+          {error}
+        </p>
+      ) : null}
+      <Button className='sc-account-block-action' disabled={pending || !factorId} type='submit'>
+        {pending ? t('checking') : t('verify')}
+      </Button>
     </form>
   );
 }

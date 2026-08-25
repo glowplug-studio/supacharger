@@ -4,21 +4,71 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
+function literalClassTokens(source) {
+  return [...source.matchAll(/className=['"]([^'"]+)['"]/g)].flatMap((match) => match[1].split(/\s+/));
+}
+
+test('managed organisation presentation uses only semantic developer CSS hooks', async () => {
+  const sources = await Promise.all([
+    read('src/app/(supacharger)/(authenticated)/account/organisation/page.tsx'),
+    read('src/supacharger/organisations/organisation-billing-page.tsx'),
+    read('src/supacharger/organisations/organisation-chooser.tsx'),
+    read('src/supacharger/organisations/organisation-profile-form.tsx'),
+    read('src/supacharger/organisations/organisation-settings-shell.tsx'),
+    read('src/supacharger/organisations/organisation-team.tsx'),
+  ]);
+  const tokens = sources.flatMap(literalClassTokens);
+  assert.ok(tokens.length > 0);
+  assert.deepEqual(
+    tokens.filter((token) => !token.startsWith('sc-')),
+    [],
+  );
+
+  const styles = await read('src/styles/supacharger-organisations.css');
+  assert.match(styles, /\.sc-organisation-settings/);
+  assert.match(styles, /\.sc-organisation-invite-form/);
+  assert.doesNotMatch(styles, /@layer/);
+});
+
 test('installs canonical organisation chooser and settings routes', async () => {
-  const [chooser, layout, profile, team, billing] = await Promise.all([
+  const [chooser, layout, profile, team, teamTab, billing, section] = await Promise.all([
     read('src/app/(supacharger)/(authenticated)/account/organisation/page.tsx'),
     read('src/app/(supacharger)/(authenticated)/[handle]/settings/layout.tsx'),
     read('src/app/(supacharger)/(authenticated)/[handle]/settings/page.tsx'),
     read('src/app/(supacharger)/(authenticated)/[handle]/settings/team/page.tsx'),
+    read('src/app/(supacharger)/(authenticated)/[handle]/settings/team/[teamTab]/page.tsx'),
     read('src/app/(supacharger)/(authenticated)/[handle]/settings/billing/page.tsx'),
+    read('src/app/(supacharger)/(authenticated)/[handle]/settings/[section]/page.tsx'),
   ]);
   assert.match(chooser, /SC_CONFIG\.ORGANISATIONS\.ENABLED/);
   assert.match(chooser, /notFound\(\)/);
-  assert.match(layout, /ROUTE_MODE !== 'root-handle'/);
+  assert.match(layout, /ROUTE_MODE !== ['"]root-handle['"]/);
   assert.match(layout, /organisationHandleSchema\.safeParse/);
   assert.match(profile, /OrganisationProfileForm/);
   assert.match(team, /OrganisationTeam/);
+  assert.match(teamTab, /organisationTeamPageOverride/);
   assert.match(billing, /OrganisationBillingPage/);
+  assert.match(section, /organisationSettingsSectionExtensions/);
+});
+
+test('offers developer-owned organisation page, navigation, and chrome adapters', async () => {
+  const [pages, navigation, chrome, layout, shell, contract] = await Promise.all([
+    read('src/supacharger.adapters/organisations/pages.tsx'),
+    read('src/supacharger.adapters/organisations/navigation.ts'),
+    read('src/supacharger.adapters/organisations/chrome.tsx'),
+    read('src/app/(supacharger)/(authenticated)/[handle]/settings/layout.tsx'),
+    read('src/supacharger/organisations/organisation-settings-shell.tsx'),
+    read('src/supacharger/organisations/organisation-settings-contract.ts'),
+  ]);
+  assert.match(pages, /organisationChooserPageOverride/);
+  assert.match(pages, /organisationTeamPageOverride/);
+  assert.match(pages, /organisationBillingPageOverride/);
+  assert.match(pages, /organisationSettingsSectionExtensions/);
+  assert.match(navigation, /organisationSettingsNavigationExtensions/);
+  assert.match(chrome, /OrganisationSettingsChrome/);
+  assert.match(layout, /OrganisationSettingsChrome/);
+  assert.match(shell, /organisationSettingsNavigationExtensions/);
+  assert.match(contract, /reservedSectionIds/);
 });
 
 test('uses a server-validated FormProvider extension seam', async () => {
@@ -79,7 +129,9 @@ test('ships complete English copy and empty secondary placeholders', async () =>
   assert.ok(english.Organisations.team.inviteDescription);
   assert.ok(english.Organisations.errors.invitationInvalid);
   const catalogueDirectory = new URL('../messages/', import.meta.url);
-  const secondaryFiles = (await readdir(catalogueDirectory)).filter((file) => file.endsWith('.json') && file !== 'en.json');
+  const secondaryFiles = (await readdir(catalogueDirectory)).filter(
+    (file) => file.endsWith('.json') && file !== 'en.json',
+  );
   for (const file of secondaryFiles) {
     const catalogue = JSON.parse(await readFile(new URL(file, catalogueDirectory), 'utf8'));
     assert.equal(catalogue.Organisations.chooser.title, '');

@@ -3,6 +3,36 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const migration = new URL('../supabase/migrations/20260823143000_add_account_summary_rpc.sql', import.meta.url);
+const canonicalProfileRepairPath =
+  'supabase/migrations/20260824184939_backfill_missing_auth_user_profiles.sql';
+
+async function readForwardMigration(canonicalPath) {
+  let aliases = {};
+  try {
+    aliases = JSON.parse(
+      await readFile(new URL('../.supacharger/migration-aliases.json', import.meta.url), 'utf8'),
+    );
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error;
+  }
+
+  const resolvedPath = aliases[canonicalPath] ?? canonicalPath;
+  return {
+    adapted: resolvedPath !== canonicalPath,
+    sql: await readFile(new URL(`../${resolvedPath}`, import.meta.url), 'utf8'),
+  };
+}
+
+test('profile repair backfills Auth users that predate the canonical profile triggers', async () => {
+  const { adapted, sql } = await readForwardMigration(canonicalProfileRepairPath);
+
+  assert.match(sql, /insert into app\.profiles/i);
+  assert.match(sql, /from auth\.users auth_user/i);
+  assert.match(sql, /where not exists[\s\S]*from app\.profiles profile/i);
+  assert.match(sql, /where profile\.(?:id|profile_id) = auth_user\.id/i);
+  assert.match(sql, /on conflict \((?:id|profile_id)\) do nothing/i);
+  if (!adapted) assert.match(sql, /null,\s*auth_user\.email/i);
+});
 
 test('account summary RPC is authenticated, single-query, and returns storage paths', async () => {
   const sql = await readFile(migration, 'utf8');

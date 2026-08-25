@@ -52,7 +52,7 @@ export async function resolveAuthCallbackSuccess({
     }
   }
 
-  if (SC_CONFIG.AUTHENTICATION.MFA_TOTP.ENABLED && SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
+  if (SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
     const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (error) throw error;
     if (assurance?.nextLevel === 'aal2' && assurance.currentLevel !== 'aal2') {

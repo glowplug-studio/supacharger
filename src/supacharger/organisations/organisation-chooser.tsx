@@ -24,7 +24,7 @@ async function mutateOrganisation(body: Record<string, unknown>) {
     headers: { 'Content-Type': 'application/json' },
     method: 'POST',
   });
-  return await response.json() as OrganisationMutationResponse;
+  return (await response.json()) as OrganisationMutationResponse;
 }
 
 export function OrganisationChooser({ initialOrganisations, inviteToken, nextPath }: OrganisationChooserProps) {
@@ -73,7 +73,7 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
     setBusy('create');
     setMessage(null);
     const normalisedHandle = handle.trim().toLowerCase();
-    if (!await checkHandle(normalisedHandle)) {
+    if (!(await checkHandle(normalisedHandle))) {
       announce('error', t('errors.handleUnavailable'));
       setBusy(null);
       return;
@@ -121,47 +121,67 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
   }
 
   return (
-    <div className='space-y-6' data-sc-organisation-chooser>
+    <div className='sc-organisation-chooser' data-sc-organisation-chooser>
       {inviteToken ? (
-        <section className='border-primary/30 bg-primary/5 rounded-xl border p-5' data-sc-organisation-invitation>
-          <h2 className='font-semibold'>{t('chooser.invitationTitle')}</h2>
-          <p className='text-muted-foreground mt-1 text-sm'>{t('chooser.invitationDescription')}</p>
-          <Button className='mt-4' disabled={busy !== null} onClick={acceptInvitation}>
+        <section className='sc-organisation-panel sc-organisation-invitation' data-sc-organisation-invitation>
+          <h2 className='sc-organisation-panel-title'>{t('chooser.invitationTitle')}</h2>
+          <p className='sc-organisation-panel-description'>{t('chooser.invitationDescription')}</p>
+          <Button className='sc-organisation-panel-action' disabled={busy !== null} onClick={acceptInvitation}>
             {busy === 'invite' ? t('common.working') : t('chooser.acceptInvitation')}
           </Button>
         </section>
       ) : null}
 
       {message ? (
-        <p className={message.kind === 'error' ? 'text-destructive text-sm' : 'text-sm text-emerald-600'} role={message.kind === 'error' ? 'alert' : 'status'}>
+        <p
+          className='sc-organisation-status'
+          data-kind={message.kind}
+          role={message.kind === 'error' ? 'alert' : 'status'}
+        >
           {message.text}
         </p>
       ) : null}
 
-      <section className='space-y-4' aria-labelledby='organisation-memberships-title'>
-        <div>
-          <h2 className='text-xl font-semibold' id='organisation-memberships-title'>{t('chooser.membershipsTitle')}</h2>
-          <p className='text-muted-foreground mt-1 text-sm'>{t('chooser.membershipsDescription')}</p>
+      <section className='sc-organisation-memberships' aria-labelledby='organisation-memberships-title'>
+        <div className='sc-organisation-section-header'>
+          <h2 className='sc-organisation-section-title' id='organisation-memberships-title'>
+            {t('chooser.membershipsTitle')}
+          </h2>
+          <p className='sc-organisation-section-description'>{t('chooser.membershipsDescription')}</p>
         </div>
         {organisations.length === 0 ? (
-          <div className='border-border bg-card rounded-xl border border-dashed p-6 text-center'>
-            <p className='font-medium'>{t('chooser.emptyTitle')}</p>
-            <p className='text-muted-foreground mt-1 text-sm'>{t('chooser.emptyDescription')}</p>
+          <div className='sc-organisation-empty'>
+            <p className='sc-organisation-empty-title'>{t('chooser.emptyTitle')}</p>
+            <p className='sc-organisation-empty-description'>{t('chooser.emptyDescription')}</p>
           </div>
         ) : (
-          <ul className='grid gap-3 sm:grid-cols-2'>
+          <ul className='sc-organisation-card-list'>
             {organisations.map((organisation) => (
-              <li className='border-border bg-card rounded-xl border p-5 shadow-sm' key={organisation.id}>
-                <div className='flex items-start justify-between gap-4'>
-                  <div className='min-w-0'>
-                    <p className='truncate font-semibold'>{organisation.name}</p>
-                    <p className='text-muted-foreground truncate text-sm'>/{organisation.handle}</p>
-                    <p className='text-muted-foreground mt-2 text-xs'>{t(`roles.${organisation.role}`)} · {t('chooser.memberCount', { count: organisation.member_count })}</p>
+              <li className='sc-organisation-card' key={organisation.id}>
+                <div className='sc-organisation-card-header'>
+                  <div className='sc-organisation-card-identity'>
+                    <p className='sc-organisation-card-title'>{organisation.name}</p>
+                    <p className='sc-organisation-card-handle'>/{organisation.handle}</p>
+                    <p className='sc-organisation-card-meta'>
+                      {t(`roles.${organisation.role}`)} ·{' '}
+                      {t('chooser.memberCount', { count: organisation.member_count })}
+                    </p>
                   </div>
-                  {organisation.is_active ? <span className='bg-primary/10 text-primary rounded-full px-2 py-1 text-xs'>{t('chooser.active')}</span> : null}
+                  {organisation.is_active ? (
+                    <span className='sc-organisation-active-badge'>{t('chooser.active')}</span>
+                  ) : null}
                 </div>
-                <Button className='mt-4 w-full' disabled={busy !== null} onClick={() => switchOrganisation(organisation)} variant={organisation.is_active ? 'outline' : 'default'}>
-                  {busy === `switch-${organisation.id}` ? t('common.working') : organisation.is_active ? t('chooser.openSettings') : t('chooser.select')}
+                <Button
+                  className='sc-organisation-card-action'
+                  disabled={busy !== null}
+                  onClick={() => switchOrganisation(organisation)}
+                  variant={organisation.is_active ? 'outline' : 'default'}
+                >
+                  {busy === `switch-${organisation.id}`
+                    ? t('common.working')
+                    : organisation.is_active
+                      ? t('chooser.openSettings')
+                      : t('chooser.select')}
                 </Button>
               </li>
             ))}
@@ -169,16 +189,22 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
         )}
       </section>
 
-      <div className='grid gap-6 lg:grid-cols-2'>
-        <section className='border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6'>
-          <h2 className='text-lg font-semibold'>{t('chooser.createTitle')}</h2>
-          <p className='text-muted-foreground mt-1 text-sm'>{t('chooser.createDescription')}</p>
-          <form className='mt-5 space-y-4' onSubmit={createOrganisation}>
-            <div className='space-y-2'>
+      <div className='sc-organisation-action-grid'>
+        <section className='sc-organisation-panel'>
+          <h2 className='sc-organisation-panel-title'>{t('chooser.createTitle')}</h2>
+          <p className='sc-organisation-panel-description'>{t('chooser.createDescription')}</p>
+          <form className='sc-organisation-form' onSubmit={createOrganisation}>
+            <div className='sc-organisation-field'>
               <Label htmlFor='organisation-name'>{t('profile.name')}</Label>
-              <Input id='organisation-name' maxLength={100} onChange={(event) => setName(event.target.value)} required value={name} />
+              <Input
+                id='organisation-name'
+                maxLength={100}
+                onChange={(event) => setName(event.target.value)}
+                required
+                value={name}
+              />
             </div>
-            <div className='space-y-2'>
+            <div className='sc-organisation-field'>
               <Label htmlFor='organisation-handle'>{t('profile.handle')}</Label>
               <Input
                 aria-describedby='organisation-handle-status'
@@ -186,28 +212,50 @@ export function OrganisationChooser({ initialOrganisations, inviteToken, nextPat
                 id='organisation-handle'
                 maxLength={64}
                 onBlur={(event) => void checkHandle(event.target.value)}
-                onChange={(event) => { setHandle(event.target.value); setHandleStatus(null); }}
+                onChange={(event) => {
+                  setHandle(event.target.value);
+                  setHandleStatus(null);
+                }}
                 pattern='[a-z0-9][a-z0-9-]*[a-z0-9]'
                 required
                 value={handle}
               />
-              <p className={handleStatus === 'unavailable' ? 'text-destructive text-sm' : 'text-muted-foreground text-sm'} id='organisation-handle-status' role={handleStatus ? 'status' : undefined}>
-                {handleStatus === 'available' ? t('profile.handleAvailable') : handleStatus === 'unavailable' ? t('profile.handleUnavailable') : t('profile.handleHelp')}
+              <p
+                className='sc-organisation-field-help'
+                data-state={handleStatus ?? 'idle'}
+                id='organisation-handle-status'
+                role={handleStatus ? 'status' : undefined}
+              >
+                {handleStatus === 'available'
+                  ? t('profile.handleAvailable')
+                  : handleStatus === 'unavailable'
+                    ? t('profile.handleUnavailable')
+                    : t('profile.handleHelp')}
               </p>
             </div>
-            <Button disabled={busy !== null} type='submit'>{busy === 'create' ? t('common.working') : t('chooser.create')}</Button>
+            <Button disabled={busy !== null} type='submit'>
+              {busy === 'create' ? t('common.working') : t('chooser.create')}
+            </Button>
           </form>
         </section>
 
-        <section className='border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6'>
-          <h2 className='text-lg font-semibold'>{t('chooser.requestTitle')}</h2>
-          <p className='text-muted-foreground mt-1 text-sm'>{t('chooser.requestDescription')}</p>
-          <form className='mt-5 space-y-4' onSubmit={requestAccess}>
-            <div className='space-y-2'>
+        <section className='sc-organisation-panel'>
+          <h2 className='sc-organisation-panel-title'>{t('chooser.requestTitle')}</h2>
+          <p className='sc-organisation-panel-description'>{t('chooser.requestDescription')}</p>
+          <form className='sc-organisation-form' onSubmit={requestAccess}>
+            <div className='sc-organisation-field'>
               <Label htmlFor='organisation-request-handle'>{t('profile.handle')}</Label>
-              <Input autoCapitalize='none' id='organisation-request-handle' onChange={(event) => setJoinHandle(event.target.value)} required value={joinHandle} />
+              <Input
+                autoCapitalize='none'
+                id='organisation-request-handle'
+                onChange={(event) => setJoinHandle(event.target.value)}
+                required
+                value={joinHandle}
+              />
             </div>
-            <Button disabled={busy !== null} type='submit' variant='outline'>{busy === 'request' ? t('common.working') : t('chooser.request')}</Button>
+            <Button disabled={busy !== null} type='submit' variant='outline'>
+              {busy === 'request' ? t('common.working') : t('chooser.request')}
+            </Button>
           </form>
         </section>
       </div>

@@ -80,7 +80,10 @@ export function TotpPanel() {
       return;
     }
     setPending(enrollment.factorId);
-    const { error } = await createClient().auth.mfa.challengeAndVerify({ factorId: enrollment.factorId, code: enrollmentCode });
+    const { error } = await createClient().auth.mfa.challengeAndVerify({
+      factorId: enrollment.factorId,
+      code: enrollmentCode,
+    });
     if (error) setNotice({ kind: 'error', text: t('errors.verify') });
     else {
       setEnrollment(null);
@@ -124,53 +127,100 @@ export function TotpPanel() {
   }
 
   return (
-    <section className='border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6' data-sc-account-mfa>
-      <div className='flex flex-wrap items-start justify-between gap-4'>
-        <div>
-          <h2 className='text-xl font-semibold'>{t('title')}</h2>
-          <p className='text-muted-foreground mt-1 text-sm'>{t('description')}</p>
+    <section className='sc-account-section sc-account-mfa' data-sc-account-mfa>
+      <div className='sc-account-mfa-header'>
+        <div className='sc-account-mfa-copy'>
+          <h2 className='sc-account-section-title'>{t('title')}</h2>
+          <p className='sc-account-section-description'>{t('description')}</p>
         </div>
-        {!enrollment ? <Button disabled={pending !== null} onClick={() => void startEnrollment()} type='button' variant='outline'>{t('setup')}</Button> : null}
+        {!enrollment ? (
+          <Button disabled={pending !== null} onClick={() => void startEnrollment()} type='button' variant='outline'>
+            {t('setup')}
+          </Button>
+        ) : null}
       </div>
-      {notice ? <p className={notice.kind === 'error' ? 'text-destructive mt-4 text-sm' : 'mt-4 text-sm text-emerald-600'} role={notice.kind === 'error' ? 'alert' : 'status'}>{notice.text}</p> : null}
+      {notice ? (
+        <p
+          className='sc-account-status sc-account-mfa-notice'
+          data-kind={notice.kind}
+          role={notice.kind === 'error' ? 'alert' : 'status'}
+        >
+          {notice.text}
+        </p>
+      ) : null}
 
       {enrollment ? (
-        <div className='mt-5 grid gap-5 md:grid-cols-[200px_minmax(0,1fr)]'>
-          <div className='flex size-[200px] items-center justify-center rounded-lg bg-white p-3'>
+        <div className='sc-account-mfa-enrollment'>
+          <div className='sc-account-mfa-qr'>
             {/* Supabase returns the QR code as inline SVG data. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img alt={t('qrAlt')} className='size-full' src={qrSource(enrollment.qrCode)} />
+            <img alt={t('qrAlt')} className='sc-account-mfa-qr-image' src={qrSource(enrollment.qrCode)} />
           </div>
-          <div className='space-y-4'>
-            <div className='space-y-2'>
+          <div className='sc-account-mfa-enrollment-controls'>
+            <div className='sc-account-field'>
               <Label>{t('manualKey')}</Label>
-              <code className='bg-muted block rounded-md p-3 text-sm break-all'>{enrollment.secret}</code>
+              <code className='sc-account-mfa-secret'>{enrollment.secret}</code>
             </div>
-            <div className='space-y-2'>
+            <div className='sc-account-field'>
               <Label htmlFor='mfa-enrollment-code'>{t('code')}</Label>
-              <Input autoComplete='one-time-code' id='mfa-enrollment-code' inputMode='numeric' maxLength={6} onChange={(event) => setEnrollmentCode(event.target.value.replace(/\D/g, '').slice(0, 6))} value={enrollmentCode} />
+              <Input
+                autoComplete='one-time-code'
+                id='mfa-enrollment-code'
+                inputMode='numeric'
+                maxLength={6}
+                onChange={(event) => setEnrollmentCode(event.target.value.replace(/\D/g, '').slice(0, 6))}
+                value={enrollmentCode}
+              />
             </div>
-            <div className='flex flex-wrap gap-3'>
-              <Button disabled={pending !== null} onClick={() => void verifyEnrollment()} type='button'>{t('enable')}</Button>
-              <Button disabled={pending !== null} onClick={() => void cancelEnrollment()} type='button' variant='ghost'>{t('cancel')}</Button>
+            <div className='sc-account-actions'>
+              <Button disabled={pending !== null} onClick={() => void verifyEnrollment()} type='button'>
+                {t('enable')}
+              </Button>
+              <Button disabled={pending !== null} onClick={() => void cancelEnrollment()} type='button' variant='ghost'>
+                {t('cancel')}
+              </Button>
             </div>
           </div>
         </div>
       ) : null}
 
-      <div className='mt-5 space-y-3'>
-        {pending === 'load' ? <p className='text-muted-foreground text-sm' role='status'>{t('loading')}</p> : null}
-        {verifiedFactors.length === 0 && pending !== 'load' ? <p className='text-muted-foreground text-sm'>{t('empty')}</p> : null}
+      <div className='sc-account-mfa-factor-list'>
+        {pending === 'load' ? (
+          <p className='sc-account-empty' role='status'>
+            {t('loading')}
+          </p>
+        ) : null}
+        {verifiedFactors.length === 0 && pending !== 'load' ? <p className='sc-account-empty'>{t('empty')}</p> : null}
         {verifiedFactors.map((factor) => (
-          <div className='bg-muted/50 rounded-lg p-4' key={factor.id}>
-            <p className='font-medium'>{factor.friendly_name || t('authenticator')}</p>
-            <p className='text-muted-foreground mt-1 text-sm'>{t('added', { date: new Date(factor.created_at).toLocaleDateString() })}</p>
-            <div className='mt-3 flex flex-wrap items-end gap-3'>
-              <div className='min-w-48 flex-1 space-y-2'>
+          <div className='sc-account-mfa-factor' key={factor.id}>
+            <p className='sc-account-mfa-factor-name'>{factor.friendly_name || t('authenticator')}</p>
+            <p className='sc-account-mfa-factor-meta'>
+              {t('added', { date: new Date(factor.created_at).toLocaleDateString() })}
+            </p>
+            <div className='sc-account-mfa-factor-actions'>
+              <div className='sc-account-field sc-account-mfa-remove-field'>
                 <Label htmlFor={`mfa-remove-${factor.id}`}>{t('removeCode')}</Label>
-                <Input id={`mfa-remove-${factor.id}`} inputMode='numeric' maxLength={6} onChange={(event) => setRemovalCodes((values) => ({ ...values, [factor.id]: event.target.value.replace(/\D/g, '').slice(0, 6) }))} value={removalCodes[factor.id] ?? ''} />
+                <Input
+                  id={`mfa-remove-${factor.id}`}
+                  inputMode='numeric'
+                  maxLength={6}
+                  onChange={(event) =>
+                    setRemovalCodes((values) => ({
+                      ...values,
+                      [factor.id]: event.target.value.replace(/\D/g, '').slice(0, 6),
+                    }))
+                  }
+                  value={removalCodes[factor.id] ?? ''}
+                />
               </div>
-              <Button disabled={pending !== null} onClick={() => void removeFactor(factor.id)} type='button' variant='destructive'>{t('remove')}</Button>
+              <Button
+                disabled={pending !== null}
+                onClick={() => void removeFactor(factor.id)}
+                type='button'
+                variant='destructive'
+              >
+                {t('remove')}
+              </Button>
             </div>
           </div>
         ))}

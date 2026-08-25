@@ -8,6 +8,8 @@ The canonical account details route is `/account`. Its route scaffold, settings 
 
 Profile media uploads go through the authenticated `process-image-upload` Edge Function. Persist the new canonical path before deleting the previous object. If the database mutation fails, delete the newly uploaded object and preserve the old one. Successful details and media mutations publish `supacharger:account-summary-changed` so active menus update without a browser restart.
 
+Managed account JSX uses only stable `sc-account-*` and shared `sc-control-*` class hooks for presentation. Layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling belong in the unlayered developer-owned `src/styles/supacharger-account.css`. The CLI installs that starter only when absent and preserves it on updates. Do not add Tailwind presentation utilities to managed account JSX; applications must be able to restyle the complete account surface without editing managed files.
+
 ## Developer-owned extensions
 
 The CLI installs missing starters under `src/supacharger.adapters/account/` once and preserves them on later updates:
@@ -15,8 +17,11 @@ The CLI installs missing starters under `src/supacharger.adapters/account/` once
 - `navigation.ts` adds ordered product-specific account links;
 - `profile-fields.tsx` renders extra fields inside the managed `FormProvider`;
 - `profile-extension.ts` validates and persists the matching server payload;
-- `details-page.tsx` may replace the details content for an authorised product presentation; and
-- `presentation.ts` selects the managed shell or a product-owned passthrough layout.
+- `details-page.tsx` may replace the details content for an authorised product presentation;
+- `presentation.ts` selects the managed shell or a product-owned passthrough layout; and
+- `chrome.tsx` wraps the managed settings shell with application chrome such as a header, application sidebar, and footer.
+
+The Core starter implements `chrome.tsx` with the example `AuthenticatedAppShell`, so Korunet renders its header and footer around `/account`. Existing consumers keep their own adapter byte-for-byte during CLI updates. Keep account navigation and form content inside the managed `AccountSettingsShell`; use the chrome adapter only for the outer application frame so project routes do not acquire duplicate headers or footers.
 
 Keep an extension's client and server schemas aligned. The managed route validates the extension object before invoking its persistence adapter. Product fields, tables, and route values remain application-owned. `ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH` links to a genuine product profile route or is `null`; do not point it at mock controls.
 

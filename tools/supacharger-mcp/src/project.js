@@ -132,7 +132,7 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'developer-owned-contract-test',
       guidance:
-        'Application billing contract test seam. Core updates preserve this file; add it to the consumer\'s merge-managed test:billing-schema package script when present.',
+        "Application billing contract test seam. Core updates preserve this file; add it to the consumer's merge-managed test:billing-schema package script when present.",
     };
   }
 
@@ -170,7 +170,7 @@ export function classifyPath(inputPath) {
     return {
       ownership: 'cli-managed-core',
       guidance:
-        'Canonical organisation chooser, settings, service, or server-validation behaviour. Land changes in Core first, keep exact managed consumers byte-identical, and preserve product-only UI through adapters.',
+        'Canonical organisation chooser, settings, service, or server-validation behaviour. Land changes in Core first, keep exact managed consumers byte-identical, avoid parallel pages for managed public routes, and preserve product-only UI through page, navigation, chrome, profile, and CSS adapters.',
     };
   }
 
@@ -201,7 +201,8 @@ export function classifyPath(inputPath) {
   if (relativePath === 'src/supacharger.adapters' || relativePath.startsWith('src/supacharger.adapters/')) {
     return {
       ownership: 'developer-owned',
-      guidance: 'Application authentication and post-sign-in onboarding adapters. CLI updates must preserve this path.',
+      guidance:
+        'Application adapters for authentication, account chrome and extensions, billing, organisations, and post-sign-in onboarding. Account chrome may supply a header, application sidebar, and footer around the managed settings shell. CLI updates must preserve this path.',
     };
   }
 
@@ -230,6 +231,17 @@ export function classifyPath(inputPath) {
       ownership: 'developer-owned',
       guidance:
         'Authentication presentation seam for managed sc-auth-* markup. The CLI installs a missing starter and preserves established product CSS.',
+    };
+  }
+
+  if (
+    relativePath === 'src/styles/supacharger-account.css' ||
+    relativePath === 'src/styles/supacharger-organisations.css'
+  ) {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Complete presentation seam for managed semantic account or organisation markup. The CLI installs a missing starter and preserves established product CSS.',
     };
   }
 

@@ -27,7 +27,7 @@ test('public authentication pages are managed and expose semantic presentation h
       ),
   );
 
-  for (const route of [managedRoutes[1], managedRoutes[2], managedRoutes[6]]) {
+  for (const route of [managedRoutes[1], managedRoutes[2], managedRoutes[5], managedRoutes[6]]) {
     assert.match(
       await read(route),
       /export const instant = false;/,
@@ -43,6 +43,7 @@ test('public authentication pages are managed and expose semantic presentation h
     'otp-fields-verify-form.tsx',
     'password-validation-indicator.tsx',
     'resend-verification-email.tsx',
+    'reset-password-new-form.tsx',
     'reset-password-request-link-form.tsx',
   ];
   for (const filename of formFiles) {
@@ -54,6 +55,31 @@ test('public authentication pages are managed and expose semantic presentation h
       }
     }
   }
+});
+
+test('password recovery exchanges PKCE once on the server and requires a recovery session to update', async () => {
+  const [authWrapper, callback, recoverySession, recoveryRoute, resetPage, resetForm] = await Promise.all([
+    read('src/lib/supabase/supacharger/supabase-auth.ts'),
+    read('src/app/(supacharger)/(unauthenticated)/auth/callback/route.ts'),
+    read('src/supacharger/auth/recovery-session.ts'),
+    read('src/app/(supacharger)/api/(supacharger)/account/recover-password/route.ts'),
+    read('src/app/(supacharger)/(unauthenticated)/account/reset-password/new/page.tsx'),
+    read('src/supacharger/components/forms/reset-password-new-form.tsx'),
+  ]);
+
+  assert.match(authWrapper, /\/auth\/callback\?flow=recovery/);
+  assert.match(callback, /flow === 'recovery'/);
+  assert.match(callback, /exchangeCodeForSession\(code\)/);
+  assert.match(recoveryRoute, /auth\.getClaims\(\)/);
+  assert.match(recoverySession, /method === 'recovery'/);
+  assert.match(recoveryRoute, /evaluatePasswordStrength\(newPassword\)/);
+  assert.match(recoveryRoute, /auth\.updateUser\(\{ password: newPassword \}\)/);
+  assert.match(resetPage, /auth\.getClaims\(\)/);
+  assert.match(resetPage, /hasRecoveryAuthenticationMethod/);
+  assert.doesNotMatch(resetPage, /exchangeCodeForSession|useEffect|use client/);
+  assert.doesNotMatch(resetForm, /exchangeCodeForSession|getUser/);
+  assert.match(resetForm, /PasswordValidationIndicator/);
+  assert.match(resetForm, /newPasswordRetype/);
 });
 
 test('every static AuthJourney key has non-empty English source copy', async () => {

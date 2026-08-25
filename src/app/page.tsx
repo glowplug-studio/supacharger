@@ -7,6 +7,10 @@ import SCMarketingLanding from '@/components/sc_demo/sc_marketing-landing';
 import SCUserDash from '@/components/sc_demo/sc_user-dash';
 import { isLoggedIn } from '@/lib/supabase/supacharger/supabase-auth';
 
+// This page selects its entire product shell from the request-time auth cookie.
+// It intentionally blocks instead of participating in instant-navigation validation.
+export const instant = false;
+
 export async function generateMetadata() { return createMarketingPageMetadata('home'); }
 
 export default async function RootPage() {

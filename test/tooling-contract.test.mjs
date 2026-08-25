@@ -25,6 +25,32 @@ async function findLegacyCnImports(directory) {
   return matches;
 }
 
+async function findAppPages(directory, segments = []) {
+  const pages = [];
+
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const entryUrl = new URL(entry.name, directory);
+    if (entry.isDirectory()) {
+      pages.push(...(await findAppPages(new URL(`${entry.name}/`, directory), [...segments, entry.name])));
+    } else if (/^page\.[cm]?[jt]sx?$/.test(entry.name)) {
+      const route = `/${segments.filter((segment) => !/^\(.*\)$/.test(segment)).join('/')}`;
+      pages.push({ file: fileURLToPath(entryUrl), route });
+    }
+  }
+
+  return pages;
+}
+
+test('does not define parallel pages for the same public route', async () => {
+  const pages = await findAppPages(new URL('../src/app/', import.meta.url));
+  const filesByRoute = Map.groupBy(pages, (page) => page.route);
+  const duplicates = [...filesByRoute]
+    .filter(([, matches]) => matches.length > 1)
+    .map(([route, matches]) => ({ route, files: matches.map((match) => match.file) }));
+
+  assert.deepEqual(duplicates, []);
+});
+
 test('root tool configuration uses explicit module formats', () => {
   const result = spawnSync(
     process.execPath,

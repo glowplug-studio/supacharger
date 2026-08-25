@@ -68,7 +68,6 @@ export const SC_CONFIG: SupachargerConfig = {
     // Keep this aligned with Supabase Auth email-confirmation settings and templates.
     SIGN_UP_EMAIL_VERIFICATION: 'otp',
     MFA_TOTP: {
-      ENABLED: false,
       REQUIRED_FOR_SIGN_IN: false,
     },
   },
@@ -76,7 +75,7 @@ export const SC_CONFIG: SupachargerConfig = {
   // are ready. The shared routes then publish both platform association files.
   MOBILE_DEEP_LINKING: {
     ENABLED: false,
-    ASSOCIATED_PATHS: ['/auth/callback', '/auth/confirm', '/account/reset-password/new'],
+    ASSOCIATED_PATHS: ['/auth/callback', '/auth/confirm'],
     IOS: {
       // Each value is <Apple App ID prefix>.<bundle identifier>.
       APP_IDS: [],
@@ -138,7 +137,6 @@ export const SC_CONFIG: SupachargerConfig = {
         '/account/create',
         '/account/login-magic',
         '/account/reset-password',
-        '/account/reset-password/:path*',
       ],
     },
   },

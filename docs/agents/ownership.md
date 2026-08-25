@@ -60,6 +60,10 @@ The approved social-provider migration is the narrow exception for the expanded 
 
 `src/styles/supacharger-auth.css` is the authentication presentation seam. The managed authentication shell and forms expose semantic `sc-auth-*` hooks; this file assigns product colours, dimensions, responsive layout, and interaction presentation. The CLI copies the starter only when the file is absent and preserves established application CSS during later updates.
 
+`src/styles/supacharger-account.css` and `src/styles/supacharger-organisations.css` are the equivalent presentation seams for managed account and organisation surfaces. Their managed JSX exposes only `sc-account-*`, `sc-organisation-*`, and shared `sc-control-*` hooks. Keep all layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling in these unlayered developer files. The CLI installs missing starters and preserves established application CSS thereafter.
+
+Scope every shared `sc-control-*` rule in those unlayered stylesheets to the account or organisation surface roots that own it. Never leave a generic control selector at the stylesheet root: unlayered normal declarations outrank authentication rules inside `@layer components`, regardless of selector specificity.
+
 `src/assets/svgr/ui/inline-loader.svg` is the primary application-owned inline loading animation, and `src/assets/svgr/ui/inline-loader-dark.svg` is its optional black variant. The shared loading component uses the primary asset. Replace either file in place to brand it; do not rename it or put UI SVGs in `public`. Import UI SVGs as SVGR components rather than `<img>`, `next/image`, or public URL strings unless an external URL contract explicitly requires otherwise. Both supplied loaders accept an SVGR `fill` prop, while a custom asset may hard-code colours and ignore that prop without breaking callers. CLI updates preserve both files.
 
 ### UI SVG ownership and responsive sizing
@@ -74,7 +78,7 @@ Before changing sizing classes, inspect the rendered `<svg>` to confirm that SVG
 
 `src/app/error/page.tsx`, `src/app/not-found.tsx`, and `src/components/error-page/` are application-owned error presentation. Keep them outside the protected `(supacharger)` route group. The canonical starter verifies the user on the server, adds the existing authenticated header and footer only for a verified session, and otherwise renders a standalone full-viewport state. Use the developer-owned semantic theme tokens (`primary`, `primary-foreground`, `foreground`, `muted-foreground`, `accent`, and `ring`) rather than product-specific colour literals. Resolve copy from the developer-owned `ErrorPage` namespace without calling `getTranslations` for a namespace that may be absent: the shared resolver must fall back field-by-field to its protected English copy so preserved or stale catalogues cannot break the error boundary. When `AUTH_ONLY_APP` is enabled, the developer config must explicitly allow `/error` for unauthenticated visitors. Proxy must also let `/error` bypass post-sign-in profile onboarding so another redirect cannot conceal the error.
 
-`src/supacharger.adapters/` is the developer-owned extension seam for authentication, account, billing, and organisation integrations. `auth/auth-sidecar.tsx` must export `AuthSidecar` and `AuthMobileBrand`; `organisations/profile-fields.tsx` and `organisations/profile-extension.ts` form the organisation profile UI/server pair. Core interfaces may evolve, but the CLI installs each missing starter and must not overwrite established implementations in this directory.
+`src/supacharger.adapters/` is the developer-owned extension seam for authentication, account, billing, and organisation integrations. `auth/auth-sidecar.tsx` must export `AuthSidecar` and `AuthMobileBrand`; account `chrome.tsx` owns the outer header, application sidebar, and footer around the managed settings shell; organisation `pages.tsx`, `navigation.ts`, and `chrome.tsx` preserve product-only settings behaviour and application chrome; and `profile-fields.tsx` plus `profile-extension.ts` form the organisation profile UI/server pair. The Core account starter uses the example `AuthenticatedAppShell`, but consumers may replace it without changing managed forms. Core interfaces may evolve, but the CLI installs each missing starter and must not overwrite established implementations in this directory.
 
 `supabase/functions/_shared/image-targets.ts` is the developer-owned image-processing policy. It maps request target names to fixed buckets, user-relative path prefixes, output formats, resize dimensions, encoding settings, visibility, and limits. The CLI installs a starter only when this file is absent, then preserves it. The managed endpoint and transformer may import this file, but callers must never override its values in request data.
 
@@ -86,7 +90,7 @@ The root `tsconfig.json` belongs to the Next.js application runtime and must exc
 
 ## Styling ownership
 
-`src/supacharger/styles/globals.css` is the CLI-managed Tailwind entrypoint. Keep it structural: import Tailwind once, then `supacharger.css`, then the developer-owned `src/styles/supacharger-auth.css`, then `src/styles/project.css`.
+`src/supacharger/styles/globals.css` is the CLI-managed Tailwind entrypoint. Keep it structural: import Tailwind once, then `supacharger.css`, then the developer-owned authentication, account, organisation, and project stylesheets in their canonical order.
 
 The root `tailwind.config.ts` is merge-managed because applications may own font and theme choices. `postcss.config.mjs` is exact managed and uses an explicit ESM export for reliable Next.js/Turbopack loading. Preserve the `@config` path and do not set the whole package to ESM solely to load Tailwind configuration.
 
@@ -96,7 +100,7 @@ Its base layer owns the pointer-cursor contract for enabled native and ARIA inte
 
 `src/supacharger/styles/project.example.css` is a CLI-managed reference and is not imported at runtime. Keep it aligned with the supported project stylesheet pattern.
 
-Prefer utilities in markup. Use `@layer base` for intentional element defaults and theme tokens, `@layer components` for semantic component classes, and `@layer utilities` for narrowly scoped utilities. Do not duplicate rules already supplied by Tailwind Preflight.
+Project-owned components may prefer utilities in markup. Managed authentication, account, and organisation presentation markup must instead use its documented semantic hooks so consumers can restyle the complete surface without editing CLI-owned JSX. Keep these developer presentation seams unlayered so they override managed Tailwind-layer defaults. In other stylesheets, use `@layer base` for intentional element defaults and theme tokens, `@layer components` for semantic component classes, and `@layer utilities` for narrowly scoped utilities. Do not duplicate rules already supplied by Tailwind Preflight.
 
 The main brand action pair is `--primary` plus `--primary-foreground`. Tailwind maps these space-separated HSL channels to `bg-primary` and `text-primary-foreground`; related neutral and interaction tokens map to `text-foreground`, `text-muted-foreground`, `bg-accent`, and `ring-ring`. Reusable presentation should consume these semantic mappings rather than embed a consumer's hex colour.
 

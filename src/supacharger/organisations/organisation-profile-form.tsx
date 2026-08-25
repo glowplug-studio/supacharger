@@ -64,7 +64,7 @@ export function OrganisationProfileForm({
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
     });
-    const result = await response.json() as OrganisationMutationResponse;
+    const result = (await response.json()) as OrganisationMutationResponse;
     if (!result.ok) {
       for (const [field, fieldMessage] of Object.entries(result.fieldErrors ?? {})) {
         methods.setError(field as keyof OrganisationProfileValues, { message: fieldMessage });
@@ -86,13 +86,22 @@ export function OrganisationProfileForm({
 
   if (!canManage) {
     return (
-      <section className='border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6'>
-        <h2 className='text-xl font-semibold'>{t('profile.title')}</h2>
-        <p className='text-muted-foreground mt-1 text-sm'>{t('profile.memberReadOnly')}</p>
-        <dl className='mt-5 grid gap-4 sm:grid-cols-2'>
-          <div><dt className='text-muted-foreground text-xs'>{t('profile.name')}</dt><dd className='font-medium'>{organisation.name}</dd></div>
-          <div><dt className='text-muted-foreground text-xs'>{t('profile.handle')}</dt><dd className='font-medium'>/{organisation.handle}</dd></div>
-          <div className='sm:col-span-2'><dt className='text-muted-foreground text-xs'>{t('profile.bio')}</dt><dd>{organisation.bio || t('profile.noBio')}</dd></div>
+      <section className='sc-organisation-panel sc-organisation-profile-readonly'>
+        <h2 className='sc-organisation-section-title'>{t('profile.title')}</h2>
+        <p className='sc-organisation-section-description'>{t('profile.memberReadOnly')}</p>
+        <dl className='sc-organisation-details-list'>
+          <div className='sc-organisation-details-item'>
+            <dt className='sc-organisation-details-term'>{t('profile.name')}</dt>
+            <dd className='sc-organisation-details-value'>{organisation.name}</dd>
+          </div>
+          <div className='sc-organisation-details-item'>
+            <dt className='sc-organisation-details-term'>{t('profile.handle')}</dt>
+            <dd className='sc-organisation-details-value'>/{organisation.handle}</dd>
+          </div>
+          <div className='sc-organisation-details-item' data-wide='true'>
+            <dt className='sc-organisation-details-term'>{t('profile.bio')}</dt>
+            <dd className='sc-organisation-details-value'>{organisation.bio || t('profile.noBio')}</dd>
+          </div>
         </dl>
       </section>
     );
@@ -100,33 +109,47 @@ export function OrganisationProfileForm({
 
   return (
     <FormProvider {...methods}>
-      <form className='space-y-6' onSubmit={submit} data-sc-organisation-profile-form>
-        <section className='border-border bg-card rounded-xl border p-5 shadow-sm sm:p-6'>
-          <div className='mb-6'>
-            <h2 className='text-xl font-semibold'>{t('profile.title')}</h2>
-            <p className='text-muted-foreground mt-1 text-sm'>{t('profile.description')}</p>
+      <form className='sc-organisation-profile-form' onSubmit={submit} data-sc-organisation-profile-form>
+        <section className='sc-organisation-panel'>
+          <div className='sc-organisation-section-header'>
+            <h2 className='sc-organisation-section-title'>{t('profile.title')}</h2>
+            <p className='sc-organisation-section-description'>{t('profile.description')}</p>
           </div>
-          <div className='space-y-5'>
-            <div className='grid gap-4 sm:grid-cols-2'>
+          <div className='sc-organisation-fields'>
+            <div className='sc-organisation-field-grid'>
               <OrganisationField field='name' label={t('profile.name')} maxLength={100} />
               <OrganisationField field='handle' label={t('profile.handle')} maxLength={64} />
             </div>
-            <div className='space-y-2'>
+            <div className='sc-organisation-field'>
               <Label htmlFor='organisation-bio'>{t('profile.bio')}</Label>
               <Textarea id='organisation-bio' maxLength={300} rows={4} {...methods.register('bio')} />
-              <p className='text-muted-foreground text-xs'>{t('profile.bioHelp')}</p>
+              <p className='sc-organisation-field-help'>{t('profile.bioHelp')}</p>
             </div>
-            <div className='grid gap-4 sm:grid-cols-2'>
-              <div className='space-y-2'>
+            <div className='sc-organisation-field-grid'>
+              <div className='sc-organisation-field'>
                 <Label htmlFor='organisation-colour'>{t('profile.colour')}</Label>
-                <div className='flex gap-2'>
-                  <Input className='w-14 shrink-0 p-1' id='organisation-colour-picker' type='color' {...methods.register('colourHex')} />
-                  <Input id='organisation-colour' maxLength={7} pattern='#[0-9a-fA-F]{6}' {...methods.register('colourHex')} />
+                <div className='sc-organisation-colour-control'>
+                  <Input
+                    className='sc-organisation-colour-picker'
+                    id='organisation-colour-picker'
+                    type='color'
+                    {...methods.register('colourHex')}
+                  />
+                  <Input
+                    id='organisation-colour'
+                    maxLength={7}
+                    pattern='#[0-9a-fA-F]{6}'
+                    {...methods.register('colourHex')}
+                  />
                 </div>
               </div>
-              <div className='space-y-2'>
+              <div className='sc-organisation-field'>
                 <Label htmlFor='organisation-access-policy'>{t('profile.accessPolicy')}</Label>
-                <select className='border-input bg-background min-h-10 w-full rounded-md border px-3 py-2 text-sm' id='organisation-access-policy' {...methods.register('accessPolicy')}>
+                <select
+                  className='sc-organisation-select'
+                  id='organisation-access-policy'
+                  {...methods.register('accessPolicy')}
+                >
                   <option value='closed'>{t('profile.accessClosed')}</option>
                   <option value='request'>{t('profile.accessRequest')}</option>
                 </select>
@@ -137,31 +160,63 @@ export function OrganisationProfileForm({
         </section>
 
         {SC_CONFIG.ORGANISATIONS.PROFILE_MEDIA ? (
-          <section className='border-border bg-card grid gap-6 rounded-xl border p-5 shadow-sm sm:grid-cols-2 sm:p-6'>
+          <section className='sc-organisation-panel sc-organisation-media-grid'>
             <OrganisationMediaField initialUrl={avatarUrl} kind='avatar' organisationId={organisation.id} />
             <OrganisationMediaField initialUrl={headerImageUrl} kind='header' organisationId={organisation.id} />
           </section>
         ) : null}
 
-        {message ? <p className={message.kind === 'error' ? 'text-destructive text-sm' : 'text-sm text-emerald-600'} role={message.kind === 'error' ? 'alert' : 'status'}>{message.text}</p> : null}
-        <Button disabled={isSaving || !methods.formState.isDirty} type='submit'>{isSaving ? t('common.saving') : t('common.save')}</Button>
+        {message ? (
+          <p
+            className='sc-organisation-status'
+            data-kind={message.kind}
+            role={message.kind === 'error' ? 'alert' : 'status'}
+          >
+            {message.text}
+          </p>
+        ) : null}
+        <Button disabled={isSaving || !methods.formState.isDirty} type='submit'>
+          {isSaving ? t('common.saving') : t('common.save')}
+        </Button>
       </form>
     </FormProvider>
   );
 }
 
-function OrganisationField({ field, label, maxLength }: { field: 'handle' | 'name'; label: string; maxLength: number }) {
+function OrganisationField({
+  field,
+  label,
+  maxLength,
+}: {
+  field: 'handle' | 'name';
+  label: string;
+  maxLength: number;
+}) {
   const { formState, register } = useFormContext<OrganisationProfileValues>();
   return (
-    <div className='space-y-2'>
+    <div className='sc-organisation-field'>
       <Label htmlFor={`organisation-${field}`}>{label}</Label>
-      <Input autoCapitalize={field === 'handle' ? 'none' : undefined} id={`organisation-${field}`} maxLength={maxLength} required {...register(field)} />
-      {formState.errors[field]?.message ? <p className='text-destructive text-sm' role='alert'>{formState.errors[field]?.message}</p> : null}
+      <Input
+        autoCapitalize={field === 'handle' ? 'none' : undefined}
+        id={`organisation-${field}`}
+        maxLength={maxLength}
+        required
+        {...register(field)}
+      />
+      {formState.errors[field]?.message ? (
+        <p className='sc-organisation-status' data-kind='error' role='alert'>
+          {formState.errors[field]?.message}
+        </p>
+      ) : null}
     </div>
   );
 }
 
-function OrganisationMediaField({ initialUrl, kind, organisationId }: {
+function OrganisationMediaField({
+  initialUrl,
+  kind,
+  organisationId,
+}: {
   initialUrl: string | null;
   kind: 'avatar' | 'header';
   organisationId: string;
@@ -182,11 +237,18 @@ function OrganisationMediaField({ initialUrl, kind, organisationId }: {
       return;
     }
     setUploading(true);
-    const extension = file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'image';
+    const extension =
+      file.name
+        .split('.')
+        .pop()
+        ?.toLowerCase()
+        .replace(/[^a-z0-9]/g, '') || 'image';
     const folder = kind === 'avatar' ? 'logos' : 'headers';
     const path = `${organisationId}/${folder}/${crypto.randomUUID()}.${extension}`;
     const supabase = createClient();
-    const { error: uploadError } = await supabase.storage.from('organisation-logos').upload(path, file, { upsert: false });
+    const { error: uploadError } = await supabase.storage
+      .from('organisation-logos')
+      .upload(path, file, { upsert: false });
     if (uploadError) {
       const message = t('profile.mediaUploadFailed');
       setError(message);
@@ -201,17 +263,42 @@ function OrganisationMediaField({ initialUrl, kind, organisationId }: {
   }
 
   return (
-    <div className='space-y-3'>
-      <div>
-        <h3 className='font-medium'>{t(`profile.${kind}Title`)}</h3>
-        <p className='text-muted-foreground text-xs'>{t('profile.mediaHelp')}</p>
+    <div className='sc-organisation-media-field' data-kind={kind}>
+      <div className='sc-organisation-media-header'>
+        <h3 className='sc-organisation-media-title'>{t(`profile.${kind}Title`)}</h3>
+        <p className='sc-organisation-media-help'>{t('profile.mediaHelp')}</p>
       </div>
-      <div className={kind === 'avatar' ? 'bg-muted size-20 overflow-hidden rounded-xl' : 'bg-muted aspect-[8/3] w-full overflow-hidden rounded-xl'}>
-        {preview ? <img alt='' className='size-full object-cover' src={preview} /> : null}
+      <div className='sc-organisation-media-preview' data-kind={kind}>
+        {preview ? <img alt='' className='sc-organisation-media-image' src={preview} /> : null}
       </div>
-      <Input accept='image/jpeg,image/png,image/webp,image/gif' aria-label={t(`profile.${kind}Upload`)} disabled={uploading} onChange={(event) => { const file = event.target.files?.[0]; if (file) void upload(file); }} type='file' />
-      {methods.watch(field) ? <Button onClick={() => { methods.setValue(field, null, { shouldDirty: true }); setPreview(null); }} size='sm' type='button' variant='outline'>{t('profile.removeMedia')}</Button> : null}
-      {error ? <p className='text-destructive text-sm' role='alert'>{error}</p> : null}
+      <Input
+        accept='image/jpeg,image/png,image/webp,image/gif'
+        aria-label={t(`profile.${kind}Upload`)}
+        disabled={uploading}
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) void upload(file);
+        }}
+        type='file'
+      />
+      {methods.watch(field) ? (
+        <Button
+          onClick={() => {
+            methods.setValue(field, null, { shouldDirty: true });
+            setPreview(null);
+          }}
+          size='sm'
+          type='button'
+          variant='outline'
+        >
+          {t('profile.removeMedia')}
+        </Button>
+      ) : null}
+      {error ? (
+        <p className='sc-organisation-status' data-kind='error' role='alert'>
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
