@@ -95,11 +95,47 @@ boundary. A clean Night Garden fixture is ready at
 `/Applications/MAMP/htdocs/_SUPACHARGER-PROJECTS/specdrive-source-explorer-sample`
 commit `c22c132`.
 
-The final sample synchronisation and authenticated Chrome matrix wait only for
-the owner to unlock 1Password and complete the retained `j@sharpi.sh` Specdrive
-OAuth login/consent. Do not use a password reset, magic link, service role or
-direct database write as a workaround. This blocker does not affect Core,
-hosted migration deployment, compilation or database verification.
+The owner completed `j@sharpi.sh` sign-in, selected Glowplug, selected the
+`specdrive` project and approved a fresh OAuth request. The callback succeeds,
+but the first restricted RPC is denied.
+
+## Newly discovered approval-gated authentication conflict
+
+The current Core-managed
+`20260824130917_add_custom_claims_extension_contract.sql` replaces
+`app.custom_access_token_hook`. It preserves canonical human role and
+organisation claims but removes the earlier Specdrive OAuth `client_id` branch
+that issued `role = specdrive_mcp`. Its extension contract deliberately forbids
+overriding the reserved `role` claim. The hosted Auth Hooks page confirms the
+project invokes this canonical function. Consequently the valid OAuth grant is
+issued without the restricted MCP role and cannot satisfy
+`app.resolve_project_mcp_authorisation`.
+
+Affected contracts:
+
+- Specdrive `supabase/config.toml` Auth Hook URI and hosted Auth Hook setting;
+- a new forward Specdrive migration and generated database types;
+- JWT role issuance for OAuth clients, while preserving canonical human JWTs;
+- MCP OAuth/authentication documentation and regression tests.
+
+Proposed canonical product result: keep Core's hook byte-identical and add a
+Specdrive-owned `app.specdrive_custom_access_token_hook(event)` composition
+function. It delegates non-OAuth tokens to `app.custom_access_token_hook`, and
+for a non-empty OAuth `client_id` emits only the existing restricted
+`specdrive_mcp` role contract while removing human organisation/application
+claims. Configure only Specdrive local/hosted Auth Hooks to call that wrapper.
+
+Consumers: Specdrive web app, linked hosted Supabase project and independent MCP
+must be synchronised. Supacharger Core, SnapScreen and Wakekeeper remain
+unchanged; this finding should inform a later Core design discussion about
+product-owned auth-hook composition, not silently promote the MCP role.
+
+Risk: an incorrect wrapper could break all JWT issuance or over-authorise OAuth
+clients. Mitigate with forward-only deployment, exact `client_id` branching,
+delegation for every human token, least-privilege grants, local hook regression
+tests, fresh OAuth issuance and a restricted RPC smoke before sample upload.
+Do not implement this change until the human owner explicitly approves this
+newly reported contract set.
 
 ## Promotion trigger
 
