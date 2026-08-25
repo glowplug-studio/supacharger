@@ -350,6 +350,7 @@
     display: grid;
     width: 100%;
     grid-template-columns: 1.75rem minmax(0, 1fr) 1.75rem;
+    align-items: center;
   }
 
   .sc-auth-divider {

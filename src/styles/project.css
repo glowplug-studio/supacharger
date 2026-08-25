@@ -92,12 +92,29 @@
   }
 
   .sc-logo-marquee-track {
-    animation: sc-logo-marquee 60s linear infinite;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
   }
 
-  .sc-logo-marquee:hover .sc-logo-marquee-track {
-    animation-play-state: paused;
+  .sc-logo-marquee-logo {
+    opacity: 0.7;
+    filter: grayscale(1);
+    transition:
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sc-logo-marquee-item:hover .sc-logo-marquee-logo {
+    opacity: 1;
+    filter: grayscale(0.08) brightness(1.12);
+  }
+
+  .dark .sc-logo-marquee-logo {
+    filter: grayscale(1) brightness(1.55) contrast(1.25);
+  }
+
+  .dark .sc-logo-marquee-item:hover .sc-logo-marquee-logo {
+    filter: grayscale(0.08) brightness(1.85) contrast(1.15);
   }
 }
 
@@ -113,12 +130,6 @@
   }
 }
 
-@keyframes sc-logo-marquee {
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .sc-home-enter,
   .sc-home-enter-delayed {
@@ -127,9 +138,12 @@
 
   .sc-logo-marquee-track {
     width: 100%;
-    animation: none;
     transform: none;
     will-change: auto;
+  }
+
+  .sc-logo-marquee-logo {
+    transition: none;
   }
 
   .sc-logo-marquee-set {

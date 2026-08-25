@@ -101,7 +101,7 @@
   },
   "AuthJourney": {
     "mfaStatusFailed": "Two-factor authentication status could not be checked.",
-    "heroTitle": "Grow your own community",
+    "heroTitle": "Join the Community",
     "welcomeBack": "Welcome back",
     "createAccountTitle": "Create your account",
     "chooseStart": "Choose how you want to get started.",
@@ -396,12 +396,12 @@
     "builtWith": "Built with"
   },
   "MarketingDemo": {
-    "trustedOrganisations": "Trusted by top organisations"
+    "trustedOrganisations": "Growing together on Korunet"
   },
   "MarketingMetadata": {
     "home": {
-      "title": "Korunet",
-      "description": "The community platform for stronger local connections, shared conversations, groups, and events."
+      "title": "A place for new beginnings to grow | Korunet",
+      "description": "A platform for people to connect around new life, growth, strength, and peace."
     },
     "legal": {
       "title": "Legal",
@@ -409,7 +409,7 @@
     },
     "pricing": {
       "title": "Pricing",
-      "description": "Explore Korunet pricing and choose the right plan for your community."
+      "description": "Explore Korunet membership for every stage of personal and shared growth."
     },
     "license": {
       "title": "License",
@@ -620,13 +620,13 @@
     }
   },
   "MarketingNavigation": {
-    "overview": "Overview",
-    "features": "Features",
-    "integrations": "Integrations",
-    "benefits": "Benefits",
-    "reviews": "Reviews",
-    "pricing": "Pricing",
-    "inPageAnchors": "In page Anchors",
+    "overview": "Our purpose",
+    "features": "How it grows",
+    "integrations": "Connections",
+    "benefits": "Four values",
+    "reviews": "Stories",
+    "pricing": "Membership",
+    "inPageAnchors": "Explore Korunet",
     "supachargerFeatures": "Supacharger Features",
     "whatsIncluded": "What's included",
     "whatsIncludedDescription": "From core product features to developer specifications.",
@@ -650,22 +650,22 @@
     "chinese": "Chinese"
   },
   "MarketingFooter": {
-    "tagline": "A shared community platform for conversations, groups, events, and the people nearby.",
+    "tagline": "A place to connect around new life, growth, strength, and peace—together.",
     "navigation": "Navigation",
     "information": "Information",
-    "overview": "Overview",
-    "features": "Features",
-    "integrations": "Integrations",
-    "benefits": "Benefits",
-    "reviews": "Reviews",
-    "pricing": "Pricing",
+    "overview": "Our purpose",
+    "features": "How it grows",
+    "integrations": "Connections",
+    "benefits": "Four values",
+    "reviews": "Stories",
+    "pricing": "Membership",
     "faq": "FAQ",
     "termsOfUse": "Terms of use",
     "license": "License",
     "login": "Login",
     "createAccount": "Create account",
     "allRightsReserved": "All rights reserved.",
-    "firstBuiltIn": "First built in",
+    "firstBuiltIn": "First commits made in",
     "newZealand": "New Zealand",
     "by": "by"
   },
@@ -710,249 +710,302 @@
   },
   "MarketingLanding": {
     "createAccount": "Create account",
-    "exploreFeatures": "Explore features",
-    "trustedOrganisations": "Trusted by top organisations",
-    "getStarted": "Get started",
+    "exploreFeatures": "Explore Korunet",
+    "trustedOrganisations": "Organisations Growing together on Korunet",
+    "getStarted": "Begin your journey",
     "mostPopular": "Most popular",
     "roleAtOrganisation": "{role} at {organisation}",
     "hero": {
-      "title": "The community platform for stronger local connections.",
-      "description": "Bring conversations, groups, events, and trusted local connections into one calm, shared place built for real communities."
+      "title": "A place for new beginnings to grow.",
+      "description": "Korunet brings people together around new life, personal growth, shared strength, and peace—creating circles of support that keep unfolding."
     },
     "overview": {
-      "title": "One place for the communities around you",
-      "description": "Keep the people, context, and activity around every community visible without stitching together a collection of unrelated tools."
+      "title": "Connection for every new chapter",
+      "description": "Like an unfurling koru, meaningful change begins from a strong centre. Find people who understand where you are, share what you are learning, and move forward together."
     },
     "features": {
-      "title": "A platform that adapts to your community",
-      "description": "Start with a focused group, then add the conversations, events, and structure your community needs as it grows."
+      "title": "Made to move and grow with you",
+      "description": "Begin with one conversation, gather a trusted circle, and create the spaces, practices, and events that support the life taking shape around you."
     },
     "integrations": {
-      "title": "Works with the tools people already know",
-      "description": "Connect familiar services while Korunet remains the shared place members return to for community activity."
+      "title": "Bring your people and everyday tools together",
+      "description": "Connect the services your circle already uses while Korunet remains the calm, shared place you return to for reflection, encouragement, and action."
     },
     "benefitsSection": {
-      "title": "A flexible foundation for local connection",
-      "description": "Give real-world groups the structure they need while keeping the product warm, clear, and easy to take part in."
+      "title": "Four values at the heart of Korunet",
+      "description": "New life opens possibility. Growth gives it direction. Strength makes it sustainable. Peace creates room for everyone to belong."
     },
     "experiences": {
-      "title": "Everything your community needs to stay connected",
-      "description": "Move between discovery, organised groups, and direct conversations without losing the context that makes each connection useful."
+      "title": "From a first hello to lasting belonging",
+      "description": "Meet people in a similar season, turn shared intentions into meaningful activity, and keep returning to a circle that knows your story."
     },
     "reviewsSection": {
-      "title": "Trusted by people who make communities work",
-      "description": "A clear community experience helps organisers spend less time managing tools and more time bringing people together."
+      "title": "Stories of change, held in community",
+      "description": "See how people use Korunet to begin again, grow with purpose, find strength in one another, and make more room for peace."
     },
     "pricingSection": {
-      "title": "Pricing that grows with your community",
-      "description": "Start with the shape your community needs today, then add more coordination and support as participation grows."
+      "title": "Space to grow, at your own pace",
+      "description": "Start with a small circle, then open more spaces and support as your community deepens and its impact reaches further."
     },
     "faqSection": {
-      "title": "Everything you need to move forward",
-      "description": "The essentials about spaces, privacy, access, languages, and getting your first community started."
+      "title": "Everything you need to begin",
+      "description": "Learn how circles work, how privacy is protected, and how Korunet supports people through different seasons of life."
     },
     "cta": {
-      "title": "Bring your community closer together",
-      "description": "Create a focused space for the people, conversations, and activity that matter locally."
+      "title": "Start your next chapter, together",
+      "description": "Create a welcoming circle around the change you are living, the growth you are seeking, or the peace you want to share."
     },
     "images": {
-      "messagingWorkspace": "Korunet community messaging workspace",
-      "mobileScreens": "Korunet mobile community screens",
-      "neighboursAtNight": "Korunet community activity, roles, private-space controls, and plant events over dense fern foliage",
-      "mobileExperience": "Korunet community experience across mobile screens"
+      "messagingWorkspace": "Korunet circle workspace for conversation and support",
+      "mobileScreens": "Korunet mobile screens for connection and growth",
+      "neighboursAtNight": "People gathering in a peaceful shared space surrounded by unfurling ferns",
+      "mobileExperience": "Korunet experience across mobile screens"
     },
     "communityPillars": [
-      { "title": "Shared conversations", "description": "Keep every conversation easy to find and simple to follow." },
       {
-        "title": "Real communities",
-        "description": "Bring members, neighbours, and organisers into one trusted space."
+        "title": "New life",
+        "description": "Welcome fresh starts, changing seasons, and the possibilities that emerge between them."
       },
       {
-        "title": "Events that connect",
-        "description": "Coordinate events and recurring meetups without scattered tools."
+        "title": "Growth",
+        "description": "Share knowledge, reflection, and encouragement that helps every person keep unfolding."
       },
-      { "title": "Built-in trust", "description": "Use clear controls that keep each group private and manageable." }
+      {
+        "title": "Strength",
+        "description": "Build trusted circles where support becomes confidence, resilience, and collective action."
+      },
+      {
+        "title": "Peace",
+        "description": "Create calm, respectful spaces where people can listen, belong, and move with intention."
+      }
     ],
     "platformFeatures": [
       {
-        "title": "Discover your community",
-        "description": "Bring nearby groups, organisers, and shared interests into one clear view.",
-        "imageAlt": "Korunet community discovery screens"
+        "title": "Find your circle",
+        "description": "Discover people, guides, and groups connected to the chapter of life you are navigating.",
+        "imageAlt": "Korunet screens for discovering people and circles"
       },
       {
-        "title": "One shared workspace",
-        "description": "Keep messages, profiles, and community activity connected across every screen.",
-        "imageAlt": "Korunet community messaging workspace"
+        "title": "Nurture meaningful growth",
+        "description": "Keep conversations, shared practices, events, and progress together in one supportive place.",
+        "imageAlt": "Korunet workspace for shared growth and reflection"
       },
       {
-        "title": "Participation that lasts",
-        "description": "Give members a welcoming place to meet, contribute, and stay involved.",
-        "imageAlt": "Local neighbours gathering in a shared community space"
+        "title": "Build strength together",
+        "description": "Turn encouragement into participation, shared purpose, and relationships that endure.",
+        "imageAlt": "People building strength through a supportive gathering"
       }
     ],
     "connectedExperiences": [
       {
-        "title": "Find the people and groups around you",
-        "description": "Find relevant groups, people, and activity without searching across disconnected services.",
-        "cta": "Explore discovery",
-        "imageAlt": "Korunet community profiles and discovery experience"
+        "title": "Meet people in the same season",
+        "description": "Find circles shaped around new parenthood, recovery, creativity, wellbeing, change, or a shared purpose.",
+        "cta": "Find your circle",
+        "imageAlt": "Korunet profiles and circles for people in similar life seasons"
       },
       {
-        "title": "Coordinate activity from one clear home",
-        "description": "Plan events, share updates, and keep the full conversation available to every member.",
-        "cta": "See community tools",
-        "imageAlt": "Korunet community workspace with messages and activity"
+        "title": "Turn intention into a shared rhythm",
+        "description": "Plan gatherings, share reflections, mark progress, and keep encouragement close between each meeting.",
+        "cta": "See how it works",
+        "imageAlt": "Korunet workspace with conversations, gatherings, and shared progress"
       },
       {
-        "title": "Turn introductions into participation",
-        "description": "Make it easy for new members to understand where they belong and how to take part.",
+        "title": "Return, reflect, and begin again",
+        "description": "Keep your history close while making room for the next step, the next connection, and the next beginning.",
         "cta": "Create account",
-        "imageAlt": "Korunet mobile community experience"
+        "imageAlt": "Korunet mobile experience supporting reflection and new beginnings"
       }
     ],
     "benefits": [
-      { "title": "Local by design", "description": "Create spaces around a place, cause, interest, or shared goal." },
-      { "title": "Flexible controls", "description": "Set roles and permissions without slowing organisers down." },
-      { "title": "Fast discovery", "description": "Find people, conversations, and groups from one clear search." },
       {
-        "title": "Useful notifications",
-        "description": "Keep members informed without turning every update into noise."
+        "title": "Built for new beginnings",
+        "description": "Create a circle around a transition, intention, practice, or shared hope."
       },
-      { "title": "Privacy first", "description": "Protect personal details with private spaces and clear choices." },
-      { "title": "Ready to grow", "description": "Support small circles and larger organisations on one platform." }
+      {
+        "title": "Room to grow",
+        "description": "Let each circle evolve without losing the relationships and context that ground it."
+      },
+      {
+        "title": "Strength in connection",
+        "description": "Turn honest conversation and shared experience into practical, mutual support."
+      },
+      {
+        "title": "Peace by design",
+        "description": "Keep updates useful, spaces calm, and attention focused on what matters."
+      },
+      {
+        "title": "Circles of trust",
+        "description": "Choose who can join, what is shared, and how each space is cared for."
+      },
+      {
+        "title": "Always unfolding",
+        "description": "Support one small circle or a wider network while preserving a human sense of belonging."
+      }
     ],
     "testimonials": [
       {
         "avatarAlt": "Portrait of Maya Okafor",
-        "organisation": "Northside Neighbours",
+        "organisation": "New Roots Parents",
         "name": "Maya Okafor",
-        "quote": "Korunet brought our events, member updates, and local conversations into one place people actually check.",
-        "role": "Neighbourhood organiser"
+        "quote": "Korunet gave us a gentle place to ask honest questions, celebrate small wins, and grow into parenthood together.",
+        "role": "Circle host"
       },
       {
         "avatarAlt": "Portrait of Luca Moretti",
-        "organisation": "Common Ground",
+        "organisation": "Next Chapter Collective",
         "name": "Luca Moretti",
-        "quote": "New members understand where to go, who to ask, and how to take part from their first day.",
-        "role": "Community host"
+        "quote": "I found people who understood the change I was living through. That sense of being seen made the next step feel possible.",
+        "role": "Community member"
       },
       {
         "avatarAlt": "Portrait of Sora Kim",
-        "organisation": "Riverside Network",
+        "organisation": "Stillwater Wellbeing",
         "name": "Sora Kim",
-        "quote": "We spend less time chasing messages and more time helping neighbours turn good ideas into real events.",
-        "role": "Volunteer coordinator"
+        "quote": "Our conversations stay calm and purposeful, and support continues naturally between our in-person gatherings.",
+        "role": "Wellbeing facilitator"
       },
       {
         "avatarAlt": "Portrait of Tomasz Kowalski",
-        "organisation": "Open Door Collective",
+        "organisation": "Strong Together",
         "name": "Tomasz Kowalski",
-        "quote": "Private spaces and clear roles let our volunteers work confidently without making the platform feel complicated.",
-        "role": "Programme lead"
+        "quote": "What began as a small recovery circle became a dependable network built on trust, courage, and shared progress.",
+        "role": "Peer-support organiser"
       },
       {
         "avatarAlt": "Portrait of Elias Novak",
-        "organisation": "Market Lane",
+        "organisation": "Open Studio Circle",
         "name": "Elias Novak",
-        "quote": "Nearby groups now share opportunities and organise meetups without every conversation disappearing into another app.",
-        "role": "Local business owner"
+        "quote": "Korunet helps us turn creative intention into a steady practice without losing the warmth of a close-knit group.",
+        "role": "Creative mentor"
       },
       {
         "avatarAlt": "Portrait of Camille Laurent",
-        "organisation": "Mosaic House",
+        "organisation": "Peace in Practice",
         "name": "Camille Laurent",
-        "quote": "Korunet gives every project enough structure while keeping the community warm, visible, and easy to join.",
-        "role": "Cultural network coordinator"
+        "quote": "The platform gives our community enough structure to flourish while leaving room for reflection, care, and quiet connection.",
+        "role": "Community guide"
       }
     ],
     "plans": [
       {
-        "name": "Starter",
+        "name": "Begin",
         "price": "Free",
-        "description": "Start a focused group and bring your first members together.",
-        "features": ["Core community spaces", "Direct conversations", "Event planning", "Member profiles"]
+        "description": "Create a focused circle and welcome your first members.",
+        "features": [
+          "One community circle",
+          "Shared conversations",
+          "Gathering plans",
+          "Member profiles"
+        ]
       },
       {
-        "name": "Community",
+        "name": "Grow",
         "price": "9.99 USD/mo",
-        "description": "Run an active community with more control and collaboration.",
-        "features": ["Everything in Starter", "Advanced roles", "Multiple organisers", "Priority support"]
+        "description": "Nurture an active community with more ways to connect and contribute.",
+        "features": [
+          "Everything in Begin",
+          "Multiple circles",
+          "Guides and roles",
+          "Priority support"
+        ]
       },
       {
-        "name": "Organisation",
+        "name": "Thrive",
         "price": "Custom",
-        "description": "Coordinate several communities with tailored support and governance.",
-        "features": ["Everything in Community", "Organisation controls", "Custom onboarding", "Dedicated support"]
+        "description": "Support a network of communities with thoughtful governance and care.",
+        "features": [
+          "Everything in Grow",
+          "Network controls",
+          "Guided onboarding",
+          "Dedicated support"
+        ]
       }
     ],
     "compliance": {
-      "title": "Trust is part of the product",
-      "description": "Clear permissions, private spaces, and responsible defaults keep members in control of how they participate.",
+      "title": "Peace of mind is part of the platform",
+      "description": "Clear permissions, private circles, and thoughtful defaults help people choose how they participate and what they share.",
       "items": [
-        "Private spaces",
+        "Private circles",
         "Clear roles",
         "Data control",
         "Secure access",
         "Member choice",
-        "Responsible defaults"
+        "Thoughtful defaults"
       ]
     },
     "faqs": [
       {
-        "question": "What can I manage with Korunet?",
-        "answer": "Korunet brings community conversations, direct messages, groups, events, and member discovery into one shared platform."
+        "question": "What is Korunet?",
+        "answer": "Korunet is a platform for people to connect around new life, growth, strength, and peace through trusted circles, conversations, gatherings, and shared practices."
       },
       {
-        "question": "Can communities stay private?",
-        "answer": "Yes. Communities can control who joins, what members can see, and which roles can organise or moderate each space."
+        "question": "What can a circle be about?",
+        "answer": "A circle can support a life transition, wellbeing practice, learning journey, creative goal, recovery process, local initiative, or any shared intention that benefits from community."
       },
       {
-        "question": "Who is Korunet for?",
-        "answer": "Korunet is designed for neighbourhood groups, meetups, advocacy networks, local businesses, and larger community organisations."
+        "question": "Can circles stay private?",
+        "answer": "Yes. Circle hosts can choose who joins, what members can see, and which roles can guide or care for each space."
       },
       {
         "question": "Does Korunet support multiple languages?",
-        "answer": "Members can switch the interface language from the header or footer. The current demo includes English, Spanish, and Chinese."
+        "answer": "Members can switch the interface language from the header or footer. This demo includes English, Spanish, and Chinese."
       },
       {
         "question": "How do I get started?",
-        "answer": "Create an account, set up your profile, and begin with a focused group. You can add more spaces as the community grows."
+        "answer": "Create an account, share a little about the chapter you are in, and begin or join a circle that reflects where you want to grow."
       }
     ]
   },
   "PricingPage": {
-    "title": "Pricing",
-    "description": "Choose a flexible plan for a new group, an active community, or an organisation coordinating several spaces.",
+    "title": "Membership for every stage of growth",
+    "description": "Begin with one trusted circle, then add more space, guidance, and support as your community unfolds.",
     "included": "Includes",
-    "getStarted": "Get started",
+    "getStarted": "Begin your journey",
     "plans": [
       {
-        "name": "Starter",
-        "description": "For individuals and small teams",
+        "name": "Begin",
+        "description": "For a new circle finding its rhythm",
         "price": "$10 per month",
-        "features": ["50 community members", "10 active spaces"]
+        "features": [
+          "50 circle members",
+          "10 active spaces"
+        ]
       },
       {
-        "name": "Professional",
-        "description": "For growing communities",
+        "name": "Grow",
+        "description": "For communities deepening connection",
         "price": "$20 per month",
-        "features": ["100 community members", "20 active spaces", "Priority support"]
+        "features": [
+          "100 circle members",
+          "20 active spaces",
+          "Priority support"
+        ]
       },
       {
-        "name": "Business",
-        "description": "For organisations and larger teams",
+        "name": "Thrive",
+        "description": "For networks helping many circles flourish",
         "price": "$100 per month",
-        "features": ["300 community members", "100 active spaces", "100 team members", "Advanced controls"]
+        "features": [
+          "300 community members",
+          "100 active spaces",
+          "100 guides and team members",
+          "Advanced care controls"
+        ]
       }
     ],
     "lifetime": {
-      "title": "Unlimited lifetime account",
-      "description": "Make one payment for permanent access to the core community experience.",
+      "title": "Founding lifetime membership",
+      "description": "Make one payment for permanent access to the core Korunet experience and help the community grow from its roots.",
       "included": "What's included",
-      "features": ["Private forum access", "Member resources", "Entry to annual conference", "Official member shirt"],
-      "access": "Unlimited access, forever",
+      "features": [
+        "Private founding circle",
+        "Member growth resources",
+        "Entry to the annual gathering",
+        "Founding member gift"
+      ],
+      "access": "Unlimited access, for every chapter",
       "price": "$500 USD",
-      "getStarted": "Get started"
+      "getStarted": "Become a founding member"
     }
   },
   "LegalPage": {

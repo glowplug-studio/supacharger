@@ -110,15 +110,23 @@ test('managed account, organisation, and auth controls do not import product-sty
 
   async function collect(directory) {
     const entries = await readdir(directory, { withFileTypes: true });
-    return (await Promise.all(entries.map(async (entry) => {
-      const url = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
-      return entry.isDirectory() ? collect(url) : entry.name.endsWith('.tsx') ? [url] : [];
-    }))).flat();
+    return (
+      await Promise.all(
+        entries.map(async (entry) => {
+          const url = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
+          return entry.isDirectory() ? collect(url) : entry.name.endsWith('.tsx') ? [url] : [];
+        }),
+      )
+    ).flat();
   }
 
   for (const file of (await Promise.all(roots.map(collect))).flat()) {
     const source = await readFile(file, 'utf8');
-    assert.doesNotMatch(source, /@\/components\/ui\/(?:button|input|label|textarea|select|checkbox|switch)/, file.pathname);
+    assert.doesNotMatch(
+      source,
+      /@\/components\/ui\/(?:button|input|label|textarea|select|checkbox|switch)/,
+      file.pathname,
+    );
   }
 });
 
@@ -174,6 +182,7 @@ test('auth journey retains the promoted SnapScreen presentation', async () => {
   assert.match(form, /ResendVerificationEmail/);
   assert.match(styles, /\.sc-auth-input/);
   assert.match(styles, /\.sc-auth-otp input/);
+  assert.match(styles, /\.sc-auth-page \.sc-control-button\.sc-auth-email-option\s*\{[^}]*align-items:\s*center/);
 });
 
 test('OTP fields retain an independent placeholder for each empty slot', async () => {
@@ -314,7 +323,10 @@ test('social-auth logos use the auth colours and the compact stack stays left-al
   assert.doesNotMatch(providers, /border-slate-950 bg-white/);
   assert.match(providers, /className='sc-auth-surface-button sc-auth-provider-button/);
   assert.match(journey, /className='sc-auth-surface-button sc-auth-provider-switcher/);
-  assert.match(journey, /<span className='sc-auth-provider-switcher-icons'>[\s\S]*?<EnabledAuthProviderIcons limit=\{3\}/);
+  assert.match(
+    journey,
+    /<span className='sc-auth-provider-switcher-icons'>[\s\S]*?<EnabledAuthProviderIcons limit=\{3\}/,
+  );
   assert.match(
     styles,
     /\.sc-auth-provider-avatar\s*\{[\s\S]*?background:\s*var\(--auth-input-background,[\s\S]*?border-color:\s*var\(--auth-surface-background,/,
@@ -358,10 +370,7 @@ test('email verification follows the SnapScreen OTP presentation', async () => {
   assert.match(resend, /sc-auth-status-icon-success/);
   assert.match(resend, /sc-auth-icon/);
   assert.match(resend, /sc_message-positive/);
-  assert.match(
-    styles,
-    /\.sc-auth-status-icon-success\s*\{[\s\S]*?background:\s*#16a34a;/,
-  );
+  assert.match(styles, /\.sc-auth-status-icon-success\s*\{[\s\S]*?background:\s*#16a34a;/);
   assert.match(englishMessages, /"codeAndLinkSent":\s*"We sent an email to \{email\}\."/);
   assert.match(englishMessages, /"enterCodeOption":\s*"Enter the Code here"/);
   assert.match(englishMessages, /"sendAnother":\s*"Send again"/);

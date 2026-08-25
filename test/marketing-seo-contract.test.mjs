@@ -24,6 +24,7 @@ test('marketing pages publish distinct canonical and social metadata', async () 
   const messages = JSON.parse(englishMessages).MarketingMetadata;
 
   assert.deepEqual(Object.keys(messages).sort(), Object.keys(marketingPages).sort());
+  assert.equal(messages.home.title, 'A place for new beginnings to grow | Korunet');
   for (const page of Object.values(messages)) {
     assert.equal(typeof page.title, 'string');
     assert.ok(page.title.length > 0);

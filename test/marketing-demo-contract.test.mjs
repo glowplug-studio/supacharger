@@ -41,8 +41,16 @@ test('the demo hero includes the restored accessible logo marquee', async () => 
   assert.doesNotMatch(marquee, /next\/image/);
   assert.doesNotMatch(marquee, /\/images\/sc_demo\/logos/);
   assert.match(marquee, /<DemoLogoSet duplicate \/>/);
-  assert.match(styles, /@keyframes sc-logo-marquee/);
+  assert.match(marquee, /text-center text-sm/);
+  assert.match(marquee, /^'use client';/);
+  assert.match(marquee, /requestAnimationFrame/);
+  assert.match(marquee, /onPointerEnter=\{slowMarquee\}/);
+  assert.match(marquee, /onPointerLeave=\{resumeMarquee\}/);
+  assert.doesNotMatch(styles, /@keyframes sc-logo-marquee/);
+  assert.doesNotMatch(styles, /animation-play-state:\s*paused/);
+  assert.match(styles, /\.sc-logo-marquee-logo\s*\{[\s\S]*?transition:/);
+  assert.match(styles, /\.sc-logo-marquee-item:hover \.sc-logo-marquee-logo/);
   assert.match(styles, /prefers-reduced-motion:\s*reduce/);
   assert.match(styles, /\.sc-logo-marquee-set\[aria-hidden='true'\]/);
-  assert.equal(messages.MarketingLanding.trustedOrganisations, 'Trusted by top organisations');
+  assert.equal(messages.MarketingLanding.trustedOrganisations, 'Organisations Growing together on Korunet');
 });

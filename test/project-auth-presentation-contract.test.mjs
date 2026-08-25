@@ -5,10 +5,12 @@ import test from 'node:test';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('project auth controls outrank shared primitives and match input dimensions', async () => {
-  const [globals, authStyles] = await Promise.all([
+  const [globals, authStyles, englishMessages] = await Promise.all([
     read('src/supacharger/styles/globals.css'),
     read('src/styles/supacharger-auth.css'),
+    read('messages/en.json'),
   ]);
+  const messages = JSON.parse(englishMessages);
 
   assert.ok(
     globals.indexOf("@import '../../styles/supacharger-auth.css';") <
@@ -18,6 +20,7 @@ test('project auth controls outrank shared primitives and match input dimensions
   assert.match(authStyles, /\.sc-auth-page \.sc-control-button\.sc-auth-primary-button/);
   assert.match(authStyles, /min-height:\s*3\.5rem/);
   assert.match(authStyles, /padding:\s*0\.75rem 1\.25rem/);
+  assert.equal(messages.AuthJourney.heroTitle, 'Join the Community');
   assert.doesNotMatch(
     await read('src/styles/supacharger-account.css'),
     /^\.sc-control-(?:button|input|textarea|label)\b/m,

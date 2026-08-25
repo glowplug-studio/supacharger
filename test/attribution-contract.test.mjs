@@ -30,7 +30,7 @@ test('the demo footer centers its existing Glowplug attribution', async () => {
 
   assert.match(footer, /sm:grid-cols-3/);
   assert.match(footer, /<p className='text-center'>\s*\{t\('firstBuiltIn'\)\}/);
-  assert.match(footer, />\s*🇳🇿 \{t\('newZealand'\)\}\s*<\/a>\s*<br \/>/);
+  assert.match(footer, />\s*🇳🇿\{t\('newZealand'\)\}\s*<\/a>\s*<br \/>/);
   assert.match(footer, /@remoteproductdev\s*<\/a>\{' '\}\s*-\{' '\}/);
   assert.match(footer, /<div className='sm:justify-self-end'>\s*<SupachargerAttribution \/>/);
 });

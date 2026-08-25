@@ -74,6 +74,16 @@ The hook emits `active_organisation_id`, `active_organisation_handle`, `active_o
 
 ## CLI and deployment
 
-Create role/hook changes with `supabase migration new`, verify a clean local reset and database lint, regenerate local types, and keep `[auth.hook.custom_access_token]` pointed at `pg-functions://postgres/app/custom_access_token_hook`. A hosted project also requires the hook selection under Authentication → Hooks; `config.toml` alone changes only the local stack.
+Create role/hook changes with `supabase migration new`, verify a clean local reset and database lint, regenerate local types, and keep `[auth.hook.custom_access_token]` pointed at `pg-functions://postgres/app/custom_access_token_hook`. `config.toml` changes only the local stack.
+
+For every hosted environment, complete and verify this separate release operation:
+
+1. Confirm the canonical migration is present in the hosted migration ledger.
+2. Use an organisation or project Owner or Administrator account; Developer and Read-Only roles cannot update Auth configuration and may receive `403` from the dashboard or Management API.
+3. Open **Authentication → Hooks**, choose **Custom Access Token**, select the **Postgres Function** or **SQL** type, and select exactly `app.custom_access_token_hook`.
+4. Enable and save the setting. Do not create a duplicate function or select a similarly named function in another schema.
+5. Obtain a newly issued token by signing in again or refreshing the session, then verify with `supabase.auth.getClaims()` that `claims.user_role` exists.
+
+Treat a successful password login without `user_role` as a failed hosted-hook verification. If the database ledger and local configuration are current, inspect the hosted selection and account permissions rather than adding compatibility code or changing the application to trust user-editable metadata.
 
 The Supacharger CLI must preserve developer configuration, distribute the config contract and migrations, preview linked migration changes, and never silently mutate a hosted database. Keep migration and dashboard steps in release/upgrade guidance.

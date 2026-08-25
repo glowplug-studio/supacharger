@@ -79,7 +79,7 @@ export default async function SCFooter() {
               rel='noopener noreferrer'
               target='_blank'
             >
-              🇳🇿 {t('newZealand')}
+              🇳🇿{t('newZealand')}
             </a>
             <br />
             {t('by')}{' '}

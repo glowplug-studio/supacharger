@@ -171,6 +171,11 @@ test('offers the protected theme choices in the canonical three-position order',
     /const mounted = useSyncExternalStore\(subscribeToHydration, getClientSnapshot, getServerSnapshot\)/,
   );
   assert.match(toggle, /mounted\s*\?\s*\(themeChoices\.find/);
+  assert.match(
+    toggle,
+    /appearance === 'marketing' &&[\s\S]*?'[^']*inline-flex items-center justify-center whitespace-nowrap[^']*'/,
+  );
+  assert.match(toggle, /\[&_svg\]:size-4/);
 });
 
 test('smooths global fragment navigation while respecting reduced-motion preferences', async () => {
