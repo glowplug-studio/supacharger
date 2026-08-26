@@ -56,7 +56,13 @@ export async function loadOrganisationProfile(handle: string) {
 export async function requireOrganisationDetails(handle: string) {
   try {
     return await loadOrganisationDetails(handle);
-  } catch {
-    redirect(SC_CONFIG.ORGANISATIONS.CHOOSER_PATH);
+  } catch (error) {
+    const code = typeof error === 'object' && error !== null && 'code' in error
+      ? String(error.code)
+      : null;
+    if (code === 'P0002' || code === '42501') {
+      redirect(SC_CONFIG.ORGANISATIONS.CHOOSER_PATH);
+    }
+    throw error;
   }
 }

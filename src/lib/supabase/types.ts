@@ -15,6 +15,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      agent_connections: { Args: { input_payload: Json }; Returns: Json }
       check_account_username_available: {
         Args: { input_username: string }
         Returns: boolean
@@ -34,7 +35,10 @@ export type Database = {
           username: string
         }[]
       }
-      get_account_summary_by_current_user: { Args: never; Returns: Json }
+      get_account_summary_by_current_user: {
+        Args: { include_organisations?: boolean }
+        Returns: Json
+      }
       get_active_products: {
         Args: never
         Returns: {
@@ -257,6 +261,53 @@ export type Database = {
   }
   app: {
     Tables: {
+      agent_connections: {
+        Row: {
+          agent_connection_id: string
+          authorised_user_id: string
+          created_at: string
+          last_used_at: string | null
+          oauth_client_id: string
+          oauth_client_name: string
+          oauth_scopes: string[]
+          organisation_id: string
+          revoked_at: string | null
+          revoked_by: string | null
+        }
+        Insert: {
+          agent_connection_id?: string
+          authorised_user_id: string
+          created_at?: string
+          last_used_at?: string | null
+          oauth_client_id: string
+          oauth_client_name: string
+          oauth_scopes?: string[]
+          organisation_id: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+        }
+        Update: {
+          agent_connection_id?: string
+          authorised_user_id?: string
+          created_at?: string
+          last_used_at?: string | null
+          oauth_client_id?: string
+          oauth_client_name?: string
+          oauth_scopes?: string[]
+          organisation_id?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_connections_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       billing_account_members: {
         Row: {
           billing_account_id: string
@@ -1089,9 +1140,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      agent_connection_extension: {
+        Args: {
+          action: string
+          input_payload: Json
+          target_agent_connection_id: string
+        }
+        Returns: Json
+      }
+      agent_connections_enabled: { Args: never; Returns: boolean }
       can_manage_organisation: {
         Args: { organisation_id: string; user_id?: string }
         Returns: boolean
+      }
+      custom_access_token_claims_extension: {
+        Args: { canonical_claims: Json; event: Json }
+        Returns: Json
       }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       is_organisation_member: {
@@ -1105,6 +1169,19 @@ export type Database = {
       organisation_handle_is_reserved: {
         Args: { value: string }
         Returns: boolean
+      }
+      resolve_agent_connections: {
+        Args: never
+        Returns: {
+          agent_connection_id: string
+          authorised_user_id: string
+          oauth_client_id: string
+          organisation_id: string
+        }[]
+      }
+      touch_agent_connection: {
+        Args: { target_agent_connection_id: string }
+        Returns: undefined
       }
     }
     Enums: {

@@ -58,6 +58,8 @@ test('server loader verifies auth once, invokes one summary RPC, and batches sig
 
   assert.equal((loader.match(/auth\.getUser\(/g) ?? []).length, 1);
   assert.equal((loader.match(/rpc\('get_account_summary_by_current_user'/g) ?? []).length, 1);
+  assert.match(loader, /include_organisations: SC_CONFIG\.ORGANISATIONS\.ENABLED/);
+  assert.match(loader, /SC_CONFIG\.ORGANISATIONS\.ENABLED \? \[\{/);
   assert.match(loader, /resolveSignedMediaUrls/);
   assert.match(media, /createSignedUrls\(paths, expiresIn\)/);
   assert.doesNotMatch(media, /createSignedUrl\(/);

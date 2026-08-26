@@ -30,6 +30,9 @@ export function OrganisationSettingsShell({
     ...(SC_CONFIG.BILLING.ACCOUNT_SUBJECTS.ORGANISATION
       ? [{ href: organisationSettingsPath(organisation.handle, 'billing'), label: t('navigation.billing'), order: 30 }]
       : []),
+    ...(SC_CONFIG.AGENT_CONNECTIONS.ENABLED
+      ? [{ href: organisationSettingsPath(organisation.handle, 'agents'), label: t('navigation.agents'), order: 40 }]
+      : []),
     ...organisationSettingsNavigationExtensions.map((extension) => ({
       href: organisationSettingsPath(organisation.handle, extension.id),
       label: extension.label,

@@ -198,6 +198,11 @@ export const SC_CONFIG: SupachargerConfig = {
     ROUTE_MODE: 'root-handle',
     PROFILE_MEDIA: true,
   },
+  // Agent connection tables remain installed. Keep this in sync with the
+  // deployed Supabase Auth OAuth Server setting.
+  AGENT_CONNECTIONS: {
+    ENABLED: false,
+  },
   BILLING_ACCESS: {
     REQUIRED: false,
     // null means any active/trialling subscription. Set a feature lookup key

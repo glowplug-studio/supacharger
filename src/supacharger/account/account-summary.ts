@@ -35,7 +35,9 @@ export async function loadAccountSummary(verifiedUser?: User | null): Promise<Ac
   const user = verifiedUser ?? (await supabase.auth.getUser()).data.user;
   if (!user || user.is_anonymous) return null;
 
-  const { data, error } = await supabase.schema('api').rpc('get_account_summary_by_current_user');
+  const { data, error } = await supabase.schema('api').rpc('get_account_summary_by_current_user', {
+    include_organisations: SC_CONFIG.ORGANISATIONS.ENABLED,
+  });
   if (error) throw error;
 
   const row = accountSummaryRowSchema.parse(data);
@@ -44,11 +46,11 @@ export async function loadAccountSummary(verifiedUser?: User | null): Promise<Ac
   const identity = projectProfileIdentity(row, SC_CONFIG.PROFILE_IDENTITY.USERNAME, { ownerView: true });
   const signedMedia = await resolveSignedMediaUrls(supabase, [
     { key: 'avatar', bucket: 'user-avatars', path: row.avatar_path },
-    {
+    ...(SC_CONFIG.ORGANISATIONS.ENABLED ? [{
       key: 'activeOrganisationAvatar',
       bucket: 'organisation-avatars',
       path: row.active_organisation?.avatar_path,
-    },
+    }] : []),
   ]);
 
   return {

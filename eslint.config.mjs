@@ -31,6 +31,6 @@ export default [
     },
   },
   {
-    ignores: ['.next/**', 'next-env.d.ts', 'node_modules/**'],
+    ignores: ['.next/**', 'next-env.d.ts', 'node_modules/**', 'supabase/.temp/**'],
   },
 ];

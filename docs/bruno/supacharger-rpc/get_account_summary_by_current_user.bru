@@ -19,9 +19,11 @@ headers {
 }
 
 body:json {
-  {}
+  {
+    "include_organisations": true
+  }
 }
 
 docs {
-  Returns the authenticated account identity and active organisation summary in one database query. Avatar values are private storage paths; the application signs only the media required by the current interface.
+  Returns the authenticated account identity and, when include_organisations is true, the active organisation summary in one database query. Disabled-organisation applications pass false so the RPC does not query organisation context. Avatar values are private storage paths; the application signs only the media required by the current interface.
 }

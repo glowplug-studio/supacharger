@@ -1,0 +1,41 @@
+meta {
+  name: manage agent connections
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/agent_connections
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "input_payload": {
+      "action": "list",
+      "scope": "mine"
+    }
+  }
+}
+
+docs {
+  Verified-human management boundary for generic OAuth agent connections. The feature gate must be enabled in the product database. OAuth agent tokens cannot execute this RPC.
+
+  Actions:
+  - "create" with organisationId, oauthClientId, oauthClientName, oauthScopes, and a product-owned extension object
+  - "list" with scope "mine"
+  - "list" with scope "organisation" and organisationId; owners and administrators see all connections while members see only their own
+  - "revoke" with agentConnectionId; revocation blocks application database access immediately
+  - "delete" with agentConnectionId after revocation
+
+  Raw OAuth access and refresh tokens are never accepted or returned. A user revoking their own connection should also call Supabase Auth oauth.revokeGrant for the returned OAuth client ID so Auth sessions and refresh tokens are invalidated. Organisation administrators can revoke application access across users, but do not receive platform Auth administration authority.
+}

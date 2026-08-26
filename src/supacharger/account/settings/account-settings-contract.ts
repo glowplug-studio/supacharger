@@ -4,6 +4,7 @@ export type AccountNavigationIconName =
   | 'privacy'
   | 'notifications'
   | 'billing'
+  | 'agents'
   | 'organisations'
   | 'product';
 

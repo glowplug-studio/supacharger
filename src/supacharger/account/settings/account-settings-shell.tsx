@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Bell, Building2, CreditCard, IdCard, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
+import { Bell, Brain, Building2, CreditCard, IdCard, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 
 import { resolveAccountNavigation } from '@/supacharger.adapters/account/navigation';
 import type { AccountNavigationIconName, AccountNavigationItem } from '@/supacharger/account/settings/account-settings-contract';
@@ -16,6 +16,7 @@ const navigationIcons = {
   privacy: LockKeyhole,
   notifications: Bell,
   billing: CreditCard,
+  agents: Brain,
   organisations: Building2,
   product: IdCard,
 } satisfies Record<AccountNavigationIconName, typeof UserRound>;
@@ -32,11 +33,14 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
     ...(SC_CONFIG.BILLING.ACCOUNT_SUBJECTS.PERSONAL
       ? [{ id: 'billing', href: '/account/billing', label: t('navigation.billing'), order: 50, icon: 'billing' as const }]
       : []),
+    ...(SC_CONFIG.AGENT_CONNECTIONS.ENABLED
+      ? [{ id: 'agents', href: '/account/agents', label: t('navigation.agents'), order: 60, icon: 'agents' as const }]
+      : []),
     ...(SC_CONFIG.ORGANISATIONS.ENABLED
-      ? [{ id: 'organisations', href: SC_CONFIG.ORGANISATIONS.CHOOSER_PATH, label: t('navigation.organisations'), order: 60, icon: 'organisations' as const }]
+      ? [{ id: 'organisations', href: SC_CONFIG.ORGANISATIONS.CHOOSER_PATH, label: t('navigation.organisations'), order: 70, icon: 'organisations' as const }]
       : []),
     ...(SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH
-      ? [{ id: 'product-profile', href: SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH, label: t('navigation.productProfile'), order: 70, icon: 'product' as const }]
+      ? [{ id: 'product-profile', href: SC_CONFIG.ACCOUNT_SETTINGS.PRODUCT_PROFILE_PATH, label: t('navigation.productProfile'), order: 80, icon: 'product' as const }]
       : []),
   ];
   const navigationItems = resolveAccountNavigation(baseItems);

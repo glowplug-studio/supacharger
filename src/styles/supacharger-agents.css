@@ -1,0 +1,196 @@
+/**
+ * Developer-owned agent connection presentation.
+ * Managed components expose semantic sc-agent-* hooks and no utility classes.
+ */
+
+.sc-agent-page,
+.sc-agent-consent {
+  @apply grid w-full gap-6;
+}
+
+.sc-agent-page-header,
+.sc-agent-consent-header {
+  @apply flex items-start gap-4;
+}
+
+.sc-agent-page-icon-frame,
+.sc-agent-consent-icon-frame {
+  @apply flex size-12 shrink-0 items-center justify-center rounded-full bg-muted;
+}
+
+.sc-agent-page-icon,
+.sc-agent-consent-icon {
+  @apply size-6 text-muted-foreground;
+}
+
+.sc-agent-page-heading,
+.sc-agent-consent-heading,
+.sc-agent-card-heading {
+  @apply min-w-0;
+}
+
+.sc-agent-page-title,
+.sc-agent-consent-title {
+  @apply text-xl font-semibold tracking-tight text-foreground;
+}
+
+.sc-agent-page-description,
+.sc-agent-consent-description,
+.sc-agent-empty-description,
+.sc-agent-card-subtitle,
+.sc-agent-field-help {
+  @apply mt-1 text-sm leading-6 text-muted-foreground;
+}
+
+.sc-agent-loading,
+.sc-agent-consent-loading {
+  @apply flex min-h-48 items-center justify-center gap-2 rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground;
+}
+
+.sc-agent-loading-ring,
+.sc-agent-button-loading-ring {
+  @apply size-4 shrink-0 animate-spin;
+}
+
+.sc-agent-status {
+  @apply rounded-lg px-4 py-3 text-sm;
+}
+
+.sc-agent-status[data-kind='error'] {
+  @apply bg-destructive/10 text-destructive;
+}
+
+.sc-agent-empty {
+  @apply rounded-xl border border-dashed border-border bg-card p-6 text-center;
+}
+
+.sc-agent-empty-title,
+.sc-agent-card-title,
+.sc-agent-consent-notice-title {
+  @apply font-semibold text-foreground;
+}
+
+.sc-agent-list {
+  @apply grid list-none gap-4 p-0;
+}
+
+.sc-agent-card {
+  @apply grid gap-4 rounded-xl border border-border bg-card p-5;
+}
+
+.sc-agent-card[data-revoked='true'] {
+  @apply opacity-75;
+}
+
+.sc-agent-card-header {
+  @apply flex items-start justify-between gap-4;
+}
+
+.sc-agent-card-title,
+.sc-agent-card-subtitle {
+  @apply truncate;
+}
+
+.sc-agent-state {
+  @apply shrink-0 rounded-full px-3 py-1 text-xs font-medium;
+}
+
+.sc-agent-state[data-state='active'] {
+  @apply bg-green-500/10 text-green-700 dark:text-green-300;
+}
+
+.sc-agent-state[data-state='revoked'] {
+  @apply bg-muted text-muted-foreground;
+}
+
+.sc-agent-details {
+  @apply grid gap-3 text-sm sm:grid-cols-3;
+}
+
+.sc-agent-detail {
+  @apply min-w-0;
+}
+
+.sc-agent-detail dt {
+  @apply text-xs font-medium text-muted-foreground;
+}
+
+.sc-agent-detail dd {
+  @apply mt-1 break-words text-foreground;
+}
+
+.sc-agent-actions {
+  @apply flex justify-end;
+}
+
+.sc-agent-button {
+  @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.sc-agent-button-primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90;
+}
+
+.sc-agent-button-secondary {
+  @apply border border-border bg-background text-foreground hover:bg-muted;
+}
+
+.sc-agent-action-icon {
+  @apply size-4 shrink-0;
+}
+
+.sc-agent-consent {
+  @apply mx-auto max-w-2xl rounded-xl border border-border bg-card p-6;
+}
+
+.sc-agent-consent-notice {
+  @apply flex items-start gap-3 rounded-xl bg-muted p-4;
+}
+
+.sc-agent-consent-notice-icon {
+  @apply mt-0.5 size-5 shrink-0 text-green-600 dark:text-green-400;
+}
+
+.sc-agent-consent-notice-description {
+  @apply mt-1 text-sm leading-6 text-muted-foreground;
+}
+
+.sc-agent-field {
+  @apply grid gap-1.5;
+}
+
+.sc-agent-field-label {
+  @apply text-sm font-semibold text-foreground;
+}
+
+.sc-agent-field-help {
+  @apply mt-0;
+}
+
+.sc-agent-select {
+  @apply mt-1 min-h-11 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.sc-agent-consent-request {
+  @apply grid gap-2 text-xs text-muted-foreground;
+}
+
+.sc-agent-consent-request-row {
+  @apply grid min-w-0 gap-1 sm:grid-cols-[10rem_minmax(0,1fr)];
+}
+
+.sc-agent-consent-request-row dt {
+  @apply flex items-center gap-1 font-medium;
+}
+
+.sc-agent-consent-request-row dd {
+  @apply min-w-0 break-all;
+}
+
+.sc-agent-consent-request-icon {
+  @apply size-3 shrink-0;
+}
+
+.sc-agent-consent-actions {
+  @apply grid gap-3 sm:grid-cols-2;
+}

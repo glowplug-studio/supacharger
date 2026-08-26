@@ -214,6 +214,7 @@
       "privacy": "Privacy",
       "notifications": "Notifications",
       "billing": "Billing",
+      "agents": "Agents",
       "organisations": "Organisations",
       "productProfile": "Product profile"
     },
@@ -1413,6 +1414,72 @@
     "description": "Manage account security, profile details, notifications, privacy, and billing."
   },
   "AuthenticatedMetadata": { "description": "Your Korunet account and community workspace." },
+  "AgentConnections": {
+    "mine": {
+      "title": "Connected agents",
+      "description": "Review and revoke the coding agents and MCP clients connected by your account."
+    },
+    "organisation": {
+      "title": "Organisation agents",
+      "description": "Administrators can manage every connection in this organisation. Other members see only their own."
+    },
+    "loading": "Loading agent connections…",
+    "unknownUser": "Unknown user",
+    "empty": {
+      "title": "No connected agents",
+      "description": "Agent connections approved through this application will appear here."
+    },
+    "state": {
+      "active": "Active",
+      "revoked": "Revoked"
+    },
+    "fields": {
+      "scopes": "OAuth scopes",
+      "noScopes": "No scopes requested",
+      "connected": "Connected",
+      "lastUsed": "Last used",
+      "never": "Not used yet"
+    },
+    "actions": {
+      "revoke": "Revoke connection",
+      "delete": "Delete record"
+    },
+    "revoked": "The agent connection was revoked.",
+    "revokedGrantPending": "Application access was revoked immediately. Supabase OAuth grant removal still needs to be retried.",
+    "deleted": "The revoked connection record was deleted.",
+    "errors": {
+      "load": "Agent connections could not be loaded.",
+      "revoke": "The agent connection could not be revoked.",
+      "delete": "The connection record could not be deleted."
+    },
+    "consent": {
+      "title": "Authorise {client}",
+      "description": "Choose the organisation this agent may work with. Product-specific access can be narrowed further below.",
+      "loading": "Loading authorisation request…",
+      "unnamedClient": "coding agent",
+      "notice": {
+        "title": "Revocable, least-privilege access",
+        "description": "This connection uses a dedicated agent role, remains tied to your account and organisation membership, and can be revoked from account or organisation settings."
+      },
+      "organisation": {
+        "label": "Organisation",
+        "help": "The agent cannot access another organisation through this connection.",
+        "empty": "Join or create an organisation before connecting an agent."
+      },
+      "requestedScopes": "Requested scopes",
+      "noScopes": "No scopes requested",
+      "returnsTo": "Returns to",
+      "deny": "Deny",
+      "approve": "Authorise agent",
+      "errors": {
+        "missingId": "The OAuth authorisation ID is missing.",
+        "invalid": "This OAuth request is no longer valid.",
+        "deny": "The request could not be denied.",
+        "approve": "The agent could not be authorised.",
+        "noRedirect": "Supabase did not return an OAuth redirect."
+      }
+    }
+  },
   "Organisations": {
     "common": {
       "save": "Save changes",
@@ -1429,7 +1496,8 @@
       "back": "Back to organisations",
       "profile": "Profile",
       "team": "Team",
-      "billing": "Billing"
+      "billing": "Billing",
+      "agents": "Agents"
     },
     "chooser": {
       "title": "Organisations",

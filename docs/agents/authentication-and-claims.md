@@ -72,6 +72,14 @@ Do not force organisation, team, project, or account membership into `app.user_r
 
 The hook emits `active_organisation_id`, `active_organisation_handle`, `active_organisation_role`, and `organisation_context_version` only when a valid session context exists. Removing a member or changing a role invalidates stale contexts, and callers must refresh the session when the RPC returns `requiresSessionRefresh`. Product-specific organisation fields and presentation remain application-owned.
 
+## OAuth agent role and consent
+
+When an Auth access-token hook event contains a non-empty OAuth `client_id`, Core issues the `supacharger_agent` Postgres role and strips human global-role and active-organisation claims. The role does not inherit `authenticated` privileges. It receives only schema usage, `app.resolve_agent_connections()`, `app.touch_agent_connection()`, and product routines granted explicitly in a reviewed migration.
+
+`AGENT_CONNECTIONS.ENABLED` controls the managed `/auth/oauth/consent`, `/account/agents`, and organisation Agents tab. The database independently checks `app.agent_connections_enabled()` so hiding routes never becomes the security boundary. Local `[auth.oauth_server]` and the hosted Supabase OAuth Server switch must match the application setting; TypeScript configuration cannot mutate hosted Auth. Dynamic client registration is deployment policy and must not be enabled merely because agent connections are enabled.
+
+Consent creates the application connection and product extension before approving the Supabase authorisation request. Approval failure revokes and removes that application record. Own-user revocation also calls `auth.oauth.revokeGrant({ clientId })`; organisation administrator revocation intentionally stops at the application database boundary because Core does not grant cross-user Supabase Auth administration authority.
+
 ## CLI and deployment
 
 Create role/hook changes with `supabase migration new`, verify a clean local reset and database lint, regenerate local types, and keep `[auth.hook.custom_access_token]` pointed at `pg-functions://postgres/app/custom_access_token_hook`. `config.toml` changes only the local stack.

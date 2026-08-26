@@ -206,7 +206,7 @@
   "AccountSettings": {
     "title": "",
     "description": "",
-    "navigation": {"label": "", "details": "", "security": "", "privacy": "", "notifications": "", "billing": "", "organisations": "", "productProfile": ""},
+    "navigation": {"label": "", "details": "", "security": "", "privacy": "", "notifications": "", "billing": "", "agents": "", "organisations": "", "productProfile": ""},
     "details": {"title": "", "description": "", "firstName": "", "lastName": "", "email": "", "emailHelp": "", "username": "", "usernameHelp": "", "language": "", "save": "", "saving": "", "saved": ""},
     "languages": {"en": "", "fr": "", "es": "", "zh": ""},
     "media": {"avatar": "", "header": "", "avatarHelp": "", "headerHelp": "", "invalidFile": "", "uploadFailed": "", "saveFailed": "", "saving": "", "save": "", "saved": "", "choose": "", "preview": ""},
@@ -1204,10 +1204,38 @@
   "AuthenticatedMetadata": {
     "description": "Tu cuenta de Korunet y espacio de trabajo comunitario."
   },
+  "AgentConnections": {
+    "mine": { "title": "", "description": "" },
+    "organisation": { "title": "", "description": "" },
+    "loading": "",
+    "unknownUser": "",
+    "empty": { "title": "", "description": "" },
+    "state": { "active": "", "revoked": "" },
+    "fields": { "scopes": "", "noScopes": "", "connected": "", "lastUsed": "", "never": "" },
+    "actions": { "revoke": "", "delete": "" },
+    "revoked": "",
+    "revokedGrantPending": "",
+    "deleted": "",
+    "errors": { "load": "", "revoke": "", "delete": "" },
+    "consent": {
+      "title": "",
+      "description": "",
+      "loading": "",
+      "unnamedClient": "",
+      "notice": { "title": "", "description": "" },
+      "organisation": { "label": "", "help": "", "empty": "" },
+      "requestedScopes": "",
+      "noScopes": "",
+      "returnsTo": "",
+      "deny": "",
+      "approve": "",
+      "errors": { "missingId": "", "invalid": "", "deny": "", "approve": "", "noRedirect": "" }
+    }
+  },
   "Organisations": {
     "common": {"save":"","saving":"","working":""},
     "roles": {"owner":"","admin":"","member":""},
-    "navigation": {"label":"","back":"","profile":"","team":"","billing":""},
+    "navigation": {"label":"","back":"","profile":"","team":"","billing":"","agents":""},
     "chooser": {
       "title":"","description":"","membershipsTitle":"","membershipsDescription":"","emptyTitle":"","emptyDescription":"",
       "memberCount":"","active":"","select":"","openSettings":"","createTitle":"","createDescription":"","create":"",

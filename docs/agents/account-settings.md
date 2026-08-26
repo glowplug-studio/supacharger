@@ -10,6 +10,10 @@ Profile media uploads go through the authenticated `process-image-upload` Edge F
 
 Managed account JSX uses only stable `sc-account-*` and shared `sc-control-*` class hooks for presentation. Layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling belong in the unlayered developer-owned `src/styles/supacharger-account.css`. The CLI installs that starter only when absent and preserves it on updates. Do not add Tailwind presentation utilities to managed account JSX; applications must be able to restyle the complete account surface without editing managed files.
 
+When `AGENT_CONNECTIONS.ENABLED` is true, the managed navigation includes `/account/agents`. The page lists only the signed-in user's connections and can revoke or delete them. Revocation first blocks the application database boundary, then attempts Supabase Auth grant revocation so the user's client sessions and refresh tokens are invalidated. The paired organisation tab lets owners and administrators manage every organisation connection while ordinary members see only their own.
+
+Agent connection and consent JSX exposes only semantic `sc-agent-*` hooks. Put every layout, colour, state, breakpoint and loading animation in the developer-owned `src/styles/supacharger-agents.css` using Tailwind `@apply`. The CLI installs this starter only when absent and preserves consumer styling. Licence-restricted consumer components or styles must never enter Core.
+
 ## Developer-owned extensions
 
 The CLI installs missing starters under `src/supacharger.adapters/account/` once and preserves them on later updates:
@@ -20,6 +24,8 @@ The CLI installs missing starters under `src/supacharger.adapters/account/` once
 - `details-page.tsx` may replace the details content for an authorised product presentation;
 - `presentation.ts` selects the managed shell or a product-owned passthrough layout; and
 - `chrome.tsx` wraps the managed settings shell with application chrome such as a header, application sidebar, and footer.
+
+`src/supacharger.adapters/agents/consent.tsx` adds product-owned consent fields and returns a validated extension payload. `connection-summary.tsx` displays the resulting product resource binding. Core works with empty adapters; products must enforce their extension again in `app.agent_connection_extension` inside the same database transaction.
 
 The Core starter implements `chrome.tsx` with the example `AuthenticatedAppShell`, so Korunet renders its header and footer around `/account`. Existing consumers keep their own adapter byte-for-byte during CLI updates. Keep account navigation and form content inside the managed `AccountSettingsShell`; use the chrome adapter only for the outer application frame so project routes do not acquire duplicate headers or footers.
 

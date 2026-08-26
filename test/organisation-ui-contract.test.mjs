@@ -138,7 +138,7 @@ test('ships complete English copy and empty secondary placeholders', async () =>
   }
 });
 
-test('keeps product-only usage and agent settings out of Core', async () => {
+test('keeps product-only usage and agent licensing out of Core organisation contracts', async () => {
   const files = await Promise.all([
     read('src/supacharger/organisations/organisation-settings-shell.tsx'),
     read('src/supacharger/organisations/organisation-service.ts'),

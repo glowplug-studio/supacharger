@@ -118,6 +118,10 @@ export type SupachargerConfig = {
     /** Organisation URLs use a root `[handle]` segment. */ ROUTE_MODE: 'root-handle';
     /** Expose organisation avatar/header media. */ PROFILE_MEDIA: boolean;
   };
+  /** OAuth connections used by external coding agents and MCP clients. */
+  AGENT_CONNECTIONS: {
+    /** Expose agent consent and management UI and permit agent database access. */ ENABLED: boolean;
+  };
   /** Optional account-settings sections. */
   ACCOUNT_SETTINGS: {
     /** Show and persist language preference. */ LANGUAGE: boolean;

@@ -1,0 +1,85 @@
+openapi: 3.1.0
+info:
+  title: Supacharger RPC contract additions
+  version: 1.0.0
+  description: Canonical RPC contracts introduced or changed by the generic agent-connections capability.
+servers:
+  - url: https://{project}.supabase.co/rest/v1
+    variables:
+      project:
+        default: example
+paths:
+  /rpc/agent_connections:
+    post:
+      summary: Manage OAuth agent connections
+      description: Requires a verified human `authenticated` JWT. OAuth agent JWTs cannot call this boundary.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [input_payload]
+              properties:
+                input_payload:
+                  $ref: '#/components/schemas/AgentConnectionAction'
+      responses:
+        '200':
+          description: Action-specific JSON response without raw OAuth tokens.
+          content:
+            application/json:
+              schema: {}
+        '401': { description: Verified human session required. }
+        '403': { description: Feature disabled or organisation access denied. }
+  /rpc/get_account_summary_by_current_user:
+    post:
+      summary: Read the current account summary
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                include_organisations:
+                  type: boolean
+                  default: true
+                  description: Set false to avoid all organisation-context queries.
+      responses:
+        '200':
+          description: Account identity with optional organisation context.
+          content:
+            application/json:
+              schema: { type: object }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    AgentConnectionAction:
+      oneOf:
+        - type: object
+          required: [action, organisationId, oauthClientId, oauthClientName, oauthScopes]
+          properties:
+            action: { const: create }
+            organisationId: { type: string, format: uuid }
+            oauthClientId: { type: string }
+            oauthClientName: { type: string }
+            oauthScopes: { type: array, maxItems: 16, items: { type: string } }
+            extension: { type: object, additionalProperties: true }
+        - type: object
+          required: [action, scope]
+          properties:
+            action: { const: list }
+            scope: { enum: [mine, organisation] }
+            organisationId: { type: string, format: uuid }
+        - type: object
+          required: [action, agentConnectionId]
+          properties:
+            action: { enum: [revoke, delete] }
+            agentConnectionId: { type: string, format: uuid }

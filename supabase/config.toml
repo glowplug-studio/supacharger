@@ -185,6 +185,11 @@ max_frequency = "5s"
 enabled = true
 uri = "pg-functions://postgres/app/custom_access_token_hook"
 
+[auth.oauth_server]
+enabled = false
+authorization_url_path = "/auth/oauth/consent"
+allow_dynamic_registration = false
+
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
 [auth.sms.twilio]
 enabled = false
