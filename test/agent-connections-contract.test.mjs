@@ -3,13 +3,28 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
+const canonicalAgentMigrationPath =
+  'supabase/migrations/20260826050719_add_agent_connections.sql';
+
+async function readAgentMigration() {
+  let aliases = {};
+  try {
+    aliases = JSON.parse(
+      await readFile(new URL('../.supacharger/migration-aliases.json', import.meta.url), 'utf8'),
+    );
+  } catch (error) {
+    if (error?.code !== 'ENOENT') throw error;
+  }
+
+  return read(aliases[canonicalAgentMigrationPath] ?? canonicalAgentMigrationPath);
+}
 
 function literalClassTokens(source) {
   return [...source.matchAll(/className=['"]([^'"]+)['"]/g)].flatMap((match) => match[1].split(/\s+/));
 }
 
 test('installs a generic least-privilege agent database boundary', async () => {
-  const migration = await read('supabase/migrations/20260826050719_add_agent_connections.sql');
+  const migration = await readAgentMigration();
 
   assert.match(migration, /create role supacharger_agent nologin noinherit/i);
   assert.match(migration, /create table app\.agent_connections/i);
@@ -24,7 +39,7 @@ test('installs a generic least-privilege agent database boundary', async () => {
 });
 
 test('OAuth claims use the generic role and do not inherit human organisation authority', async () => {
-  const migration = await read('supabase/migrations/20260826050719_add_agent_connections.sql');
+  const migration = await readAgentMigration();
 
   assert.match(migration, /claims ->> 'client_id'/);
   assert.match(migration, /jsonb_set\(claims, '\{role\}', to_jsonb\('supacharger_agent'/);
