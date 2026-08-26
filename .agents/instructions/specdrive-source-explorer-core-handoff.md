@@ -75,9 +75,13 @@ docs/bruno/supacharger-rpc/agent_connections.bru
 Core local reset, pgTAP, database lint, contracts, Bruno parity, TypeScript,
 lint and build passed. SnapScreen and Wakekeeper local resets and managed
 contracts passed; Wakekeeper's adapted migration is hosted. Specdrive's adapted
-migration and browser OAuth journey must be verified against its hosted project
-after deployment, followed by the Night Garden sample Source Explorer sync.
+migration is hosted and its ready Vercel branch artefact was promoted to
+production.
 
-If hosted dashboard permissions prevent enabling OAuth Server or selecting
-`app.custom_access_token_hook`, record the exact dashboard step here rather than
-adding a compatibility workaround.
+Chrome verification confirms that Specdrive's hosted OAuth Server, dynamic
+OAuth clients and `app.custom_access_token_hook` are enabled with the correct
+Site URL and consent path. The only remaining handoff is human: Chrome's
+1Password extension must be unlocked before the final signed-in page matrix and
+Night Garden MCP upload can run. That exact resume sequence is recorded in
+`specdrive-main/.agents/instructions/source-explorer-blocker-handoff.md`; do not
+replace it with an authentication workaround.
