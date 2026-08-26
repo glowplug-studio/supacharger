@@ -21,6 +21,7 @@ const guidanceFiles = {
   loading_ui: 'docs/agents/loading-ui.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
   account_settings: 'docs/agents/account-settings.md',
+  agent_connections: 'docs/agents/agent-connections.md',
   organisations: 'docs/agents/organisation-settings.md',
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
@@ -236,6 +237,7 @@ export function classifyPath(inputPath) {
 
   if (
     relativePath === 'src/styles/supacharger-account.css' ||
+    relativePath === 'src/styles/supacharger-agents.css' ||
     relativePath === 'src/styles/supacharger-organisations.css'
   ) {
     return {

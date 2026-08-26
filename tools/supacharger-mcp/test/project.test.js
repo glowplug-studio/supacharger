@@ -11,6 +11,7 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/supacharger-auth.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/supacharger-account.css').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/styles/supacharger-agents.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/supacharger-organisations.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger.adapters/auth/auth-sidecar.tsx').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger.adapters/account/navigation.ts').ownership, 'developer-owned');
@@ -79,6 +80,11 @@ test('searches the billing guidance exposed to the MCP', async () => {
 test('searches the account settings guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('supacharger:account-summary-changed');
   assert.ok(matches.some((match) => match.path === 'docs/agents/account-settings.md'));
+});
+
+test('searches the agent connections guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('supacharger_agent');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/agent-connections.md'));
 });
 
 test('searches the organisation settings guidance exposed to the MCP', async () => {
