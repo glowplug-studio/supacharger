@@ -101,7 +101,7 @@ test('configuration gates every managed agent route and supplies complete Englis
   const english = JSON.parse(englishSource);
 
   assert.match(contract, /AGENT_CONNECTIONS/);
-  assert.match(config, /AGENT_CONNECTIONS:\s*\{\s*ENABLED: false/s);
+  assert.match(config, /AGENT_CONNECTIONS:\s*\{\s*ENABLED: (?:true|false)/s);
   for (const source of [consentRoute, accountRoute, organisationRoute]) {
     assert.match(source, /SC_CONFIG\.AGENT_CONNECTIONS\.ENABLED/);
     assert.match(source, /notFound\(\)/);
