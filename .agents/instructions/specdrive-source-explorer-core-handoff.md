@@ -74,9 +74,10 @@ docs/bruno/supacharger-rpc/agent_connections.bru
 
 Core local reset, pgTAP, database lint, contracts, Bruno parity, TypeScript,
 lint and build passed. SnapScreen and Wakekeeper local resets and managed
-contracts passed; Wakekeeper's adapted migration is hosted. Specdrive's adapted
-migration is hosted and its ready Vercel branch artefact was promoted to
-production.
+contracts passed. The canonical Core migration and the adapted SnapScreen,
+Wakekeeper and Specdrive migrations are hosted; the consumers keep their
+feature disabled or enabled according to their committed configuration.
+Specdrive's ready Vercel branch artefact was promoted to production.
 
 Chrome verification confirms that Specdrive's hosted OAuth Server, dynamic
 OAuth clients and `app.custom_access_token_hook` are enabled with the correct
