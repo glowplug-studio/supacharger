@@ -44,6 +44,12 @@ Stripe libraries under `src/lib/stripe/`, billing controllers under `src/feature
 
 `src/supacharger.config.ts` is the application configuration seam. It contains branding, route policy, authentication choices, password requirements, redirects, billing access, Checkout/tax policy, and UI preferences. Every consumer exposes the same option names and shapes through the protected `SupachargerConfig` contract while retaining application-specific values. CLI updates must preserve the settings file byte-for-byte unless a separate, explicit configuration migration is approved. New core configuration keys require a documented configuration migration because preserving the file means consumers do not receive them automatically.
 
+### Consumer configuration approval boundary
+
+Do not treat a human-requested change to an ordinary application value as a Core-contract change merely because it lives in `src/supacharger.config.ts`. The consumer may change branding, presentation, ordinary destinations, feature choices, and other product policy without a Core approval gate when it preserves the complete canonical property set, names, types, nesting, and shared meanings.
+
+Keep security-sensitive values behind the consumer's approval gate. This includes authentication and session policy, authorisation, public or protected route exposure, privileged access, native association identifiers, and billing-access enforcement. Changing a canonical property's presence, name, type, nesting, or shared meaning is always a Core-contract change and must be designed in Core, documented, migrated through the CLI, and synchronised across consumers.
+
 `src/app/layout.tsx` is installed as the starter root-layout template and is then developer-owned. The CLI manifest must preserve it during `coreupdate`; developers may change fonts, body classes, concrete provider implementations, and product-specific head content. Reusable document behaviour belongs in the CLI-managed `src/supacharger/root-document.tsx` helper. That helper owns the metadata factory, page-metadata factory, viewport defaults, optional standard favicon declaration, production-aware robots metadata, and analytics integrations.
 
 The standard favicon layout keeps only `public/favicon.ico` at the public root. The SVG, 96 px PNG, Apple touch icon, 192/512 px web-app icons, and `site.webmanifest` live under `public/favicons/`; metadata and manifest URLs use `/favicons/...`. Favicon artwork remains application-owned, while the directory and URL contract is shared.

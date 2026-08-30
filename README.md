@@ -36,7 +36,7 @@ Shared runtime and tooling dependencies are exact-pinned in `package.json`. Cons
 
 ### Application configuration
 
-Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
+Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. Ordinary requested value changes are consumer configuration rather than Core-contract changes; security-sensitive values still require the consumer's approval gate. Adding, removing, renaming, retyping, reshaping, or redefining a canonical property is a Core-contract change. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
 
 ### Core update ownership
 

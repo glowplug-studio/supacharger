@@ -6,6 +6,8 @@ Before modifying any core-contracted file or behaviour, stop after inspection an
 
 Core-contracted scope includes protected or CLI-managed paths, `.supacharger/managed-files.json`, the `SupachargerConfig` contract, shared public APIs, authentication and route-protection behaviour, database schemas and migrations, exposed RPC signatures, generated database types, shared assets and file-ownership conventions, CLI installation/update behaviour, and the documentation that defines those contracts. Read-only inspection, comparison, diagnosis, and planning may continue before approval. Approval for one reported change set does not authorise newly discovered core-contract changes; report those separately and pause again.
 
+In a consuming application, a requested change to an ordinary value in developer-owned `src/supacharger.config.ts` is not a Core-contract change when the complete canonical property set, names, types, nesting, and shared meanings remain unchanged. Security-sensitive configuration changes still require the consumer approval gate, including authentication, authorisation, public or protected route exposure, privileged access, and billing-access enforcement. Adding, removing, renaming, retyping, reshaping, or redefining a canonical configuration property remains a Core-contract change.
+
 ## Mission
 
 Develop `supacharger/` as the canonical, open-source starter core for applications built with Supacharger. Keep the core reusable, updateable by the Supacharger CLI, independently documented, and free of application-specific assumptions.
@@ -91,7 +93,7 @@ When a task affects reusable behaviour:
 3. Separate reusable core behaviour from application-specific customisation.
 4. Recommend a canonical result, but do not silently resolve competing implementations when the human has not chosen one.
 5. Land the approved shared implementation in this core first.
-6. Update the Docusaurus documentation in `../supacharger-docs/` in the same change when that sibling repository is available. If it is unavailable, record the exact documentation follow-up required.
+6. Update the Docusaurus documentation in `../../supacharger-docs/` in the same change when that repository is available. If it is unavailable, record the exact documentation follow-up required.
 7. Propagate the approved interface to SnapScreen and Wakekeeper while preserving their developer-owned configuration and product behaviour.
 8. Compare relevant non-visual contracts with Specdrive, but do not standardise its Untitled UI presentation layer unless explicitly requested.
 
@@ -137,7 +139,7 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 - Keep code, `README.md`, repository agent guidance, MCP guidance, and `supacharger-docs` consistent with actual behaviour.
 - Read `docs/agents/localisation.md` whenever adding or changing user-facing copy, locale behaviour, or translation catalogues.
 - Read `docs/agents/input-validation.md` before creating or changing a form submission, Server Action, route handler, Supabase Edge Function request, or RPC input contract. Client validation is supplemental: parse every untrusted payload with Zod at its server-side JavaScript or TypeScript boundary, then preserve independent database constraints and authorisation.
-- Interpret an unqualified request to "update the docs" as requiring the repository `README.md`, the Docusaurus documentation in `../supacharger-docs/`, and the agent-facing guidance/resources in `docs/agents/` and `tools/supacharger-mcp/` to be reviewed and updated together. Explicitly state when one of these surfaces is unaffected.
+- Interpret an unqualified request to "update the docs" as requiring the repository `README.md`, the Docusaurus documentation in `../../supacharger-docs/`, and the agent-facing guidance/resources in `docs/agents/` and `tools/supacharger-mcp/` to be reviewed and updated together. Explicitly state when one of these surfaces is unaffected.
 - Prefer focused checks during implementation and run the relevant lint, type, test, or build commands before reporting completion.
 - Report all affected repositories and any verification that could not be run.
 - Preserve unrelated worktree changes in this repository and every consuming application.
