@@ -12,6 +12,8 @@ For the canonical MFA cleanup, the updater backs up the developer configuration,
 
 The approved configuration migration inserts only missing keys. Profile media defaults are optional, account cancellation remains disabled, organisations remain disabled, the chooser uses `/account/organisation`, root-handle routing uses `/{handle}/settings`, and organisation billing remains disabled. Existing branding, routes, enabled policies, and other product values survive.
 
+The session-transfer migration inserts a missing `AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER` object as `{ ENABLED: false, TOKEN_TTL_SECONDS: 120 }`. It must never overwrite an existing choice. Enabling a consumer remains a product decision; enabled Apple consumers also add `/auth/session-transfer` to their developer-owned associated paths.
+
 The updater recursively merges Core's `messages/en.json` into the application's English catalogue. It adds a missing key or fills an empty English string, while preserving every existing non-empty value. It never creates, replaces, translates, or deletes a secondary catalogue during an update.
 
 Developer-owned organisation starters include `chrome.tsx`, `navigation.ts`, `pages.tsx`, `profile-fields.tsx`, and `profile-extension.ts`. The CLI copies a missing file but preserves any existing implementation. The same rule applies to auth, account, billing, CSS, root layout, and project routes.

@@ -67,6 +67,11 @@ export type SupachargerConfig = {
     MFA_TOTP: {
       /** Require AAL2 after sign-in for accounts with a verified factor. */ REQUIRED_FOR_SIGN_IN: boolean;
     };
+    /** Short-lived, single-use browser session hand-off policy. */
+    CROSS_DEVICE_SESSION_TRANSFER: {
+      /** Expose the issue, bootstrap, and redeem routes. */ ENABLED: boolean;
+      /** Grant lifetime from 60 through 300 seconds. */ TOKEN_TTL_SECONDS: number;
+    };
   };
   /** Native-app callback association documents and identifiers. */
   MOBILE_DEEP_LINKING: {

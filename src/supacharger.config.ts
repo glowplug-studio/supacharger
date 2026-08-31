@@ -70,6 +70,10 @@ export const SC_CONFIG: SupachargerConfig = {
     MFA_TOTP: {
       REQUIRED_FOR_SIGN_IN: false,
     },
+    CROSS_DEVICE_SESSION_TRANSFER: {
+      ENABLED: false,
+      TOKEN_TTL_SECONDS: 120,
+    },
   },
   // Enable this only after the production HTTPS domain and native identifiers
   // are ready. The shared routes then publish both platform association files.
@@ -124,6 +128,8 @@ export const SC_CONFIG: SupachargerConfig = {
         '/api/intl',
         '/auth/confirm',
         '/auth/callback',
+        '/auth/session-transfer',
+        '/api/auth/session-transfers/redeem',
       ],
       // Unauthenticated users cant visit these paths, important if AUTH_ONLY_APP is false.
       DISALLOWED: [

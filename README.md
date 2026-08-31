@@ -154,6 +154,12 @@ The journey supports password authentication and one exclusive passwordless emai
 
 Logout also uses a safe application-relative destination. `POST /account/logout` clears the SSR session and returns JSON containing that relative `redirectTo` path for the managed button. Direct navigation through `GET /account/logout` clears the same session and issues a `303` with a relative `Location` header, which the browser resolves against the incoming request origin. This keeps logout on the origin the user actually opened and prevents a stale `NEXT_PUBLIC_SITE_URL` host, scheme, or port from turning a successful logout into a failed client redirect.
 
+### Cross-device session transfer
+
+`AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER` installs a disabled-by-default hand-off protocol. Set `ENABLED: true` and an integer `TOKEN_TTL_SECONDS` from 60 to 300; 120 seconds is recommended. A verified signed-in browser may issue `POST /api/auth/session-transfers` with an optional safe relative `next`. The response contains a one-use URL whose 256-bit grant is in the fragment. `/auth/session-transfer` removes that fragment before one same-origin `POST /api/auth/session-transfers/redeem`.
+
+The protocol never copies an access or refresh token. It stores only a SHA-256 grant digest, binds it to the issuing Auth session, and creates a separate AAL1 Supabase session in the receiving browser. The normal callback adapter then enforces MFA, onboarding and billing; the receiving device must complete its own AAL2 challenge. A different signed-in receiving user is rejected. Redeemed, expired, source-revoked and unknown grants cannot be retried; request a new link. Deploy the additive migration before enabling the application setting.
+
 ### Mobile login verification and deep links
 
 Supacharger can publish the verified HTTPS association files used by iOS Universal Links and Android App Links. This lets a magic link, link-based email confirmation, or password-reset link open an installed mobile app while retaining the same web URL as a browser fallback. An email OTP is entered directly and does not itself require a deep link.
@@ -166,6 +172,7 @@ MOBILE_DEEP_LINKING: {
   ASSOCIATED_PATHS: [
     '/auth/callback',
     '/auth/confirm',
+    '/auth/session-transfer', // Only when cross-device transfer is enabled.
   ],
   IOS: {
     // <Apple App ID prefix>.<bundle identifier>; not the numeric App Store ID.
@@ -441,7 +448,7 @@ The application imports Tailwind once through `src/supacharger/styles/globals.cs
 - `src/supacharger.adapters/auth/auth-sidecar.tsx` supplies the desktop sidecar and compact mobile brand used by the managed authentication shell. The CLI installs the starter only when missing.
 - `src/supacharger.adapters/account/chrome.tsx` supplies the outer application frame around managed account settings. Core's starter uses `AuthenticatedAppShell`, giving Korunet its signed-in header and footer; applications may replace it with a header, application sidebar, footer, or any combination. The CLI installs it only when missing and preserves existing consumer implementations.
 
-Project-owned components may use Tailwind utilities. Managed authentication, account, and organisation presentation markup uses semantic hooks instead, allowing applications to restyle those surfaces entirely through the preserved CSS files without editing CLI-managed JSX. These presentation files are intentionally unlayered so their rules can override Tailwind-layer defaults. Do not import Tailwind again from a developer-owned stylesheet.
+Project-owned components may use Tailwind utilities. Managed authentication, account, and organisation presentation markup uses semantic hooks instead, allowing applications to restyle those surfaces entirely through the preserved CSS files without editing CLI-managed JSX. In authentication styles, compose standard Tailwind presentation inside those semantic classes with `@apply`; keep ordinary CSS declarations for product variables, pseudo-elements, custom transitions or animation, and behaviour that Tailwind does not provide. Do not import Tailwind again from a developer-owned stylesheet.
 
 Because the presentation files are unlayered, shared `sc-control-*` rules in the account and organisation stylesheets must be scoped to their owning surface roots. An unscoped control rule can override the developer-owned authentication theme even when the authentication selector is more specific.
 
@@ -463,7 +470,7 @@ The shared base layer gives enabled interactive controls—including links, butt
 
 The same base layer supplies native smooth scrolling, while the root layout mounts the protected `SmoothAnchorNavigation` helper so Next.js `<Link>` fragment navigation behaves identically. Every same-page link such as `href='#features'` works automatically, including clicks on nested link content and `/#features` links. Modified clicks, downloads, external targets, and missing fragments retain their normal browser behaviour. Set `data-smooth-scroll='false'` on an exceptional link to opt out. Visitors who prefer reduced motion receive immediate scrolling.
 
-`tailwind.config.ts` remains a merge-managed application configuration file and retains its current CommonJS export. `postcss.config.mjs` is the exact ESM PostCSS boundary used by Next.js and Turbopack. Keep the `@config` reference unchanged; do not add a package-wide `"type": "module"` merely to load either configuration.
+`tailwind.config.ts` remains a merge-managed application configuration file and retains its current CommonJS export. Keep Tailwind's standard radius, font-family, and container scales vanilla; product tokens and genuinely new utilities belong under additive `theme.extend` entries rather than replacements for the standard scale. `postcss.config.mjs` is the exact ESM PostCSS boundary used by Next.js and Turbopack. Keep the `@config` reference unchanged; do not add a package-wide `"type": "module"` merely to load either configuration.
 
 - [Learn more about shadcn/ui components](https://ui.shadcn.com/docs)
 - [Learn more about theming with shadcn/ui](https://ui.shadcn.com/docs/theming)

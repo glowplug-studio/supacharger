@@ -71,6 +71,53 @@ test('root tool configuration uses explicit module formats', () => {
   assert.equal(postcss.status, 0, postcss.stderr);
 });
 
+test('preserves Tailwind defaults and supplies every shared semantic style token', async () => {
+  const [tailwindConfig, projectStyles, authStyles] = await Promise.all([
+    readFile(new URL('../tailwind.config.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../src/styles/project.css', import.meta.url), 'utf8'),
+    readFile(new URL('../src/styles/supacharger-auth.css', import.meta.url), 'utf8'),
+  ]);
+
+  assert.doesNotMatch(tailwindConfig, /\b(?:borderRadius|container|fontFamily)\s*:/);
+  assert.doesNotMatch(projectStyles, /--radius\s*:/);
+  assert.match(authStyles, /@apply\s+[^;]*\brounded-(?:lg|2xl|full)\b[^;]*;/);
+  assert.doesNotMatch(authStyles, /border-radius\s*:/);
+
+  const semanticTokens = [
+    'background',
+    'foreground',
+    'muted',
+    'muted-foreground',
+    'popover',
+    'popover-foreground',
+    'border',
+    'input',
+    'card',
+    'card-foreground',
+    'primary',
+    'primary-foreground',
+    'secondary',
+    'secondary-foreground',
+    'accent',
+    'accent-foreground',
+    'destructive',
+    'destructive-foreground',
+    'ring',
+    'sidebar-background',
+    'sidebar-foreground',
+    'sidebar-primary',
+    'sidebar-primary-foreground',
+    'sidebar-accent',
+    'sidebar-accent-foreground',
+    'sidebar-border',
+    'sidebar-ring',
+  ];
+
+  for (const token of semanticTokens) {
+    assert.match(projectStyles, new RegExp(`--${token}\\s*:`), `missing --${token}`);
+  }
+});
+
 test('Next uses Cache Components and accepts the documented loopback hostname', async () => {
   const javascriptConfig = new URL('../next.config.js', import.meta.url);
   const typescriptConfig = new URL('../next.config.ts', import.meta.url);

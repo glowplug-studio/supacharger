@@ -4,6 +4,8 @@
 
 Reusable internal tables live in `app`. Browser-callable functions live in `api`; service-role-only Stripe, webhook, and migration functions live in `api_edge`. PostgREST exposes `api` and `api_edge`, while `app` remains unexposed. Every internal table uses RLS as defence in depth even when it has no browser grants.
 
+`app.auth_session_transfers` stores short-lived cross-device grants as SHA-256 digests. It is private, RLS-enabled and unavailable to `PUBLIC`, `anon` and `authenticated`. `api_edge.create_auth_session_transfer(uuid, uuid, text, text, timestamptz)` and `api_edge.claim_auth_session_transfer(text)` are `SECURITY DEFINER`, use an empty search path and grant execution only to `service_role`. Creation validates the user/source-session binding, rotates an older unconsumed grant, enforces a ten-second issue interval and a five-minute database maximum. Claim performs one atomic update and also requires the source `auth.sessions` row to remain live.
+
 ## One profile per Auth user
 
 `app.profiles.id` is the `auth.users.id` primary key. The shared fields are:

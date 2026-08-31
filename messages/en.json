@@ -1537,6 +1537,13 @@
       "actionFailed": "The organisation action could not be completed. Try again."
     }
   },
+  "SessionTransfer": {
+    "title": "Opening your session",
+    "working": "Securely opening your account in this browser…",
+    "invalid": "This transfer link is invalid, expired, or has already been used. Request a new link from the signed-in device.",
+    "conflict": "This browser is signed in to another account. Sign out, then request a new transfer link.",
+    "retry": "The session could not be opened. Request a new transfer link from the signed-in device."
+  },
   "ErrorPage": {
     "notFound": {
       "status": "404 error",

@@ -207,6 +207,13 @@ export type Database = {
         Args: { organisation_id: string }
         Returns: string
       }
+      claim_auth_session_transfer: {
+        Args: { token_hash: string }
+        Returns: {
+          next_path: string
+          user_id: string
+        }[]
+      }
       claim_stripe_event: { Args: { input_event_id: string }; Returns: Json }
       complete_stripe_event: {
         Args: {
@@ -215,6 +222,19 @@ export type Database = {
           input_retry_at?: string
         }
         Returns: undefined
+      }
+      create_auth_session_transfer: {
+        Args: {
+          next_path: string
+          requested_expires_at: string
+          source_session_id: string
+          token_hash: string
+          user_id: string
+        }
+        Returns: {
+          auth_session_transfer_id: string
+          expires_at: string
+        }[]
       }
       create_organisation_context: {
         Args: {
@@ -257,6 +277,39 @@ export type Database = {
   }
   app: {
     Tables: {
+      auth_session_transfers: {
+        Row: {
+          auth_session_transfer_id: string
+          consumed_at: string | null
+          created_at: string
+          expires_at: string
+          next_path: string
+          source_session_id: string
+          token_hash: string
+          user_id: string
+        }
+        Insert: {
+          auth_session_transfer_id?: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at: string
+          next_path: string
+          source_session_id: string
+          token_hash: string
+          user_id: string
+        }
+        Update: {
+          auth_session_transfer_id?: string
+          consumed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          next_path?: string
+          source_session_id?: string
+          token_hash?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       billing_account_members: {
         Row: {
           billing_account_id: string
@@ -1092,6 +1145,10 @@ export type Database = {
       can_manage_organisation: {
         Args: { organisation_id: string; user_id?: string }
         Returns: boolean
+      }
+      custom_access_token_claims_extension: {
+        Args: { canonical_claims: Json; event: Json }
+        Returns: Json
       }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       is_organisation_member: {

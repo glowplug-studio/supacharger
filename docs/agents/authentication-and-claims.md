@@ -6,6 +6,14 @@ Managed Supabase Auth TOTP enrolment and factor management are always available 
 
 Use Supabase Auth factors only: list, enrol, challenge/verify, and unenrol. Never create an application MFA table or persist the TOTP secret. Treat unverified factors as incomplete enrolments, allow cancellation, and require a fresh code for factor removal when the session must step up. `REQUIRED_FOR_SIGN_IN` cannot manufacture a factor; a user with no verified factor has no AAL2 challenge until enrolment.
 
+## Cross-device session transfer
+
+`AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER` is disabled by default. Its TTL must be an integer from 60 through 300 seconds; use 120 unless a product has an approved reason to shorten it. `POST /api/auth/session-transfers` remains protected and accepts only strict JSON with an optional safe relative `next`. `/auth/session-transfer` and `POST /api/auth/session-transfers/redeem` are public protocol routes so an unauthenticated receiving browser can redeem; both return `404` while disabled.
+
+Issue requires a verified, non-anonymous user, a confirmed email, a live `session_id`, same-origin mutation headers and AAL2 when the configured MFA policy requires it for an enrolled account. Store only a SHA-256 digest of the 256-bit base64url grant. The URL carries the raw grant in its fragment; the minimal bootstrap clears it before a single credentialled POST and loads no analytics or third-party resources.
+
+Claim is atomic and one-use. The trusted server fetches the known user, creates an unsent Supabase magic-link token, verifies it immediately through the request-scoped SSR client, checks the exact user ID, and never returns or persists the generated Auth token properties. This creates a distinct AAL1 receiving session. Route success through the existing callback adapter so MFA, onboarding, billing and the stored destination remain canonical. A receiving session for another user fails closed; the same user continues without minting another session. Never copy source access or rotating refresh tokens.
+
 Email and password settings are separate from profile details. Their managed server routes authenticate with `getUser()`, validate payloads with Zod, and reauthenticate the current password before `updateUser`. OAuth-only accounts must show password-dependent controls as unavailable.
 
 ## Proxy contract

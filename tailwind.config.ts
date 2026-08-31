@@ -1,20 +1,8 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
-
 /** @type {import('tailwindcss').Config} */
 const config = {
   darkMode: 'class',
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
-    container: {
-      center: true,
-      screens: {
-        '2xl': '1600px',
-      },
-      padding: {
-        DEFAULT: '0rem',
-        sm: '2rem',
-      },
-    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
@@ -60,15 +48,6 @@ const config = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      fontFamily: {
-        sans: ['var(--font-host-grotesk)', ...defaultTheme.fontFamily.sans],
-        alt: ['var(--font-host-grotesk)', ...defaultTheme.fontFamily.sans],
       },
       keyframes: {
         'accordion-down': {

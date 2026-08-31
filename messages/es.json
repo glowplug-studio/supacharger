@@ -1236,6 +1236,13 @@
       "lastOwner":"","invitationInvalid":"","forbidden":"","actionFailed":""
     }
   },
+  "SessionTransfer": {
+    "title": "",
+    "working": "",
+    "invalid": "",
+    "conflict": "",
+    "retry": ""
+  },
   "ErrorPage": {
     "notFound": {
       "status": "error 404",

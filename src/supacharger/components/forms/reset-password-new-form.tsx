@@ -6,9 +6,9 @@ import { useTranslations } from 'next-intl';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { Input } from '@/supacharger/components/primitives/input';
 import SaveButton from '@/supacharger/components/buttons/form-save-button';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
+import { Input } from '@/supacharger/components/primitives/input';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export default function ResetPasswordNewForm() {
