@@ -7,6 +7,8 @@
     "postcss.config.mjs",
     "scripts/check-bruno-rpc-parity.mjs",
     "src/app/(supacharger)",
+    "src/lib/supabase/client.ts",
+    "src/lib/supabase/server.ts",
     "src/lib/supabase/supacharger",
     "src/proxy.ts",
     "src/supacharger",

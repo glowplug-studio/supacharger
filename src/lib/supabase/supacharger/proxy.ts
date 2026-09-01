@@ -28,6 +28,7 @@ export async function updateSession(request: NextRequest) {
     getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'),
     {
       cookies: {
+        encode: 'tokens-only',
         getAll() {
           return request.cookies.getAll();
         },

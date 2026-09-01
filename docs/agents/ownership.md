@@ -10,6 +10,8 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 
 - `src/supacharger/`
 - `src/app/(supacharger)/`
+- `src/lib/supabase/client.ts`
+- `src/lib/supabase/server.ts`
 - `src/lib/supabase/supacharger/`
 - `postcss.config.mjs`
 - `supabase/functions/_shared/image-target-contract.ts`
@@ -20,7 +22,7 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 - the exact protected contract tests listed in the manifest
 - `.supacharger/managed-files.json`
 
-Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. Reusable authentication and account routes live under `src/app/(supacharger)/`; product routes and extensions live under `src/app/(project)/`. Authentication presentation is customised through the explicit developer seams below, not by duplicating a managed public route.
+Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. The managed browser, server, and Proxy Supabase clients keep `tokens-only` cookie encoding aligned; consumers must not replace one client independently because mixed encodings can expand or invalidate refreshed session state. Reusable authentication and account routes live under `src/app/(supacharger)/`; product routes and extensions live under `src/app/(project)/`. Authentication presentation is customised through the explicit developer seams below, not by duplicating a managed public route.
 
 ### Shared and project contract tests
 

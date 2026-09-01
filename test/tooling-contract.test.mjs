@@ -157,6 +157,8 @@ test('keeps the root layout editable and the root document implementation manage
 
   assert.ok(manifest.developerOwnedPaths.includes('src/app/layout.tsx'));
   assert.ok(manifest.managedPaths.includes('src/supacharger'));
+  assert.ok(manifest.managedPaths.includes('src/lib/supabase/client.ts'));
+  assert.ok(manifest.managedPaths.includes('src/lib/supabase/server.ts'));
   assert.ok(manifest.managedPaths.includes('postcss.config.mjs'));
   assert.ok(manifest.mergeManagedPaths.includes('package.json'));
   assert.ok(manifest.mergeManagedPaths.includes('supabase/config.toml'));

@@ -98,6 +98,20 @@ test('Proxy performs claims verification without profile or billing RPCs', async
   assert.doesNotMatch(proxy, /has_billing_access_by_current_user/);
 });
 
+test('browser, server, and Proxy clients keep compact session cookies aligned', async () => {
+  const [browserClient, serverClient, proxyClient] = await Promise.all([
+    readFile(new URL('../src/lib/supabase/client.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../src/lib/supabase/server.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../src/lib/supabase/supacharger/proxy.ts', import.meta.url), 'utf8'),
+  ]);
+
+  for (const source of [browserClient, serverClient, proxyClient]) {
+    assert.match(source, /cookies:\s*\{[\s\S]*?encode:\s*'tokens-only'/);
+  }
+
+  assert.doesNotMatch(`${serverClient}\n${proxyClient}`, /getSession\(\)\.user/);
+});
+
 test('protected layout enforces profile and billing access on the server', async () => {
   const [layout, access] = await Promise.all([
     readFile(new URL('../src/app/(project)/(authenticated)/layout.tsx', import.meta.url), 'utf8'),

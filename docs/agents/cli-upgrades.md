@@ -6,6 +6,8 @@
 
 A real update must preserve every `developerOwnedPaths` entry, replace only `managedPaths`, and use an explicit strategy for each `mergeManagedPaths` entry. It installs missing starter adapters and styles once, never overwriting established product implementations. It removes an obsolete managed file only when the installed baseline owned it; locally changed legacy route wrappers require a manual move into an adapter.
 
+The compact session-cookie upgrade makes `src/lib/supabase/client.ts` and `src/lib/supabase/server.ts` exact managed paths alongside the existing Proxy client. An update replaces all three client implementations together so `cookies.encode: 'tokens-only'` cannot drift. Existing sessions are rewritten compactly on their next Auth state write or token refresh; no Supabase migration or hosted Auth setting change is required.
+
 For the canonical MFA cleanup, the updater backs up the developer configuration, removes only obsolete `AUTHENTICATION.MFA_TOTP.ENABLED`, and preserves `REQUIRED_FOR_SIGN_IN`. It also enables `auth.mfa.totp.enroll_enabled` and `verify_enabled` in merge-managed local Supabase configuration. The developer must restart the local stack; hosted MFA capability remains separately configured in the Supabase Dashboard.
 
 ## Account-alignment migration
