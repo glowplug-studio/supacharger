@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 2,
+  "id": "brevo-email",
+  "version": "2.0.1",
+  "coreOwnershipVersion": 2,
+  "files": [
+    {
+      "source": "payload/send-template.ts",
+      "target": "supabase/functions/_shared/extensions/brevo-email/send-template.ts",
+      "sha256": "10174ed419f7016ac6286202e6f6b9da8d127ad49ecb7469b0dbbc7b5a973b79"
+    },
+    {
+      "source": "payload/delivery.ts.txt",
+      "target": "supabase/functions/_shared/extensions/brevo-email/delivery.ts",
+      "sha256": "c2cfe8cfd1e437bc2e811df1e29f08a53a0adc38a6d0c422c912ffe187fdb757"
+    },
+    {
+      "source": "payload/worker.ts.txt",
+      "target": "supabase/functions/_shared/extensions/brevo-email/worker.ts",
+      "sha256": "22b8433bc209d3992ec47169ad276fa742020cf5da8ab33122080ab4f5c5629f"
+    },
+    {
+      "source": "payload/index.ts.txt",
+      "target": "supabase/functions/ext-brevo-email/index.ts",
+      "sha256": "bba7e6bca034383074dbfd40262115cbaa4010dcbfb7c95a6eb65fd1d6c2124f"
+    },
+    {
+      "source": "payload/INSTALL.md",
+      "target": "docs/extensions/brevo-email/INSTALL.md",
+      "sha256": "975dbb07b271401c842640624466b4beecd8f2456e64f5f9f4041f96ea93e341"
+    },
+    {
+      "source": "payload/20260910120000_ext_brevo_email_delivery.sql",
+      "target": "supabase/migrations/20260910120000_ext_brevo_email_delivery.sql",
+      "sha256": "6d62c5e63309f994295dc1259ce7f2dfe74f43e29c27c1e07c0be238889c26d4",
+      "kind": "migration"
+    }
+  ]
+}

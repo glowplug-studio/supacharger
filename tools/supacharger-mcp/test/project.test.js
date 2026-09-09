@@ -1,7 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { classifyPath, projectTree, resolveRepositoryPath, searchGuidance } from '../src/project.js';
+import { classifyPath, projectTree, readGuidance, resolveRepositoryPath, searchGuidance } from '../src/project.js';
+
+test('extension guidance distinguishes canonical bundles, installed modules and product adapters', async () => {
+  assert.equal(classifyPath('extensions/brevo-email/extension.json').ownership, 'canonical-extension-tooling');
+  assert.equal(classifyPath('supabase/functions/_shared/extensions/brevo-email/send-template.ts').ownership, 'extension-managed');
+  assert.equal(classifyPath('supabase/functions/ext-brevo-email/index.ts').ownership, 'extension-managed');
+  assert.equal(classifyPath('supabase/migrations/20260910120000_ext_brevo_email_delivery.sql').ownership, 'forward-only-migration');
+  assert.equal(classifyPath('src/supacharger.adapters/email/actions.ts').ownership, 'developer-owned');
+  const guidance = await readGuidance('extensions');
+  assert.match(guidance, /extension install brevo-email/);
+  assert.match(guidance, /not implemented/);
+  assert.match(guidance, /Specdrive/);
+});
 
 test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('src/supacharger/components/forms').ownership, 'cli-managed-core');

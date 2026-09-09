@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test:extensions": "node --experimental-strip-types --test tools/supacharger-extensions/installer.test.cjs extensions/brevo-email/send-template.test.mjs",
     "check:bruno-rpcs": "node scripts/check-bruno-rpc-parity.mjs",
     "test:stripe": "node --experimental-strip-types --test test/stripe-time.test.mjs",
     "test:billing-schema": "node --test test/billing-schema-contract.test.mjs",

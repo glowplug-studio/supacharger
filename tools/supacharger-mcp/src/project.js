@@ -12,6 +12,7 @@ const guidanceFiles = {
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
   cli_upgrades: 'docs/agents/cli-upgrades.md',
+  extensions: 'docs/agents/extensions.md',
   localisation: 'docs/agents/localisation.md',
   authentication: 'docs/agents/authentication-and-claims.md',
   mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
@@ -60,6 +61,17 @@ export function resolveRepositoryPath(inputPath = '.') {
 
 export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
+
+  if (relativePath.startsWith('extensions/') || relativePath.startsWith('tools/supacharger-extensions/')) {
+    return { ownership: 'canonical-extension-tooling', guidance: 'Core owns bundles and installer. Read docs/agents/extensions.md; these are not automatically installed application runtime files.' };
+  }
+  if (/^supabase\/migrations\/\d{14}_ext_[a-z0-9_]+\.sql$/.test(relativePath)) {
+    return { ownership: 'forward-only-migration', guidance: 'Optional extension migration: verify the extension lock. Never rewrite installed history; apply reviewed new migrations separately from file installation.' };
+  }
+  if (relativePath.startsWith('src/supacharger.extensions/') || relativePath.startsWith('supabase/functions/_shared/extensions/') || relativePath.startsWith('supabase/functions/ext-') ||
+      relativePath.startsWith('docs/extensions/') || relativePath.startsWith('.supacharger/extensions/')) {
+    return { ownership: 'extension-managed', guidance: 'Read .supacharger/extensions/<id>.json and docs/extensions/<id>/INSTALL.md. Keep product adapters outside extension source. Installation does not advance the Core lock.' };
+  }
 
   if (
     relativePath === 'src/assets/svgr/ui/inline-loader.svg' ||

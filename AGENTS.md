@@ -99,7 +99,7 @@ When a task affects reusable behaviour:
 3. Separate reusable core behaviour from application-specific customisation.
 4. Recommend a canonical result, but do not silently resolve competing implementations when the human has not chosen one.
 5. Land the approved shared implementation in this core first.
-6. Update the Docusaurus documentation in `../../supacharger-docs/` in the same change when that repository is available. If it is unavailable, record the exact documentation follow-up required.
+6. Update the Docusaurus documentation in `../supacharger-docs/` in the same change when that repository is available. If it is unavailable, record the exact documentation follow-up required.
 7. Propagate the approved interface to SnapScreen and Wakekeeper while preserving their developer-owned configuration and product behaviour.
 8. Compare relevant non-visual contracts with Specdrive, but do not standardise its Untitled UI presentation layer unless explicitly requested.
 
@@ -110,6 +110,8 @@ Do not copy or adapt licence-restricted Untitled UI source from Specdrive into S
 SnapScreen is the approved visual and interaction basis for the shared authentication journey. Preserve its progressive provider-to-email transition, heading treatment, dark auth surfaces, branded actions, and matching password-reset presentation in Core, SnapScreen, and Wakekeeper. Keep project copy, colours, imagery, enabled methods, and adapters outside the protected implementation. Shared OTP and resend states must extend this presentation rather than replace it with a generic form. Specdrive retains its separate Untitled UI presentation.
 
 ## CLI compatibility
+
+For extensions, read `docs/agents/extensions.md`, `extensions/<id>/extension.json` and its `payload/INSTALL.md`. Installed applications find instructions at `docs/extensions/<id>/INSTALL.md` and hashes at `.supacharger/extensions/<id>.json`. Keep project wiring outside extension-managed source. Token delivery and marketing enrolment are not implemented.
 
 - Keep application settings outside CLI-managed directories.
 - Preserve `src/styles/project.css` as a developer-owned extension point and install its starter only when the file is absent.
@@ -145,7 +147,7 @@ SnapScreen is the approved visual and interaction basis for the shared authentic
 - Keep code, `README.md`, repository agent guidance, MCP guidance, and `supacharger-docs` consistent with actual behaviour.
 - Read `docs/agents/localisation.md` whenever adding or changing user-facing copy, locale behaviour, or translation catalogues.
 - Read `docs/agents/input-validation.md` before creating or changing a form submission, Server Action, route handler, Supabase Edge Function request, or RPC input contract. Client validation is supplemental: parse every untrusted payload with Zod at its server-side JavaScript or TypeScript boundary, then preserve independent database constraints and authorisation.
-- Interpret an unqualified request to "update the docs" as requiring the repository `README.md`, the Docusaurus documentation in `../../supacharger-docs/`, and the agent-facing guidance/resources in `docs/agents/` and `tools/supacharger-mcp/` to be reviewed and updated together. Explicitly state when one of these surfaces is unaffected.
+- Interpret an unqualified request to "update the docs" as requiring the repository `README.md`, the Docusaurus documentation in `../supacharger-docs/`, and the agent-facing guidance/resources in `docs/agents/` and `tools/supacharger-mcp/` to be reviewed and updated together. Explicitly state when one of these surfaces is unaffected.
 - Prefer focused checks during implementation and run the relevant lint, type, test, or build commands before reporting completion.
 - Report all affected repositories and any verification that could not be run.
 - Preserve unrelated worktree changes in this repository and every consuming application.

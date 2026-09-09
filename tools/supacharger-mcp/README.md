@@ -1,5 +1,9 @@
 # Supacharger repository MCP
 
+Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for local bundle installation, Brevo integration, ownership and per-extension guides. The MCP does not execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
+
+Manifest v2 supports extension-owned worker files and immutable forward migrations. Brevo 2.0.0 owns immediate post-commit delivery and Supabase retries; apps pass authorised props and optionally provide bulk privacy resolvers. Follow the installed guide for explicit migration, deployment and Vault configuration steps; file installation does not activate sending.
+
 This read-only local MCP gives coding agents a durable understanding of the Supacharger core mission, ownership model, project structure, and promotion workflow.
 
 ## Run

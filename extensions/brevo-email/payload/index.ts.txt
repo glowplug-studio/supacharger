@@ -1,0 +1,10 @@
+import { createClient } from 'npm:@supabase/supabase-js@2.112.3';
+import { createDeliveryWorker } from '../_shared/extensions/brevo-email/worker.ts';
+
+Deno.serve(createDeliveryWorker({
+  env: name => Deno.env.get(name),
+  database: () => createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(10_000) }) },
+  }).schema('api_edge'),
+}));

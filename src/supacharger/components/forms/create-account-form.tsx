@@ -26,7 +26,6 @@ import SaveButton from '@/supacharger/components/buttons/form-save-button';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { Input } from '@/supacharger/components/primitives/input';
-import { SCP_REGISTRY } from '@/supacharger/plugins/registry';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import {
   isValidEmail,
@@ -36,13 +35,9 @@ import {
 
 import { OtpFieldsForm } from './otp-fields-verify-form';
 
-// Dynamically import social and Brevo components if enabled
+// Load the configured authentication providers.
 const AuthProviderButtons = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean)
   ? dynamic(() => import('@/supacharger/components/buttons/auth-provider-buttons'), { ssr: true })
-  : null;
-
-const BrevoNewsletterRegistrationCheckbox = SCP_REGISTRY.BREVO.ENABLED
-  ? dynamic(() => import('@/supacharger/plugins/scp_brevo/brevoNewsletterRegistrationCheckbox'), { ssr: true })
   : null;
 
 export function CreateAccountForm() {
@@ -303,7 +298,6 @@ export function CreateAccountForm() {
                 </div>
               </div>
             </AnimateHeight>
-            {BrevoNewsletterRegistrationCheckbox && <BrevoNewsletterRegistrationCheckbox />}
             {/* General password errors */}
             {formError && formError.toLowerCase().includes("password") && !formError.toLowerCase().includes("retype") && (
               <div id="password-error" className="sc_message sc_message-error">{formError}</div>

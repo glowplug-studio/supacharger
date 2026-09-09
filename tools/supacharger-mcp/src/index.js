@@ -17,6 +17,7 @@ const guidanceTopics = [
   'mission',
   'ownership',
   'cli_upgrades',
+  'extensions',
   'localisation',
   'authentication',
   'mobile_auth',
@@ -71,7 +72,7 @@ export function createServer() {
     {
       title: 'Get Supacharger guidance',
       description:
-        'Read the canonical mission, ownership, CLI upgrade, localisation, authentication, mobile deep-linking, database, input validation, image transformation, inline-loading UI, profile, account settings, organisation, billing, workflow, or complete repository guidance.',
+        'Read canonical guidance for mission, ownership, CLI upgrades, extensions, localisation, authentication, database, validation, media, profiles, accounts, organisations, billing or workflow. Extension token delivery is deferred.',
       inputSchema: {
         topic: z.enum(guidanceTopics).describe('Guidance topic to read.'),
       },

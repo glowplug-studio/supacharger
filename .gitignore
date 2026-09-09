@@ -43,4 +43,5 @@ next-env.d.ts
 # cli
 .sc-core-update/
 .sc-core-install/
+.supacharger/extension-transactions/
 tools/supacharger-mcp/node_modules

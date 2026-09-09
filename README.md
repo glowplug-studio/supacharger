@@ -21,7 +21,7 @@ The managed custom access-token hook owns the canonical `user_role` and active-o
 - Next.js 16.3.2
 - [Supabase](https://supabase.com) - Postgres database & user authentication
 - [Stripe](https://stripe.com) - [Checkout](https://stripe.com/docs/payments/checkout), [subscriptions](https://stripe.com/docs/billing/subscriptions/overview), and [customer portal](https://stripe.com/docs/customer-management)
-- [Brevo](https://brevo.com) - Marketing and transactional emails
+- [Brevo](https://brevo.com) - Optional transactional-template source extension
 - [Tailwind CSS 4.3](https://tailwindcss.com/) - CSS framework
 - [Lucide React 1.31](https://lucide.dev/) - Icon library
 - [Zod 4.4](https://zod.dev/) - Runtime validation and typed schemas
@@ -30,11 +30,19 @@ The managed custom access-token hook owns the canonical `user_role` and active-o
 - Stripe fixture to bootstrap product data
 - Supabase migrations to bootstrap and manage your db schema
 - Responsive, performant, and accessible prebuilt pages
-- Brevo email integration for welcome emails and payment receipts
+- Optional Brevo delivery infrastructure: props-based enqueue, immediate dispatch and durable Supabase retries
 
 Shared runtime and tooling dependencies are exact-pinned in `package.json`. Consuming applications should use the same pinned version for every dependency they inherit from the Supacharger core; application-only packages remain independently managed.
 
-### Application configuration
+### Optional extensions
+
+The first bundle is `extensions/brevo-email/`. Use the updated local CLI's `extension install brevo-email --source /path/to/bundle --plan`, then repeat without `--plan`. Read [extension guidance](docs/agents/extensions.md) and the installed `docs/extensions/brevo-email/INSTALL.md`. Source hashes are tracked separately from Core, and project adapters use static imports. No extension means no extension runtime checks or network calls. Token downloads and marketing automation are deferred; the CLI changes are not yet published.
+
+Run `node --experimental-strip-types --test tools/supacharger-extensions/installer.test.cjs extensions/brevo-email/send-template.test.mjs` for installer and mocked provider tests.
+
+Brevo 2.0.1 includes namespaced forward migrations and `ext-brevo-email`. The application passes authorised recipient/template props; the extension records and dispatches immediately after commit, with Supabase Cron for recovery only. Install files first, then explicitly apply migrations, deploy and configure Vault/Edge secrets. Run `node extensions/brevo-email/test-delivery.mjs` for mocked installed-runtime tests; `delivery.test.sql` verifies the database contract in a disposable migrated database. Optional Deno payloads use `.ts.txt` source templates so Core's Next.js compiler never loads an uninstalled extension.
+
+### Application configuration contract
 
 Every Supacharger application exposes the same option contract in `supacharger.config.ts`, enforced by `SupachargerConfig`. Values remain application-owned: branding, routes, providers, billing requirements, marketing URLs, and UI choices may differ without changing the available option names or shapes. Ordinary requested value changes are consumer configuration rather than Core-contract changes; security-sensitive values still require the consumer's approval gate. Adding, removing, renaming, retyping, reshaping, or redefining a canonical property is a Core-contract change. The CLI preserves the settings file and distributes the protected contract used to detect missing or obsolete options.
 
@@ -241,7 +249,7 @@ The demo includes:
 - User authentication with Supabase
 - Stripe payment integration (test mode)
 - Subscription management
-- Email notifications via Brevo
+- Optional Brevo transactional-template transport; event wiring is project-owned
 - Responsive design with shadcn/ui components
 
 ## Quick Start for Development
@@ -326,7 +334,7 @@ node --version  # Should show v20.x.x
 
 1. Go to [brevo.com](https://brevo.com) and create an account
 1. Go to the [API Keys page](https://app.brevo.com/settings/keys/api) and create an API Key
-1. Create email templates for welcome and receipt emails (or use template IDs 1 and 2 in the code)
+1. Install the optional source extension and follow `docs/extensions/brevo-email/INSTALL.md`. Create templates in Brevo and configure each action's numeric template ID through its server environment. Welcome and receipt actions are not wired automatically.
 
 ### 4. Deploy
 

@@ -1,0 +1,49 @@
+import { createDeliveryWorker } from './payload/worker.ts';
+import { sendBrevoEmails } from './payload/delivery.ts';
+const assert = (ok: unknown, message = 'Assertion failed') => { if (!ok) throw new Error(message); };
+const env: Record<string, string> = { BREVO_EMAIL_WORKER_SECRET: 'a'.repeat(40), BREVO_API_KEY: 'test-only', BREVO_TEMPLATE_WELCOME: '8', SUPABASE_URL: 'https://example.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'test-only' };
+const notification = (id = crypto.randomUUID()) => ({ id, template: 'WELCOME', to: { email: `${id}@example.test` }, params: { title: id } });
+const req = (body: unknown = { action: 'process' }, auth = true) => new Request('https://example.test', { method: 'POST', headers: { 'Content-Type': 'application/json', ...(auth ? { Authorization: `Bearer ${env.BREVO_EMAIL_WORKER_SECRET}` } : {}) }, body: JSON.stringify(body) });
+
+Deno.test('auth and strict commands reject before privileged work', async () => {
+  const worker = createDeliveryWorker({ env: n => env[n], database: () => { throw new Error('Must not access database'); } });
+  assert((await worker(req({}, false))).status === 401);
+  assert((await worker(req({ action: 'process', to: 'victim@example.test' }))).status === 400);
+  assert((await worker(req({ action: 'check' }))).status === 200);
+  assert((await worker(req({ action: 'process', ids: Array.from({ length: 21 }, () => crypto.randomUUID()) }))).status === 400);
+  assert((await worker(req({ action: 'process', padding: 'x'.repeat(3000) }))).status === 413);
+});
+Deno.test('20 personalised sends preserve per-recipient data and scoped IDs; partial failures acknowledged', async () => {
+  const jobs = Array.from({ length: 20 }, () => ({ notification: notification(), claim_token: crypto.randomUUID() }));
+  const seen = new Map<string, string>(); const finished: Record<string, unknown>[] = [];
+  const worker = createDeliveryWorker({ env: n => env[n], database: () => ({ rpc: async (name, args) => {
+    if (name === 'brevo_email_claim') { assert(JSON.stringify(args?.delivery_ids) === JSON.stringify(jobs.map(j => j.notification.id))); return { data: jobs, error: null }; }
+    finished.push(args!); return { error: null };
+  } }), fetch: async (_url, init) => {
+    const data = JSON.parse(init!.body as string); assert(data.to.length === 1);
+    seen.set(data.to[0].email, data.params.title);
+    return data.params.title === jobs[0].notification.id ? Response.json({}, { status: 429 }) : Response.json({ messageId: 'accepted' }, { status: 201 });
+  } });
+  const result = await worker(req({ action: 'process', ids: jobs.map(j => j.notification.id) }));
+  assert(result.status === 503); const counts = await result.json(); assert(counts.sent === 19 && counts.failed === 1);
+  assert(finished.length === 20 && finished.filter(f => f.accepted === false).length === 1);
+  for (const j of jobs) { assert(seen.get(j.notification.to.email) === j.notification.id); assert(finished.some(f => f.delivery_id === j.notification.id && f.lease_token === j.claim_token)); }
+});
+Deno.test('missing template, malformed resolved data and acknowledgement failure never report success', async () => {
+  for (const mode of ['template', 'invalid', 'ack']) {
+    const n = notification(); let calls = 0;
+    const worker = createDeliveryWorker({ env: key => mode === 'template' && key === 'BREVO_TEMPLATE_WELCOME' ? undefined : env[key],
+      database: () => ({ rpc: async name => name === 'brevo_email_claim' ? { data: [{ notification: mode === 'invalid' ? { ...n, to: {} } : n, claim_token: crypto.randomUUID() }], error: null } : { error: mode === 'ack' ? {} : null } }),
+      fetch: async () => { calls++; return Response.json({ messageId: 'accepted' }, { status: 201 }); } });
+    const result = await worker(req()); const body = await result.json();
+    assert(result.status === 503 && body.sent === 0 && body.failed === 1);
+    assert(calls === (mode === 'ack' ? 1 : 0));
+  }
+});
+Deno.test('server props validate before enqueue and distinguish recording from provider acceptance', async () => {
+  let calls = 0; const n = notification();
+  const db = { rpc: async () => { calls++; return { data: [n.id], error: null }; } };
+  const result = await sendBrevoEmails(db, [n]); assert(result.recorded[0] === n.id && calls === 1);
+  try { await sendBrevoEmails(db, [n, n]); throw new Error('Expected rejection'); } catch (e) { assert((e as Error).message !== 'Expected rejection'); }
+  assert(calls === 1);
+});

@@ -38,6 +38,7 @@ test('serves repository resources and read-only tools over stdio', async () => {
     const { resources } = await client.listResources();
     assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/ownership'));
     assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/cli_upgrades'));
+    assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/extensions'));
     assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/input_validation'));
     assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/loading_ui'));
   } finally {

@@ -1,0 +1,71 @@
+import { z } from 'npm:zod@4.4.3';
+import { notificationSchema, type Database } from './delivery.ts';
+import { createBrevoTemplateSender } from './send-template.ts';
+
+const command = z.discriminatedUnion('action', [
+  z.object({ action: z.literal('check') }).strict(),
+  z.object({ action: z.literal('process'), ids: z.array(z.uuid()).min(1).max(20).optional() }).strict(),
+]);
+const jobSchema = z.object({ notification: notificationSchema, claim_token: z.uuid() }).strict();
+const reply = (body: unknown, status = 200) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+
+export function createDeliveryWorker(options: {
+  env: (name: string) => string | undefined;
+  database: () => Database;
+  fetch?: typeof fetch;
+}) {
+  return async (request: Request): Promise<Response> => {
+    if (request.method !== 'POST') return reply({ error: 'Use POST' }, 405);
+    const secret = options.env('BREVO_EMAIL_WORKER_SECRET');
+    if (!secret || secret.length < 32) return reply({ error: 'Worker is not configured' }, 503);
+    const actual = request.headers.get('authorization') ?? '';
+    if (actual.length !== secret.length + 7) return reply({ error: 'Unauthorised' }, 401);
+    const [a, b] = await Promise.all([actual, `Bearer ${secret}`].map(value => crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))));
+    const expected = new Uint8Array(b);
+    if (new Uint8Array(a).reduce((diff, value, index) => diff | (value ^ expected[index]), 0)) return reply({ error: 'Unauthorised' }, 401);
+    if (request.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') return reply({ error: 'Use JSON' }, 415);
+    let input;
+    try {
+      const reader = request.body?.getReader();
+      if (!reader) return reply({ error: 'Invalid command' }, 400);
+      const chunks: Uint8Array[] = [];
+      let size = 0;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        size += value.length;
+        if (size > 2048) { await reader.cancel(); return reply({ error: 'Command too large' }, 413); }
+        chunks.push(value);
+      }
+      const bytes = new Uint8Array(size);
+      let offset = 0;
+      for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+      input = command.parse(JSON.parse(new TextDecoder().decode(bytes)));
+    } catch { return reply({ error: 'Invalid command' }, 400); }
+    const apiKeyEnv = options.env('BREVO_API_KEY_ENV') || 'BREVO_API_KEY';
+    if (!options.env(apiKeyEnv) || !options.env('SUPABASE_URL') || !options.env('SUPABASE_SERVICE_ROLE_KEY')) return reply({ error: 'Delivery is not configured' }, 503);
+    if (input.action === 'check') return reply({ configured: true });
+    try {
+      const db = options.database();
+      const result = await db.rpc('brevo_email_claim', { delivery_ids: input.ids ?? null });
+      if (result.error || !Array.isArray(result.data) || result.data.length > 20) return reply({ error: 'Could not claim notifications' }, 503);
+      let sent = 0;
+      let failed = 0;
+      await Promise.all(result.data.map(async raw => {
+        const parsed = jobSchema.safeParse(raw);
+        if (!parsed.success) { failed++; return; }
+        const { notification: n, claim_token } = parsed.data;
+        let accepted = false;
+        try {
+          const send = createBrevoTemplateSender({ env: options.env, templateEnv: `BREVO_TEMPLATE_${n.template}`, apiKeyEnv, fetch: options.fetch });
+          accepted = (await send({ to: [n.to], params: n.params, idempotencyKey: n.id })).accepted;
+        } catch { /* Missing template or transport error: durable retry, no sensitive output. */ }
+        try {
+          const finished = await db.rpc('brevo_email_finish', { delivery_id: n.id, lease_token: claim_token, accepted });
+          if (accepted && !finished.error) sent++; else failed++;
+        } catch { failed++; }
+      }));
+      return reply({ sent, failed }, failed ? 503 : 200);
+    } catch { return reply({ error: 'Delivery unavailable' }, 503); }
+  };
+}
