@@ -271,6 +271,7 @@ inspector_port = 8083
 
 [functions.process-image-upload]
 verify_jwt = true
+static_files = ["./functions/process-image-upload/magick.wasm"]
 
 [analytics]
 enabled = true

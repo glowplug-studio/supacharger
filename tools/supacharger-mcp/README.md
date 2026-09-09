@@ -40,7 +40,7 @@ The MCP is descriptive and read-only. It does not supersede `AGENTS.md`, edit fi
 
 The localisation resource records the locale-neutral routing contract, English-only copy-authoring default, empty or untouched secondary-language policy unless translation is explicitly requested, the transient `?lang=<two-letter-code>` marketing handoff, profile persistence in `app.profiles.language_code`, and the precedence used to restore a preference. It also identifies `src/i18n/` plus `messages/` as developer-owned paths that the CLI must preserve.
 
-The database and profile resources record the one-profile-per-Auth-user model, three-state username policy, post-sign-in onboarding guard, optional organisation management contract, owner/admin/member roles, hashed single-use invitations, reviewable access requests, reserved handles, billing-subject synchronisation, private `user-avatars` and `organisation-logos` paths, the one-query account-summary RPC/service and standard browser refresh event, batched signed-media resolution, safe identity fallback/general projection, and `app`/`api`/`api_edge` schema boundary.
+The database and profile resources record the one-profile-per-Auth-user model, three-state username policy, post-sign-in onboarding guard, optional organisation management contract, owner/admin/member roles, hashed single-use invitations, reviewable access requests, reserved handles, billing-subject synchronisation, private `user-avatars` and `organisation-logos` paths, the one-query account-summary RPC/service and standard browser refresh event, batched signed-media resolution, safe identity fallback/general projection, and `app`/`api`/`api_edge` schema boundary. OAuth agent connections, restricted agent roles, consent, connection ledgers, and agent-facing RPCs remain Specdrive-owned and outside Core.
 
 The account-settings resource records the managed `/account` shell and mutation boundary, profile media cleanup order, language persistence, visible cancellation policy, descriptor-driven privacy/notification surfaces, honest disabled defaults, and preserved navigation, field, persistence, and presentation adapters.
 
@@ -50,7 +50,7 @@ The CLI-upgrades resource records the version 2 ownership flow, disabled-safe co
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 
-The image-transformation resource records the authenticated `process-image-upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, safe path and format limits, PNG/JPEG encoding contract, and the rule that request data never supplies destinations or transform settings.
+The image-transformation resource records the authenticated `process-image-upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and the rule that request data never supplies buckets, ownership IDs or transform settings.
 
 The ownership resource also records the build-runtime boundary: the root Next.js `tsconfig.json` excludes `supabase/functions/**/*`, while Edge Function source is type-checked and tested with Deno. Agents must preserve that separation rather than teaching the Next.js compiler to accept Deno-only globals and imports.
 

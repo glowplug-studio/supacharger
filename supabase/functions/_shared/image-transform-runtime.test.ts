@@ -55,6 +55,7 @@ Deno.test('re-encodes an uploaded image as JPEG under the authenticated user pat
   };
 
   const result = await transformAndStoreImage({
+    destination: 'profiles/avatars',
     file: new File([transparentPixel], 'pixel.png', { type: 'image/png' }),
     supabase: storage.client as never,
     target,
@@ -62,7 +63,7 @@ Deno.test('re-encodes an uploaded image as JPEG under the authenticated user pat
   });
 
   const upload = storage.getUpload();
-  assert(upload.path.startsWith('00000000-0000-4000-8000-000000000001/avatar-'));
+  assert(upload.path.startsWith('00000000-0000-4000-8000-000000000001/profiles/avatars/avatar-'));
   assert(upload.path.endsWith('.jpg'));
   assertEquals(Array.from(upload.bytes.slice(0, 2)), [0xff, 0xd8]);
   assertEquals(result.contentType, 'image/jpeg');

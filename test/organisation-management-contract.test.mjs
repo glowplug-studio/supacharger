@@ -34,6 +34,14 @@ const migrationLedger = readdirSync(migrationsDirectory)
   .filter((file) => file.endsWith('.sql'))
   .map((file) => readFileSync(new URL(file, migrationsDirectory), 'utf8'))
   .join('\n');
+const storagePolicyIsolationMigrationName = readdirSync(migrationsDirectory).find((file) =>
+  file.endsWith('_isolate_organisation_logo_storage_policies.sql'),
+);
+assert.equal(typeof storagePolicyIsolationMigrationName, 'string');
+const storagePolicyIsolationMigration = readFileSync(
+  new URL(storagePolicyIsolationMigrationName, migrationsDirectory),
+  'utf8',
+);
 const types = readFileSync(new URL('../src/lib/supabase/types.ts', import.meta.url), 'utf8');
 const organisationContract = readFileSync(
   new URL('../src/supacharger/organisations/organisation-contract.ts', import.meta.url),
@@ -53,6 +61,13 @@ test('installs the complete organisation management foundation', () => {
   assert.match(migrationLedger, /organisation_logos_update_(?:managers|org_admins)/i);
   assert.match(migrationLedger, /organisation_logos_delete_(?:managers|org_admins)/i);
   assert.match(migrationLedger, /(?:bind|ensure)_organisation_billing_account/i);
+});
+
+test('keeps organisation media policies isolated from unrelated storage buckets', () => {
+  assert.doesNotMatch(storagePolicyIsolationMigration, /from app\.organisations/i);
+  assert.match(storagePolicyIsolationMigration, /case[\s\S]*?storage\.foldername\([^)]*name[^)]*\)[\s\S]*?::uuid/i);
+  assert.match(storagePolicyIsolationMigration, /(?:app\.is_organisation_member|authz\.is_org_member)/i);
+  assert.match(storagePolicyIsolationMigration, /(?:app\.can_manage_organisation|authz\.can_manage_org)/i);
 });
 
 test('protects invitations, ownership, membership, and session context', () => {

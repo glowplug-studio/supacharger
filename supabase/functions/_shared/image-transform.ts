@@ -11,16 +11,14 @@ import {
 } from 'npm:@imagemagick/magick-wasm@0.0.42';
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2.112.3';
 
-import type { ImageUploadTarget } from './image-target-contract.ts';
+import { resolveImageDestination, type ImageUploadTarget } from './image-target-contract.ts';
 
 const defaultMaxInputBytes = 5 * 1024 * 1024;
 const defaultMaxInputPixels = 25_000_000;
 const supportedInputFormats = new Set<string>([MagickFormat.Jpeg, MagickFormat.Png, MagickFormat.WebP]);
 const supportedInputMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
-const wasmBytes = await Deno.readFile(
-  new URL('magick.wasm', import.meta.resolve('npm:@imagemagick/magick-wasm@0.0.42')),
-);
+const wasmBytes = await Deno.readFile(new URL('../process-image-upload/magick.wasm', import.meta.url));
 await initializeImageMagick(wasmBytes);
 
 export type ImageTransformErrorCode =
@@ -132,11 +130,13 @@ export function supportsImageMimeType(mimeType: string) {
 }
 
 export async function transformAndStoreImage({
+  destination,
   file,
   supabase,
   target,
   userId,
 }: {
+  destination?: string;
   file: File;
   supabase: SupabaseClient;
   target: ImageUploadTarget;
@@ -154,7 +154,8 @@ export async function transformAndStoreImage({
   const extension = target.outputFormat === 'png' ? 'png' : 'jpg';
   const contentType = target.outputFormat === 'png' ? 'image/png' : 'image/jpeg';
   const filename = `${target.filenamePrefix}-${crypto.randomUUID()}.${extension}`;
-  const path = [userId, target.pathPrefix, filename].filter(Boolean).join('/');
+  const destinationPath = resolveImageDestination(destination, target.pathPrefix);
+  const path = [userId, destinationPath, filename].filter(Boolean).join('/');
 
   const { error: uploadError } = await supabase.storage.from(target.bucket).upload(path, transformed.bytes, {
     cacheControl: target.cacheControl ?? '31536000',

@@ -175,6 +175,24 @@ test('keeps the root layout editable and the root document implementation manage
   assert.doesNotMatch(rootDocument, /G-[A-Z0-9]{6,}/);
 });
 
+test('keeps OAuth agent connections outside Supacharger Core', async () => {
+  const [manifestSource, cleanupMigration] = await Promise.all([
+    readFile(new URL('../.supacharger/managed-files.json', import.meta.url), 'utf8'),
+    readFile(
+      new URL('../supabase/migrations/20260901104625_remove_core_agent_connections.sql', import.meta.url),
+      'utf8',
+    ),
+  ]);
+  const manifest = JSON.parse(manifestSource);
+
+  assert.ok(!manifest.managedPaths.some((managedPath) => managedPath.includes('agent-connection')));
+  assert.match(cleanupMigration, /drop function if exists api\.agent_connections\(jsonb\)/i);
+  assert.match(cleanupMigration, /drop table if exists app\.agent_connections/i);
+  assert.match(cleanupMigration, /drop role supacharger_agent/i);
+  assert.match(cleanupMigration, /create or replace function app\.custom_access_token_hook\(event jsonb\)/i);
+  assert.match(cleanupMigration, /create or replace function api\.get_account_summary_by_current_user\(\)/i);
+});
+
 test('keeps inline loader variants responsive and colour configurable', async () => {
   const [defaultLoader, darkLoader, wrapper, manifestSource] = await Promise.all([
     readFile(new URL('../src/assets/svgr/ui/inline-loader.svg', import.meta.url), 'utf8'),

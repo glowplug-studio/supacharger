@@ -23,6 +23,7 @@ export type ImageUploadTargets = Readonly<Record<string, ImageUploadTarget>>;
 
 const identifierPattern = /^[a-z0-9][a-z0-9_-]*$/;
 const pathSegmentPattern = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+const maximumDestinationLength = 256;
 
 function requireIntegerInRange(
   value: number | undefined,
@@ -49,6 +50,17 @@ function validatePathPrefix(pathPrefix: string, targetName: string) {
   if (segments.some((segment) => !pathSegmentPattern.test(segment) || segment === '.' || segment === '..')) {
     throw new Error(`${targetName}.pathPrefix contains an unsafe path segment.`);
   }
+}
+
+export function resolveImageDestination(destination: string | undefined, fallbackPathPrefix: string) {
+  const resolvedDestination = destination ?? fallbackPathPrefix;
+
+  if (resolvedDestination.length > maximumDestinationLength) {
+    throw new Error(`destination must be ${maximumDestinationLength} characters or less.`);
+  }
+
+  validatePathPrefix(resolvedDestination, 'destination');
+  return resolvedDestination;
 }
 
 export function defineImageUploadTargets<const TTargets extends Record<string, ImageUploadTarget>>(

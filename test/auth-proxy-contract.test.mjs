@@ -250,7 +250,7 @@ test('sensitive authentication fields are removed without discarding safe return
     email: 'security-test@example.invalid',
     lang: 'en',
     password: 'not-a-real-password',
-    returnTo: '/auth/oauth/consent?authorization_id=security-check',
+    returnTo: '/account/security?notice=security-check',
   });
 
   assert.equal(hasSensitiveAuthQuery('/auth/login', searchParams), true);
@@ -261,5 +261,5 @@ test('sensitive authentication fields are removed without discarding safe return
   assert.equal(searchParams.has('email'), false);
   assert.equal(searchParams.has('password'), false);
   assert.equal(searchParams.get('lang'), 'en');
-  assert.equal(searchParams.get('returnTo'), '/auth/oauth/consent?authorization_id=security-check');
+  assert.equal(searchParams.get('returnTo'), '/account/security?notice=security-check');
 });

@@ -32,9 +32,11 @@ Identity display uses the shared projection in this order: first and last name; 
 
 Authenticated application code calls `api.organisations(input_payload)`. The dispatcher derives the current user, verified email, and Auth `session_id` from the JWT and supports list, handle availability, create, switch, read, update, member management, invitation management, and access-request review. Clients never supply identity or session IDs. Roles are `owner`, `admin`, and `member`; the last owner cannot be removed or demoted. Specdrive's semantic adapter maps Core `member` to its existing product `contributor` value without changing Core's contract.
 
+OAuth agent connections, restricted agent database roles, consent surfaces, connection ledgers, and agent-facing RPCs are Specdrive product contracts. Do not add them to Supacharger Core or distribute them to other consumers.
+
 Handles are normalised and rejected when they collide with reserved application routes. Invitations store only a SHA-256 token hash, normalise the recipient email, expire, can be revoked, and are single use. Acceptance requires the signed-in Auth email to match. An organisation with `access_policy: 'request'` creates a pending request for manager review; requesting access never creates membership directly.
 
-The private `organisation-logos` bucket accepts JPEG, PNG, WebP, and GIF objects up to 5 MB. Organisation managers control writes under the organisation UUID prefix; members can read their organisation's media. Creating an organisation synchronises its organisation billing subject. Membership and role changes invalidate stale active contexts, while context-changing actions return `requiresSessionRefresh` so callers refresh the Supabase session before trusting organisation claims.
+The private `organisation-logos` bucket accepts JPEG, PNG, WebP, and GIF objects up to 5 MB. Organisation managers control writes under the organisation UUID prefix; members can read their organisation's media. Policies safely parse that UUID from the object path and delegate to protected membership helpers; they must not query `app.organisations` directly because every authenticated Storage operation shares `storage.objects`. Creating an organisation synchronises its organisation billing subject. Membership and role changes invalidate stale active contexts, while context-changing actions return `requiresSessionRefresh` so callers refresh the Supabase session before trusting organisation claims.
 
 ## Profile visibility
 
@@ -53,7 +55,7 @@ The `user-avatars` bucket is private and accepts JPEG, PNG, and WebP files up to
 
 Only the owner may insert, update, or delete within those prefixes. Verified authenticated users may read allowed profile objects from the private bucket and clients render them with signed URLs. Use the shared signed-media resolver when a server surface needs several private objects: it groups paths by bucket and uses `createSignedUrls()` once per bucket instead of issuing one request per image. A consumer may add a server-side signing proxy for intentionally public product profiles, but must not make the bucket public or store permanent public URLs.
 
-Use the authenticated `process-image-upload` Edge Function for shared resizing/re-encoding. Its `profile_avatar` and `profile_header` targets generate these canonical paths with the caller's RLS-scoped Storage client. The request never supplies a bucket or path. See `docs/agents/image-transformation.md` for the target and extension contract.
+Use the authenticated `process-image-upload` Edge Function for shared resizing/re-encoding. Its `profile_avatar` and `profile_header` targets generate canonical fallback paths with the caller's RLS-scoped Storage client. A request may select a validated relative destination below the authenticated user's ID, but never a bucket or ownership prefix. See `docs/agents/image-transformation.md` for the target and extension contract.
 
 ## Migration verification
 
