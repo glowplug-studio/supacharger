@@ -1,4 +1,4 @@
-# Brevo reliable delivery extension — 2.0.0
+# Brevo reliable delivery extension — 2.1.0
 
 This optional extension owns durable delivery, immediate post-commit dispatch, a private worker and minute retries. No Core runtime registry, Vercel cron or marketing automation is installed.
 
@@ -28,7 +28,7 @@ await sendBrevoEmails(serviceClient.schema('api_edge'), [{
 
 Validate and authorise the application action first. Never pass browser-provided recipients or template selections blindly. One notification has one recipient, preventing address disclosure. Calls accept 1–1000 notifications, each up to 100 KB of JSON. Returned recorded IDs mean durable acceptance, not provider acceptance or inbox delivery.
 
-For atomic business events, call `brevo_email.enqueue(notifications jsonb)` inside the trusted product SQL transaction instead. This uses the same delivery table. The insert immediately registers targeted worker requests, in batches of 20; pg_net starts them after commit without waiting for cron. A 1000-recipient insert dispatches all 50 batches immediately. Very large bursts need application/provider rate planning.
+For atomic business events, call `brevo_email.ext_brevo_transactional_enqueue(notifications jsonb)` inside the trusted product SQL transaction instead. This uses the same delivery table. The insert immediately registers targeted worker requests, in batches of 20; pg_net starts them after commit without waiting for cron. A 1000-recipient insert dispatches all 50 batches immediately. Very large bursts need application/provider rate planning.
 
 Cron recovers due failed, unattempted or interrupted notifications, up to 20 per minute. Success rows remain as an audit/idempotency ledger and are excluded from retries. Shared leases prevent overlapping claims; backoff grows to one hour. No automatic deletion or retry cutoff is installed: monitor old pending rows and choose retention/suppression policies explicitly.
 
@@ -51,3 +51,13 @@ The v1 createBrevoTemplateSender remains available as a low-level transport with
 Agents must report installation, integration, configuration, deployment and delivery verification separately. Specdrive token purchases/downloads remain deferred.
 
 References: [post-commit pg_net](https://supabase.com/docs/guides/database/extensions/pg_net), [Cron and Vault](https://supabase.com/docs/guides/functions/schedule-functions), [Brevo API](https://developers.brevo.com/reference/send-transac-email).
+
+## Brevo transactional SQL naming
+
+Use `ext_brevo_transactional_` as the function-name prefix for every new transactional Brevo RPC and related SQL function, including extension dispatch/retry helpers and product-owned queue, resolver, claim and finish functions. Follow it with an action and, for product functions, the product purpose: `ext_brevo_transactional_claim_flotilla_cancellation`. Keep existing schema boundaries and permissions: generic service RPCs belong in `api_edge`, private extension helpers in `brevo_email`, and product adapters in the consumer's private schema. Never promote product recipient, privacy or template logic into the extension.
+
+Rename existing functions only through forward migrations; preserve ownership, grants, security settings, comments, dependencies and delivery state. Update function-body references, triggers, resolver registrations, cron commands, every caller, generated types, tests and Bruno contracts together. Old names may remain solely as documented, restricted compatibility wrappers; new callers must use the prefix. Release changed payloads under a new version with matching manifest hashes and synchronise the canonical Core bundle, distribution repository and installed consumers.
+
+## RPC compatibility
+
+Current service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Arguments, responses and service-only access remain unchanged. The former `brevo_email_*` RPC names remain restricted forwarding aliases for existing workers. Apply all installed forward migrations before deploying the updated worker. Private enqueue, dispatch and retry aliases also remain for existing SQL integrations; new integrations use the prefixed functions.

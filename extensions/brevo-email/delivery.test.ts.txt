@@ -17,7 +17,7 @@ Deno.test('20 personalised sends preserve per-recipient data and scoped IDs; par
   const jobs = Array.from({ length: 20 }, () => ({ notification: notification(), claim_token: crypto.randomUUID() }));
   const seen = new Map<string, string>(); const finished: Record<string, unknown>[] = [];
   const worker = createDeliveryWorker({ env: n => env[n], database: () => ({ rpc: async (name, args) => {
-    if (name === 'brevo_email_claim') { assert(JSON.stringify(args?.delivery_ids) === JSON.stringify(jobs.map(j => j.notification.id))); return { data: jobs, error: null }; }
+    if (name === 'ext_brevo_transactional_claim') { assert(JSON.stringify(args?.delivery_ids) === JSON.stringify(jobs.map(j => j.notification.id))); return { data: jobs, error: null }; }
     finished.push(args!); return { error: null };
   } }), fetch: async (_url, init) => {
     const data = JSON.parse(init!.body as string); assert(data.to.length === 1);
@@ -33,7 +33,7 @@ Deno.test('missing template, malformed resolved data and acknowledgement failure
   for (const mode of ['template', 'invalid', 'ack']) {
     const n = notification(); let calls = 0;
     const worker = createDeliveryWorker({ env: key => mode === 'template' && key === 'BREVO_TEMPLATE_WELCOME' ? undefined : env[key],
-      database: () => ({ rpc: async name => name === 'brevo_email_claim' ? { data: [{ notification: mode === 'invalid' ? { ...n, to: {} } : n, claim_token: crypto.randomUUID() }], error: null } : { error: mode === 'ack' ? {} : null } }),
+      database: () => ({ rpc: async name => name === 'ext_brevo_transactional_claim' ? { data: [{ notification: mode === 'invalid' ? { ...n, to: {} } : n, claim_token: crypto.randomUUID() }], error: null } : { error: mode === 'ack' ? {} : null } }),
       fetch: async () => { calls++; return Response.json({ messageId: 'accepted' }, { status: 201 }); } });
     const result = await worker(req()); const body = await result.json();
     assert(result.status === 503 && body.sent === 0 && body.failed === 1);

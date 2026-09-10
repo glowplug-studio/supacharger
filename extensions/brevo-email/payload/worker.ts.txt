@@ -47,7 +47,7 @@ export function createDeliveryWorker(options: {
     if (input.action === 'check') return reply({ configured: true });
     try {
       const db = options.database();
-      const result = await db.rpc('brevo_email_claim', { delivery_ids: input.ids ?? null });
+      const result = await db.rpc('ext_brevo_transactional_claim', { delivery_ids: input.ids ?? null });
       if (result.error || !Array.isArray(result.data) || result.data.length > 20) return reply({ error: 'Could not claim notifications' }, 503);
       let sent = 0;
       let failed = 0;
@@ -61,7 +61,7 @@ export function createDeliveryWorker(options: {
           accepted = (await send({ to: [n.to], params: n.params, idempotencyKey: n.id })).accepted;
         } catch { /* Missing template or transport error: durable retry, no sensitive output. */ }
         try {
-          const finished = await db.rpc('brevo_email_finish', { delivery_id: n.id, lease_token: claim_token, accepted });
+          const finished = await db.rpc('ext_brevo_transactional_finish', { delivery_id: n.id, lease_token: claim_token, accepted });
           if (accepted && !finished.error) sent++; else failed++;
         } catch { failed++; }
       }));

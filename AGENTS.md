@@ -190,3 +190,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Brevo transactional SQL naming
+
+Use `ext_brevo_transactional_` as the function-name prefix for every new transactional Brevo RPC and related SQL function, including extension dispatch/retry helpers and product-owned queue, resolver, claim and finish functions. Follow it with an action and, for product functions, the product purpose: `ext_brevo_transactional_claim_flotilla_cancellation`. Keep existing schema boundaries and permissions: generic service RPCs belong in `api_edge`, private extension helpers in `brevo_email`, and product adapters in the consumer's private schema. Never promote product recipient, privacy or template logic into the extension.
+
+Rename existing functions only through forward migrations; preserve ownership, grants, security settings, comments, dependencies and delivery state. Update function-body references, triggers, resolver registrations, cron commands, every caller, generated types, tests and Bruno contracts together. Old names may remain solely as documented, restricted compatibility wrappers; new callers must use the prefix. Release changed payloads under a new version with matching manifest hashes and synchronise the canonical Core bundle, distribution repository and installed consumers.
