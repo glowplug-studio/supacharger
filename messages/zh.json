@@ -82,6 +82,7 @@
     "overEmailSendRateLimit": "已发送过多验证电子邮件。请等待几分钟，然后重试。",
     "overLimit": "请求太多。请等待几分钟，然后重试",
     "userBanned": "此帐户已被暂停",
+    "authTemporarilyUnavailable": "",
     "genericError": "出现了意想不到的问题",
     "otpDisabled": "电子邮件验证码目前已禁用。",
     "otpAlreadyVerified": "您的电子邮件已经过验证。",

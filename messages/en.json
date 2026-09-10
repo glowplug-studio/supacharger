@@ -83,6 +83,7 @@
     "overEmailSendRateLimit": "Too many verification emails have been sent. Please wait a few minutes before trying again.",
     "overLimit": "Too many requests. Please wait a few minutes and try again",
     "userBanned": "This account has been suspended",
+    "authTemporarilyUnavailable": "Authentication is temporarily unavailable. Please wait 30 seconds and try again.",
     "genericError": "There was an unexpected problem",
     "otpDisabled": "Email verification codes are currently disabled.",
     "otpAlreadyVerified": "Your email has already been verified.",

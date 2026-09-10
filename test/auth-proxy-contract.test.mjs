@@ -263,3 +263,146 @@ test('sensitive authentication fields are removed without discarding safe return
   assert.equal(searchParams.get('lang'), 'en');
   assert.equal(searchParams.get('returnTo'), '/account/security?notice=security-check');
 });
+
+// Behavioural tests use a fake Auth service; never rotate a real session.
+const { createServerClient } = await import('@supabase/ssr');
+const { createAuthTransport, createRefreshCoordinator } = await import('../src/lib/supabase/supacharger/refresh-transport.ts');
+const { readAccessToken } = await import('../src/lib/supabase/supacharger/passive-session.ts');
+const refreshUrl = 'https://test.supabase.co/auth/v1/token?grant_type=refresh_token';
+const refreshOptions = (token = 'old-refresh') => ({ method: 'POST', headers: { apikey: 'test-key' }, body: JSON.stringify({ refresh_token: token }) });
+const freshSession = () => Response.json({ access_token: 'new-access', refresh_token: 'new-refresh', expires_in: 3600, user: { id: 'test-user' } });
+
+test('separate SSR clients share one refresh and independently persist the rotated cookies', async () => {
+  let calls = 0;
+  const coordinate = createRefreshCoordinator();
+  const cookie = 'base64-' + Buffer.from(JSON.stringify({ access_token: 'old', refresh_token: 'old-refresh', expires_at: 1 })).toString('base64url');
+  const writes = [];
+  const clients = Array.from({ length: 20 }, () => {
+    const transport = createAuthTransport('https://test.supabase.co', async () => { calls++; return freshSession(); }, coordinate);
+    return createServerClient('https://test.supabase.co', 'test-key', {
+      global: { fetch: transport.fetch },
+      cookies: { encode: 'tokens-only', getAll: () => [{ name: 'sb-test-auth-token', value: cookie }], setAll: (cookies) => writes.push(cookies) },
+    });
+  });
+  const results = await Promise.all(clients.map((client) => client.auth.getSession()));
+  assert.equal(calls, 1);
+  assert.ok(results.every((result) => result.data.session.access_token === 'new-access'));
+  assert.equal(writes.length, 20);
+});
+
+test('refresh replay expires and never crosses token, key or project boundaries', async () => {
+  let now = 0;
+  let calls = 0;
+  const coordinate = createRefreshCoordinator(() => now);
+  const upstream = async () => { calls++; return freshSession(); };
+  const first = createAuthTransport('https://test.supabase.co', upstream, coordinate);
+  await first.fetch(refreshUrl, refreshOptions());
+  await first.fetch(refreshUrl, refreshOptions());
+  assert.equal(calls, 1);
+  await first.fetch(refreshUrl, refreshOptions('different'));
+  const otherKey = refreshOptions(); otherKey.headers.apikey = 'another-key';
+  await first.fetch(refreshUrl, otherKey);
+  await createAuthTransport('https://other.supabase.co', upstream, coordinate).fetch(refreshUrl.replace('test.', 'other.'), refreshOptions());
+  assert.equal(calls, 4);
+  now = 10001;
+  await first.fetch(refreshUrl, refreshOptions());
+  assert.equal(calls, 5);
+});
+
+test('contention, throttling and outages share cooldown without repeated upstream retries', async () => {
+  for (const status of [409, 429, 500, 504]) {
+    let now = 0; let calls = 0;
+    const coordinate = createRefreshCoordinator(() => now);
+    const upstream = async () => { calls++; return Response.json({}, { status }); };
+    for (let index = 0; index < 20; index++) {
+      const transport = createAuthTransport('https://test.supabase.co', upstream, coordinate);
+      const response = await transport.fetch(refreshUrl, refreshOptions());
+      assert.equal(response.status, 409);
+      assert.equal(transport.isTemporarilyUnavailable(), true);
+    }
+    assert.equal(calls, 1);
+    now = 30001;
+    await createAuthTransport('https://test.supabase.co', upstream, coordinate).fetch(refreshUrl, refreshOptions());
+    assert.equal(calls, 2);
+  }
+});
+
+test('network outage opens a circuit for other tokens and leaves unrelated requests untouched', async () => {
+  let calls = 0;
+  const transport = createAuthTransport('https://test.supabase.co', async () => { calls++; throw Error('network'); }, createRefreshCoordinator());
+  await transport.fetch(refreshUrl, refreshOptions());
+  await transport.fetch(refreshUrl, refreshOptions('another-token'));
+  assert.equal(calls, 1);
+  const ordinary = createAuthTransport('https://test.supabase.co', async () => Response.json({ ok: true }));
+  assert.equal((await ordinary.fetch('https://test.supabase.co/rest/v1/items')).status, 200);
+  assert.equal(ordinary.isTemporarilyUnavailable(), false);
+});
+
+test('unknown tokens cannot exceed in-flight and per-minute admission bounds', async () => {
+  const pending = [];
+  let calls = 0;
+  const transport = createAuthTransport('https://test.supabase.co', () => { calls++; return new Promise((resolve) => pending.push(resolve)); }, createRefreshCoordinator());
+  const requests = Array.from({ length: 30 }, (_, index) => transport.fetch(refreshUrl, refreshOptions(String(index))));
+  assert.equal(calls, 8);
+  pending.forEach((resolve) => resolve(freshSession()));
+  const results = await Promise.all(requests);
+  assert.equal(results.filter((response) => response.status === 409).length, 22);
+  let sequentialCalls = 0;
+  const sequential = createAuthTransport('https://test.supabase.co', async () => { sequentialCalls++; return Response.json({}, { status: 400 }); }, createRefreshCoordinator(() => 0));
+  for (let index = 0; index < 100; index++) await sequential.fetch(refreshUrl, refreshOptions(String(index)));
+  assert.equal(sequentialCalls, 60);
+});
+
+test('permanent rejection stays permanent and malformed refresh requests never reach Auth', async () => {
+  let calls = 0;
+  const transport = createAuthTransport('https://test.supabase.co', async () => { calls++; return Response.json({ error_code: 'refresh_token_not_found' }, { status: 400 }); }, createRefreshCoordinator());
+  assert.equal((await transport.fetch(refreshUrl, refreshOptions())).status, 400);
+  assert.equal(transport.isTemporarilyUnavailable(), false);
+  for (const body of ['bad JSON', '{}', JSON.stringify({ refresh_token: 'x'.repeat(17000) })]) {
+    await transport.fetch(refreshUrl, { ...refreshOptions(), body });
+  }
+  assert.equal(calls, 1);
+});
+
+test('passive presentation reads only a bounded token from this project and leaves verification to getClaims', async () => {
+  const value = 'base64-' + Buffer.from(JSON.stringify({ access_token: 'untrusted-token' })).toString('base64url');
+  assert.equal(await readAccessToken('https://test.supabase.co', [{ name: 'sb-test-auth-token.0', value: value.slice(0, 12) }, { name: 'sb-test-auth-token.1', value: value.slice(12) }]), 'untrusted-token');
+  assert.equal(await readAccessToken('https://other.supabase.co', [{ name: 'sb-test-auth-token', value }]), null);
+  for (const invalid of ['broken', 'base64-??', 'x'.repeat(32769), '{"access_token":123}']) {
+    assert.equal(await readAccessToken('https://test.supabase.co', [{ name: 'sb-test-auth-token', value: invalid }]), null);
+  }
+  const source = await readFile(new URL('../src/lib/supabase/supacharger/supabase-auth.ts', import.meta.url), 'utf8');
+  const presentation = source.slice(source.indexOf('export async function isLoggedIn()'), source.indexOf('export async function verifyOtp'));
+  assert.match(presentation, /getClaims\(token\)/);
+  assert.doesNotMatch(presentation, /getUser\(|getSession\(/);
+});
+
+test('Proxy stops transient refresh failures before routing and preserves cookies', async () => {
+  const proxy = await readFile(new URL('../src/proxy.ts', import.meta.url), 'utf8');
+  const adapter = await readFile(new URL('../src/lib/supabase/supacharger/proxy.ts', import.meta.url), 'utf8');
+  const server = await readFile(new URL('../src/lib/supabase/server.ts', import.meta.url), 'utf8');
+  assert.match(proxy, /status: 503/);
+  assert.match(proxy, /'Retry-After': '30'/);
+  assert.ok(proxy.indexOf('if (temporarilyUnavailable)') < proxy.indexOf('if (!isAuthenticated)'));
+  for (const source of [adapter, server]) assert.match(source, /if \(transport.isTemporarilyUnavailable\(\)\) return/);
+  assert.match(server, /cache\(async function createClient/);
+});
+
+test('temporary refresh failures do not write logout cookies through the SSR adapter', async () => {
+  for (const status of [409, 429, 504]) {
+    const transport = createAuthTransport('https://test.supabase.co', async () => Response.json({}, { status }), createRefreshCoordinator());
+    const value = 'base64-' + Buffer.from(JSON.stringify({ access_token: 'old', refresh_token: 'old-refresh', expires_at: 1 })).toString('base64url');
+    let writes = 0;
+    const client = createServerClient('https://test.supabase.co', 'key', {
+      global: { fetch: transport.fetch },
+      cookies: { encode: 'tokens-only', getAll: () => [{ name: 'sb-test-auth-token', value }], setAll: () => {
+        if (transport.isTemporarilyUnavailable()) return;
+        writes++;
+      } },
+    });
+    const result = await client.auth.getSession();
+    assert.equal(result.error.status, 409);
+    assert.equal(result.error.code, 'refresh_temporarily_unavailable');
+    assert.equal(writes, 0);
+  }
+});

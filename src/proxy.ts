@@ -45,7 +45,17 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  const { isAuthenticated, response } = await updateSession(request);
+  const { isAuthenticated, response, temporarilyUnavailable } = await updateSession(request);
+
+  if (temporarilyUnavailable) {
+    return copySupabaseResponseState(
+      response,
+      NextResponse.json({ error: 'auth_temporarily_unavailable' }, {
+        status: 503,
+        headers: { 'Retry-After': '30', 'Cache-Control': 'private, no-store', Pragma: 'no-cache', Expires: '0' },
+      }),
+    );
+  }
 
   if (acceptedHandoffLocale) {
     response.cookies.set(LOCALE_COOKIE_NAME, acceptedHandoffLocale, localeCookieOptions);

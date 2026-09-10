@@ -150,6 +150,7 @@ export function supabaseErrorCodeLocalisation(response: string, status: number |
     AuthApiError: 'tokenAuthApiError',
     unexpected_failure: 'genericError',
     request_timeout: 'genericError',
+    refresh_temporarily_unavailable: 'authTemporarilyUnavailable',
     signup_auth_api_error: 'signupApiAuthError', // generic catch all for sign up errors.
     // Add more mappings as needed
   };
@@ -172,6 +173,7 @@ export function supabaseErrorCodeFallback(messageKey: string) {
     providerDisabled: 'That sign-in provider is currently disabled.',
     overLimit: 'Too many requests. Please wait a few minutes and try again.',
     genericError: 'There was an unexpected problem.',
+    authTemporarilyUnavailable: 'Authentication is temporarily unavailable. Please wait 30 seconds and try again.',
   };
 
   return fallbackMessages[messageKey] ?? fallbackMessages.genericError;

@@ -527,3 +527,10 @@ PRs are always welcome.
 ---
 
 This project was inspired by Kolby Sisk's [next-supabase-stripe-starter](<[https://github.com/vercel/nextjs-subscription-payments](https://github.com/KolbySisk/next-supabase-stripe-starter/tree/main)>).
+
+### Authentication refresh resilience
+
+Server refreshes now coalesce with bounded traffic and outage cooldowns. Temporary
+Auth failures return HTTP 503 with `Retry-After: 30` and preserve session cookies;
+error-page identity checks never refresh. See [the authentication contract](docs/agents/authentication-and-claims.md#refresh-contention-and-outage-containment)
+for exact limits, credential handling and multi-instance deployment requirements.

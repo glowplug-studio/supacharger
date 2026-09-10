@@ -82,6 +82,7 @@
     "overEmailSendRateLimit": "Se han enviado demasiados correos electrónicos de verificación. Espere unos minutos antes de volver a intentarlo.",
     "overLimit": "Demasiadas solicitudes. Espere unos minutos y vuelva a intentarlo.",
     "userBanned": "Esta Cuenta Ha Sido Suspendida",
+    "authTemporarilyUnavailable": "",
     "genericError": "Hubo un problema inesperado",
     "otpDisabled": "Los códigos de verificación de correo electrónico están actualmente deshabilitados.",
     "otpAlreadyVerified": "Tu correo electrónico ya ha sido verificado.",

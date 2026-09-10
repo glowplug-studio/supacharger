@@ -1,8 +1,10 @@
 'use server';
 
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
+import { readAccessToken } from '@/lib/supabase/supacharger/passive-session';
 /** ==========
  *
  * Supacharger - Supabase Auth wrappers.
@@ -14,6 +16,7 @@ import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification'
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
+import { getSupabaseUrl } from '@/supacharger/utils/helpers';
 import { evaluatePasswordStrength, getURL, isValidEmail } from '@/supacharger/utils/helpers';
 
 import { createClient } from '../server';
@@ -257,14 +260,13 @@ export async function getUserSession() {
  * @returns {boolean} `true` if the user session is valid, `false`
  */
 export async function isLoggedIn() {
+  // Presentation checks must not rotate tokens, especially while rendering an error page.
+  const token = await readAccessToken(getSupabaseUrl(), (await cookies()).getAll());
+  if (!token) return false;
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
-
-  if (error || !data.user) {
-    return false;
-  }
-
-  return data.user.aud === 'authenticated';
+  const { data, error } = await supabase.auth.getClaims(token);
+  return !error && Boolean(data?.claims.sub) && data?.claims.role === 'authenticated' &&
+    (SC_CONFIG.AUTH_SESSION.ALLOW_ANONYMOUS_USERS || data.claims.is_anonymous !== true);
 }
 
 /**
