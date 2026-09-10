@@ -54,4 +54,4 @@ Commercial purchases and tokens will be managed through Specdrive. Token verific
 
 Only Core and Wakekeeper receive this release. SnapScreen and Specdrive remain deferred, including their newsletter stubs. Do not advance a consumer Core lock to imply a full update during this partial rollout. Removed registry/checkbox source remains recoverable from Git history.
 
-Transactional Brevo SQL functions use the `ext_brevo_transactional_` prefix, including consumer-owned adapters. Service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Previous non-trigger names remain restricted compatibility aliases; new callers use the prefixed names.
+Transactional Brevo SQL functions use the `ext_brevo_transactional_` prefix, including consumer-owned adapters. Service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Old aliases are removed; every caller must use the prefixed names.

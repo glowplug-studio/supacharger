@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "id": "brevo-email",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "coreOwnershipVersion": 2,
   "files": [
     {
@@ -27,7 +27,7 @@
     {
       "source": "payload/INSTALL.md",
       "target": "docs/extensions/brevo-email/INSTALL.md",
-      "sha256": "4e6ba62bc79381b8e57b317913f732f6ad83394cd45afb83e2ffefba4075eb2a"
+      "sha256": "86b854ad7ce7c2e029ac7fa29900fca5ab1271ac6643efb0bbb4d00f78a05911"
     },
     {
       "source": "payload/20260910120000_ext_brevo_email_delivery.sql",
@@ -40,6 +40,12 @@
       "target": "supabase/migrations/20260910155545_ext_brevo_email_transactional_names.sql",
       "kind": "migration",
       "sha256": "2a4b779c371f794fd19e705aa3acededa4bfff9f80dff0c208a6ecd00bf36288"
+    },
+    {
+      "source": "payload/20260910171009_ext_brevo_email_remove_compatibility_aliases.sql",
+      "target": "supabase/migrations/20260910171009_ext_brevo_email_remove_compatibility_aliases.sql",
+      "kind": "migration",
+      "sha256": "9fe55e8719787eed8f7bdb24cb5b498f1096068c76725e19af9c7ecbd355addd"
     }
   ]
 }

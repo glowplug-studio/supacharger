@@ -3,6 +3,12 @@ create function pg_temp.assert(ok boolean, message text) returns void language p
 select pg_temp.assert(not has_function_privilege('anon','api_edge.ext_brevo_transactional_enqueue(jsonb)','execute'),'anon enqueue denied');
 select pg_temp.assert(not has_function_privilege('authenticated','api_edge.ext_brevo_transactional_claim(uuid[])','execute'),'browser claim denied');
 select pg_temp.assert(has_function_privilege('service_role','api_edge.ext_brevo_transactional_finish(uuid,uuid,boolean)','execute'),'service finish allowed');
+select pg_temp.assert(to_regprocedure('brevo_email.dispatch(uuid[])') is null,'obsolete alias absent: brevo_email.dispatch(uuid[])');
+select pg_temp.assert(to_regprocedure('brevo_email.enqueue(jsonb)') is null,'obsolete alias absent: brevo_email.enqueue(jsonb)');
+select pg_temp.assert(to_regprocedure('brevo_email.retry_pending()') is null,'obsolete alias absent: brevo_email.retry_pending()');
+select pg_temp.assert(to_regprocedure('api_edge.brevo_email_enqueue(jsonb)') is null,'obsolete alias absent: api_edge.brevo_email_enqueue(jsonb)');
+select pg_temp.assert(to_regprocedure('api_edge.brevo_email_claim(uuid[])') is null,'obsolete alias absent: api_edge.brevo_email_claim(uuid[])');
+select pg_temp.assert(to_regprocedure('api_edge.brevo_email_finish(uuid,uuid,boolean)') is null,'obsolete alias absent: api_edge.brevo_email_finish(uuid,uuid,boolean)');
 select pg_temp.assert(not has_schema_privilege('service_role','brevo_email','usage'),'private storage denied');
 select pg_temp.assert((select schedule='* * * * *' from cron.job where jobname='ext-brevo-email-retry'),'minute cron installed');
 
