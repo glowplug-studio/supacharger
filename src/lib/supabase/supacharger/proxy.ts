@@ -17,7 +17,7 @@ export type VerifiedAuthClaims = {
 /**
  * Refresh the Supabase session and verify the signed access-token claims once.
  *
- * Keep database and product access checks out of Proxy. Protected layouts,
+ * Keep database and product access checks out of this session adapter. Protected layouts,
  * Server Actions, and Route Handlers must enforce their own authoritative
  * access rules with the request-scoped server client.
  */
@@ -58,6 +58,8 @@ export async function updateSession(request: NextRequest) {
 
   return {
     claims,
+    supabase,
+    getResponse: () => response,
     isAuthenticated,
     response,
     verificationError,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { isSupportedLocale, LOCALE_COOKIE_NAME } from './i18n/config';
 import { updateSession } from './lib/supabase/supacharger/proxy';
+import { resolveProjectRequest } from './supacharger.adapters/request-guard';
 import { copySupabaseResponseState } from './supacharger/auth/proxy-response';
 import { pathMatches } from './supacharger/auth/route-policy';
 import { withNextPath } from './supacharger/auth/safe-next-path';
@@ -45,7 +46,7 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  const { isAuthenticated, response, temporarilyUnavailable } = await updateSession(request);
+  const { isAuthenticated, response, temporarilyUnavailable, supabase, getResponse } = await updateSession(request);
 
   if (temporarilyUnavailable) {
     return copySupabaseResponseState(
@@ -115,8 +116,18 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Otherwise, continue as normal
-  return response;
+  // Product availability checks run only after all authentication redirects.
+  // Reuse the verified client and copy its latest cookie state after the guard.
+  try {
+    const guarded = await resolveProjectRequest({ request, isAuthenticated, supabase });
+    if (guarded) return copySupabaseResponseState(getResponse(), guarded);
+  } catch {
+    return copySupabaseResponseState(getResponse(), new NextResponse(null, {
+      status: 503,
+      headers: { 'Cache-Control': 'private, no-store', 'Retry-After': '30' },
+    }));
+  }
+  return getResponse();
 }
 
 // Example matcher to exclude static files and images

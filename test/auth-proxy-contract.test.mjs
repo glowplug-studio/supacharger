@@ -406,3 +406,53 @@ test('temporary refresh failures do not write logout cookies through the SSR ada
     assert.equal(writes, 0);
   }
 });
+
+
+test('project guard runs after authentication routing, reuses its client and preserves response state', async () => {
+  const { createRequire } = await import('node:module');
+  const require = createRequire(import.meta.url);
+  const { runInNewContext } = await import('node:vm');
+  const ts = require('typescript');
+  const { NextRequest, NextResponse } = require('next/server');
+  const code = ts.transpileModule(await readFile(new URL('../src/proxy.ts', import.meta.url), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  }).outputText;
+  const client = {};
+  let calls = 0;
+  let thrown = false;
+  let authenticated = false;
+  const response = NextResponse.next();
+  response.cookies.set('session-test', 'rotated', { httpOnly: true });
+  response.headers.set('Cache-Control', 'private, no-store');
+  const modules = {
+    './i18n/config': { isSupportedLocale: () => false, LOCALE_COOKIE_NAME: 'locale' },
+    './lib/supabase/supacharger/proxy': { updateSession: async () => ({ isAuthenticated: authenticated, response, supabase: client, getResponse: () => response }) },
+    './supacharger/auth/proxy-response': { copySupabaseResponseState },
+    './supacharger/auth/route-policy': { pathMatches },
+    './supacharger/auth/safe-next-path': { withNextPath },
+    './supacharger/auth/sensitive-auth-query': { hasSensitiveAuthQuery, removeSensitiveAuthQuery },
+    './supacharger/supacharger-config': { SC_CONFIG: { AUTH_ONLY_APP: true, PATH_AUTH_GUARD: { UNAUTHED_USER: { ALLOWED: ['/public/:id'], DISALLOWED: [] }, AUTHED_USER: { DISALLOWED: [] } }, USER_REDIRECTS: { UNAUTHED_USER: { AUTHGUARD_REDIRECT_DESTINATION: '/account/login' } } } },
+    './supacharger.adapters/request-guard': { resolveProjectRequest: async context => {
+      calls++; assert.equal(context.supabase, client); assert.equal(context.isAuthenticated, authenticated);
+      if (thrown) throw new Error('private upstream details');
+      return new NextResponse(null, { status: 404 });
+    } },
+  };
+  const exports = {};
+  runInNewContext(code, { exports, process, require: name => name === 'next/server' ? require(name) : modules[name], URL });
+  const denied = await exports.proxy(new NextRequest('https://example.com/api/private'));
+  assert.equal(denied.status, 401); assert.equal(calls, 0);
+  const redirected = await exports.proxy(new NextRequest('https://example.com/private'));
+  assert.equal(redirected.status, 307); assert.equal(calls, 0);
+  for (const identity of [false, true]) {
+    authenticated = identity;
+    const missing = await exports.proxy(new NextRequest('https://example.com/public/missing'));
+    assert.equal(missing.status, 404);
+    assert.equal(missing.cookies.get('session-test').value, 'rotated');
+    assert.equal(missing.headers.get('cache-control'), 'private, no-store');
+  }
+  thrown = true;
+  const outage = await exports.proxy(new NextRequest('https://example.com/public/missing'));
+  assert.equal(outage.status, 503); assert.equal(await outage.text(), '');
+  assert.equal(outage.cookies.get('session-test').value, 'rotated');
+});

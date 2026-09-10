@@ -536,3 +536,5 @@ error-page identity checks never refresh. See [the authentication contract](docs
 for exact limits, credential handling and multi-instance deployment requirements.
 
 Transactional Brevo SQL functions use the `ext_brevo_transactional_` prefix, including consumer-owned adapters. Service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Previous non-trigger names remain restricted compatibility aliases; new callers use the prefixed names.
+
+Project request availability checks: see [the developer-owned request guard](docs/agents/authentication-and-claims.md#project-request-guard). It runs before rendering, after authentication routing, with the existing verified client.
