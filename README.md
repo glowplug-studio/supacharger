@@ -538,3 +538,21 @@ for exact limits, credential handling and multi-instance deployment requirements
 Transactional Brevo SQL functions use the `ext_brevo_transactional_` prefix, including consumer-owned adapters. Service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Old aliases are removed; every caller must use the prefixed names.
 
 Project request availability checks: see [the developer-owned request guard](docs/agents/authentication-and-claims.md#project-request-guard). It runs before rendering, after authentication routing, with the existing verified client.
+
+### Authentication outage page
+
+Browser page requests receive a standalone, centred dark recovery panel with the
+application name, its local `/favicons/apple-touch-icon.png`, an English connection
+message and a **Try again** link. The link retries the original path and query,
+omitting Next.js's internal `_rsc` parameter. There is no automatic reload, script,
+remote font, application layout or additional Supabase call. Next.js client-side
+Flight navigation falls back to a full document request for this non-Flight 503.
+API paths, Server Actions and other non-document requests retain
+`{"error":"auth_temporarily_unavailable"}`. Session cookies survive and every
+variant remains private/no-store with `Retry-After: 30`. The `ServiceUnavailable`
+namespace in developer-owned `messages/en.json` supplies the copy, with protected
+English defaults for stale catalogues. This emergency response deliberately uses
+English without profile or locale lookups. Secondary languages remain untranslated;
+empty placeholders are added only where catalogue type parity requires them.
+This covers temporary Auth refresh failures detected by Proxy, not every possible
+Supabase database or downstream service failure.

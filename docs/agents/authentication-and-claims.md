@@ -124,6 +124,22 @@ that delay; never immediately reload or repeat the protected request in a loop.
 Permanent invalid-token responses retain normal SDK session-removal behaviour.
 Other endpoints, including password login, logout and RPCs, are unchanged.
 
+Browser page requests receive a standalone, centred dark recovery panel with the
+application name, its local `/favicons/apple-touch-icon.png`, an English connection
+message and a **Try again** link. The link retries the original path and query,
+omitting Next.js's internal `_rsc` parameter. There is no automatic reload, script,
+remote font, application layout or additional Supabase call. Next.js client-side
+Flight navigation falls back to a full document request for this non-Flight 503.
+API paths, Server Actions and other non-document requests retain
+`{"error":"auth_temporarily_unavailable"}`. Session cookies survive and every
+variant remains private/no-store with `Retry-After: 30`. The `ServiceUnavailable`
+namespace in developer-owned `messages/en.json` supplies the copy, with protected
+English defaults for stale catalogues. This emergency response deliberately uses
+English without profile or locale lookups. Secondary languages remain untranslated;
+empty placeholders are added only where catalogue type parity requires them.
+This covers temporary Auth refresh failures detected by Proxy, not every possible
+Supabase database or downstream service failure.
+
 `isLoggedIn()` is a passive presentation check. It extracts the bounded access token
 from this project's SSR cookie and explicitly passes it to `getClaims(token)` for
 signature/expiry verification. It does not refresh; missing, malformed or expired

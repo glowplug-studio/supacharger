@@ -1,4 +1,9 @@
 {
+  "ServiceUnavailable": {
+    "title": "",
+    "description": "",
+    "retry": ""
+  },
   "Global": {
     "siteTitle": "Korunet",
     "siteDescription": "Comienza tu próximo proyecto sin reinventar la rueda",

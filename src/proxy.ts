@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import englishMessages from '../messages/en.json';
+
 import { isSupportedLocale, LOCALE_COOKIE_NAME } from './i18n/config';
 import { updateSession } from './lib/supabase/supacharger/proxy';
 import { resolveProjectRequest } from './supacharger.adapters/request-guard';
@@ -7,6 +9,7 @@ import { copySupabaseResponseState } from './supacharger/auth/proxy-response';
 import { pathMatches } from './supacharger/auth/route-policy';
 import { withNextPath } from './supacharger/auth/safe-next-path';
 import { hasSensitiveAuthQuery, removeSensitiveAuthQuery } from './supacharger/auth/sensitive-auth-query';
+import { createAuthUnavailableResponse } from './supacharger/auth/unavailable-response';
 import { SC_CONFIG } from './supacharger/supacharger-config';
 
 const localeCookieOptions = {
@@ -49,13 +52,7 @@ export async function proxy(request: NextRequest) {
   const { isAuthenticated, response, temporarilyUnavailable, supabase, getResponse } = await updateSession(request);
 
   if (temporarilyUnavailable) {
-    return copySupabaseResponseState(
-      response,
-      NextResponse.json({ error: 'auth_temporarily_unavailable' }, {
-        status: 503,
-        headers: { 'Retry-After': '30', 'Cache-Control': 'private, no-store', Pragma: 'no-cache', Expires: '0' },
-      }),
-    );
+    return createAuthUnavailableResponse(request, response, SC_CONFIG.SITE_TITLE, englishMessages.ServiceUnavailable);
   }
 
   if (acceptedHandoffLocale) {

@@ -9,6 +9,16 @@ import { pathMatches } from '../src/supacharger/auth/route-policy.ts';
 import { getSafeNextPath, withNextPath } from '../src/supacharger/auth/safe-next-path.js';
 import { hasSensitiveAuthQuery, removeSensitiveAuthQuery } from '../src/supacharger/auth/sensitive-auth-query.ts';
 
+const { createRequire: createTestRequire } = await import('node:module');
+const testRequire = createTestRequire(import.meta.url);
+const { runInNewContext: runTestModule } = await import('node:vm');
+const testTs = testRequire('typescript');
+const unavailableModule = {};
+runTestModule(testTs.transpileModule(await readFile(new URL('../src/supacharger/auth/unavailable-response.ts', import.meta.url), 'utf8'), {
+  compilerOptions: { module: testTs.ModuleKind.CommonJS, target: testTs.ScriptTarget.ES2022 },
+}).outputText, { exports: unavailableModule, require: name => name === './proxy-response' ? { copySupabaseResponseState } : testRequire(name) });
+const { createAuthUnavailableResponse, unavailableEnglishCopy } = unavailableModule;
+
 const appDirectory = new URL('../src/app/', import.meta.url);
 
 async function findRoutePage(publicPath) {
@@ -415,23 +425,26 @@ test('project guard runs after authentication routing, reuses its client and pre
   const ts = require('typescript');
   const { NextRequest, NextResponse } = require('next/server');
   const code = ts.transpileModule(await readFile(new URL('../src/proxy.ts', import.meta.url), 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    compilerOptions: { esModuleInterop: true, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
   const client = {};
   let calls = 0;
   let thrown = false;
   let authenticated = false;
+  let temporarilyUnavailable = false;
   const response = NextResponse.next();
   response.cookies.set('session-test', 'rotated', { httpOnly: true });
   response.headers.set('Cache-Control', 'private, no-store');
   const modules = {
+    '../messages/en.json': { ServiceUnavailable: unavailableEnglishCopy },
+    './supacharger/auth/unavailable-response': { createAuthUnavailableResponse },
     './i18n/config': { isSupportedLocale: () => false, LOCALE_COOKIE_NAME: 'locale' },
-    './lib/supabase/supacharger/proxy': { updateSession: async () => ({ isAuthenticated: authenticated, response, supabase: client, getResponse: () => response }) },
+    './lib/supabase/supacharger/proxy': { updateSession: async () => ({ isAuthenticated: authenticated, temporarilyUnavailable, response, supabase: client, getResponse: () => response }) },
     './supacharger/auth/proxy-response': { copySupabaseResponseState },
     './supacharger/auth/route-policy': { pathMatches },
     './supacharger/auth/safe-next-path': { withNextPath },
     './supacharger/auth/sensitive-auth-query': { hasSensitiveAuthQuery, removeSensitiveAuthQuery },
-    './supacharger/supacharger-config': { SC_CONFIG: { AUTH_ONLY_APP: true, PATH_AUTH_GUARD: { UNAUTHED_USER: { ALLOWED: ['/public/:id'], DISALLOWED: [] }, AUTHED_USER: { DISALLOWED: [] } }, USER_REDIRECTS: { UNAUTHED_USER: { AUTHGUARD_REDIRECT_DESTINATION: '/account/login' } } } },
+    './supacharger/supacharger-config': { SC_CONFIG: { SITE_TITLE: 'App', AUTH_ONLY_APP: true, PATH_AUTH_GUARD: { UNAUTHED_USER: { ALLOWED: ['/public/:id'], DISALLOWED: [] }, AUTHED_USER: { DISALLOWED: [] } }, USER_REDIRECTS: { UNAUTHED_USER: { AUTHGUARD_REDIRECT_DESTINATION: '/account/login' } } } },
     './supacharger.adapters/request-guard': { resolveProjectRequest: async context => {
       calls++; assert.equal(context.supabase, client); assert.equal(context.isAuthenticated, authenticated);
       if (thrown) throw new Error('private upstream details');
@@ -455,4 +468,74 @@ test('project guard runs after authentication routing, reuses its client and pre
   const outage = await exports.proxy(new NextRequest('https://example.com/public/missing'));
   assert.equal(outage.status, 503); assert.equal(await outage.text(), '');
   assert.equal(outage.cookies.get('session-test').value, 'rotated');
+  temporarilyUnavailable = true;
+  const previousCalls = calls;
+  const authOutage = await exports.proxy(new NextRequest('https://example.com/private', { headers: { accept: 'text/html' } }));
+  assert.equal(authOutage.status, 503);
+  assert.match(await authOutage.text(), /<main>/);
+  assert.equal(calls, previousCalls);
+  assert.equal(authOutage.cookies.get('session-test').value, 'rotated');
+});
+
+
+test('Auth outage serves a standalone branded document for navigation and Flight, with a safe retry', async () => {
+  const { NextRequest, NextResponse } = testRequire('next/server');
+  const messages = JSON.parse(await readFile(new URL('../messages/en.json', import.meta.url), 'utf8'));
+  for (const [key, fallback] of Object.entries(unavailableEnglishCopy)) {
+    assert.equal(typeof messages.ServiceUnavailable[key], 'string');
+    assert.ok(messages.ServiceUnavailable[key].trim());
+    assert.ok(fallback.trim());
+  }
+  await readFile(new URL('../public/favicons/apple-touch-icon.png', import.meta.url));
+  for (const headers of [{ accept: 'text/html' }, { rsc: '1', accept: '*/*' }, { rsc: '1', 'next-router-prefetch': '1' }]) {
+    const session = NextResponse.next();
+    session.cookies.set('session-test', 'retained', { httpOnly: true });
+    session.headers.set('Cache-Control', 'public, max-age=60');
+    const result = createAuthUnavailableResponse(new NextRequest('https://example.com/private?tab=people&_rsc=internal', { headers }), session, 'App <name>', messages.ServiceUnavailable);
+    assert.equal(result.status, 503);
+    assert.equal(result.headers.get('content-type'), 'text/html; charset=utf-8');
+    assert.equal(result.headers.get('retry-after'), '30');
+    assert.equal(result.headers.get('cache-control'), 'private, no-store');
+    assert.equal(result.headers.get('pragma'), 'no-cache');
+    assert.equal(result.headers.get('expires'), '0');
+    assert.equal(result.headers.get('vary'), 'Accept, RSC');
+    assert.equal(result.cookies.get('session-test').value, 'retained');
+    const html = await result.text();
+    assert.match(html, /<main><div class="panel">/);
+    assert.match(html, /App &lt;name&gt;/);
+    assert.match(html, /href="https:\/\/example.com\/private\?tab=people"/);
+    assert.doesNotMatch(html, /<script|http-equiv="refresh"|auth_temporarily_unavailable|_rsc/);
+    const css = html.match(/<style>([\s\S]*?)<\/style>/)[1];
+    const hash = testRequire('node:crypto').createHash('sha256').update(css).digest('base64');
+    assert.ok(result.headers.get('content-security-policy').includes(`'sha256-${hash}'`));
+  }
+});
+
+test('Auth outage keeps JSON for APIs, actions and non-document clients', async () => {
+  const { NextRequest, NextResponse } = testRequire('next/server');
+  for (const [pathname, method, headers] of [
+    ['/api/private', 'GET', { accept: 'text/html' }],
+    ['/api', 'GET', { rsc: '1' }],
+    ['/account/login', 'POST', { accept: 'text/html', 'next-action': 'test' }],
+    ['/private', 'GET', { accept: 'application/json' }],
+  ]) {
+    const result = createAuthUnavailableResponse(new NextRequest(`https://example.com${pathname}`, { method, headers }), NextResponse.next(), 'App', {});
+    assert.equal(result.status, 503);
+    assert.deepEqual(await result.json(), { error: 'auth_temporarily_unavailable' });
+  }
+  const head = createAuthUnavailableResponse(new NextRequest('https://example.com/private', { method: 'HEAD', headers: { accept: 'text/html' } }), NextResponse.next(), 'App', {});
+  assert.equal(head.status, 503);
+  assert.equal(await head.text(), '');
+});
+
+test('Auth outage escapes catalogue and URL content and tolerates stale English catalogues', async () => {
+  const { NextRequest, NextResponse } = testRequire('next/server');
+  const request = new NextRequest('https://example.com//other.example/path?x=%22%3E%3Cscript%3E&y=1', { headers: { accept: 'text/html' } });
+  const result = createAuthUnavailableResponse(request, NextResponse.next(), '"<img>', { title: '<script>alert(1)</script>', description: '', retry: 123 });
+  const html = await result.text();
+  assert.doesNotMatch(html, /<script>|<img>/);
+  assert.match(html, /&lt;script&gt;/);
+  assert.match(html, /href="https:\/\/example.com\/\/other.example/);
+  assert.ok(html.includes(unavailableEnglishCopy.description));
+  assert.ok(html.includes(unavailableEnglishCopy.retry));
 });

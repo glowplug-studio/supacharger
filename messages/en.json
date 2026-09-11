@@ -1,4 +1,9 @@
 {
+  "ServiceUnavailable": {
+    "title": "We’ll be back shortly",
+    "description": "We’re having trouble connecting. Please try again in a moment.",
+    "retry": "Try again"
+  },
   "Global": {
     "siteTitle": "Korunet",
     "siteDescription": "Start your next project without reinventing the wheel",

@@ -1,4 +1,9 @@
 {
+  "ServiceUnavailable": {
+    "title": "",
+    "description": "",
+    "retry": ""
+  },
   "Global": {
     "siteTitle": "科鲁内特",
     "siteDescription": "无需重新发明轮子即可开始您的下一个项目",
