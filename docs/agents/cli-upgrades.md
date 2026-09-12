@@ -38,6 +38,8 @@ After file/config/catalogue work, the updater installs required dependency chang
 
 `supacharger doctor` is read-only. It identifies duplicate App Router pages after route-group normalisation, obsolete `/auth/*` and `/organisation` pages, incomplete account/organisation configuration, obsolete MFA visibility config, disabled local TOTP APIs, missing managed organisation routes/tests/adapters, missing English namespaces, invalid migration aliases, absent shared migrations, hook drift, recovery-route ancestry errors, missing scripts, and Bruno parity assets. It does not contact or mutate a hosted project.
 
-### Image loader distribution follow-up
+### Git commit identity and image loader distribution
 
-`src/assets/svgr/ui/image-loader.svg` is now a developer-owned Core asset and has been copied to Specdrive, SnapScreen and Wakekeeper. The separate `supacharger-cli` repository still needs an approved change to `commands/coreupdate.js` and its starter-installation tests: add the image loader to the starter/fallback ownership list, install it only when absent, and preserve customised copies. Until that CLI change ships, existing installations need the asset copied explicitly. Consumer Core locks must continue to identify their published baseline; local asset synchronisation does not advance them.
+The CLI resolves a requested Git ref once and fetches that commit in both the clean and conflicting update paths. The lock records the checked-out commit only after the declared checks and exact-file verification succeed. To keep a separately reviewed plan and update on the same release, pass the same explicit commit SHA to both commands.
+
+`src/assets/svgr/ui/image-loader.svg` is developer-owned. The CLI installs its starter only when absent and preserves customised copies, including through the fallback ownership rules for legacy updates. This support is implemented in the separate `supacharger-cli` repository; npm publication is still pending. Consumer Core locks must continue to identify their published baseline; local asset synchronisation does not advance them.

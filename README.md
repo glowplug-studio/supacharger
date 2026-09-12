@@ -52,6 +52,8 @@ The version 2 `.supacharger/managed-files.json` contract separates exact managed
 
 `supacharger coreupdate --plan` previews exact writes, removals, dependency/script merges, config defaults, canonical English additions, migrations, aliases, and checks. A real update seeds missing auth/account/billing/organisation adapters, adds disabled-safe missing configuration keys, merges only missing or empty English source values, preserves secondary catalogues and project CSS, and advances `.supacharger/core-lock.json` only after every declared check passes. Run the read-only `supacharger doctor` afterwards to find obsolete auth/organisation routes, stale config, missing migrations or aliases, incomplete managed organisation assets, and missing English namespaces.
 
+The CLI now pins each Git update to its resolved commit, including when local conflicts need review, and records the checked-out commit after verification. Use the same explicit `--ref <commit>` for a separately reviewed plan and update. It also installs a missing developer-owned `src/assets/svgr/ui/image-loader.svg` without replacing customised artwork. These CLI fixes await npm publication.
+
 Managed contract tests contain only reusable Core assertions. Keep product-specific catalogue, table, RPC, and policy checks in `test/project-billing-schema-contract.test.mjs`, which is an explicit developer-owned seam, and extend the consumer's merge-managed `test:billing-schema` script to run it beside the protected shared test.
 
 ### Input validation
