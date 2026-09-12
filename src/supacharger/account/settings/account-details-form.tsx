@@ -8,6 +8,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { SUPPORTED_LOCALES } from '@/i18n/config';
 import { AccountProfileFields } from '@/supacharger.adapters/account/profile-fields';
+import { AccountProfileMedia } from '@/supacharger.adapters/account/profile-media';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
 import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
@@ -15,7 +16,6 @@ import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-import { AccountMediaField } from './account-media-field';
 import type { AccountDetailsFormValues, AccountDetailsResponse } from './account-settings-contract';
 
 type AccountDetailsFormProps = {
@@ -173,14 +173,19 @@ export function AccountDetailsForm(props: AccountDetailsFormProps) {
         </FormProvider>
       </section>
 
-      {SC_CONFIG.PROFILE_IDENTITY.AVATAR !== 'disabled' ? (
+      {SC_CONFIG.PROFILE_IDENTITY.AVATAR !== 'disabled' || SC_CONFIG.PROFILE_IDENTITY.HEADER_IMAGE !== 'disabled' ? (
         <section className='sc-account-section'>
-          <AccountMediaField initialPath={props.avatarPath} initialUrl={props.avatarUrl} kind='avatar' />
-        </section>
-      ) : null}
-      {SC_CONFIG.PROFILE_IDENTITY.HEADER_IMAGE !== 'disabled' ? (
-        <section className='sc-account-section'>
-          <AccountMediaField initialPath={props.headerImagePath} initialUrl={props.headerImageUrl} kind='header' />
+          <AccountProfileMedia
+            avatarEnabled={SC_CONFIG.PROFILE_IDENTITY.AVATAR !== 'disabled'}
+            firstName={props.firstName}
+            headerEnabled={SC_CONFIG.PROFILE_IDENTITY.HEADER_IMAGE !== 'disabled'}
+            initialAvatarPath={props.avatarPath}
+            initialAvatarUrl={props.avatarUrl}
+            initialHeaderPath={props.headerImagePath}
+            initialHeaderUrl={props.headerImageUrl}
+            lastName={props.lastName}
+            username={props.username}
+          />
         </section>
       ) : null}
 

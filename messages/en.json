@@ -433,6 +433,10 @@
     "paywallDemos": {
       "title": "Paywall demos",
       "description": "Preview subscription and one-time purchase prompts for protected product features."
+    },
+    "coreWidgetDemos": {
+      "title": "Core Widget Demos",
+      "description": "Try the project-scoped, editable upload widgets delivered with Supacharger Core."
     }
   },
   "MarketingFeaturePages": {
@@ -497,6 +501,19 @@
       "copyPackage": "Copy package.json",
       "copiedPackage": "Copied",
       "copyFailed": "Copy failed"
+    },
+    "coreWidgetDemos": {
+      "eyebrow": "Core delivered project scoped prebuilt widgets",
+      "title": "Core Widget Demos",
+      "description": "These working examples are installed into the project for developers to style, configure and extend without editing protected Core files.",
+      "genericTitle": "Generic file upload",
+      "genericDescription": "A reusable single or multi-file selector with configurable file types, size limits, field name and deferred upload state.",
+      "bannerTitle": "Resizable banner image",
+      "bannerDescription": "Choose a wide image, then drag it vertically to select the crop sent to the image-processing endpoint.",
+      "bannerLabel": "Cover image",
+      "avatarTitle": "Zoomable avatar image",
+      "avatarDescription": "Choose an image, then reposition and zoom it inside the circular avatar crop.",
+      "avatarLabel": "Avatar"
     },
     "paywallDemos": {
       "title": "Paywall patterns for different purchase journeys",
@@ -630,6 +647,33 @@
       }
     }
   },
+  "SCWidgets": {
+    "fileUpload": {
+      "label": "Files",
+      "description": "Files remain local in this demonstration.",
+      "limitations": "PDF, text, CSV or image files up to 10 MB each.",
+      "add": "Select files",
+      "drop": "Drag files here, or choose them from your device.",
+      "emptyFile": "Empty files cannot be uploaded.",
+      "invalidType": "That file type is not supported.",
+      "remove": "Remove file",
+      "tooLarge": "Each file must be {size} or smaller."
+    },
+    "profileMedia": {
+      "title": "Profile preview",
+      "description": "Position your cover and avatar images before saving them to your profile.",
+      "avatar": "Avatar",
+      "banner": "Cover image",
+      "unnamed": "Your profile",
+      "avatarPreviewAlt": "Profile avatar preview",
+      "bannerPreviewAlt": "Profile cover preview",
+      "saving": "Saving…",
+      "save": "Save {label}",
+      "saved": "{label} saved.",
+      "uploadFailed": "The image could not be processed.",
+      "saveFailed": "The image was uploaded but could not be attached to your profile."
+    }
+  },
   "MarketingNavigation": {
     "overview": "Our purpose",
     "features": "How it grows",
@@ -643,6 +687,8 @@
     "whatsIncludedDescription": "From core product features to developer specifications.",
     "paywallDemos": "Paywall demos",
     "paywallDemosDescription": "See how calls to action encourage users to subscribe.",
+    "coreWidgetDemos": "Core Widget Demos",
+    "coreWidgetDemosDescription": "Try editable file and image upload widgets.",
     "licenseInformation": "License information",
     "licenseInformationDescription": "Review licensing and attribution.",
     "license": "License",

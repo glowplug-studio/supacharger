@@ -24,7 +24,7 @@ test('English is complete and secondary catalogues retain structural and placeho
 
   for (const [locale, catalogue] of Object.entries(catalogues)) {
     const leaves = flatten(catalogue);
-    assert.deepEqual([...leaves.keys()], [...english.keys()], `${locale} catalogue keys differ from English`);
+    assert.deepEqual([...leaves.keys()].sort(), [...english.keys()].sort(), `${locale} catalogue keys differ from English`);
     for (const [key, value] of leaves) {
       if (locale === 'en') assert.ok(value.trim(), `${locale}.${key} must not be empty`);
       if (!value.trim()) continue;

@@ -41,4 +41,15 @@ export type AccountDetailsResponse =
     };
 
 export type AccountDetailsPageOverride = () => React.ReactNode | Promise<React.ReactNode>;
+export type AccountProfileMediaProps = {
+  avatarEnabled: boolean;
+  firstName: string;
+  headerEnabled: boolean;
+  initialAvatarPath: string | null;
+  initialAvatarUrl: string | null;
+  initialHeaderPath: string | null;
+  initialHeaderUrl: string | null;
+  lastName: string;
+  username: string;
+};
 export type AccountSettingsLayoutMode = 'managed' | 'passthrough';

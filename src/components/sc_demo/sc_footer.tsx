@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
-import { SupachargerAttribution } from '@/components/attribution/supacharger-attribution';
+import { SupachargerAttribution } from '@/components/sc_widgets/attribution/supacharger-attribution';
 import ModeToggle from '@/supacharger/components/buttons/mode-toggle-button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 

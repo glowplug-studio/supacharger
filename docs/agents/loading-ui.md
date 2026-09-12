@@ -22,7 +22,7 @@ When sourcing a replacement from [SVG Backgrounds animated SVG preloaders](https
 
 ## Image loading placeholders
 
-Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.
+Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. Generated project images should use `src/components/sc_widgets/media/image-with-loader.tsx`. The wrapper reserves the container, places the loader behind the image, keeps the image fully hidden until `HTMLImageElement.decode()` completes, then fades in the complete image so progressive rows or partial pixels are never exposed. It resets when the source changes and handles cached images and failures. Disable the fade and pause the SVG animation for reduced-motion users, leaving static bars visible while pending. Keep buttons and form actions on the existing inline loader.
 
 ```tsx
 import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
@@ -35,4 +35,4 @@ import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
 )}
 ```
 
-`pending` belongs to the image lifecycle: clear it on load and error, including a cached image that is already complete. For reduced motion, pause SVG animation using `pauseAnimations()` on the SVG element (SMIL is not stopped by Tailwind's `motion-reduce:animate-none`).
+`pending` belongs to the image lifecycle: clear it on load and error, including a cached image that is already complete, and reset it whenever the source changes. For reduced motion, pause SVG animation using `pauseAnimations()` on the SVG element (SMIL is not stopped by Tailwind’s `motion-reduce:animate-none`).

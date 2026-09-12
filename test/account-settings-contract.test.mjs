@@ -17,7 +17,6 @@ test('managed account presentation uses only semantic developer CSS hooks', asyn
     read('src/supacharger/account/security/security-page.tsx'),
     read('src/supacharger/account/security/totp-panel.tsx'),
     read('src/supacharger/account/settings/account-details-form.tsx'),
-    read('src/supacharger/account/settings/account-media-field.tsx'),
     read('src/supacharger/account/settings/account-settings-shell.tsx'),
   ]);
   const tokens = sources.flatMap(literalClassTokens);
@@ -70,16 +69,20 @@ test('profile extensions are developer-owned, typed, and server-validated', asyn
   assert.match(fields, /AccountProfileFields/);
   assert.match(extension, /z\.object\(\{\}\)\.strict\(\)/);
   assert.ok(manifest.developerOwnedPaths.includes('src/supacharger.adapters'));
+  assert.ok(manifest.developerOwnedPaths.includes('src/components/sc_widgets'));
 });
 
-test('profile media commits the path before deleting the prior object and refreshes menus', async () => {
-  const media = await read('src/supacharger/account/settings/account-media-field.tsx');
+test('project-owned profile media commits the path before deleting the prior object and refreshes menus', async () => {
+  const media = await read('src/components/sc_widgets/profile/account-profile-media-widget.tsx');
+  const upload = await read('src/components/sc_widgets/media/project-image-upload.ts');
   const mutationPosition = media.indexOf('await mutation');
-  const oldDeletePosition = media.indexOf('if (path && path !== nextPath)');
+  const oldDeletePosition = media.indexOf('if (previousPath && previousPath !== nextPath)');
 
   assert.ok(mutationPosition >= 0);
   assert.ok(oldDeletePosition > mutationPosition);
-  assert.match(media, /process-image-upload/);
+  assert.match(upload, /process-image-upload/);
+  assert.match(upload, /formData\.set\('crop'/);
+  assert.match(upload, /formData\.set\('destination'/);
   assert.match(media, /publishAccountSummaryChanged\(\)/);
   assert.match(media, /router\.refresh\(\)/);
   assert.match(media, /showActionToast\('success'/);
@@ -90,7 +93,7 @@ test('managed account mutations retain inline feedback and emit action toasts', 
   const sources = await Promise.all([
     read('src/supacharger/account/preferences/preference-form.tsx'),
     read('src/supacharger/account/settings/account-details-form.tsx'),
-    read('src/supacharger/account/settings/account-media-field.tsx'),
+    read('src/components/sc_widgets/profile/account-profile-media-widget.tsx'),
   ]);
   for (const source of sources) {
     assert.match(source, /role=.*(?:alert|status)|role='(?:alert|status)'/);
@@ -115,4 +118,17 @@ test('approved account settings configuration and complete English copy are pres
   assert.ok(english.AccountSettings.title.trim());
   assert.ok(english.AccountSettings.details.saved.trim());
   assert.ok(english.AccountSettings.validation.summaryLoad.trim());
+});
+
+test('profile media RPCs use descriptive PostgREST argument names', async () => {
+  const [media, avatarRequest, headerRequest] = await Promise.all([
+    read('src/components/sc_widgets/profile/account-profile-media-widget.tsx'),
+    read('docs/bruno/supacharger-rpc/update_account_avatar_by_current_user.bru'),
+    read('docs/bruno/supacharger-rpc/update_account_header_image_by_current_user.bru'),
+  ]);
+
+  assert.match(media, /input_avatar_path/);
+  assert.match(media, /input_header_image_path/);
+  assert.match(avatarRequest, /input_avatar_path/);
+  assert.match(headerRequest, /input_header_image_path/);
 });

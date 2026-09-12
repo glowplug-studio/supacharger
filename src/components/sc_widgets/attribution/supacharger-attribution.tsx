@@ -1,5 +1,5 @@
 // Supacharger attribution is required by the public license. To remove this component,
-// obtain the appropriate license at http://supacharger.dev/product/pricing.
+// obtain the appropriate licence at https://supacharger.dev/product/pricing.
 
 import { getTranslations } from 'next-intl/server';
 

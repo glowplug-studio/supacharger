@@ -297,9 +297,16 @@
     "paywallDemos": {
       "title": "付费墙演示",
       "description": "预览受保护产品功能的订阅和一次性购买提示。"
+    },
+    "coreWidgetDemos": {
+      "title": "",
+      "description": ""
     }
   },
   "MarketingFeaturePages": {
+    "coreWidgetDemos": {
+      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":""
+    },
     "whatsIncluded": {
       "title": "Supacharger 实际包含什么",
       "description": "为身份、计费、个人资料、本地化以及扩展产品所需的工具提供可复用的基础。",
@@ -503,6 +510,8 @@
     "whatsIncludedDescription": "从核心产品功能到开发者规范。",
     "paywallDemos": "付费墙演示",
     "paywallDemosDescription": "了解行动号召如何鼓励用户订阅。",
+    "coreWidgetDemos": "",
+    "coreWidgetDemosDescription": "",
     "licenseInformation": "许可证信息",
     "licenseInformationDescription": "了解源许可证、归属要求和第三方组件。",
     "license": "执照",
@@ -1250,6 +1259,11 @@
     "conflict": "",
     "retry": ""
   },
+  "SCWidgets": {
+    "fileUpload": {"label":"","description":"","limitations":"","add":"","drop":"","emptyFile":"","invalidType":"","remove":"","tooLarge":""},
+    "profileMedia": {"title":"","description":"","avatar":"","banner":"","unnamed":"","avatarPreviewAlt":"","bannerPreviewAlt":"","saving":"","save":"","saved":"","uploadFailed":"","saveFailed":""}
+  },
+  "ImageUploadErrors": {"invalidRequest":"","invalidCrop":""},
   "ErrorPage": {
     "notFound": {
       "status": "404错误",

@@ -111,6 +111,7 @@ export const SC_CONFIG: SupachargerConfig = {
         '/about',
         '/whats-included',
         '/paywall-demos',
+        '/features/:path*',
         '/profile/:username',
         '/legal',
         '/license',

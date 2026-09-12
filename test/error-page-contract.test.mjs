@@ -6,7 +6,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('application-owned error routes use the auth-aware branded presentation', async () => {
   const [component, errorPage, notFoundPage, config, proxy] = await Promise.all([
-    read('src/components/error-page/application-error-page.tsx'),
+    read('src/components/sc_widgets/error-page/application-error-page.tsx'),
     read('src/app/error/page.tsx'),
     read('src/app/not-found.tsx'),
     read('src/supacharger.config.ts'),

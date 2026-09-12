@@ -115,14 +115,16 @@ export async function proxy(request: NextRequest) {
 
   // Product availability checks run only after all authentication redirects.
   // Reuse the verified client and copy its latest cookie state after the guard.
-  try {
-    const guarded = await resolveProjectRequest({ request, isAuthenticated, supabase });
-    if (guarded) return copySupabaseResponseState(getResponse(), guarded);
-  } catch {
-    return copySupabaseResponseState(getResponse(), new NextResponse(null, {
-      status: 503,
-      headers: { 'Cache-Control': 'private, no-store', 'Retry-After': '30' },
-    }));
+  if (pathname !== '/error') {
+    try {
+      const guarded = await resolveProjectRequest({ request, isAuthenticated, supabase });
+      if (guarded) return copySupabaseResponseState(getResponse(), guarded);
+    } catch {
+      return copySupabaseResponseState(getResponse(), new NextResponse(null, {
+        status: 503,
+        headers: { 'Cache-Control': 'private, no-store', 'Retry-After': '30' },
+      }));
+    }
   }
   return getResponse();
 }

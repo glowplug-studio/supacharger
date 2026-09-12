@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { BadgeDollarSign, ExternalLink, ListChecks, Menu, Scale } from 'lucide-react';
+import { BadgeDollarSign, ExternalLink, ListChecks, Menu, Scale, UploadCloud } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -115,12 +115,12 @@ export function SCMarketingMenu() {
               <NavigationMenuTrigger className={navigationTriggerClassName}>
                 {t('supachargerFeatures')}
               </NavigationMenuTrigger>
-              <NavigationMenuContent className='w-[46rem] max-w-none p-0 md:w-[46rem]'>
-                <div className='grid grid-cols-[1fr_1fr_0.78fr]'>
+              <NavigationMenuContent className='w-[58rem] max-w-none p-0 md:w-[58rem]'>
+                <div className='grid grid-cols-4'>
                   <NavigationMenuLink asChild>
                     <Link
                       className='hover:bg-accent focus:bg-accent group flex gap-3 p-5 transition-colors outline-none'
-                      href='/whats-included'
+                      href='/features/whats-included'
                     >
                       <ListChecks aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
                       <span className='min-w-0'>
@@ -136,7 +136,7 @@ export function SCMarketingMenu() {
                   <NavigationMenuLink asChild>
                     <Link
                       className='border-border hover:bg-accent focus:bg-accent group flex gap-3 border-l p-5 transition-colors outline-none'
-                      href='/paywall-demos'
+                      href='/features/paywall-demos'
                     >
                       <BadgeDollarSign aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
                       <span className='min-w-0'>
@@ -145,6 +145,20 @@ export function SCMarketingMenu() {
                         </span>
                         <span className='text-muted-foreground group-hover:text-foreground/80 mt-2 block text-sm leading-5'>
                           {t('paywallDemosDescription')}
+                        </span>
+                      </span>
+                    </Link>
+                  </NavigationMenuLink>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      className='border-border hover:bg-accent focus:bg-accent group flex gap-3 border-l p-5 transition-colors outline-none'
+                      href='/features/core-widget-demos'
+                    >
+                      <UploadCloud aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
+                      <span className='min-w-0'>
+                        <span className='text-foreground block text-sm font-semibold'>{t('coreWidgetDemos')}</span>
+                        <span className='text-muted-foreground group-hover:text-foreground/80 mt-2 block text-sm leading-5'>
+                          {t('coreWidgetDemosDescription')}
                         </span>
                       </span>
                     </Link>
@@ -258,7 +272,7 @@ export function SCMarketingMenu() {
                   </p>
                   <div className='grid gap-1'>
                     <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/whats-included'>
+                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/features/whats-included'>
                         <span className='text-foreground block text-sm font-semibold'>
                           {t('whatsIncluded')}
                         </span>
@@ -268,12 +282,20 @@ export function SCMarketingMenu() {
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/paywall-demos'>
+                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/features/paywall-demos'>
                         <span className='text-foreground block text-sm font-semibold'>
                           {t('paywallDemos')}
                         </span>
                         <span className='text-muted-foreground mt-1 block text-sm leading-5'>
                           {t('paywallDemosDescription')}
+                        </span>
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/features/core-widget-demos'>
+                        <span className='text-foreground block text-sm font-semibold'>{t('coreWidgetDemos')}</span>
+                        <span className='text-muted-foreground mt-1 block text-sm leading-5'>
+                          {t('coreWidgetDemosDescription')}
                         </span>
                       </Link>
                     </SheetClose>

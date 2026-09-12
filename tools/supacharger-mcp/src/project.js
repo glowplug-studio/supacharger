@@ -20,6 +20,7 @@ const guidanceFiles = {
   input_validation: 'docs/agents/input-validation.md',
   image_transforms: 'docs/agents/image-transformation.md',
   loading_ui: 'docs/agents/loading-ui.md',
+  project_widgets: 'docs/agents/project-widgets.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
   account_settings: 'docs/agents/account-settings.md',
   organisations: 'docs/agents/organisation-settings.md',
@@ -91,6 +92,7 @@ export function classifyPath(inputPath) {
     relativePath === 'src/lib/supabase/server.ts' ||
     relativePath === 'src/lib/supabase/supacharger/proxy.ts' ||
     relativePath === 'postcss.config.mjs' ||
+    relativePath === 'tailwind.config.ts' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform-runtime.test.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
@@ -109,13 +111,20 @@ export function classifyPath(inputPath) {
   if (
     relativePath === 'package.json' ||
     relativePath === 'package-lock.json' ||
-    relativePath === 'supabase/config.toml' ||
-    relativePath === 'tailwind.config.ts'
+    relativePath === 'supabase/config.toml'
   ) {
     return {
       ownership: 'merge-managed-contract',
       guidance:
         'Core supplies requirements, but the application owns additional values. Merge the canonical contract without byte-replacing product dependencies or project configuration.',
+    };
+  }
+
+  if (relativePath === 'tailwind.project.config.ts') {
+    return {
+      ownership: 'developer-owned',
+      guidance:
+        'Preserved Tailwind preset for project and installed-extension configuration. Add Tailwind plugins or additive configuration here; do not edit the Core-managed tailwind.config.ts.',
     };
   }
 
@@ -302,6 +311,14 @@ export function classifyPath(inputPath) {
       ownership: 'developer-owned-example',
       guidance:
         'Replaceable example presentation intended for application customisation. Keep demo-only assets here; import UI SVGs through SVGR so deleting the demo removes its assets too.',
+    };
+  }
+
+  if (relativePath === 'src/components/sc_widgets' || relativePath.startsWith('src/components/sc_widgets/')) {
+    return {
+      ownership: 'developer-owned-widget',
+      guidance:
+        'Supacharger-provided editable widget installed during project initialisation and preserved by Core updates. Later widget additions require an explicit reviewed copy. Read docs/agents/project-widgets.md; keep shadcn primitives in components/ui and complete demonstrations in components/sc_demo.',
     };
   }
 

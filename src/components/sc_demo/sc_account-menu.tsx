@@ -143,7 +143,7 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
         <DropdownMenuSeparator className='bg-border m-0' />
         <DropdownMenuGroup className='p-1.5'>
           <DropdownMenuItem asChild className={menuItemClassName}>
-            <Link href='/whats-included'>
+            <Link href='/features/whats-included'>
               <CircleHelp aria-hidden='true' />
               {tAccount('help')}
             </Link>

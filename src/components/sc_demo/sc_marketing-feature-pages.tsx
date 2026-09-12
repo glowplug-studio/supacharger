@@ -26,7 +26,7 @@ import { SCPaywallDemoGallery } from './sc_paywall-demos';
 const includedIcons = [ShieldCheck, Building2, BadgeDollarSign, Languages, PanelsTopLeft, Wrench];
 const boundaryPaths = [
   'src/supacharger/  src/app/(supacharger)/  src/lib/supabase/supacharger/',
-  'src/supacharger.config.ts  messages/  src/styles/project.css  src/components/sc_demo/',
+  'src/supacharger.config.ts  messages/  src/styles/project.css  src/components/sc_demo/  src/components/sc_widgets/',
   'supabase/migrations/  supabase/functions/  docs/bruno/supacharger-rpc/',
 ];
 

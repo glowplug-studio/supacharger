@@ -11,6 +11,23 @@ Consuming applications may test features before they reach the core. Promotion i
 
 The long-term goal is a deep, stable starter interface that applications extend without forking or editing CLI-managed implementation files.
 
+## Canonical application structure
+
+`.supacharger/managed-files.json` is the executable ownership source of truth. The principal boundaries are:
+
+- `src/app/(supacharger)/` and `src/supacharger/`: exact managed routes, behaviour and contracts;
+- `src/app/(project)/`: preserved product, marketing, onboarding, plugin and product API routes;
+- `src/supacharger.adapters/`: preserved product composition around managed behaviour;
+- `src/components/sc_widgets/`: editable widgets supplied with the initial project and preserved by Core updates;
+- `src/components/sc_demo/`: removable application examples;
+- `src/components/ui/`: application and shadcn primitives;
+- `src/styles/`: preserved application presentation for managed semantic markup;
+- `src/lib/supabase/types.ts`: generated application database types;
+- `tailwind.config.ts`: exact managed root configuration; and
+- `tailwind.project.config.ts`: blank preserved preset for project and installed-extension additions.
+
+Route groups do not change public URLs. Core owns its authenticated, verified, unauthenticated and API routes inside `(supacharger)`. Application onboarding and all product routes remain inside `(project)`. A repository path omitted from the manifest is not implicitly Core-managed.
+
 Localisation follows the same boundary: protected Supacharger components consume `next-intl`, while each application owns its supported locales, request configuration, and message catalogues. Agents always author English source copy and leave secondary-language values empty or untouched unless the human explicitly requests translation. Locale selection is preference-based and does not alter SaaS route paths. A transient `?lang=<two-letter-code>` marketing handoff is captured into the locale cookie, synchronised to the authenticated profile, and removed from the URL.
 
 The root HTML document uses a template-plus-core model. A new project receives an editable, developer-owned `src/app/layout.tsx`; the protected `src/supacharger/root-document.tsx` module standardises metadata, viewport, favicon declarations, page-level SEO composition, and configured analytics. `SupachargerConfig` carries canonical URL, title-template, indexing, root-provider, and analytics policy without hard-coded product values.

@@ -297,9 +297,16 @@
     "paywallDemos": {
       "title": "Demostraciones de muro de pago",
       "description": "Obtenga una vista previa de las solicitudes de suscripción y compra única para funciones protegidas del producto."
+    },
+    "coreWidgetDemos": {
+      "title": "",
+      "description": ""
     }
   },
   "MarketingFeaturePages": {
+    "coreWidgetDemos": {
+      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":""
+    },
     "whatsIncluded": {
       "title": "Qué incluye realmente Supacharger",
       "description": "Una base reutilizable para identidad, facturación, perfiles, localización y las herramientas necesarias para ampliar su producto.",
@@ -507,6 +514,8 @@
     "whatsIncludedDescription": "Desde las funciones principales del producto hasta las especificaciones para desarrolladores.",
     "paywallDemos": "Demostraciones de muro de pago",
     "paywallDemosDescription": "Descubre cómo las llamadas a la acción animan a los usuarios a suscribirse.",
+    "coreWidgetDemos": "",
+    "coreWidgetDemosDescription": "",
     "licenseInformation": "Información de licencia",
     "licenseInformationDescription": "Comprenda la licencia de origen, los requisitos de atribución y los componentes de terceros.",
     "license": "Licencia",
@@ -1254,6 +1263,11 @@
     "conflict": "",
     "retry": ""
   },
+  "SCWidgets": {
+    "fileUpload": {"label":"","description":"","limitations":"","add":"","drop":"","emptyFile":"","invalidType":"","remove":"","tooLarge":""},
+    "profileMedia": {"title":"","description":"","avatar":"","banner":"","unnamed":"","avatarPreviewAlt":"","bannerPreviewAlt":"","saving":"","save":"","saved":"","uploadFailed":"","saveFailed":""}
+  },
+  "ImageUploadErrors": {"invalidRequest":"","invalidCrop":""},
   "ErrorPage": {
     "notFound": {
       "status": "error 404",

@@ -42,11 +42,14 @@ test('classifies protected and developer-owned paths', () => {
     'developer-owned-example',
   );
   assert.match(classifyPath('src/components/sc_demo/assets/logos/demo-logo-09.svg').guidance, /SVGR/);
+  assert.equal(classifyPath('src/components/sc_widgets/file-upload/file-upload-widget.tsx').ownership, 'developer-owned-widget');
+  assert.match(classifyPath('src/components/sc_widgets/image-upload/project-image-policy.ts').guidance, /project-widgets/);
   assert.equal(classifyPath('src/lib/stripe/stripe-events.ts').ownership, 'application-integration');
   assert.equal(classifyPath('src/features/pricing/controllers/upsert-price.ts').ownership, 'application-integration');
   assert.equal(classifyPath('src/lib/supabase/types.ts').ownership, 'application-integration');
   assert.equal(classifyPath('package.json').ownership, 'merge-managed-contract');
-  assert.equal(classifyPath('tailwind.config.ts').ownership, 'merge-managed-contract');
+  assert.equal(classifyPath('tailwind.config.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('tailwind.project.config.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'forward-only-history');
   assert.equal(classifyPath('.supacharger/migration-aliases.json').ownership, 'developer-owned');
   assert.equal(classifyPath('test/billing-schema-contract.test.mjs').ownership, 'cli-managed-core');

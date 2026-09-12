@@ -6,12 +6,13 @@ import test from 'node:test';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 const marketingPages = {
+  coreWidgetDemos: 'src/app/(project)/(unauthenticated)/(sc_demo)/features/core-widget-demos/page.tsx',
   home: 'src/app/page.tsx',
   legal: 'src/app/(project)/(unauthenticated)/(sc_demo)/legal/page.tsx',
   license: 'src/app/(project)/(unauthenticated)/(sc_demo)/license/page.tsx',
-  paywallDemos: 'src/app/(project)/(unauthenticated)/(sc_demo)/paywall-demos/page.tsx',
+  paywallDemos: 'src/app/(project)/(unauthenticated)/(sc_demo)/features/paywall-demos/page.tsx',
   pricing: 'src/app/(project)/(unauthenticated)/(sc_demo)/pricing/page.tsx',
-  whatsIncluded: 'src/app/(project)/(unauthenticated)/(sc_demo)/whats-included/page.tsx',
+  whatsIncluded: 'src/app/(project)/(unauthenticated)/(sc_demo)/features/whats-included/page.tsx',
 };
 
 test('marketing pages publish distinct canonical and social metadata', async () => {
@@ -35,9 +36,10 @@ test('marketing pages publish distinct canonical and social metadata', async () 
   assert.match(helper, /createSupachargerPageMetadata/);
   assert.match(helper, /home:\s*'\/'/);
   assert.match(helper, /legal:\s*'\/legal'/);
-  assert.match(helper, /paywallDemos:\s*'\/paywall-demos'/);
+  assert.match(helper, /coreWidgetDemos:\s*'\/features\/core-widget-demos'/);
+  assert.match(helper, /paywallDemos:\s*'\/features\/paywall-demos'/);
   assert.match(helper, /pricing:\s*'\/pricing'/);
-  assert.match(helper, /whatsIncluded:\s*'\/whats-included'/);
+  assert.match(helper, /whatsIncluded:\s*'\/features\/whats-included'/);
   assert.match(helper, /title:\s*\{ absolute: page\.title \}/);
   assert.doesNotMatch(layout, /export const metadata|REPLACE_ME/);
 
@@ -53,9 +55,10 @@ test('crawler discovery exposes only public marketing routes', async () => {
     'getURL()',
     "getURL('/legal')",
     "getURL('/license')",
-    "getURL('/paywall-demos')",
+    "getURL('/features/core-widget-demos')",
+    "getURL('/features/paywall-demos')",
     "getURL('/pricing')",
-    "getURL('/whats-included')",
+    "getURL('/features/whats-included')",
   ]) {
     assert.match(sitemap, new RegExp(path.replace(/[()/.]/g, '\\$&')));
   }

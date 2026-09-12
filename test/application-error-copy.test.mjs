@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { resolveApplicationErrorCopy } from '../src/components/error-page/application-error-copy.ts';
+import { resolveApplicationErrorCopy } from '../src/components/sc_widgets/error-page/application-error-copy.ts';
 
 test('uses protected English copy when the ErrorPage namespace is absent', () => {
   assert.deepEqual(resolveApplicationErrorCopy({}, 'notFound'), {

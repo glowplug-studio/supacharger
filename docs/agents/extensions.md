@@ -36,6 +36,8 @@ Installed source is extension-managed, separately from Core. `.supacharger/exten
 
 Neither version installs dependencies, mutates package/config files, seeds databases, executes scripts, applies migrations, deploys endpoints, sets secrets or automatically removes extensions. V2 copies reviewed forward migrations; applying them remains explicit. Brevo pins its Edge Zod/Supabase imports.
 
+The Core-managed `tailwind.config.ts` always imports developer-owned `tailwind.project.config.ts` as a preset. An extension that needs a Tailwind plugin or additive Tailwind configuration must declare that manual integration in its installation guide and modify only the project preset after review. It must never patch the Core-managed root configuration. The current extension installer does not mutate the preset automatically.
+
 ## Runtime and integration
 
 Core's signup form has no runtime extension registry or enabled checks. An uninstalled extension contributes no application imports, dependencies or network calls. Statically import installed modules only from developer-owned adapters. Do not customise module source with product names, queries or action mappings.

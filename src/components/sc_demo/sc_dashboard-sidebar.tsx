@@ -78,7 +78,7 @@ function DemoSidebar() {
   ];
   const secondaryItems: SidebarLink[] = [
     { href: '/account', icon: Settings, label: t('secondary.settings') },
-    { href: '/whats-included', icon: CircleHelp, label: t('secondary.help') },
+    { href: '/features/whats-included', icon: CircleHelp, label: t('secondary.help') },
     { href: '/sidebar#projects', icon: Search, label: t('secondary.search') },
   ];
 

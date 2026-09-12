@@ -4,15 +4,16 @@ import { getTranslations } from 'next-intl/server';
 import { createSupachargerPageMetadata } from '@/supacharger/root-document';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-type MarketingPageName = 'home' | 'legal' | 'license' | 'paywallDemos' | 'pricing' | 'whatsIncluded';
+type MarketingPageName = 'coreWidgetDemos' | 'home' | 'legal' | 'license' | 'paywallDemos' | 'pricing' | 'whatsIncluded';
 
 const canonicalPaths: Record<MarketingPageName, string> = {
+  coreWidgetDemos: '/features/core-widget-demos',
   home: '/',
   legal: '/legal',
   license: '/license',
-  paywallDemos: '/paywall-demos',
+  paywallDemos: '/features/paywall-demos',
   pricing: '/pricing',
-  whatsIncluded: '/whats-included',
+  whatsIncluded: '/features/whats-included',
 };
 
 export async function createMarketingPageMetadata(pageName: MarketingPageName): Promise<Metadata> {

@@ -20,10 +20,11 @@ test('the marketing header groups anchors and exposes feature and external links
   assert.match(header, /useTranslations\('MarketingNavigation'\)/);
   assert.match(header, /<NavigationMenuContent className='w-\[15rem\][^']*'>\s*<ul className='grid gap-1'>/);
   assert.doesNotMatch(header, /<ul className='grid grid-cols-2 gap-1'>/);
-  assert.match(header, /href='\/whats-included'/);
-  assert.match(header, /href='\/paywall-demos'/);
-  assert.match(header, /href='\/whats-included'[\s\S]*?<ListChecks aria-hidden='true'/);
-  assert.match(header, /href='\/paywall-demos'[\s\S]*?<BadgeDollarSign aria-hidden='true'/);
+  assert.match(header, /href='\/features\/whats-included'/);
+  assert.match(header, /href='\/features\/paywall-demos'/);
+  assert.match(header, /href='\/features\/core-widget-demos'/);
+  assert.match(header, /href='\/features\/whats-included'[\s\S]*?<ListChecks aria-hidden='true'/);
+  assert.match(header, /href='\/features\/paywall-demos'[\s\S]*?<BadgeDollarSign aria-hidden='true'/);
   assert.match(header, /href='\/license'/);
   assert.match(header, /<Scale aria-hidden='true'/);
   assert.match(header, /href='https:\/\/supacharger\.dev'/);
@@ -35,6 +36,7 @@ test('the marketing header groups anchors and exposes feature and external links
     'supachargerFeatures',
     'whatsIncluded',
     'paywallDemos',
+    'coreWidgetDemos',
     'licenseInformation',
     'license',
     'supacharger',
@@ -51,13 +53,14 @@ test('the hero and internal feature navigation resolve to public marketing pages
     read('src/supacharger.config.ts'),
   ]);
 
-  const publicFeatureRoutes = ['/whats-included', '/paywall-demos', '/license'];
+  const publicFeatureRoutes = ['/features/whats-included', '/features/paywall-demos', '/features/core-widget-demos', '/license'];
 
-  assert.match(landing, /<Link href='\/whats-included'>\s*\{t\('exploreFeatures'\)\}/);
+  assert.match(landing, /<Link href='\/features\/whats-included'>\s*\{t\('exploreFeatures'\)\}/);
   for (const route of publicFeatureRoutes) {
     assert.match(header, new RegExp(`href='${route}'`));
-    assert.match(config, new RegExp(`["']${route.replace('/', '\\/')}["']`));
   }
+  assert.match(config, /["']\/features\/:path\*["']/);
+  assert.match(config, /["']\/license["']/);
 });
 
 test('localised feature cards use stable non-translated keys', async () => {

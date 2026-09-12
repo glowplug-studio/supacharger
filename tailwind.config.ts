@@ -1,5 +1,8 @@
+const projectTailwindPreset = require('./tailwind.project.config.ts');
+
 /** @type {import('tailwindcss').Config} */
 const config = {
+  presets: [projectTailwindPreset],
   darkMode: 'class',
   content: ['./src/**/*.{ts,tsx}'],
   theme: {

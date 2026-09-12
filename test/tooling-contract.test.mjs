@@ -72,12 +72,16 @@ test('root tool configuration uses explicit module formats', () => {
 });
 
 test('preserves Tailwind defaults and supplies every shared semantic style token', async () => {
-  const [tailwindConfig, projectStyles, authStyles] = await Promise.all([
+  const [tailwindConfig, projectTailwindConfig, projectStyles, authStyles] = await Promise.all([
     readFile(new URL('../tailwind.config.ts', import.meta.url), 'utf8'),
+    readFile(new URL('../tailwind.project.config.ts', import.meta.url), 'utf8'),
     readFile(new URL('../src/styles/project.css', import.meta.url), 'utf8'),
     readFile(new URL('../src/styles/supacharger-auth.css', import.meta.url), 'utf8'),
   ]);
 
+  assert.match(tailwindConfig, /require\(['"]\.\/tailwind\.project\.config\.ts['"]\)/);
+  assert.match(tailwindConfig, /presets:\s*\[projectTailwindPreset\]/);
+  assert.match(projectTailwindConfig, /const projectConfig = \{\};/);
   assert.doesNotMatch(tailwindConfig, /\b(?:borderRadius|container|fontFamily)\s*:/);
   assert.doesNotMatch(projectStyles, /--radius\s*:/);
   assert.match(authStyles, /@apply\s+[^;]*\brounded-(?:lg|2xl|full)\b[^;]*;/);
@@ -162,12 +166,13 @@ test('keeps the root layout editable and the root document implementation manage
   assert.ok(manifest.managedPaths.includes('postcss.config.mjs'));
   assert.ok(manifest.mergeManagedPaths.includes('package.json'));
   assert.ok(manifest.mergeManagedPaths.includes('supabase/config.toml'));
-  assert.ok(manifest.mergeManagedPaths.includes('tailwind.config.ts'));
+  assert.ok(manifest.managedPaths.includes('tailwind.config.ts'));
   assert.deepEqual(manifest.forwardOnlyMigrationPaths, ['supabase/migrations']);
   assert.ok(!manifest.managedPaths.includes('package.json'));
   assert.ok(!manifest.managedPaths.includes('supabase/config.toml'));
   assert.ok(!manifest.managedPaths.includes('supabase/migrations'));
-  assert.ok(!manifest.managedPaths.includes('tailwind.config.ts'));
+  assert.ok(!manifest.mergeManagedPaths.includes('tailwind.config.ts'));
+  assert.ok(manifest.developerOwnedPaths.includes('tailwind.project.config.ts'));
   assert.ok(manifest.developerOwnedPaths.includes('test/project-billing-schema-contract.test.mjs'));
   assert.match(rootDocument, /createSupachargerMetadata/);
   assert.match(rootDocument, /createSupachargerPageMetadata/);

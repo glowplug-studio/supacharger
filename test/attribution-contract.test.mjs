@@ -6,13 +6,13 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('developer-owned Supacharger attribution uses a colocated SVGR mark', async () => {
   const [component, mark, englishMessages] = await Promise.all([
-    read('src/components/attribution/supacharger-attribution.tsx'),
-    read('src/components/attribution/supacharger-mark.svg'),
+    read('src/components/sc_widgets/attribution/supacharger-attribution.tsx'),
+    read('src/components/sc_widgets/attribution/supacharger-mark.svg'),
     read('messages/en.json'),
   ]);
   const root = mark.match(/<svg\b([^>]*)>/)?.[1] ?? '';
 
-  assert.match(component, /remove[\s\S]*http:\/\/127\.0\.0\.1:4000\/product\/pricing/i);
+  assert.match(component, /remove[\s\S]*https:\/\/supacharger\.dev\/product\/pricing/i);
   assert.match(component, /import SupachargerMark from '.\/supacharger-mark\.svg'/);
   assert.match(component, /getTranslations\('Attribution'\)/);
   assert.match(component, /\{t\('builtWith'\)\}/);

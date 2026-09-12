@@ -12,6 +12,7 @@
     "src/lib/supabase/supacharger",
     "src/proxy.ts",
     "src/supacharger",
+    "tailwind.config.ts",
     "tsconfig.json",
     "supabase/functions/_shared/image-target-contract.ts",
     "supabase/functions/_shared/image-transform-runtime.test.ts",
@@ -42,8 +43,7 @@
   "mergeManagedPaths": [
     "package.json",
     "package-lock.json",
-    "supabase/config.toml",
-    "tailwind.config.ts"
+    "supabase/config.toml"
   ],
   "forwardOnlyMigrationPaths": [
     "supabase/migrations"
@@ -58,6 +58,7 @@
     "src/app/layout.tsx",
     "src/app/(project)",
     "src/components/sc_demo",
+    "src/components/sc_widgets",
     "src/i18n/config.ts",
     "src/i18n/request.ts",
     "src/assets/svgr/ui/inline-loader-dark.svg",
@@ -68,6 +69,7 @@
     "src/styles/supacharger-auth.css",
     "src/styles/supacharger-organisations.css",
     "src/supacharger.adapters",
+    "tailwind.project.config.ts",
     "src/supacharger.config.ts"
   ],
   "postUpdateChecks": [

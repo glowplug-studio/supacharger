@@ -31,16 +31,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: getURL('/whats-included'),
+      url: getURL('/features/whats-included'),
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
-      url: getURL('/paywall-demos'),
+      url: getURL('/features/paywall-demos'),
       lastModified,
       changeFrequency: 'monthly',
       priority: 0.6,
+    },
+    {
+      url: getURL('/features/core-widget-demos'),
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
   ];
 }

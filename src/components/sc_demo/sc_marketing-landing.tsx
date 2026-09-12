@@ -186,7 +186,7 @@ export default function SCMarketingLanding() {
                 )}
                 variant='outline'
               >
-                <Link href='/whats-included'>
+                <Link href='/features/whats-included'>
                   {t('exploreFeatures')}
                   <ArrowRight aria-hidden='true' />
                 </Link>
