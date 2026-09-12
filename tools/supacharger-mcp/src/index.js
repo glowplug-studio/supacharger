@@ -31,6 +31,8 @@ const guidanceTopics = [
   'billing',
   'workflow',
   'instructions',
+  'agent_guidance',
+  'working_rules',
 ];
 
 function textResult(text) {

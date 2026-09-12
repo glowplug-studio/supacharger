@@ -125,3 +125,9 @@ Protected code imports `src/supacharger/supacharger-config.ts`. That module cont
 ## Image loading placeholders
 
 Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.
+
+## Agent guidance and changelog ownership
+
+The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-managed. Root `AGENTS.md`, `.agents/project/`, `.agents/instructions/`, `.agents/skills/`, `.agents/legacy/`, the optional `.agents/supacharger/core-development/` checkout, `.gitmodules`, `CHANGELOG.project.md` and `.supacharger/skills-lock.json` are developer-owned and preserved. The optional contributor checkout is managed deliberately through Git, not the CLI.
+
+`docs/agents/` is canonical technical reference, currently preserved rather than exact-managed by the Core updater. A project override belongs in `.agents/project/AGENTS.md`; editing exact shared guidance creates a detectable upgrade conflict. See `agent-guidance.md` for routing and `cli-upgrades.md` for starter installation.

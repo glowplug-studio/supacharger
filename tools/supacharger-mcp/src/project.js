@@ -27,6 +27,8 @@ const guidanceFiles = {
   billing: 'docs/agents/billing.md',
   workflow: 'docs/agents/workflow.md',
   instructions: 'AGENTS.md',
+  agent_guidance: 'docs/agents/agent-guidance.md',
+  working_rules: '.agents/supacharger/guidance.md',
 };
 
 function normaliseRelativePath(inputPath) {
@@ -62,6 +64,13 @@ export function resolveRepositoryPath(inputPath = '.') {
 
 export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
+
+  if (relativePath === '.agents/supacharger/guidance.md' || relativePath === 'CHANGELOG.md') {
+    return { ownership: 'cli-managed-core', guidance: 'Shared guidance or Core changelog. Application overrides belong in .agents/project/AGENTS.md; application history belongs in CHANGELOG.project.md.' };
+  }
+  if (relativePath === 'AGENTS.md' || relativePath === 'CHANGELOG.project.md' || relativePath === '.gitmodules' || relativePath === '.supacharger/skills-lock.json' || relativePath.startsWith('.agents/')) {
+    return { ownership: 'developer-owned', guidance: 'Preserved during Core updates. Optional contributor instructions load only when installed; legacy directives are inactive. Read docs/agents/agent-guidance.md.' };
+  }
 
   if (relativePath.startsWith('extensions/') || relativePath.startsWith('tools/supacharger-extensions/')) {
     return { ownership: 'canonical-extension-tooling', guidance: 'Core owns bundles and installer. Read docs/agents/extensions.md; these are not automatically installed application runtime files.' };
@@ -322,10 +331,10 @@ export function classifyPath(inputPath) {
     };
   }
 
-  if (relativePath === 'tools/supacharger-mcp' || relativePath.startsWith('tools/supacharger-mcp/')) {
+  if (relativePath === 'tools/supacharger-mcp' || relativePath.startsWith('tools/supacharger-mcp/') || relativePath === 'tools/supacharger-skills' || relativePath.startsWith('tools/supacharger-skills/')) {
     return {
       ownership: 'core-tooling',
-      guidance: 'Repository-maintainer tooling. Keep it read-only unless a mutating design is explicitly approved.',
+      guidance: 'Repository-maintainer tooling. The knowledge MCP stays read-only; the public skills installer performs explicitly requested local installations and is distributed through the CLI.',
     };
   }
 

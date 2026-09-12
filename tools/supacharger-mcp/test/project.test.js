@@ -79,7 +79,7 @@ test('renders a filtered project tree', async () => {
 test('searches curated guidance', async () => {
   const matches = await searchGuidance('clean-room');
   assert.ok(matches.length > 0);
-  assert.ok(matches.every((match) => match.path === 'AGENTS.md' || match.path.startsWith('docs/agents/')));
+  assert.ok(matches.every((match) => match.path === 'AGENTS.md' || match.path.startsWith('docs/agents/') || match.path === '.agents/supacharger/guidance.md'));
 });
 
 test('searches the localisation guidance exposed to the MCP', async () => {
@@ -126,4 +126,16 @@ test('searches the input validation guidance exposed to the MCP', async () => {
 test('searches the inline loading guidance exposed to the MCP', async () => {
   const matches = await searchGuidance('every inline loading indicator');
   assert.ok(matches.some((match) => match.path === 'docs/agents/loading-ui.md'));
+});
+
+
+test('routes agent knowledge separately from project and optional contributor instructions', async () => {
+  assert.equal(classifyPath('.agents/project/AGENTS.md').ownership, 'developer-owned');
+  assert.equal(classifyPath('.agents/supacharger/core-development/AGENTS.md').ownership, 'developer-owned');
+  assert.equal(classifyPath('.agents/skills/changelog/SKILL.md').ownership, 'developer-owned');
+  assert.equal(classifyPath('.agents/supacharger/guidance.md').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('CHANGELOG.md').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('CHANGELOG.project.md').ownership, 'developer-owned');
+  assert.match(await readGuidance('agent_guidance'), /technical references/);
+  assert.match(await readGuidance('working_rules'), /project\/AGENTS.md/);
 });

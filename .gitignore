@@ -45,3 +45,9 @@ next-env.d.ts
 .sc-core-install/
 .supacharger/extension-transactions/
 tools/supacharger-mcp/node_modules
+
+# Public skill installer transactions (retained only for interrupted recovery)
+.supacharger/skills-install.lock
+.supacharger/skills-transaction-*/
+
+tools/supacharger-skills/node_modules/

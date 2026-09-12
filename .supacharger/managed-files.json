@@ -38,7 +38,9 @@
     "test/image-transform-contract.test.mjs",
     "test/billing-schema-contract.test.mjs",
     "test/stripe-time.test.mjs",
-    "test/tooling-contract.test.mjs"
+    "test/tooling-contract.test.mjs",
+    ".agents/supacharger/guidance.md",
+    "CHANGELOG.md"
   ],
   "mergeManagedPaths": [
     "package.json",
@@ -70,7 +72,16 @@
     "src/styles/supacharger-organisations.css",
     "src/supacharger.adapters",
     "tailwind.project.config.ts",
-    "src/supacharger.config.ts"
+    "src/supacharger.config.ts",
+    "AGENTS.md",
+    ".agents/project",
+    ".agents/instructions",
+    ".agents/skills",
+    ".agents/legacy",
+    ".agents/supacharger/core-development",
+    ".gitmodules",
+    "CHANGELOG.project.md",
+    ".supacharger/skills-lock.json"
   ],
   "postUpdateChecks": [
     "lint",

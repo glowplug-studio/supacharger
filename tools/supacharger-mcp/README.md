@@ -77,3 +77,9 @@ The shared login/signup form displays the notice beneath signup actions and on t
 This is a displayed notice, not a required checkbox or stored consent record. `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` remains separate. CLI upgrades add the missing setting as `null` and preserve an existing URL. Existing consumers receive the same property without changing their authentication methods. Configure the application's real terms URL before expecting a visible notice.
 
 The authentication resource also describes the standalone branded HTTP 503 recovery document, original-destination retry, English `ServiceUnavailable` catalogue fallback, unchanged API JSON errors and session preservation during temporary Auth refresh failures.
+
+## Instruction routing and public skills
+
+The `instructions` topic exposes root `AGENTS.md`, `working_rules` exposes `.agents/supacharger/guidance.md`, and `agent_guidance` exposes `docs/agents/agent-guidance.md`. Technical topics read the same `docs/agents/` files used locally; there is no separate knowledge copy. Optional contributor instructions and inactive legacy files are not automatically added to the guidance catalogue.
+
+Project instructions and installed skills are developer-owned. The independent public-skills installer is maintained in `tools/supacharger-skills/` and distributed through the CLI; this knowledge MCP remains read-only. See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing).

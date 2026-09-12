@@ -45,3 +45,9 @@ After file/config/catalogue work, the updater installs required dependency chang
 The CLI resolves a requested Git ref once and fetches that commit in both the clean and conflicting update paths. The lock records the checked-out commit only after the declared checks and exact-file verification succeed. To keep a separately reviewed plan and update on the same release, pass the same explicit commit SHA to both commands.
 
 `src/assets/svgr/ui/image-loader.svg` is developer-owned. The CLI installs its starter only when absent and preserves customised copies, including through the fallback ownership rules for legacy updates. This support is implemented in the separate `supacharger-cli` repository; npm publication is still pending. Consumer Core locks must continue to identify their published baseline; local asset synchronisation does not advance them.
+
+## Instructions, changelogs and free skills
+
+The exact-managed manifest now includes `.agents/supacharger/guidance.md` and `CHANGELOG.md`. Root `AGENTS.md`, `.agents/project/`, existing task instructions, skills, legacy guidance, optional contributor checkout and `CHANGELOG.project.md` are preserved. The CLI installs missing root/project instruction and application-changelog starters; it does not overwrite an established entry point. Existing applications adopt the routing structure deliberately.
+
+The independent public-skills commands install selected committed catalogue folders under `.agents/skills/`, recording source commits and hashes in `.supacharger/skills-lock.json`. Updates are explicit; Core updates neither install new optional skills nor update existing ones. Read `agent-guidance.md` for routing and the distinction from technical references in this directory.

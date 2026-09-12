@@ -41,3 +41,7 @@ Reusable image uploads use the authenticated `process-image-upload` Edge Functio
 Untrusted form and request input is validated with Zod at the receiving server-side JavaScript or TypeScript boundary. Edge Functions validate structured input before privileged work or RPC calls; PostgreSQL RPCs independently enforce their typed, constrained, and authorised database contracts. See `docs/agents/input-validation.md` before changing forms, Server Actions, route handlers, Edge Function requests, or RPC inputs.
 
 Authentication Proxy, global roles, JWT custom claims, and resource-membership boundaries are defined in `docs/agents/authentication-and-claims.md`. Use one verification call, preserve cookies plus auth anti-cache headers on every response, and keep RLS authoritative.
+
+## Agent orientation
+
+Start at root `AGENTS.md`, which loads shared working rules, project instructions and optional contributor policies. Read `agent-guidance.md` for the routing map. Technical conventions remain in this `docs/agents/` directory and are exposed by the repository-knowledge MCP; repository-specific rules live in `.agents/project/AGENTS.md`.

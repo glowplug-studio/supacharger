@@ -572,3 +572,13 @@ English without profile or locale lookups. Secondary languages remain untranslat
 empty placeholders are added only where catalogue type parity requires them.
 This covers temporary Auth refresh failures detected by Proxy, not every possible
 Supabase database or downstream service failure.
+
+## Agent instructions and public skills
+
+Start at `AGENTS.md`. Shared working rules live in `.agents/supacharger/guidance.md`, project rules in `.agents/project/AGENTS.md`, and optional Core contributor rules in `.agents/supacharger/core-development/`. Existing instructions and skills stay in place. Archived directives are inactive.
+
+`docs/agents/agent-guidance.md` indexes the technical references exposed by the read-only repository-knowledge MCP. Keep Supacharger development conventions in `docs/agents/` and repository working rules in `.agents/`.
+
+Use `supacharger skills install` to select free public skills, or `supacharger skills install general/changelog` for a named installation. Skill updates are explicit and separate from Core updates and paid extensions. Project instructions, installed skills, the optional contributor checkout and `CHANGELOG.project.md` are preserved by Core updates; shared guidance and `CHANGELOG.md` are exact-managed. Existing root instructions are not automatically replaced during upgrades.
+
+See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing) for installation and ownership details.
