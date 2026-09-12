@@ -6,6 +6,8 @@ Manifest v2 supports extension-owned worker files and immutable forward migratio
 
 This read-only local MCP gives coding agents a durable understanding of the Supacharger core mission, ownership model, project structure, and promotion workflow.
 
+The CLI currently marks `init`, remote `coreupdate` and `coredev` with a yellow demonstration warning before they contact private development repositories on GitHub. Public-skills operations, local `coreupdate --source` and `doctor` do not print it.
+
 ## Run
 
 ```bash

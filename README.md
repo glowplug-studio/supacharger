@@ -14,6 +14,8 @@
 
 This is a SaaS starter built with modern technologies.
 
+While the private repositories remain under development, CLI commands print a yellow demonstration warning before `init`, remote `coreupdate` and `coredev` contact GitHub. Public-skills operations, local `coreupdate --source` and `doctor` do not print it.
+
 The managed custom access-token hook owns the canonical `user_role` and active-organisation claims. Products extend it without forking Core by replacing `app.custom_access_token_claims_extension(event, canonical_claims)` in a new forward migration. The Core hook rejects reserved claim names before merging the returned object; the developer-owned template lives at `supabase/templates/custom-access-token-claims-extension.sql`.
 
 ### What's included

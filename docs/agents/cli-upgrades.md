@@ -4,6 +4,8 @@
 
 `supacharger init` installs the complete canonical starter and records the Core commit in `.supacharger/core-lock.json`. `supacharger coreupdate --plan` is read-only: it compares that installed baseline with current Core and reports exact managed writes, obsolete removals, dependency and script merges, configuration additions, canonical English additions, forward migrations, migration aliases, manual merge targets, and post-update checks.
 
+While the private repositories remain under development, the CLI prints a yellow demonstration warning before `init`, remote `coreupdate` or `coredev` contact GitHub. It does not warn for public-skills operations, `doctor` or local `coreupdate --source`.
+
 A real update must preserve every `developerOwnedPaths` entry, replace only `managedPaths`, and use an explicit strategy for each `mergeManagedPaths` entry. It installs missing starter adapters and styles once, never overwriting established product implementations. It removes an obsolete managed file only when the installed baseline owned it; locally changed legacy route wrappers require a manual move into an adapter.
 
 The Tailwind ownership migration makes `tailwind.config.ts` exact managed and installs the blank developer-owned `tailwind.project.config.ts` preset when absent. If the former merge-managed root file differs from both its installed Core baseline and the incoming exact Core file, stop before writes and require its project additions to be moved into the preset. Extensions that require Tailwind configuration modify only the project preset.
