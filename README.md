@@ -36,7 +36,7 @@ Shared runtime and tooling dependencies are exact-pinned in `package.json`. Cons
 
 ### Optional extensions
 
-The first bundle is `extensions/brevo-email/`. Use the updated local CLI's `extension install brevo-email --source /path/to/bundle --plan`, then repeat without `--plan`. Read [extension guidance](docs/agents/extensions.md) and the installed `docs/extensions/brevo-email/INSTALL.md`. Source hashes are tracked separately from Core, and project adapters use static imports. No extension means no extension runtime checks or network calls. Token downloads and marketing automation are deferred; the CLI changes are not yet published.
+The first experimental bundle source is retained under `extensions/brevo-email/`, with its ownership-aware installer under `tools/supacharger-extensions/`. Neither is included in the published npm CLI. Read [extension guidance](docs/agents/extensions.md) and the bundle's `payload/INSTALL.md` when reviewing the future delivery work. Source hashes are tracked separately from Core, and project adapters use static imports. No extension means no extension runtime checks or network calls. Token downloads and marketing automation remain deferred.
 
 Run `node --experimental-strip-types --test tools/supacharger-extensions/installer.test.cjs extensions/brevo-email/send-template.test.mjs` for installer and mocked provider tests.
 
@@ -575,7 +575,7 @@ Supabase database or downstream service failure.
 
 ## Agent instructions and public skills
 
-Start at `AGENTS.md`. Shared working rules live in `.agents/supacharger/guidance.md`, project rules in `.agents/project/AGENTS.md`, and optional Core contributor rules in `.agents/supacharger/core-development/`. Existing instructions and skills stay in place. Archived directives are inactive.
+Start at `AGENTS.md`. Shared working rules live in `.agents/supacharger/guidance.md`, project rules in `.agents/project/AGENTS.md`, and optional Core contributor rules in `.agents/supacharger/core-development/`. Normal CLI use ignores the optional contributor path; install or update it explicitly with `supacharger coredev install` or `supacharger coredev update`. Existing instructions and skills stay in place. Archived directives are inactive.
 
 `docs/agents/agent-guidance.md` indexes the technical references exposed by the read-only repository-knowledge MCP. Keep Supacharger development conventions in `docs/agents/` and repository working rules in `.agents/`.
 

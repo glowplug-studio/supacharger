@@ -1,6 +1,6 @@
 # Supacharger repository MCP
 
-Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for local bundle installation, Brevo integration, ownership and per-extension guides. The MCP does not execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
+Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for the retained experimental source architecture, Brevo integration, ownership and deferred distribution plan. The published npm CLI has no extension or plugin installation commands. The MCP does not install bundles, execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
 
 Manifest v2 supports extension-owned worker files and immutable forward migrations. Brevo 2.0.0 owns immediate post-commit delivery and Supabase retries; apps pass authorised props and optionally provide bulk privacy resolvers. Follow the installed guide for explicit migration, deployment and Vault configuration steps; file installation does not activate sending.
 
@@ -82,4 +82,4 @@ The authentication resource also describes the standalone branded HTTP 503 recov
 
 The `instructions` topic exposes root `AGENTS.md`, `working_rules` exposes `.agents/supacharger/guidance.md`, and `agent_guidance` exposes `docs/agents/agent-guidance.md`. Technical topics read the same `docs/agents/` files used locally; there is no separate knowledge copy. Optional contributor instructions and inactive legacy files are not automatically added to the guidance catalogue.
 
-Project instructions and installed skills are developer-owned. The independent public-skills installer is maintained in `tools/supacharger-skills/` and distributed through the CLI; this knowledge MCP remains read-only. See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing).
+Project instructions and installed skills are developer-owned. The independent public-skills installer is maintained in `tools/supacharger-skills/` and distributed through the CLI. The optional private Core contributor submodule remains absent and inert unless a contributor explicitly runs `supacharger coredev install`; `supacharger coredev update` is its only CLI update path and refuses local changes. This knowledge MCP remains read-only. See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing).

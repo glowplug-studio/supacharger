@@ -68,6 +68,9 @@ export function classifyPath(inputPath) {
   if (relativePath === '.agents/supacharger/guidance.md' || relativePath === 'CHANGELOG.md') {
     return { ownership: 'cli-managed-core', guidance: 'Shared guidance or Core changelog. Application overrides belong in .agents/project/AGENTS.md; application history belongs in CHANGELOG.project.md.' };
   }
+  if (relativePath === '.agents/supacharger/core-development' || relativePath.startsWith('.agents/supacharger/core-development/')) {
+    return { ownership: 'git-submodule', guidance: 'Optional private Core contributor instructions. Normal CLI use ignores this path; use supacharger coredev install or supacharger coredev update explicitly. Updates refuse local submodule changes.' };
+  }
   if (relativePath === 'AGENTS.md' || relativePath === 'CHANGELOG.project.md' || relativePath === '.gitmodules' || relativePath === '.supacharger/skills-lock.json' || relativePath.startsWith('.agents/')) {
     return { ownership: 'developer-owned', guidance: 'Preserved during Core updates. Optional contributor instructions load only when installed; legacy directives are inactive. Read docs/agents/agent-guidance.md.' };
   }

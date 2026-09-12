@@ -10,7 +10,8 @@ test('extension guidance distinguishes canonical bundles, installed modules and 
   assert.equal(classifyPath('supabase/migrations/20260910120000_ext_brevo_email_delivery.sql').ownership, 'forward-only-migration');
   assert.equal(classifyPath('src/supacharger.adapters/email/actions.ts').ownership, 'developer-owned');
   const guidance = await readGuidance('extensions');
-  assert.match(guidance, /extension install brevo-email/);
+  assert.match(guidance, /published `@glowplug\/supacharger-cli` package deliberately excludes extension and plugin installation commands/);
+  assert.match(guidance, /command does not exist/);
   assert.match(guidance, /not implemented/);
   assert.match(guidance, /Specdrive/);
 });
@@ -131,7 +132,7 @@ test('searches the inline loading guidance exposed to the MCP', async () => {
 
 test('routes agent knowledge separately from project and optional contributor instructions', async () => {
   assert.equal(classifyPath('.agents/project/AGENTS.md').ownership, 'developer-owned');
-  assert.equal(classifyPath('.agents/supacharger/core-development/AGENTS.md').ownership, 'developer-owned');
+  assert.equal(classifyPath('.agents/supacharger/core-development/AGENTS.md').ownership, 'git-submodule');
   assert.equal(classifyPath('.agents/skills/changelog/SKILL.md').ownership, 'developer-owned');
   assert.equal(classifyPath('.agents/supacharger/guidance.md').ownership, 'cli-managed-core');
   assert.equal(classifyPath('CHANGELOG.md').ownership, 'cli-managed-core');

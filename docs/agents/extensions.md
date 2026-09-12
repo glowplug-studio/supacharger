@@ -1,24 +1,12 @@
 # Extensions: local source bundles
 
-The canonical catalogue is `extensions/`. Start with `extensions/brevo-email/extension.json` and `extensions/brevo-email/payload/INSTALL.md`. The canonical installer is `tools/supacharger-extensions/installer.cjs`; the separate CLI ships a byte-identical copy under `commands/extensions/installer.cjs`.
+The experimental source catalogue is retained under `extensions/`. Start with `extensions/brevo-email/extension.json` and `extensions/brevo-email/payload/INSTALL.md`. Its ownership-aware installer source remains under `tools/supacharger-extensions/` for future distribution work and maintainer tests.
 
-## Commands
+## Distribution status
 
-Run from the consuming application using the updated local CLI (not yet published):
+The published `@glowplug/supacharger-cli` package deliberately excludes extension and plugin installation commands, installer code and installer tests. Do not instruct users or agents to run `supacharger extension ...`; that command does not exist. The npm CLI currently supports Core installation and updates, doctor checks, public skills and explicit Core contributor setup only.
 
-```sh
-supacharger extension install brevo-email --source /path/to/supacharger/extensions/brevo-email --plan
-supacharger extension install brevo-email --source /path/to/supacharger/extensions/brevo-email
-supacharger extension doctor brevo-email
-```
-
-Alternatively use Core's standalone entry point:
-
-```sh
-node /path/to/supacharger/tools/supacharger-extensions/cli.cjs install brevo-email --source /path/to/supacharger/extensions/brevo-email --root /path/to/app --plan
-```
-
-Remove `--plan` after reviewing the plan. MCP provides guidance only; it neither executes the CLI nor accepts credentials.
+The retained Core source is a design and testing reference, not a supported customer installation path. Private authenticated delivery, entitlement checks and immutable downloads must be completed before extension commands return to the npm CLI. MCP provides this status and ownership guidance only; it neither installs bundles nor accepts credentials.
 
 ## Bundle contracts v1 and v2
 

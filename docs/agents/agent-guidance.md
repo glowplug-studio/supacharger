@@ -1,6 +1,6 @@
 # Agent guidance and technical references
 
-`AGENTS.md` is the entry point. It explicitly loads shared `.agents/supacharger/guidance.md`, developer-owned `.agents/project/AGENTS.md`, and the optional `.agents/supacharger/core-development/AGENTS.md` when installed. The project file starts blank. `.agents/legacy/original-agents.md` is inactive historical material, not an additional source of active rules.
+`AGENTS.md` is the entry point. It explicitly loads shared `.agents/supacharger/guidance.md`, developer-owned `.agents/project/AGENTS.md`, and the optional `.agents/supacharger/core-development/AGENTS.md` when installed. Normal CLI use ignores the optional contributor path; Core contributors explicitly run `supacharger coredev install` or `supacharger coredev update`. The project file starts blank. `.agents/legacy/original-agents.md` is inactive historical material, not an additional source of active rules.
 
 `docs/agents/` explains how to develop with Supacharger. Keep development conventions and architecture here; keep repository working rules in `.agents/`. The repository-knowledge MCP exposes these same files, not a separately maintained copy. Its `agent_guidance` and `working_rules` topics explain orientation and instruction ownership.
 

@@ -4,14 +4,14 @@ This optional extension owns durable delivery, immediate post-commit dispatch, a
 
 ## Install and activate
 
-1. Use the updated manifest-v2 CLI: `supacharger extension install brevo-email --source /path/to/bundle --plan`, then repeat without `--plan`.
+1. The published npm CLI does not install this extension. This bundle and Core's experimental installer source are retained for maintainer review and future private distribution work; do not present `supacharger extension` as an available command.
 2. Review/apply `supabase/migrations/20260910120000_ext_brevo_email_delivery.sql`. It enables pg_net, pg_cron and Vault; creates private brevo_email storage and service-only api_edge RPCs; and registers ext-brevo-email-retry. Expose api_edge through PostgREST, never brevo_email.
 3. Set Edge secrets BREVO_API_KEY, BREVO_EMAIL_WORKER_SECRET (random, at least 32 characters), and BREVO_TEMPLATE_<TEMPLATE_KEY> for each numeric template ID. Optional BREVO_API_KEY_ENV selects an existing credential environment name. Supabase supplies SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.
 4. Deploy `ext-brevo-email --no-verify-jwt` using the Supabase CLI. Its handler verifies the dedicated secret before privileged work. User JWTs cannot authorise it.
 5. After verification, configure Vault secrets brevo_email_worker_url (`https://<project-ref>.supabase.co/functions/v1/ext-brevo-email`) and brevo_email_worker_secret (same dedicated secret). This activates real delivery, including pending notifications. Keep secrets out of migrations, CLI arguments, logs and Git. Custom/local worker URLs need a separately reviewed endpoint policy.
 6. Verify an authorised test notification. The worker's check command checks basic environment presence, not key validity, template activation, database readiness or delivery. Doctor checks installed file hashes only.
 
-The installer copies files. It never applies SQL, modifies Supabase configuration, deploys, sets secrets or executes package scripts.
+Any future installer may copy files only. It must never apply SQL, modify Supabase configuration, deploy, set secrets or execute package scripts.
 
 ## Pass props from trusted application code
 
