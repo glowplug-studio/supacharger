@@ -33,6 +33,7 @@ test('classifies protected and developer-owned paths', () => {
     'cli-managed-core',
   );
   assert.equal(classifyPath('src/assets/svgr/ui/inline-loader.svg').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/assets/svgr/ui/image-loader.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/assets/svgr/ui/inline-loader-dark.svg').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger/styles/supacharger.css').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/components/sc_demo/header.tsx').ownership, 'developer-owned-example');
@@ -110,7 +111,7 @@ test('searches the billing test ownership guidance exposed to the MCP', async ()
 });
 
 test('searches the image transformation guidance exposed to the MCP', async () => {
-  const matches = await searchGuidance('request never supplies a bucket or path');
+  const matches = await searchGuidance('oriented source pixels');
   assert.ok(matches.some((match) => match.path === 'docs/agents/image-transformation.md'));
 });
 

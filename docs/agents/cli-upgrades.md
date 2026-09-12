@@ -37,3 +37,7 @@ The target must exist. `--plan` reports the mapping and the updater skips the ca
 After file/config/catalogue work, the updater installs required dependency changes, previews pending linked migrations, obtains the separate database confirmation, verifies the linked ledger, runs every manifest check, and hashes every exact managed file. It advances the lock only after all work succeeds.
 
 `supacharger doctor` is read-only. It identifies duplicate App Router pages after route-group normalisation, obsolete `/auth/*` and `/organisation` pages, incomplete account/organisation configuration, obsolete MFA visibility config, disabled local TOTP APIs, missing managed organisation routes/tests/adapters, missing English namespaces, invalid migration aliases, absent shared migrations, hook drift, recovery-route ancestry errors, missing scripts, and Bruno parity assets. It does not contact or mutate a hosted project.
+
+### Image loader distribution follow-up
+
+`src/assets/svgr/ui/image-loader.svg` is now a developer-owned Core asset and has been copied to Specdrive, SnapScreen and Wakekeeper. The separate `supacharger-cli` repository still needs an approved change to `commands/coreupdate.js` and its starter-installation tests: add the image loader to the starter/fallback ownership list, install it only when absent, and preserve customised copies. Until that CLI change ships, existing installations need the asset copied explicitly. Consumer Core locks must continue to identify their published baseline; local asset synchronisation does not advance them.

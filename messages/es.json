@@ -105,6 +105,11 @@
     "title": "Facturación"
   },
   "AuthJourney": {
+    "signUpTerms": "",
+    "signUpTermsSocial": "",
+    "signUpTermsSocialOnly": "",
+    "signUpTermsPasswordless": "",
+    "signUpTermsPasswordlessSocial": "",
     "mfaStatusFailed": "",
     "heroTitle": "Haz crecer tu propia comunidad",
     "welcomeBack": "Bienvenido de nuevo",

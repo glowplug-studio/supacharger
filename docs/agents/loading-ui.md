@@ -19,3 +19,20 @@ Store every UI SVG under the developer-owned `src/` path belonging to its featur
 Responsive sources must keep a correct `viewBox` and omit root `width` and `height` when CSS controls sizing. Size the component at the call site with `size-*`, `w-*`, `h-*`, or `size-[1em]`; usually add `shrink-0` beside text and preserve the source aspect ratio. Use `currentColor` only when inheritance is intentional. Test this source contract and inspect the rendered SVG at every affected viewport rather than hiding clipping with arbitrary dimensions.
 
 When sourcing a replacement from [SVG Backgrounds animated SVG preloaders](https://www.svgbackgrounds.com/elements/animated-svg-preloaders/), verify and satisfy the asset's current licence and attribution terms before shipping it.
+
+## Image loading placeholders
+
+Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.
+
+```tsx
+import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
+
+// Within a relative image container with reserved dimensions:
+{pending && (
+  <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center">
+    <ImageLoader className="size-[50px] text-white/30" />
+  </div>
+)}
+```
+
+`pending` belongs to the image lifecycle: clear it on load and error, including a cached image that is already complete. For reduced motion, pause SVG animation using `pauseAnimations()` on the SVG element (SMIL is not stopped by Tailwind's `motion-reduce:animate-none`).

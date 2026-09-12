@@ -1,32 +1,17 @@
 /// <reference lib="deno.ns" />
 
 import { withSupabase } from 'npm:@supabase/server@1.4.1';
-import { z } from 'npm:zod@4.4.3';
 
-import { resolveImageDestination } from '../_shared/image-target-contract.ts';
 import { imageUploadTargets } from '../_shared/image-targets.ts';
 import { ImageTransformError, supportsImageMimeType, transformAndStoreImage } from '../_shared/image-transform.ts';
+
+import { parseImageUploadRequest } from './request.ts';
 
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
 function errorResponse(error: string, status: number) {
   return Response.json({ error }, { status });
 }
-
-const uploadOptionsSchema = z.object({
-  destination: z
-    .string()
-    .max(256)
-    .refine((destination) => {
-      try {
-        resolveImageDestination(destination, '');
-        return true;
-      } catch {
-        return false;
-      }
-    }),
-  target: z.string(),
-});
 
 Deno.serve(
   withSupabase({ auth: 'user' }, async (request, context) => {
@@ -41,37 +26,12 @@ Deno.serve(
       return errorResponse('Expected a multipart form-data request.', 400);
     }
 
-    const allowedFields = new Set(['destination', 'file', 'target']);
-
-    for (const field of new Set(formData.keys())) {
-      if (!allowedFields.has(field)) {
-        return errorResponse(`Unexpected multipart form field "${field}".`, 400);
-      }
+    const options = parseImageUploadRequest(formData);
+    if (!options || !Object.hasOwn(imageUploadTargets, options.target)) {
+      return errorResponse('Expected one image file, a supported target, and optional valid destination and crop fields.', 400);
     }
 
-    if (
-      formData.getAll('destination').length > 1 ||
-      formData.getAll('file').length !== 1 ||
-      formData.getAll('target').length !== 1
-    ) {
-      return errorResponse('Expected one "file", one "target", and at most one "destination" field.', 400);
-    }
-
-    const file = formData.get('file');
-    const parsedOptions = uploadOptionsSchema.safeParse({
-      destination: formData.get('destination') ?? '',
-      target: formData.get('target'),
-    });
-
-    if (!(file instanceof File)) {
-      return errorResponse('Expected multipart form field "file".', 400);
-    }
-
-    if (!parsedOptions.success || !Object.hasOwn(imageUploadTargets, parsedOptions.data.target)) {
-      return errorResponse('Expected a supported image target and a safe relative destination.', 400);
-    }
-
-    const { destination, target: targetName } = parsedOptions.data;
+    const { crop, destination, file, target: targetName } = options;
 
     if (!supportsImageMimeType(file.type)) {
       return errorResponse('Only JPEG, PNG, and WebP images are supported.', 415);
@@ -84,7 +44,8 @@ Deno.serve(
 
     try {
       const result = await transformAndStoreImage({
-        destination: formData.has('destination') ? destination : undefined,
+        crop,
+        destination,
         file,
         supabase: context.supabase,
         target,
@@ -105,6 +66,7 @@ Deno.serve(
       });
     } catch (error) {
       if (error instanceof ImageTransformError) {
+        if (error.code === 'invalid_crop') return errorResponse(error.message, 422);
         if (error.code === 'input_too_large') return errorResponse(error.message, 413);
         if (error.code === 'unsupported_input') return errorResponse(error.message, 415);
         if (error.code === 'decode_failed' || error.code === 'pixel_limit_exceeded') {

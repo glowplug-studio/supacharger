@@ -50,7 +50,7 @@ The CLI-upgrades resource records the version 2 ownership flow, disabled-safe co
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 
-The image-transformation resource records the authenticated `process-image-upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and the rule that request data never supplies buckets, ownership IDs or transform settings.
+The image-transformation resource records the authenticated `process-image-upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and the rule that request data never supplies buckets, ownership IDs or output transform settings. Requests may supply a validated source `crop` rectangle in integer pixels after orientation and before the target resize; malformed crops return 400 and out-of-bounds crops return 422.
 
 The ownership resource also records the build-runtime boundary: the root Next.js `tsconfig.json` excludes `supabase/functions/**/*`, while Edge Function source is type-checked and tested with Deno. Agents must preserve that separation rather than teaching the Next.js compiler to accept Deno-only globals and imports.
 
@@ -61,5 +61,17 @@ The same authentication resource records managed Supabase Auth TOTP enrolment, c
 The workflow resource also records the managed Bruno parity rule. Client-callable Core `api` RPC changes must update `docs/bruno/supacharger-rpc/` and pass `npm run check:bruno-rpcs`. Consumers receive the exact collection and checker, verify the canonical subset, and keep product-specific RPCs separately.
 
 The billing resource records the billing-account domain, explicit personal/organisation subject service, session-derived personal ownership, organisation resolver adapter, scoped overview rules, managed settings/acquisition/Portal routes, multi-subscription and multi-item projection, entitlement boundary, Dynamic Payment Methods, flexible billing mode, schema ownership, durable event/reconciliation contract, required event list, secrets, and verification rules. Organisation guidance also records Core route ownership and the developer-owned page, navigation, chrome, profile, and CSS seams used to preserve product-only behaviour without parallel pages. It is descriptive only and cannot access Stripe, read secrets, or apply migrations.
+
+## Image loading placeholders
+
+Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.
+
+## Signup terms notice
+
+Set `AUTHENTICATION.SIGN_UP_TERMS_URL` in developer-owned `src/supacharger.config.ts` to an absolute HTTP(S) URL. The default `null` hides the notice; invalid, relative and credential-bearing URLs are not rendered. The link opens a new tab with `noopener noreferrer`.
+
+The shared login/signup form displays the notice beneath signup actions and on the provider chooser, where a social action can create an account even from sign-in. Wording follows the configured password, passwordless and social signup methods. `AuthJourney.signUpTerms`, `signUpTermsSocial`, `signUpTermsSocialOnly`, `signUpTermsPasswordless` and `signUpTermsPasswordlessSocial` are complete rich-text messages; preserve the `<terms>...</terms>` link tag when translating. English values are supplied; secondary catalogues remain pending translation.
+
+This is a displayed notice, not a required checkbox or stored consent record. `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` remains separate. CLI upgrades add the missing setting as `null` and preserve an existing URL. Existing consumers receive the same property without changing their authentication methods. Configure the application's real terms URL before expecting a visible notice.
 
 The authentication resource also describes the standalone branded HTTP 503 recovery document, original-destination retry, English `ServiceUnavailable` catalogue fallback, unchanged API JSON errors and session preservation during temporary Auth refresh failures.

@@ -1,0 +1,15 @@
+<!-- Independently authored Supacharger three-bar image placeholder. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true" focusable="false">
+  <rect x="18" y="32" width="14" height="36" rx="1">
+    <animate attributeName="y" values="32;18;32" dur="1s" begin="-0.3s" repeatCount="indefinite" />
+    <animate attributeName="height" values="36;64;36" dur="1s" begin="-0.3s" repeatCount="indefinite" />
+  </rect>
+  <rect x="43" y="32" width="14" height="36" rx="1">
+    <animate attributeName="y" values="32;18;32" dur="1s" begin="-0.15s" repeatCount="indefinite" />
+    <animate attributeName="height" values="36;64;36" dur="1s" begin="-0.15s" repeatCount="indefinite" />
+  </rect>
+  <rect x="68" y="32" width="14" height="36" rx="1">
+    <animate attributeName="y" values="32;18;32" dur="1s" begin="0s" repeatCount="indefinite" />
+    <animate attributeName="height" values="36;64;36" dur="1s" begin="0s" repeatCount="indefinite" />
+  </rect>
+</svg>

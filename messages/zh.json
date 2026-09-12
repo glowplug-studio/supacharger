@@ -105,6 +105,11 @@
     "title": "计费"
   },
   "AuthJourney": {
+    "signUpTerms": "",
+    "signUpTermsSocial": "",
+    "signUpTermsSocialOnly": "",
+    "signUpTermsPasswordless": "",
+    "signUpTermsPasswordlessSocial": "",
     "mfaStatusFailed": "",
     "heroTitle": "发展您自己的社区",
     "welcomeBack": "欢迎回来",

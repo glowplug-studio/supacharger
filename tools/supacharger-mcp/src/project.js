@@ -75,12 +75,13 @@ export function classifyPath(inputPath) {
 
   if (
     relativePath === 'src/assets/svgr/ui/inline-loader.svg' ||
-    relativePath === 'src/assets/svgr/ui/inline-loader-dark.svg'
+    relativePath === 'src/assets/svgr/ui/inline-loader-dark.svg' ||
+    relativePath === 'src/assets/svgr/ui/image-loader.svg'
   ) {
     return {
       ownership: 'developer-owned',
       guidance:
-        'Brand-customisable inline loader variant. CLI updates must preserve this exact file; import it through SVGR and replace it in place to customise the animation.',
+        'Brand-customisable loading asset. CLI updates must preserve this exact file; import it through SVGR and replace it in place to customise the animation.',
     };
   }
 

@@ -1,3 +1,18 @@
+/** Rectangle in integer pixels of the source after EXIF orientation, before resizing. */
+export type ImageCrop = Readonly<{ x: number; y: number; width: number; height: number }>;
+
+export function validateImageCrop(crop: ImageCrop, sourceWidth: number, sourceHeight: number) {
+  if (
+    !crop ||
+    ![crop.x, crop.y, crop.width, crop.height].every(Number.isSafeInteger) ||
+    crop.x < 0 || crop.y < 0 || crop.width < 1 || crop.height < 1 ||
+    crop.width > sourceWidth || crop.height > sourceHeight ||
+    crop.x > sourceWidth - crop.width || crop.y > sourceHeight - crop.height
+  ) {
+    throw new RangeError('Crop must be a positive integer rectangle inside the oriented source image.');
+  }
+}
+
 export type ImageOutputFormat = 'jpeg' | 'png';
 export type ImageResizeFit = 'cover' | 'inside';
 export type ImageVisibility = 'private' | 'public';

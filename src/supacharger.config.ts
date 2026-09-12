@@ -53,6 +53,8 @@ export const SC_CONFIG: SupachargerConfig = {
     ALLOW_ANONYMOUS_USERS: false,
   },
   AUTHENTICATION: {
+    // Absolute HTTP(S) terms URL; null hides the translated signup notice.
+    SIGN_UP_TERMS_URL: null,
     EMAIL_PASSWORD: {
       SIGN_IN: true,
       SIGN_UP: true,

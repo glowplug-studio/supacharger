@@ -435,3 +435,26 @@ test('unverified password sign in offers a fresh verification email and enters t
   assert.match(journey, /getVerificationLinkLabel/);
   assert.match(englishMessages, /"getVerificationLink":\s*"Get verification link"/);
 });
+
+
+test('signup terms only accept absolute web destinations and choose available signup wording', async () => {
+  const { signUpTermsUrl, signUpTermsMessage } = await import('../src/supacharger/auth/sign-up-terms.ts');
+  for (const value of [null, undefined, '', '/terms', '//example.com', 'javascript:alert(1)', 'data:text/html,test', 'https://user:password@example.com', 'https://']) {
+    assert.equal(signUpTermsUrl(value), null);
+  }
+  assert.equal(signUpTermsUrl(' https://example.com/terms?lang=en '), 'https://example.com/terms?lang=en');
+  assert.equal(signUpTermsUrl('http://localhost:3000/terms'), 'http://localhost:3000/terms');
+  const messages = JSON.parse(await read('messages/en.json')).AuthJourney;
+  for (const [password, passwordless, social, expected] of [
+    [true, false, false, 'signUpTerms'],
+    [true, true, true, 'signUpTermsSocial'],
+    [false, false, true, 'signUpTermsSocialOnly'],
+    [false, true, false, 'signUpTermsPasswordless'],
+    [false, true, true, 'signUpTermsPasswordlessSocial'],
+  ]) {
+    const key = signUpTermsMessage(password, passwordless, social);
+    assert.equal(key, expected);
+    assert.match(messages[key], /<terms>[^<]+<\/terms>/);
+    assert.equal(messages[key].includes('social account'), social);
+  }
+});

@@ -941,3 +941,18 @@
     transition: none;
   }
 }
+
+@layer components {
+  .sc-auth-terms {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1.625;
+    color: inherit;
+    opacity: 0.75;
+  }
+  .sc-auth-terms-link {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}

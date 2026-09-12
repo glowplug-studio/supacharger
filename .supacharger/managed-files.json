@@ -62,6 +62,7 @@
     "src/i18n/request.ts",
     "src/assets/svgr/ui/inline-loader-dark.svg",
     "src/assets/svgr/ui/inline-loader.svg",
+    "src/assets/svgr/ui/image-loader.svg",
     "src/styles/project.css",
     "src/styles/supacharger-account.css",
     "src/styles/supacharger-auth.css",

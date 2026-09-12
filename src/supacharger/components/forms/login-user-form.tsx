@@ -31,6 +31,7 @@ import {
   verifySignInOtp,
 } from '@/lib/supabase/supacharger/supabase-auth';
 import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
+import { signUpTermsMessage, signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
@@ -439,10 +440,30 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     </button>
   );
 
+  function renderSignUpTerms(providerChoice = false) {
+    const url = signUpTermsUrl(SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS_URL);
+    const password = SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
+    const passwordless = SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_UP !== 'disabled';
+    // A social-provider action can create an account from the sign-in chooser too.
+    if (!url || (providerChoice ? !providerJourneyAvailable : mode !== 'signup' || !emailJourneyAvailable)) return null;
+    return (
+      <p className='sc-auth-terms'>
+        {t.rich(signUpTermsMessage(password, passwordless, providerJourneyAvailable), {
+          terms: (chunks) => (
+            <a href={url} target='_blank' rel='noopener noreferrer' className='sc-auth-link sc-auth-terms-link'>
+              {chunks}
+            </a>
+          ),
+        })}
+      </p>
+    );
+  }
+
   function renderChooseOptions(includeEmailButton: boolean) {
     return (
       <div className='sc-auth-option-list'>
         <AuthProviderButtons />
+        {step === 'choose' ? renderSignUpTerms(true) : null}
         {includeEmailButton && emailJourneyAvailable ? (
           <>
             {providerJourneyAvailable ? <UIDivider text='or' className='sc-auth-divider' /> : null}
@@ -823,6 +844,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               </Button>
             </>
           ) : null}
+          {step === 'email' ? renderSignUpTerms() : null}
         </form>
       </AnimateHeight>
     </>

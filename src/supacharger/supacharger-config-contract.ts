@@ -53,6 +53,8 @@ export type SupachargerConfig = {
   };
   /** Authentication methods and verification policy. */
   AUTHENTICATION: {
+    /** Absolute HTTP(S) terms URL for the signup notice; null hides it. */
+    SIGN_UP_TERMS_URL: string | null;
     /** Password credential availability. */
     EMAIL_PASSWORD: { /** Show/accept password sign-in. */ SIGN_IN: boolean; /** Show/accept password signup. */ SIGN_UP: boolean };
     /** Exclusive passwordless email modes. */

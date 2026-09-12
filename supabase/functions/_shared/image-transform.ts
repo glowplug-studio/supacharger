@@ -8,10 +8,11 @@ import {
   initializeImageMagick,
   MagickColor,
   MagickFormat,
+  MagickGeometry,
 } from 'npm:@imagemagick/magick-wasm@0.0.42';
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2.112.3';
 
-import { resolveImageDestination, type ImageUploadTarget } from './image-target-contract.ts';
+import { type ImageCrop, type ImageUploadTarget,resolveImageDestination, validateImageCrop } from './image-target-contract.ts';
 
 const defaultMaxInputBytes = 5 * 1024 * 1024;
 const defaultMaxInputPixels = 25_000_000;
@@ -22,7 +23,7 @@ const wasmBytes = await Deno.readFile(new URL('../process-image-upload/magick.wa
 await initializeImageMagick(wasmBytes);
 
 export type ImageTransformErrorCode =
-  'decode_failed' | 'input_too_large' | 'pixel_limit_exceeded' | 'storage_failed' | 'unsupported_input';
+  'invalid_crop' | 'decode_failed' | 'input_too_large' | 'pixel_limit_exceeded' | 'storage_failed' | 'unsupported_input';
 
 export class ImageTransformError extends Error {
   constructor(
@@ -81,7 +82,7 @@ function resizeCover(image: IMagickImage, target: ImageUploadTarget) {
   }
 }
 
-function transformImage(source: Uint8Array, target: ImageUploadTarget): TransformResult {
+function transformImage(source: Uint8Array, target: ImageUploadTarget, crop?: ImageCrop): TransformResult {
   try {
     return ImageMagick.read(source, (image) => {
       if (!supportedInputFormats.has(image.format)) {
@@ -93,6 +94,17 @@ function transformImage(source: Uint8Array, target: ImageUploadTarget): Transfor
       const pixelCount = image.width * image.height;
       if (!Number.isSafeInteger(pixelCount) || pixelCount > (target.maxInputPixels ?? defaultMaxInputPixels)) {
         throw new ImageTransformError('pixel_limit_exceeded', 'The decoded image dimensions are too large.');
+      }
+
+      if (crop !== undefined) {
+        try {
+          validateImageCrop(crop, image.width, image.height);
+        } catch (cause) {
+          throw new ImageTransformError('invalid_crop', 'Crop must be a positive integer rectangle inside the oriented source image.', { cause });
+        }
+        image.resetPage();
+        image.crop(new MagickGeometry(crop.x, crop.y, crop.width, crop.height));
+        image.resetPage();
       }
 
       if (target.fit === 'cover') {
@@ -130,12 +142,14 @@ export function supportsImageMimeType(mimeType: string) {
 }
 
 export async function transformAndStoreImage({
+  crop,
   destination,
   file,
   supabase,
   target,
   userId,
 }: {
+  crop?: ImageCrop;
   destination?: string;
   file: File;
   supabase: SupabaseClient;
@@ -150,7 +164,7 @@ export async function transformAndStoreImage({
     throw new ImageTransformError('input_too_large', 'The source image is too large.');
   }
 
-  const transformed = transformImage(new Uint8Array(await file.arrayBuffer()), target);
+  const transformed = transformImage(new Uint8Array(await file.arrayBuffer()), target, crop);
   const extension = target.outputFormat === 'png' ? 'png' : 'jpg';
   const contentType = target.outputFormat === 'png' ? 'image/png' : 'image/jpeg';
   const filename = `${target.filenamePrefix}-${crypto.randomUUID()}.${extension}`;
