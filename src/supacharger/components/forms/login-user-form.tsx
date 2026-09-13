@@ -8,8 +8,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  Eye,
-  EyeOff,
   LogIn,
   Mail,
   MailCheck,
@@ -33,7 +31,7 @@ import {
 import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
 import { signUpTermsMessage, signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
-import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
+import NewPasswordFields from '@/supacharger/components/forms/new-password-fields';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { Button } from '@/supacharger/components/primitives/button';
@@ -116,7 +114,6 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const emailJourneyAvailable = passwordModeAvailable || passwordlessEmailAvailable;
   const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
   const passwordConfirmationRequired = mode === 'signup' && !showPassword;
-  const passwordsMatch = passwordAgain.length > 0 && password === passwordAgain;
   const signUpVerificationMode = SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION;
   const otpLength = SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.OTP_LENGTH;
   const offersOtpAndLink = verificationDeliveryMode === 'otp-and-link';
@@ -176,16 +173,6 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     setLoginFailed(false);
     setEmailNotConfirmed(false);
     setOtpFailure(null);
-  }
-
-  function togglePasswordVisibility() {
-    const nextShowPassword = !showPassword;
-    if (nextShowPassword) {
-      setPasswordAgain('');
-      setError(null);
-      setLoginFailed(false);
-    }
-    setShowPassword(nextShowPassword);
   }
 
   function showProviderChoices() {
@@ -697,60 +684,19 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               ) : null}
             </>
           ) : passwordModeAvailable ? (
-            <div className='sc-auth-password-create'>
-              <label className='sc-auth-label' htmlFor='password'>{t('password')}</label>
-              <div className='sc-auth-password-control'>
-                <PasswordValidationIndicator
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  name='password'
-                  id='password'
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder={t('password')}
-                  onValidationChange={setPasswordIsValid}
-                />
-                <button
-                  type='button'
-                  className='sc-auth-password-visibility'
-                  aria-label={showPassword ? t('hidePassword') : t('showPassword')}
-                  aria-expanded={!showPassword}
-                  aria-controls='signup-password-confirmation'
-                  onClick={togglePasswordVisibility}
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              <AnimateHeight
-                id='signup-password-confirmation'
-                duration={260}
-                height={showPassword ? 0 : 'auto'}
-                animateOpacity
-              >
-                <div className='sc-auth-password-confirmation'>
-                  <label className='sc-auth-label' htmlFor='password-confirmation'>{t('repeatPassword')}</label>
-                  <div className='sc-auth-password-control'>
-                    <Input
-                      id='password-confirmation'
-                      name='passwordConfirmation'
-                      className='sc-auth-input'
-                      type='password'
-                      autoComplete='new-password'
-                      placeholder={t('repeatPassword')}
-                      value={passwordAgain}
-                      onChange={(event) => setPasswordAgain(event.target.value)}
-                      required={passwordConfirmationRequired}
-                      disabled={showPassword}
-                    />
-                    {passwordsMatch ? (
-                      <span className='sc-auth-field-valid'>
-                        <Check aria-hidden='true' className='sc-auth-field-valid-icon' size={17} strokeWidth={2.5} />
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-              </AnimateHeight>
-            </div>
+            <NewPasswordFields
+              id='password' name='password' label={t('password')} placeholder={t('password')}
+              confirmationId='password-confirmation' confirmationName='passwordConfirmation'
+              confirmationLabel={t('repeatPassword')} confirmationPlaceholder={t('repeatPassword')}
+              password={password} confirmation={passwordAgain} visible={showPassword}
+              onPasswordChange={setPassword} onConfirmationChange={setPasswordAgain}
+              onValidationChange={setPasswordIsValid}
+              onVisibilityChange={(visible) => {
+                setShowPassword(visible);
+                setError(null);
+                setLoginFailed(false);
+              }}
+            />
           ) : null}
 
           {emailNotConfirmed && error ? (

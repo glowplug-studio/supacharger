@@ -30,6 +30,10 @@ Keep reusable Supacharger development conventions and technical explanations in 
 
 Project instructions may override this shared guidance for the application, subject to the human's instructions and applicable higher-priority rules. Prefer recording overrides in the project file. Editing this shared file creates upstream drift; the Core updater must report the conflict rather than silently replace it.
 
+## CLI regression tests
+
+When working on Supacharger Core or consuming applications, do not create or extend regression tests relating to the Supacharger CLI unless the human explicitly requests those tests. This includes tests added in the CLI repository as part of Core or consumer work. Do not add associated test fixtures, scripts or dependencies as incidental work. Verify changes using existing checks or focused manual inspection.
+
 ## Agent-generated reports
 
 Store agent-generated reports outside the Supacharger project directory. Do not create report files anywhere inside the project, including Markdown files under `docs/reports/`. Return reports in the conversation or save them to an external location.

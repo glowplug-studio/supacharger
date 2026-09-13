@@ -16,14 +16,12 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Check, Eye, EyeOff } from 'lucide-react';
-import AnimateHeight from 'react-animate-height';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
 import { createUserByEmailPassword } from '@/lib/supabase/supacharger/supabase-auth';
 import SaveButton from '@/supacharger/components/buttons/form-save-button';
-import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
+import NewPasswordFields from '@/supacharger/components/forms/new-password-fields';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { Input } from '@/supacharger/components/primitives/input';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -55,7 +53,6 @@ export function CreateAccountForm() {
   const tCreateAccountFormComponent = useTranslations('CreateAccountFormComponent');
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const tEvaluatePasswordStrengthComponent = useTranslations('evaluatePasswordStrengthComponent');
-  const tAuthJourney = useTranslations('AuthJourney');
 
   // React Hook Form
   const {
@@ -76,7 +73,6 @@ export function CreateAccountForm() {
 
   const password = watch('password');
   const retypePassword = watch('retypePassword');
-  const passwordsMatch = retypePassword.length > 0 && password === retypePassword;
 
   // Open password section when email is typed
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,23 +80,6 @@ export function CreateAccountForm() {
     if (!passwordSectionOpen && e.target.value.length > 0) {
       setPasswordSectionOpen(true);
     }
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('password', e.target.value);
-  };
-
-  const handleRetypePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue('retypePassword', e.target.value);
-  };
-
-  const togglePasswordVisibility = () => {
-    const nextShowPassword = !showPassword;
-    if (nextShowPassword) {
-      setValue('retypePassword', '');
-      setFormError(null);
-    }
-    setShowPassword(nextShowPassword);
   };
 
   // Helper: which field is in error? (for aria-describedby)
@@ -235,69 +214,21 @@ export function CreateAccountForm() {
             className='sc-auth-password-section'
             data-open={passwordSectionOpen ? 'true' : 'false'}
           >
-            <div className='sc-auth-field'>
-              <label htmlFor='password' className='sc-auth-label'>{tAuthTerms('password')}</label>
-              <div className='sc-auth-password-control'>
-                <div className='sc-auth-password-strength-wrap'>
-                  <PasswordValidationIndicator
-                    value={password}
-                    onChange={handlePasswordChange}
-                    name='password'
-                    id='password'
-                    type={showPassword ? 'text' : 'password'}
-                    onValidationChange={(isValid) => setPasswordIsValid(isValid)}
-                  />
-                </div>
-                <button
-                  type='button'
-                  className='sc-auth-password-visibility sc-auth-password-visibility-inline'
-                  aria-label={showPassword ? tAuthJourney('hidePassword') : tAuthJourney('showPassword')}
-                  aria-expanded={!showPassword}
-                  aria-controls='embedded-signup-password-confirmation'
-                  onClick={togglePasswordVisibility}
-                  tabIndex={-1}
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-            </div>
-            <AnimateHeight
-              id='embedded-signup-password-confirmation'
-              duration={260}
-              height={showPassword ? 0 : 'auto'}
-              animateOpacity
-            >
-              <div className='sc-auth-field sc-auth-password-confirmation'>
-                <label htmlFor='retypePassword' className='sc-auth-label'>
-                  {tAuthTerms('retypePassword')}
-                </label>
-                <div className='sc-auth-control'>
-                  <div className='sc-auth-password-control'>
-                    <Input
-                      id='retypePassword'
-                      type='password'
-                      maxLength={30}
-                      required={!showPassword}
-                      disabled={showPassword}
-                      autoComplete='new-password'
-                      aria-invalid={!!formError && formError.toLowerCase().includes("retype")}
-                      aria-describedby={getAriaError("retypePassword")}
-                      {...register('retypePassword', {
-                        onChange: handleRetypePasswordChange,
-                      })}
-                    />
-                    {passwordsMatch ? (
-                      <span className='sc-auth-field-valid'>
-                        <Check aria-hidden='true' className='sc-auth-field-valid-icon' size={17} strokeWidth={2.5} />
-                      </span>
-                    ) : null}
-                  </div>
-                  {formError && formError.toLowerCase().includes("retype") && (
-                    <div id="retypePassword-error" className="sc_message sc_message-error">{formError}</div>
-                  )}
-                </div>
-              </div>
-            </AnimateHeight>
+            <NewPasswordFields
+              id='password' name='password' label={tAuthTerms('password')}
+              confirmationId='retypePassword' confirmationName='retypePassword'
+              confirmationLabel={tAuthTerms('retypePassword')}
+              password={password} confirmation={retypePassword} visible={showPassword}
+              onPasswordChange={(value) => setValue('password', value)}
+              onConfirmationChange={(value) => setValue('retypePassword', value)}
+              onValidationChange={setPasswordIsValid}
+              onVisibilityChange={(visible) => { setShowPassword(visible); setFormError(null); }}
+              confirmationInvalid={!!formError && formError.toLowerCase().includes('retype')}
+              confirmationErrorId={getAriaError('retypePassword')}
+            />
+            {formError && formError.toLowerCase().includes('retype') && (
+              <div id='retypePassword-error' className='sc_message sc_message-error'>{formError}</div>
+            )}
             {/* General password errors */}
             {formError && formError.toLowerCase().includes("password") && !formError.toLowerCase().includes("retype") && (
               <div id="password-error" className="sc_message sc_message-error">{formError}</div>
