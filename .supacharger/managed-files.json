@@ -28,11 +28,11 @@
     "supabase/migrations"
   ],
   "developerOwnedPaths": [
+    "resources/sc-email-templates",
     ".supacharger/core-lock.json",
     ".supacharger/migration-aliases.json",
     "messages",
     "supabase/functions/_shared/image-targets.ts",
-    "supabase/templates",
     "src/app/layout.tsx",
     "src/app/(project)",
     "src/components/sc_demo",
@@ -58,6 +58,7 @@
     ".gitmodules",
     "CHANGELOG.project.md",
     ".supacharger/skills-lock.json",
-    "docs/agents"
+    "docs/agents",
+    "public/images/email-template"
   ]
 }

@@ -1710,5 +1710,111 @@
     "recoveryDescription": "We received a request to reset your password. Follow the link below to choose a new one.",
     "recoveryAction": "Reset password",
     "recoveryDisclaimer": "This link can be used once. If you did not request this change, you can ignore this email."
+  },
+  "EmailTemplateExamples": {
+    "resetTitle": "Reset your Kuronet password",
+    "resetBody": "Follow this link to reset the password for your Kuronet account:",
+    "resetButton": "Reset Password",
+    "resetBrand": "Kuronet",
+    "exampleTitle": "Lorem ipsum",
+    "exampleBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    "exampleButton": "Lorem ipsum",
+    "exampleBrand": "Supacharger",
+    "footerSentBy": "This email was sent by Kuronet.",
+    "footerWebsite": "Website",
+    "footerCopyright": "Copyright © Kuronet. All Rights Reserved.",
+    "footerAttribution": "Powered by Supacharger",
+    "sectionTitle": "Lorem ipsum dolor sit amet",
+    "sectionBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae justo eget magna fermentum iaculis. Aenean euismod elementum nisi, quis eleifend quam adipiscing vitae. Ut consequat semper viverra nam libero justo laoreet sit amet.",
+    "sectionImageAlt": "Kuronet application preview",
+    "copyLink": "Or copy and paste this link:",
+    "otpTitle": "Confirm your email address",
+    "otpBody": "Enter this code in Kuronet to confirm your email address:",
+    "otpDisclaimer": "If you did not create this account, you can ignore this email."
+  },
+  "SupabaseEmailResources": {
+    "confirm-signup": {
+      "title": "Confirm your signup",
+      "paragraphs": [
+        "Follow this link to confirm your user:"
+      ],
+      "button": "Confirm your mail"
+    },
+    "invite-user": {
+      "title": "You have been invited",
+      "paragraphs": [
+        "You have been invited to create a user on {{ .SiteURL }}. Follow this link to accept the invite:"
+      ],
+      "button": "Accept the invite"
+    },
+    "magic-link-or-otp": {
+      "title": "Magic Link",
+      "paragraphs": [
+        "Follow this link to login:"
+      ],
+      "button": "Log In"
+    },
+    "change-email-address": {
+      "title": "Confirm Change of Email",
+      "paragraphs": [
+        "Follow this link to confirm the update of your email from {{ .Email }} to {{ .NewEmail }}:"
+      ],
+      "button": "Change Email"
+    },
+    "reauthentication": {
+      "title": "Confirm reauthentication",
+      "paragraphs": [
+        "Enter the code:"
+      ]
+    },
+    "password-changed": {
+      "title": "Your password has been changed",
+      "paragraphs": [
+        "This is a confirmation that the password for your account {{ .Email }} has just been changed.",
+        "If you did not make this change, please contact support."
+      ]
+    },
+    "email-address-changed": {
+      "title": "Your email address has been changed",
+      "paragraphs": [
+        "The email address for your account has been changed from {{ .OldEmail }} to {{ .Email }}.",
+        "If you did not make this change, please contact support."
+      ]
+    },
+    "mfa-method-removed": {
+      "title": "An MFA factor has been unenrolled",
+      "paragraphs": [
+        "A factor ({{ .FactorType }}) has been unenrolled for your account {{ .Email }}.",
+        "If you did not make this change, please contact support immediately."
+      ]
+    },
+    "mfa-method-added": {
+      "title": "An MFA factor has been enrolled",
+      "paragraphs": [
+        "A factor ({{ .FactorType }}) has been enrolled for your account {{ .Email }}.",
+        "If you did not make this change, please contact support immediately."
+      ]
+    },
+    "phone-number-changed": {
+      "title": "Your phone number has been changed",
+      "paragraphs": [
+        "The phone number for your account has been changed from {{ .OldPhone }} to {{ .Phone }}.",
+        "If you did not make this change, please contact support immediately."
+      ]
+    },
+    "identity-linked": {
+      "title": "A sign-in method has been linked",
+      "paragraphs": [
+        "Your {{ .Provider }} account was linked as a sign-in method for {{ .Email }}.",
+        "If you did not make this change, please contact support immediately."
+      ]
+    },
+    "identity-unlinked": {
+      "title": "A sign-in method has been removed",
+      "paragraphs": [
+        "Your {{ .Provider }} account was removed as a sign-in method for {{ .Email }}.",
+        "If you did not make this change, please contact support immediately."
+      ]
+    }
   }
 }

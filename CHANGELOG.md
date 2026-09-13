@@ -9,12 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T17:59:09Z; base_commit=b7b6fd8877c26576cec975b5d19ba472d7325650; main_commit=b7b6fd8877c26576cec975b5d19ba472d7325650; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=b7b6fd8877c26576cec975b5d19ba472d7325650; scope=main-and-request-domain-auth-change-set; excluded=concurrent-email-template-cleanup-mcp-examples-and-local-reports; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-13T18:05:21Z; base_commit=0d8120df1e6ee85e5ae8f8efbe489d5773c9f23a; main_commit=0d8120df1e6ee85e5ae8f8efbe489d5773c9f23a; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=0d8120df1e6ee85e5ae8f8efbe489d5773c9f23a; scope=main-and-reviewed-email-resources-release; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
 
+- Optional Auth, security-notification and Brevo email resources under developer-owned `resources/sc-email-templates`, with read-only MCP access to complete HTML and setup guidance.
 - A replaceable default email logo for application-owned branding.
 - Upload simulations with visible progress, loading-indicator previews, and modal and toast demonstrations in the starter widget gallery.
 - Free public agent skill installation with checkbox selection, named installs, pinned Git revisions and explicit updates that preserve local customisations. The canonical installer is distributed through the Supacharger CLI separately from paid modules.
@@ -39,6 +40,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Bundled local Supabase email overrides and the old `supabase/templates` examples. Email resources are now selected and installed deliberately in hosted Auth; they are excluded from Vercel uploads and Next.js deployment traces.
 - Bundled application contract, image-runtime and SQL tests, their package scripts, and the Bruno RPC parity checker. The Core ownership manifest no longer declares these assets or post-update checks; integrations invoking the removed scripts must be updated. The canonical Bruno request collection remains available.
 
 [Unreleased]: https://github.com/glowplug-studio/supacharger/compare/f8510bcce0759c17578e406bbdf3fa3df5c11cdb...HEAD

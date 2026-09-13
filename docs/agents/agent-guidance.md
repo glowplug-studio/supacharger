@@ -14,6 +14,8 @@
 - Read `project-widgets.md`, `loading-ui.md` and `image-transformation.md` for reusable media and UI conventions.
 - Read `svg-guidance.md` before changing UI SVG assets, imports or sizing.
 
+For email HTML, public logo ownership and copyable Supabase/Brevo sources, read [Email templates](email-templates.md).
+
 ## Free public skills
 
 `supacharger skills install` presents a checkbox catalogue from the public Glowplug skills repository. `supacharger skills install general/changelog` installs one named skill. The complete skill folder goes under `.agents/skills/changelog/`; source commits and file hashes go in `.supacharger/skills-lock.json`. Existing files and local edits are preserved. `supacharger skills update [ids...]` explicitly updates unchanged tracked installations; it does not advance the Core lock or install paid modules.

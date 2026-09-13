@@ -8,12 +8,15 @@ import {
   classifyPath,
   projectTree,
   readGuidance,
+  readEmailTemplate,
+  emailTemplateFiles,
   repositoryRoot,
   resolveRepositoryPath,
   searchGuidance,
 } from './project.js';
 
 const guidanceTopics = [
+  'email_templates',
   'mission',
   'ownership',
   'cli_upgrades',
@@ -46,6 +49,24 @@ export function createServer() {
       instructions:
         'Use supacharger_get_guidance before changing shared behaviour. Classify affected paths before editing. This server is read-only; AGENTS.md and the repository implementation remain authoritative.',
     },
+  );
+
+  for (const template of Object.keys(emailTemplateFiles)) {
+    server.registerResource(
+      `supacharger-email-${template}`,
+      `supacharger://email-templates/${template}`,
+      { title: `Supacharger email: ${template}`, description: 'Complete copyable HTML email source.', mimeType: 'text/html' },
+      async (uri) => ({ contents: [{ uri: uri.href, mimeType: 'text/html', text: await readEmailTemplate(template) }] }),
+    );
+  }
+  server.registerTool(
+    'supacharger_get_email_template',
+    {
+      title: 'Get email template HTML',
+      description: 'Return optional email HTML from resources/sc-email-templates. Read email_templates guidance before applying through the connected Supabase MCP when requested.',
+      inputSchema: { template: z.enum(Object.keys(emailTemplateFiles)) },
+    },
+    async ({ template }) => textResult(await readEmailTemplate(template)),
   );
 
   for (const topic of guidanceTopics) {

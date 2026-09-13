@@ -1343,5 +1343,111 @@
     "recoveryDescription": "",
     "recoveryAction": "",
     "recoveryDisclaimer": ""
+  },
+  "EmailTemplateExamples": {
+    "resetTitle": "",
+    "resetBody": "",
+    "resetButton": "",
+    "resetBrand": "",
+    "exampleTitle": "",
+    "exampleBody": "",
+    "exampleButton": "",
+    "exampleBrand": "",
+    "footerSentBy": "",
+    "footerWebsite": "",
+    "footerCopyright": "",
+    "footerAttribution": "",
+    "sectionTitle": "",
+    "sectionBody": "",
+    "sectionImageAlt": "",
+    "copyLink": "",
+    "otpTitle": "",
+    "otpBody": "",
+    "otpDisclaimer": ""
+  },
+  "SupabaseEmailResources": {
+    "confirm-signup": {
+      "title": "",
+      "paragraphs": [
+        ""
+      ],
+      "button": ""
+    },
+    "invite-user": {
+      "title": "",
+      "paragraphs": [
+        ""
+      ],
+      "button": ""
+    },
+    "magic-link-or-otp": {
+      "title": "",
+      "paragraphs": [
+        ""
+      ],
+      "button": ""
+    },
+    "change-email-address": {
+      "title": "",
+      "paragraphs": [
+        ""
+      ],
+      "button": ""
+    },
+    "reauthentication": {
+      "title": "",
+      "paragraphs": [
+        ""
+      ]
+    },
+    "password-changed": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    },
+    "email-address-changed": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    },
+    "mfa-method-removed": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    },
+    "mfa-method-added": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    },
+    "phone-number-changed": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    },
+    "identity-linked": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    },
+    "identity-unlinked": {
+      "title": "",
+      "paragraphs": [
+        "",
+        ""
+      ]
+    }
   }
 }

@@ -1,0 +1,3 @@
+
+# Optional agent resources; keep out of deployment uploads.
+resources/sc-email-templates/

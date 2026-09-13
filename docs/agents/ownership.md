@@ -127,3 +127,7 @@ The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-ma
 `docs/agents/` is developer-owned in consuming applications. The updater adds missing Markdown references but never overwrites existing product notes. Review and merge changed Core conventions deliberately. This is distinct from exact-managed `.agents/supacharger/guidance.md`.
 
 `.supacharger/skills-lock.json` is CLI-generated metadata for skills installed through the Supacharger CLI. Do not edit it manually. Its inclusion in `developerOwnedPaths` means Core updates preserve the project’s installation record; it does not make the file developer-editable. Use the skills install/update commands to maintain it.
+
+## Email template images
+
+`public/images/email-template/` is developer-owned, Git-tracked branding copied on initial installation only. Replace `email-logo.png`, commit it and use its deployed absolute HTTPS URL in templates. Core updates neither overwrite nor add files here. See [Email templates](email-templates.md).

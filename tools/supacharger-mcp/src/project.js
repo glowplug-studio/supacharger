@@ -9,6 +9,7 @@ export const repositoryRoot = path.resolve(sourceDirectory, '../../..');
 const ignoredTreeNames = new Set(['.git', '.next', '.turbo', '.vercel', 'build', 'coverage', 'node_modules', 'out']);
 
 const guidanceFiles = {
+  email_templates: 'docs/agents/email-templates.md',
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
   cli_upgrades: 'docs/agents/cli-upgrades.md',
@@ -64,6 +65,10 @@ export function resolveRepositoryPath(inputPath = '.') {
 
 export function classifyPath(inputPath) {
   const relativePath = normaliseRelativePath(inputPath);
+
+  if (relativePath === 'public/images/email-template' || relativePath.startsWith('public/images/email-template/')) {
+    return { ownership: 'developer-owned', guidance: 'Initial-install email branding. Replace and commit the logo; Core updates neither install nor overwrite this directory.' };
+  }
 
   if (relativePath === '.agents/supacharger/guidance.md' || relativePath === 'CHANGELOG.md') {
     return { ownership: 'cli-managed-core', guidance: 'Shared guidance or Core changelog. Application overrides belong in .agents/project/AGENTS.md; application history belongs in CHANGELOG.project.md.' };
@@ -398,4 +403,27 @@ export async function searchGuidance(query) {
     }
   }
   return matches;
+}
+
+
+export const emailTemplateFiles = {
+  "brevo": "resources/sc-email-templates/template.html",
+  "supabase_change_email_address": "resources/sc-email-templates/supabase/change-email-address.html",
+  "supabase_confirm_signup": "resources/sc-email-templates/supabase/confirm-signup.html",
+  "supabase_email_address_changed": "resources/sc-email-templates/supabase/email-address-changed.html",
+  "supabase_identity_linked": "resources/sc-email-templates/supabase/identity-linked.html",
+  "supabase_identity_unlinked": "resources/sc-email-templates/supabase/identity-unlinked.html",
+  "supabase_invite_user": "resources/sc-email-templates/supabase/invite-user.html",
+  "supabase_magic_link_or_otp": "resources/sc-email-templates/supabase/magic-link-or-otp.html",
+  "supabase_mfa_method_added": "resources/sc-email-templates/supabase/mfa-method-added.html",
+  "supabase_mfa_method_removed": "resources/sc-email-templates/supabase/mfa-method-removed.html",
+  "supabase_password_changed": "resources/sc-email-templates/supabase/password-changed.html",
+  "supabase_phone_number_changed": "resources/sc-email-templates/supabase/phone-number-changed.html",
+  "supabase_reauthentication": "resources/sc-email-templates/supabase/reauthentication.html",
+  "supabase_reset_password": "resources/sc-email-templates/supabase/reset-password.html"
+};
+
+export async function readEmailTemplate(template) {
+  if (!Object.hasOwn(emailTemplateFiles, template)) throw new Error('Unknown email template.');
+  return fs.readFile(resolveRepositoryPath(emailTemplateFiles[template]), 'utf8');
 }

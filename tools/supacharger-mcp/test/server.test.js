@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+
+import { emailTemplateFiles } from '../src/project.js';
 
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
@@ -34,6 +37,14 @@ test('serves repository resources and read-only tools over stdio', async () => {
       arguments: { path: 'test/project-billing-schema-contract.test.mjs' },
     });
     assert.match(projectBillingTest.content[0].text, /developer-owned/);
+
+    for (const [template, filename] of Object.entries(emailTemplateFiles)) {
+      const expected = await readFile(path.resolve(testDirectory, '../../..', filename), 'utf8');
+      const response = await client.callTool({ name: 'supacharger_get_email_template', arguments: { template } });
+      assert.equal(response.content[0].text, expected);
+      const resource = await client.readResource({ uri: `supacharger://email-templates/${template}` });
+      assert.equal(resource.contents[0].text, expected);
+    }
 
     const { resources } = await client.listResources();
     assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/ownership'));
