@@ -7,11 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const dependencyGroups = [
-  { key: 'mit', packages: 'shadcn/ui component source; Next.js, React, Radix UI, Supabase JS, Stripe, Tailwind CSS, next-intl, Zod and Motion runtime code' },
-  { key: 'apache', packages: 'class-variance-authority' },
-  { key: 'isc', packages: 'Lucide React' },
-  { key: 'mpl', packages: 'Vercel Analytics' },
-  { key: 'unlicense', packages: 'email-validator' },
+  { key: 'mit', href: 'https://opensource.org/license/mit', packages: 'shadcn/ui component source; Next.js, React, Radix UI, Supabase JS, Stripe, Tailwind CSS, next-intl, Zod and Motion runtime code' },
+  { key: 'apache', href: 'https://www.apache.org/licenses/LICENSE-2.0', packages: 'class-variance-authority' },
+  { key: 'isc', href: 'https://opensource.org/license/isc', packages: 'Lucide React' },
+  { key: 'mpl', href: 'https://www.mozilla.org/MPL/2.0/', packages: 'Vercel Analytics' },
+  { key: 'unlicense', href: 'https://unlicense.org/', packages: 'email-validator' },
 ] as const;
 
 export default async function SCLicensePage() {
@@ -47,6 +47,10 @@ export default async function SCLicensePage() {
         <div className='text-muted-foreground space-y-5 text-base leading-7'>
           <p>{t('coreBody')}</p>
           <p>{t('commercialBody')}</p>
+          <div className='flex flex-wrap gap-x-6 gap-y-3 text-sm'>
+            <a className='text-primary hover:underline' href='https://github.com/glowplug-studio/supacharger/blob/main/LICENSE' rel='noopener noreferrer' target='_blank'>{t('repositoryLicense')}</a>
+            <Link className='text-primary hover:underline' href='/legal'>{t('legalPage')}</Link>
+          </div>
         </div>
       </section>
 
@@ -56,6 +60,7 @@ export default async function SCLicensePage() {
             <FileCode2 aria-hidden='true' className='text-primary size-6' />
             <h2 className='mt-5 text-3xl font-normal tracking-[-0.035em]'>{t('dependenciesTitle')}</h2>
             <p className='text-muted-foreground mt-5 leading-7'>{t('dependenciesIntro')}</p>
+            <p className='text-muted-foreground mt-5 leading-7'>{t('distributionBody')}</p>
           </div>
           <div className='mt-10 grid gap-4 md:grid-cols-2'>
             {dependencyGroups.map((group) => (
@@ -64,6 +69,18 @@ export default async function SCLicensePage() {
                 <CardContent>
                   <p className='font-mono text-xs leading-6'>{group.packages}</p>
                   <p className='text-muted-foreground mt-4 text-sm leading-6'>{t(`groups.${group.key}.description`)}</p>
+                  <div className='mt-5 flex flex-wrap gap-4 text-sm'>
+                    <a className='text-primary inline-flex items-center gap-2 hover:underline' href={group.href} rel='noopener noreferrer' target='_blank'>
+                      {t('readThirdPartyLicense', { license: group.key === 'isc' ? 'ISC' : t(`groups.${group.key}.title`) })}
+                      <ExternalLink aria-hidden='true' className='size-4' />
+                    </a>
+                    {group.key === 'isc' && (
+                      <a className='text-primary inline-flex items-center gap-2 hover:underline' href='https://opensource.org/license/mit' rel='noopener noreferrer' target='_blank'>
+                        {t('readThirdPartyLicense', { license: t('groups.mit.title') })}
+                        <ExternalLink aria-hidden='true' className='size-4' />
+                      </a>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -71,22 +88,6 @@ export default async function SCLicensePage() {
         </div>
       </section>
 
-      <section className='mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24'>
-        <div className='max-w-3xl'>
-          <h2 className='text-3xl font-normal tracking-[-0.035em]'>{t('importsTitle')}</h2>
-          <p className='text-muted-foreground mt-5 leading-7'>{t('importsBody')}</p>
-        </div>
-        <div className='border-border mt-12 flex flex-wrap gap-x-6 gap-y-3 border-t pt-8 text-sm'>
-          <a className='text-primary hover:underline' href='https://creativecommons.org/licenses/by-nc-sa/4.0/' rel='noopener noreferrer' target='_blank'>{t('readLicense')}</a>
-          <a className='text-primary hover:underline' href='https://opensource.org/license/mit' rel='noopener noreferrer' target='_blank'>{t('groups.mit.title')}</a>
-          <a className='text-primary hover:underline' href='https://www.apache.org/licenses/LICENSE-2.0' rel='noopener noreferrer' target='_blank'>{t('groups.apache.title')}</a>
-          <a className='text-primary hover:underline' href='https://opensource.org/license/isc' rel='noopener noreferrer' target='_blank'>{'ISC'}</a>
-          <a className='text-primary hover:underline' href='https://www.mozilla.org/MPL/2.0/' rel='noopener noreferrer' target='_blank'>{t('groups.mpl.title')}</a>
-          <a className='text-primary hover:underline' href='https://unlicense.org/' rel='noopener noreferrer' target='_blank'>{t('groups.unlicense.title')}</a>
-          <a className='text-primary hover:underline' href='https://github.com/glowplug-studio/supacharger/blob/main/LICENSE' rel='noopener noreferrer' target='_blank'>{t('repositoryLicense')}</a>
-          <Link className='text-primary hover:underline' href='/legal'>{t('legalPage')}</Link>
-        </div>
-      </section>
     </main>
   );
 }

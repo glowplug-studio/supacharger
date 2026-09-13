@@ -766,8 +766,10 @@
     "coreTitle": "The Supacharger source licence",
     "coreBody": "Supacharger-owned source is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International. For non-commercial use, credit Supacharger and share adaptations under the same licence.",
     "commercialBody": "For commercial use or use without attribution, choose a separate paid Supacharger licence.",
+    "readThirdPartyLicense": "Read {license}",
+    "distributionBody": "Distribution means supplying a copy of code in source files, an application download or JavaScript sent to a browser. The source download references packages installed separately; an import or externally hosted script reference alone does not redistribute that code. Developers must follow the licences for code they use and distribute. Separately installed development tools and externally hosted scripts are outside this list.",
     "dependenciesTitle": "Licences for included third-party code",
-    "dependenciesIntro": "The licences below cover third-party component source included and redistributed with Supacharger, such as shadcn/ui, and runtime library code bundled into its built application. The source download contains dependency references, rather than copies of the installed packages. Development tools and externally hosted scripts are outside this list. Each licence applies to its respective third-party code; Supacharger-owned source retains its own licence.",
+    "dependenciesIntro": "These licences cover third-party component source redistributed with Supacharger, including shadcn/ui, and runtime library code bundled into its built application. Each licence applies to its respective third-party code; Supacharger-owned source retains its own licence.",
     "groups": {
       "mit": {
         "title": "MIT",
@@ -790,8 +792,6 @@
         "description": "email-validator is dedicated to the public domain and permits commercial use, modification and redistribution."
       }
     },
-    "importsTitle": "What counts as distribution?",
-    "importsBody": "Distribution means supplying a copy of code: in the Supacharger source, in a downloadable application, or in JavaScript sent to a browser. An import or a reference to an externally hosted script alone does not redistribute that script. Developers must follow the licences for third-party code they use and distribute; those licences do not replace the licence for Supacharger-owned source.",
     "repositoryLicense": "Supacharger source licence",
     "legalPage": "Legal information"
   },
