@@ -12,6 +12,7 @@
 - Read `input-validation.md`, `database-foundation.md` and `billing.md` for request, database and billing contracts.
 - Read `localisation.md` for English source messages and translation policy.
 - Read `project-widgets.md`, `loading-ui.md` and `image-transformation.md` for reusable media and UI conventions.
+- Read `svg-guidance.md` before changing UI SVG assets, imports or sizing.
 
 ## Free public skills
 

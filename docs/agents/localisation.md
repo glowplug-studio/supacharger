@@ -16,11 +16,13 @@ Every Supacharger application enables Next.js Cache Components in its merge-mana
 
 ## Translation authoring
 
-- Add or update every new or changed English source value in `messages/en.json` in the same change as the consuming UI.
-- Before introducing or changing a `useTranslations` or `getTranslations` call, verify that its namespace and every statically referenced key exist with non-empty English values. Never defer the English catalogue update to a later change.
-- Do not invent, machine-translate, copy English wording into, or otherwise fill a secondary-language value unless the human explicitly requests translation into that language.
-- If catalogue structure or a validation check requires the corresponding key in a secondary catalogue, add it with an empty string. Otherwise leave that catalogue untouched.
-- Treat empty strings as untranslated placeholders. Report them as pending translation and do not describe the affected catalogue or surface as complete or reviewed.
+- Every task that adds or changes user-facing copy, introduces or changes a `useTranslations` or `getTranslations` call, or adds or changes a translation key must add or update the complete English source value in `messages/en.json` in the same change. This is required even when the human did not ask for translation work.
+- Before reporting the task complete, verify that every referenced namespace and every statically referenced key exist in `messages/en.json` with non-empty English values. The consuming code and English catalogue are one atomic change; a task with missing English messages is incomplete and must not be reported as complete.
+- Do not invent, machine-translate, copy English wording into, or otherwise fill any secondary-language value unless the human explicitly asks for translation into that specific language.
+- When catalogue structure or validation requires corresponding keys in secondary catalogues, add those keys with empty strings as untranslated placeholders. Otherwise leave secondary catalogues unchanged.
+- Treat empty secondary-language values as pending translation. Do not describe the affected language, catalogue, or surface as translated, complete, or reviewed.
+- Run the project's English-catalogue or i18n validation command when one exists. The absence of an automated check does not waive the manual English namespace and key verification.
+- Keep the English-source and translation requirements active through explicit instruction routing. Root `AGENTS.md` may be a short entry point; project instructions may be blank. Do not duplicate this policy in every instruction file.
 - Never omit the English key, and do not use placeholder secondary-language content as a substitute for a deliberate English fallback where the runtime requires one.
 
 ## Marketing-site handoff and persistence
