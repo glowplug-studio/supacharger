@@ -10,9 +10,11 @@ import {
 } from '@/supacharger.adapters/auth-callback';
 import { hasRecoveryAuthenticationMethod } from '@/supacharger/auth/recovery-session';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
-import { getURL } from '@/supacharger/utils/helpers';
+import { appURL } from '@/supacharger/utils/app-origin';
+import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
 export async function GET(request: NextRequest) {
+  const origin = getAppRequestOrigin(request);
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
   const flow = requestUrl.searchParams.get('flow');
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.redirect(getURL('/account/reset-password/new'));
+    return NextResponse.redirect(appURL('/account/reset-password/new', origin));
   }
 
   return NextResponse.redirect(await resolveAuthCallbackSuccess(context));

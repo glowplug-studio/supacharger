@@ -2,7 +2,8 @@ import { connection, type NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
-import { getURL } from '@/supacharger/utils/helpers';
+import { appURL } from '@/supacharger/utils/app-origin';
+import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
 const emailUpdateSchema = z.object({
   currentPassword: z.string().min(1).max(256),
@@ -11,6 +12,7 @@ const emailUpdateSchema = z.object({
 
 export async function POST(request: NextRequest) {
   await connection();
+  const origin = getAppRequestOrigin(request);
   let body: unknown;
   try {
     body = await request.json();
@@ -34,7 +36,7 @@ export async function POST(request: NextRequest) {
 
   const update = await supabase.auth.updateUser(
     { email: parsed.data.email },
-    { emailRedirectTo: getURL('/auth/confirm?next=/account/security') },
+    { emailRedirectTo: appURL('/auth/confirm?next=/account/security', origin) },
   );
   if (update.error) return NextResponse.json({ ok: false, error: 'emailUpdateFailed' }, { status: 400 });
   return NextResponse.json({ ok: true });

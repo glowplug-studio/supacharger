@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { resolveAuthConfirmationRedirect } from '@/supacharger/auth/confirmation-redirect';
 import { hasRecoveryAuthenticationMethod } from '@/supacharger/auth/recovery-session';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
+import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
 const confirmationSchema = z.object({
   token_hash: z.string().min(1).max(2048),
@@ -20,6 +21,7 @@ function redirectWithoutCaching(path: string | URL, requestUrl: string) {
 
 // Creating a handler to a GET request to route /auth/confirm
 export async function GET(request: NextRequest) {
+  getAppRequestOrigin(request);
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type');

@@ -5,17 +5,17 @@ import type {
 import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
 import { withNextPath } from '@/supacharger/auth/safe-next-path';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { getURL } from '@/supacharger/utils/helpers';
+import { appURL } from '@/supacharger/utils/app-origin';
 
 import 'server-only';
 
 export async function resolveAuthCallbackFailure(context: AuthCallbackFailureContext): Promise<string | URL> {
-  void context;
-  return getURL('/auth/error');
+  return appURL('/auth/error', context.requestUrl.origin);
 }
 
 export async function resolveAuthCallbackSuccess({
   nextPath,
+  requestUrl,
   supabase,
 }: AuthCallbackContext): Promise<string | URL> {
   let destination: string | null = null;
@@ -47,7 +47,7 @@ export async function resolveAuthCallbackSuccess({
   if (!destination) {
     if (nextPath) destination = nextPath;
     else {
-      const loginRedirect = getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION);
+      const loginRedirect = getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION, requestUrl.origin);
       destination = `${loginRedirect.pathname}${loginRedirect.search}`;
     }
   }
@@ -56,9 +56,9 @@ export async function resolveAuthCallbackSuccess({
     const { data: assurance, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (error) throw error;
     if (assurance?.nextLevel === 'aal2' && assurance.currentLevel !== 'aal2') {
-      return getURL(withNextPath('/account/mfa', destination));
+      return appURL(withNextPath('/account/mfa', destination), requestUrl.origin);
     }
   }
 
-  return getURL(destination);
+  return appURL(destination, requestUrl.origin);
 }

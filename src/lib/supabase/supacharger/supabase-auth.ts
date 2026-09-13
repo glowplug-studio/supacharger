@@ -14,7 +14,8 @@ import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification'
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
-import { evaluatePasswordStrength, getURL, isValidEmail } from '@/supacharger/utils/helpers';
+import { evaluatePasswordStrength, isValidEmail } from '@/supacharger/utils/helpers';
+import { getRequestOrigin, getRequestURL } from '@/supacharger/utils/request-url';
 
 import { createClient } from '../server';
 
@@ -31,16 +32,16 @@ function passwordlessModeHasOtp(mode: 'disabled' | 'link' | 'otp' | 'otp-and-lin
   return mode === 'otp' || mode === 'otp-and-link';
 }
 
-function getSignUpConfirmationRedirect(nextPath: unknown = null) {
+async function getSignUpConfirmationRedirect(nextPath: unknown = null) {
   const destination = getSafeNextPath(nextPath) ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH;
-  return getURL(`/auth/confirm?next=${encodeURIComponent(destination)}`);
+  return getRequestURL(`/auth/confirm?next=${encodeURIComponent(destination)}`);
 }
 
-function getPasswordlessConfirmationRedirect(nextPath: unknown = null) {
-  const loginDestination = getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION);
+async function getPasswordlessConfirmationRedirect(nextPath: unknown = null) {
+  const loginDestination = getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION, await getRequestOrigin());
   const next = getSafeNextPath(nextPath) ?? `${loginDestination.pathname}${loginDestination.search}`;
 
-  return getURL(`/auth/confirm?next=${encodeURIComponent(next)}`);
+  return getRequestURL(`/auth/confirm?next=${encodeURIComponent(next)}`);
 }
 
 /**
@@ -89,7 +90,7 @@ async function sendPasswordlessEmail(
   const { error } = await supabase.auth.signInWithOtp({
     email: parsedEmail.data,
     options: {
-      emailRedirectTo: getPasswordlessConfirmationRedirect(nextPath),
+      emailRedirectTo: await getPasswordlessConfirmationRedirect(nextPath),
       shouldCreateUser,
     },
   });
@@ -144,7 +145,7 @@ export async function createUserByEmailPassword(
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      emailRedirectTo: getSignUpConfirmationRedirect(nextPath),
+      emailRedirectTo: await getSignUpConfirmationRedirect(nextPath),
     },
   });
 
@@ -170,7 +171,7 @@ export async function resendAccountConfirmEmail(email: string, nextPath: string 
     type: 'signup',
     email: parsedEmail.data,
     options: {
-      emailRedirectTo: getSignUpConfirmationRedirect(nextPath),
+      emailRedirectTo: await getSignUpConfirmationRedirect(nextPath),
     },
   });
 
@@ -186,8 +187,10 @@ export async function sendPasswordReset(email: string) {
   if (!parsedEmail.success) return authActionFailure('validation_failed');
   const supabase = await createClient();
 
-  // The recovery template sends TokenHash to /auth/confirm on the Supabase Site URL.
-  const { error } = await supabase.auth.resetPasswordForEmail(parsedEmail.data);
+  // The template appends TokenHash and type=recovery to this complete destination.
+  const { error } = await supabase.auth.resetPasswordForEmail(parsedEmail.data, {
+    redirectTo: await getRequestURL('/auth/confirm'),
+  });
 
   return error ? authActionFailure(error) : authActionSuccess(null);
 }
@@ -206,7 +209,7 @@ export async function signInWithOAuth(provider: SupabaseOAuthProvider) {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: getURL('/auth/callback'),
+      redirectTo: await getRequestURL('/auth/callback'),
     },
   });
 

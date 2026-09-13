@@ -13,7 +13,7 @@ import {
   sessionTransferResponseHeaders,
 } from '@/supacharger/auth/session-transfer';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { getSiteUrl } from '@/supacharger/utils/helpers';
+import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
 import 'server-only';
 
@@ -21,9 +21,9 @@ function json(body: unknown, status = 200) {
   return NextResponse.json(body, { status, headers: sessionTransferResponseHeaders() });
 }
 
-function relativeDestination(value: string | URL) {
-  const url = typeof value === 'string' ? new URL(value, getSiteUrl()) : value;
-  if (url.origin !== new URL(getSiteUrl()).origin) throw new Error('Unsafe transfer destination');
+function relativeDestination(value: string | URL, origin: string) {
+  const url = typeof value === 'string' ? new URL(value, origin) : value;
+  if (url.origin !== origin) throw new Error('Unsafe transfer destination');
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
@@ -31,7 +31,11 @@ export async function POST(request: NextRequest) {
   if (!SC_CONFIG.AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER.ENABLED) {
     return json({ error: 'not_found' }, 404);
   }
-  if (!isSameOriginSessionTransferRequest(request, getSiteUrl())) {
+  let origin: string;
+  try { origin = getAppRequestOrigin(request); } catch {
+    return json({ error: 'invalid_request' }, 403);
+  }
+  if (!isSameOriginSessionTransferRequest(request, origin)) {
     return json({ error: 'invalid_request' }, 403);
   }
 
@@ -70,7 +74,7 @@ export async function POST(request: NextRequest) {
       return json({ error: 'receiving_session_conflict' }, 409);
     }
     try {
-      return json({ redirectTo: relativeDestination(await resolveAuthCallbackSuccess(context)) });
+      return json({ redirectTo: relativeDestination(await resolveAuthCallbackSuccess(context), origin) });
     } catch {
       return json({ error: 'server_error' }, 500);
     }
@@ -107,7 +111,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    return json({ redirectTo: relativeDestination(await resolveAuthCallbackSuccess(context)) });
+    return json({ redirectTo: relativeDestination(await resolveAuthCallbackSuccess(context), origin) });
   } catch {
     await supabase.auth.signOut({ scope: 'local' });
     return json({ error: 'server_error' }, 500);

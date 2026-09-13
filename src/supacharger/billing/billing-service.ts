@@ -8,7 +8,7 @@ import {
 } from '@/supacharger.adapters/billing/database';
 import { resolveOrganisationBillingAccount } from '@/supacharger.adapters/billing/organisation';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { getURL } from '@/supacharger/utils/helpers';
+import { getRequestURL } from '@/supacharger/utils/request-url';
 
 import {
   billingAccountMatchesSubject,
@@ -82,11 +82,12 @@ export async function getBillingOverviewForSubject(subjectInput: BillingSubject)
 
 export async function createBillingPortalUrl(subjectInput: BillingSubject, returnPath: string) {
   const subject = billingSubjectSchema.parse(subjectInput);
+  const returnUrl = await getRequestURL(returnPath);
   const actor = await authenticatedActor();
   const { customerId } = await getOrCreateCustomer(actor.id, actor.email, subject);
   const portal = await getStripeAdmin().billingPortal.sessions.create({
     customer: customerId,
-    return_url: getURL(returnPath),
+    return_url: returnUrl,
   });
   return portal.url;
 }
@@ -96,6 +97,8 @@ export async function createBillingCheckoutUrl(
   paths: { cancel: string; success: string },
 ) {
   const request = billingCheckoutRequestSchema.parse(requestInput);
+  const cancelUrl = await getRequestURL(paths.cancel);
+  const successUrl = await getRequestURL(paths.success);
   const actor = await authenticatedActor();
   const { billingAccountId, customerId } = await getOrCreateCustomer(actor.id, actor.email, request.subject);
   const stripe = getStripeAdmin();
@@ -113,7 +116,7 @@ export async function createBillingCheckoutUrl(
     allow_promotion_codes: SC_CONFIG.BILLING.ALLOW_PROMOTION_CODES,
     automatic_tax: { enabled: SC_CONFIG.BILLING.AUTOMATIC_TAX },
     billing_address_collection: SC_CONFIG.BILLING.BILLING_ADDRESS_COLLECTION,
-    cancel_url: getURL(paths.cancel),
+    cancel_url: cancelUrl,
     client_reference_id: billingAccountId,
     customer: customerId,
     customer_update: { address: 'auto' },
@@ -123,7 +126,7 @@ export async function createBillingCheckoutUrl(
       billing_mode: { type: 'flexible' },
       metadata: { supachargerBillingAccountId: billingAccountId },
     },
-    success_url: getURL(paths.success),
+    success_url: successUrl,
   });
   if (!checkout.url) throw new Error('Stripe Checkout did not return a URL.');
   return checkout.url;

@@ -49,3 +49,9 @@ Public skills remain separate. Their own `.supacharger/skills-lock.json` contain
 Initialisation filters test suites, fixtures, coverage output and test scripts from the cloned starter, including nested maintainer tooling. Installed skills are preserved. Core updates remove obsolete test package scripts, including scripts using a test runner under a check name; they do not sweep developer-owned application files. Existing application test files require deliberate cleanup. CLI and Core maintainer tests stay in their source repositories.
 
 `docs/agents/` is developer-owned in applications. Updates install missing Markdown references, including the orientation index, and preserve existing files. Review upstream reference changes deliberately alongside the implementation; copying documentation alone does not upgrade runtime behaviour. The update plan reports removed test scripts.
+
+## Request-domain URL upgrade
+
+Managed URL helpers, Auth routes and billing service now distinguish request origins from the canonical URL. New helpers live under the existing managed `src/supacharger/` root; no CLI engine change is required to distribute them. Developer-owned callback adapters must build destinations from `context.requestUrl.origin`; `getAuthLoginRedirect(destination, origin)` requires that explicit second argument. Preserve product onboarding, organisation and MFA rules while updating these calls. Application Server Actions outside managed paths use `getRequestURL()` for Auth email destinations.
+
+Merge the recovery/email-change RedirectTo contract and APP_ALLOWED_ORIGINS documentation deliberately. Recovery supplies `/auth/confirm` without a query; its template appends `?token_hash=...&type=recovery`. Signup and email-change destinations contain next parameters, so their templates append `&token_hash=...&type=...`. Deploy code, register redirect destinations, then install hosted templates. This upgrade has no database migration.

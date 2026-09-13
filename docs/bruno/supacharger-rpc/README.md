@@ -14,12 +14,24 @@ If the SDK returns a retryable transport error, HTTP 429 or HTTP 5xx during Prox
 
 ## Password recovery email contract
 
-Follow [Supabase’s password recovery guide](https://supabase.com/docs/guides/auth/passwords?flow=pkce). `sendPasswordReset` validates the email on the server and calls `resetPasswordForEmail(email)`. The hosted and local recovery template contains:
+Follow [Supabase’s password recovery guide](https://supabase.com/docs/guides/auth/passwords?flow=pkce). `sendPasswordReset` validates the email on the server and calls `resetPasswordForEmail(email, { redirectTo })` with the validated request-origin confirmation URL. The hosted recovery template contains:
 
 ```html
-<a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next=/account/reset-password/new">Reset password</a>
+<a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&amp;type=recovery">Reset password</a>
 ```
 
 Set Supabase’s Site URL to the application’s canonical HTTPS origin. `/auth/confirm` validates the token/type, calls `verifyOtp`, verifies recovery AMR and redirects to `/account/reset-password/new`. The password-write endpoint independently validates the payload and recovery session before `updateUser`. Recovery ignores arbitrary `next` destinations. Invalid, expired or consumed recovery tokens redirect to `/auth/error?flow=recovery`, even if the browser already has another session. Tokens and raw Auth errors are excluded from redirects.
 
-OAuth still uses the PKCE `/auth/callback`. Existing recovery PKCE links remain accepted there during deployment, but new recovery templates use token hashes and do not require the initiating browser’s verifier. Deploy Core and consumers, then install their hosted templates; local `config.toml` never updates hosted Auth. A correct template cannot repair an incorrect Supabase Site URL. Keep `NEXT_PUBLIC_SITE_URL` aligned for other application-generated links.
+OAuth still uses the PKCE `/auth/callback`. Existing recovery PKCE links remain accepted there during deployment, but new recovery templates use token hashes and do not require the initiating browser’s verifier. Deploy Core and consumers, then install their hosted templates. The hosted allow-list must accept each request-origin confirmation destination. `NEXT_PUBLIC_SITE_URL` remains the canonical URL for metadata and background links.
+
+## Canonical URL and request domains
+
+`NEXT_PUBLIC_SITE_URL` remains the required canonical origin for metadata, sitemap and links generated without a request. `getSiteUrl()` and `getURL()` are for those canonical links. They do not select the domain for authentication or Stripe returns.
+
+Server Actions use `getRequestOrigin()` / `getRequestURL()`; Route Handlers use `getAppRequestOrigin(request)` and `appURL(path, origin)`. These validate the incoming origin and build only safe application-relative paths. OAuth, signup/resend, passwordless links, recovery, email changes, Stripe Checkout/Portal and session-transfer journeys retain the initiating domain. Internal navigation should use relative paths.
+
+The canonical origin is allowed automatically. Exact `VERCEL_URL` and `VERCEL_PROJECT_PRODUCTION_URL` deployment origins are also allowed when present. For additional custom domains, set server-only `APP_ALLOWED_ORIGINS` to a comma-separated list of complete origins, for example `https://alias.example.com,https://other.example.com`. Omit it for a single canonical domain. No wildcard hosts are accepted. Request Origin and Host/forwarded-host must agree; unknown origins are rejected, never silently redirected to the canonical domain. A reverse proxy must preserve the public request URL and supply consistent host/protocol headers.
+
+Register the same supported domains and actual redirect destinations in Supabase Auth's redirect allow-list. Recovery sends `redirectTo=<origin>/auth/confirm`; signup and email changes also supply a complete `/auth/confirm?next=...` URL. Recovery templates append `?token_hash=...&type=recovery` to the query-free `RedirectTo`. Signup and email-change templates append `&token_hash=...&type=...` to their query-bearing `RedirectTo`. Never append another route. Query-bearing redirect destinations must match the hosted allow-list; do not register token-bearing links. Keep Supabase Site URL as the default for dashboard/admin/background operations without an explicit destination. Invitations issued without an application request keep that default.
+
+Deploy application changes before installing the new hosted recovery template. Local templates do not update hosted Auth. Cookies remain domain-scoped: preserving a domain does not create cross-domain SSO. Native associations must also be configured on each supported native-link host. No database migration is needed for request-domain routing.

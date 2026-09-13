@@ -16,7 +16,8 @@ import {
   sessionTransferResponseHeaders,
 } from '@/supacharger/auth/session-transfer';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import { getSiteUrl, getURL } from '@/supacharger/utils/helpers';
+import { appURL } from '@/supacharger/utils/app-origin';
+import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
 import 'server-only';
 
@@ -27,7 +28,11 @@ function json(body: unknown, status = 200) {
 export async function POST(request: NextRequest) {
   const policy = SC_CONFIG.AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER;
   if (!policy.ENABLED) return json({ error: 'not_found' }, 404);
-  if (!isSameOriginSessionTransferRequest(request, getSiteUrl())) {
+  let origin: string;
+  try { origin = getAppRequestOrigin(request); } catch {
+    return json({ error: 'invalid_request' }, 403);
+  }
+  if (!isSameOriginSessionTransferRequest(request, origin)) {
     return json({ error: 'invalid_request' }, 403);
   }
 
@@ -102,7 +107,7 @@ export async function POST(request: NextRequest) {
   }
 
   return json({
-    transferUrl: `${getURL('/auth/session-transfer')}#token=${grant}`,
+    transferUrl: `${appURL('/auth/session-transfer', origin)}#token=${grant}`,
     expiresAt: data.expires_at,
   });
 }
