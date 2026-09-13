@@ -10,7 +10,7 @@ function load(relative, mocks = {}) {
   let file = new URL(`../${relative}`, import.meta.url);
   if (!existsSync(file)) file = new URL(file.href.replace(/\.ts$/, '.js'));
   const { outputText } = ts.transpileModule(readFileSync(file, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
   });
   const module = { exports: {} };
   new Function('require', 'module', 'exports', outputText)(
@@ -28,11 +28,11 @@ function load(relative, mocks = {}) {
 }
 
 const route = 'src/app/(supacharger)/(unauthenticated)/auth/confirm/route.ts';
-function handler({ verifyError = null, claims = { amr: [{ method: 'recovery' }] }, claimsError = null } = {}) {
+function handler({ verifyError = null } = {}) {
   const calls = [];
   const supabase = { auth: {
-    verifyOtp: async (input) => { calls.push(['verify', input]); return { error: verifyError }; },
-    getClaims: async () => { calls.push(['claims']); return { data: { claims }, error: claimsError }; },
+    verifyOtp: async (input) => { calls.push(['verify', input]); return { data: { user: { id: 'test-user' }, session: { user: { id: 'test-user' } } }, error: verifyError }; },
+    getClaims: async () => { calls.push(['claims']); return { data: { claims: { sub: 'test-user', amr: [{ method: 'otp' }] } }, error: null }; },
     getUser: async () => { calls.push(['user']); return { data: { user: { email_confirmed_at: 'today' } } }; },
   } };
   const { GET } = load(route, {
@@ -46,13 +46,13 @@ function handler({ verifyError = null, claims = { amr: [{ method: 'recovery' }] 
   return { GET, calls };
 }
 
-test('recovery verifies a token hash without browser cookies and strips all tokens from the destination', async () => {
+test('recovery accepts Supabase token-hash verification with otp AMR and strips tokens from the destination', async () => {
   const { GET, calls } = handler();
   const result = await GET(new NextRequest('https://app.example/auth/confirm?token_hash=test-token&type=recovery&next=https://evil.example'));
   assert.equal(result.headers.get('location'), 'https://app.example/account/reset-password/new');
   assert.equal(result.headers.get('cache-control'), 'private, no-store');
   assert.equal(result.headers.get('referrer-policy'), 'no-referrer');
-  assert.deepEqual(calls, [['verify', { token_hash: 'test-token', type: 'recovery' }], ['claims']]);
+  assert.deepEqual(calls, [['verify', { token_hash: 'test-token', type: 'recovery' }]]);
 });
 
 for (const reason of ['expired', 'used', 'invalid']) {
@@ -61,14 +61,6 @@ for (const reason of ['expired', 'used', 'invalid']) {
     const result = await GET(new NextRequest('https://app.example/auth/confirm?token_hash=test-token&type=recovery'));
     assert.equal(result.headers.get('location'), 'https://app.example/auth/error?flow=recovery');
     assert.equal(calls.some(([name]) => name === 'user'), false);
-  });
-}
-
-for (const options of [{ claims: { amr: [{ method: 'password' }] } }, { claimsError: { message: 'unverified' } }]) {
-  test('a recovery token needs independently verified recovery claims', async () => {
-    const { GET } = handler(options);
-    const result = await GET(new NextRequest('https://app.example/auth/confirm?token_hash=test-token&type=recovery'));
-    assert.equal(result.headers.get('location'), 'https://app.example/auth/error?flow=recovery');
   });
 }
 
@@ -211,4 +203,83 @@ test('callback adapter keeps onboarding and success on the callback domain', asy
   complete = true;
   assert.equal(await resolveAuthCallbackSuccess(context), 'https://alias.example/projects');
   assert.equal(await resolveAuthCallbackFailure(context), 'https://alias.example/auth/error');
+});
+
+const passwordRoute = 'src/app/(supacharger)/api/(supacharger)/account/recover-password/route.ts';
+function passwordHandler({ user = { id: 'test-user', is_anonymous: false }, userError = null, updateError = null, strong = true } = {}) {
+  const calls = [];
+  const { POST } = load(passwordRoute, {
+    '@/lib/supabase/server': { createClient: async () => ({ auth: {
+      getUser: async () => { calls.push('getUser'); return { data: { user }, error: userError }; },
+      updateUser: async (attributes) => { calls.push(['updateUser', attributes]); return { error: updateError }; },
+    } }) },
+    '@/supacharger/utils/helpers': { evaluatePasswordStrength: () => ({ valid: strong, message: 'passwordTooShort' }) },
+  });
+  return { POST, calls };
+}
+const passwordBody = { newPassword: 'Test-only-password-42!', newPasswordRetype: 'Test-only-password-42!' };
+const passwordRequest = (body = passwordBody) => new NextRequest('https://app.example/api/account/recover-password', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+});
+
+test('password update uses a verified user and lets Supabase authorise the update without requiring recovery AMR', async () => {
+  const { POST, calls } = passwordHandler();
+  const response = await POST(passwordRequest());
+  assert.equal(response.status, 200);
+  assert.deepEqual(calls, ['getUser', ['updateUser', { password: passwordBody.newPassword }]]);
+});
+for (const [name, options] of [
+  ['missing', { user: null }], ['unverified', { userError: { message: 'expired' } }],
+  ['anonymous', { user: { id: 'anonymous-user', is_anonymous: true } }],
+]) {
+  test(`password update rejects a ${name} user before calling Supabase updateUser`, async () => {
+    const { POST, calls } = passwordHandler(options);
+    assert.equal((await POST(passwordRequest())).status, 401);
+    assert.deepEqual(calls, ['getUser']);
+  });
+}
+test('password update preserves Supabase policy rejection', async () => {
+  const { POST } = passwordHandler({ updateError: { message: 'Reauthentication required' } });
+  const response = await POST(passwordRequest());
+  assert.equal(response.status, 500);
+  assert.deepEqual(await response.json(), { error: 'passwordUpdateFailed' });
+});
+test('mismatched and weak passwords never reach Auth', async () => {
+  const mismatch = passwordHandler();
+  assert.equal((await mismatch.POST(passwordRequest({ ...passwordBody, newPasswordRetype: 'different' }))).status, 400);
+  assert.deepEqual(mismatch.calls, []);
+  const weak = passwordHandler({ strong: false });
+  assert.equal((await weak.POST(passwordRequest())).status, 400);
+  assert.deepEqual(weak.calls, []);
+});
+test('legacy recovery callback accepts the exchanged session and verified user without an AMR requirement', async () => {
+  const calls = [];
+  const { GET } = load('src/app/(supacharger)/(unauthenticated)/auth/callback/route.ts', {
+    '@/lib/supabase/server': { createClient: async () => ({ auth: {
+      exchangeCodeForSession: async (code) => { calls.push(['exchange', code]); return { error: null }; },
+      getUser: async () => { calls.push('getUser'); return { data: { user: { id: 'test-user' } } }; },
+    } }) },
+    '@/supacharger/utils/request-url': { getAppRequestOrigin: () => 'https://app.example' },
+    '@/supacharger.adapters/auth-callback': {
+      resolveAuthCallbackFailure: () => 'https://app.example/auth/error',
+      resolveAuthCallbackSuccess: () => 'https://app.example/account',
+    },
+  });
+  const response = await GET(new NextRequest('https://app.example/auth/callback?code=test-code&flow=recovery'));
+  assert.equal(response.headers.get('location'), 'https://app.example/account/reset-password/new');
+  assert.deepEqual(calls, [['exchange', 'test-code'], 'getUser']);
+});
+
+test('new-password page accepts a verified user without a recovery AMR and rejects absent or anonymous users', async () => {
+  for (const user of [{ id: 'test-user', is_anonymous: false }, null, { id: 'anonymous', is_anonymous: true }]) {
+    const { default: Page } = load('src/app/(supacharger)/(unauthenticated)/account/reset-password/new/page.tsx', {
+      'next/navigation': { redirect: (path) => { throw new Error(`Redirect: ${path}`); } },
+      '@/lib/supabase/server': { createClient: async () => ({ auth: {
+        getUser: async () => ({ data: { user }, error: null }),
+      } }) },
+      '@/supacharger/components/forms/reset-password-new-form': { default: () => null },
+    });
+    if (user?.id && !user.is_anonymous) assert.ok(await Page());
+    else await assert.rejects(Page(), /Redirect: \/account\/login/);
+  }
 });

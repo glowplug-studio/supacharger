@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
 import { resolveAuthConfirmationRedirect } from '@/supacharger/auth/confirmation-redirect';
-import { hasRecoveryAuthenticationMethod } from '@/supacharger/auth/recovery-session';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
@@ -33,13 +32,9 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.verifyOtp(parsed.data);
     if (!error) {
       if (type === 'recovery') {
-        const { data, error: claimsError } = await supabase.auth.getClaims();
-        return redirectWithoutCaching(
-          !claimsError && hasRecoveryAuthenticationMethod(data?.claims)
-            ? '/account/reset-password/new'
-            : '/auth/error?flow=recovery',
-          request.url,
-        );
+        // Supabase's token-hash verification establishes the session. Its AMR
+        // is `otp`, not a recovery-specific permission or session type.
+        return redirectWithoutCaching('/account/reset-password/new', request.url);
       }
       return redirectWithoutCaching(resolveAuthConfirmationRedirect({
         requestUrl: request.url,

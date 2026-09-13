@@ -30,6 +30,10 @@ Keep reusable Supacharger development conventions and technical explanations in 
 
 Project instructions may override this shared guidance for the application, subject to the human's instructions and applicable higher-priority rules. Prefer recording overrides in the project file. Editing this shared file creates upstream drift; the Core updater must report the conflict rather than silently replace it.
 
+## Agent-generated reports
+
+Store agent-generated reports outside the Supacharger project directory. Do not create report files anywhere inside the project, including Markdown files under `docs/reports/`. Return reports in the conversation or save them to an external location.
+
 ## Technical references and MCP
 
 Read `docs/agents/agent-guidance.md` and the references relevant to the task before changing Supacharger behaviour. The read-only repository-knowledge MCP exposes those same files for orientation and search. References explain the implementation; they do not grant permission for commits, deployment or protected changes.

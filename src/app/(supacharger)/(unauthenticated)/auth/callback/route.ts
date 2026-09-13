@@ -8,7 +8,6 @@ import {
   resolveAuthCallbackFailure,
   resolveAuthCallbackSuccess,
 } from '@/supacharger.adapters/auth-callback';
-import { hasRecoveryAuthenticationMethod } from '@/supacharger/auth/recovery-session';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { appURL } from '@/supacharger/utils/app-origin';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
@@ -45,13 +44,6 @@ export async function GET(request: NextRequest) {
   }
 
   if (flow === 'recovery') {
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
-    if (claimsError || !hasRecoveryAuthenticationMethod(claimsData?.claims)) {
-      return NextResponse.redirect(
-        await resolveAuthCallbackFailure({ ...context, reason: 'missing-user' }),
-      );
-    }
-
     return NextResponse.redirect(appURL('/account/reset-password/new', origin));
   }
 

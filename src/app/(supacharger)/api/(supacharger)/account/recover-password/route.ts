@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
-import { hasRecoveryAuthenticationMethod } from '@/supacharger/auth/recovery-session';
 import { evaluatePasswordStrength } from '@/supacharger/utils/helpers';
 
 const recoveryPasswordSchema = z
@@ -38,8 +37,8 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
-  if (claimsError || !hasRecoveryAuthenticationMethod(claimsData?.claims)) {
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user?.id || user.is_anonymous) {
     return NextResponse.json({ error: 'unauthenticated' }, { status: 401 });
   }
 

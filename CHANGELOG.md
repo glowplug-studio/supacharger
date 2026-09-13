@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T18:20:16Z; base_commit=b5a6329b077b0f085fddc53344f64c005807b0e0; main_commit=b5a6329b077b0f085fddc53344f64c005807b0e0; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=b5a6329b077b0f085fddc53344f64c005807b0e0; scope=main-and-email-auth-guidance; excluded=local-auth-reports-and-hosted-project-settings; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-13T18:47:26Z; base_commit=630b8d6f8925d4fe261a7692e1e522ed0a7a62dd; main_commit=630b8d6f8925d4fe261a7692e1e522ed0a7a62dd; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=630b8d6f8925d4fe261a7692e1e522ed0a7a62dd; scope=all-reviewed-core-working-tree-changes; excluded=separate-documentation-repository-and-hosted-project-settings; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -24,6 +24,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Optional email examples use smaller headings, body text and content padding, with a revised default email logo.
+
 - Email-template guidance checks application Auth and provider intent against hosted settings and implemented flows before selecting tokens, reports contradictions, and supports the Management API when Supabase MCP cannot edit Auth settings.
 
 - Auth callbacks, email destinations, Stripe returns and session-transfer links preserve the validated initiating domain. `NEXT_PUBLIC_SITE_URL` remains canonical for metadata and background links; optional server-only `APP_ALLOWED_ORIGINS` accepts additional exact custom origins. Canonical and exact Vercel deployment origins are recognised automatically.
@@ -36,8 +38,10 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Password recovery accepts Supabase’s token-hash verification without requiring a `recovery` AMR that this flow does not issue. The new-password page and API verify the current non-anonymous user, and Supabase authorises `updateUser`. Deploy the updated Core routes together; no database migration or additional recovery credential is required.
+
 - Password recovery verifies email token hashes through `/auth/confirm`, so new reset links can be opened without the requesting browser’s PKCE verifier. Deploy the application and install the recovery template using `RedirectTo` plus `?token_hash=...&type=recovery` in hosted Supabase Auth. The supplied redirect is `/auth/confirm`, with no redundant `next` parameter; register that callback on each supported domain. Local template configuration does not update hosted projects. Legacy PKCE callbacks remain supported.
-- Invalid, expired or consumed recovery links display a dedicated retry action and cannot reuse an unrelated signed-in session. Recovery destinations are fixed, verified recovery claims are required, and confirmation redirects prevent caching and referrer disclosure.
+- Invalid, expired or consumed recovery links display a dedicated retry action and cannot reuse an unrelated signed-in session. Recovery destinations are fixed, and confirmation redirects prevent caching and referrer disclosure.
 - Account summaries skip organisation-avatar signing when organisations are disabled. Organisation loading redirects only for missing or inaccessible records and preserves other failures.
 
 ### Removed
