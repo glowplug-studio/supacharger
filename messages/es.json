@@ -1281,7 +1281,12 @@
       "description": "La página tuvo un problema. Inténtalo de nuevo desde la página de inicio o ponte en contacto con el servicio de asistencia si el problema continúa."
     },
     "goHome": "Ir a casa",
-    "contactSupport": "Contactar con soporte"
+    "contactSupport": "Contactar con soporte",
+    "recovery": {
+      "title": "",
+      "description": "",
+      "action": ""
+    }
   },
   "PublicSkillsCli": {
     "UseAGitBranchTagOr": "",
@@ -1331,5 +1336,12 @@
     "SkipDescription": "",
     "OptionalFailed": "",
     "RecoveryRetained": ""
+  },
+  "AuthEmailTemplates": {
+    "recoverySubject": "",
+    "recoveryHeading": "",
+    "recoveryDescription": "",
+    "recoveryAction": "",
+    "recoveryDisclaimer": ""
   }
 }

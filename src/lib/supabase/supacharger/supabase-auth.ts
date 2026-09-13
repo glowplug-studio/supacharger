@@ -1,10 +1,8 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
-import { readAccessToken } from '@/lib/supabase/supacharger/passive-session';
 /** ==========
  *
  * Supacharger - Supabase Auth wrappers.
@@ -16,7 +14,6 @@ import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification'
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
-import { getSupabaseUrl } from '@/supacharger/utils/helpers';
 import { evaluatePasswordStrength, getURL, isValidEmail } from '@/supacharger/utils/helpers';
 
 import { createClient } from '../server';
@@ -185,11 +182,12 @@ export async function resendAccountConfirmEmail(email: string, nextPath: string 
  * redirects to the form to enter the new password
  */
 export async function sendPasswordReset(email: string) {
+  const parsedEmail = emailSchema.safeParse(email);
+  if (!parsedEmail.success) return authActionFailure('validation_failed');
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: getURL('/auth/callback?flow=recovery'),
-  });
+  // The recovery template sends TokenHash to /auth/confirm on the Supabase Site URL.
+  const { error } = await supabase.auth.resetPasswordForEmail(parsedEmail.data);
 
   return error ? authActionFailure(error) : authActionSuccess(null);
 }
@@ -260,11 +258,8 @@ export async function getUserSession() {
  * @returns {boolean} `true` if the user session is valid, `false`
  */
 export async function isLoggedIn() {
-  // Presentation checks must not rotate tokens, especially while rendering an error page.
-  const token = await readAccessToken(getSupabaseUrl(), (await cookies()).getAll());
-  if (!token) return false;
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims(token);
+  const { data, error } = await supabase.auth.getClaims();
   return !error && Boolean(data?.claims.sub) && data?.claims.role === 'authenticated' &&
     (SC_CONFIG.AUTH_SESSION.ALLOW_ANONYMOUS_USERS || data.claims.is_anonymous !== true);
 }

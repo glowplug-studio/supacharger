@@ -204,7 +204,7 @@ When enabled for a configured platform, the protected core serves:
 - `/.well-known/apple-app-site-association` for iOS; and
 - `/.well-known/assetlinks.json` for Android.
 
-Both must be available on the exact production HTTPS host with a `200` response, `application/json`, and no redirect. Add the exact production `/auth/callback` and `/auth/confirm` URLs to Supabase's redirect allow-list. Password recovery returns to `/auth/callback?flow=recovery`, so it uses the same allow-listed callback path. For a wrapped web application, pass an incoming verified URL back into the same persistent web view that initiated the PKCE flow; a fully native application must initiate and exchange the code through the same native Supabase client instead. See the [mobile authentication deep-linking guide](https://supacharger.dev/docs/Application%20Development/mobile-auth-deep-linking) for Xcode, Android manifest, callback, and verification examples.
+Both must be available on the exact production HTTPS host with a `200` response, `application/json`, and no redirect. Add the exact production `/auth/callback` and `/auth/confirm` URLs to Supabase's redirect allow-list. Password recovery uses the hosted `SiteURL` and `TokenHash` at `/auth/confirm?type=recovery`, then opens `/account/reset-password/new`. For a wrapped web application, pass an incoming verified URL back into the same persistent web view that initiated the PKCE flow; a fully native application must initiate and exchange the code through the same native Supabase client instead. See the [mobile authentication deep-linking guide](https://supacharger.dev/docs/Application%20Development/mobile-auth-deep-linking) for Xcode, Android manifest, callback, and verification examples.
 
 Username and organisation storage are always installed. A disabled policy leaves those nullable tables/fields dormant: forms, public username routes, and identity display must not expose them. Identity display falls back from name, to an enabled populated username, to owner-only email, to `Account`. Organisation creation, selection, profile editing, membership, invitations, and access requests run only through the authenticated `api.organisations(input_payload)` boundary. The dispatcher derives identity and session context from the verified JWT; handles are normalised, checked against reserved routes, and never stored as arbitrary Auth metadata.
 
@@ -536,10 +536,7 @@ This project was inspired by Kolby Sisk's [next-supabase-stripe-starter](<[https
 
 ### Authentication refresh resilience
 
-Server refreshes now coalesce with bounded traffic and outage cooldowns. Temporary
-Auth failures return HTTP 503 with `Retry-After: 30` and preserve session cookies;
-error-page identity checks never refresh. See [the authentication contract](docs/agents/authentication-and-claims.md#refresh-contention-and-outage-containment)
-for exact limits, credential handling and multi-instance deployment requirements.
+Session renewal follows Supabase’s SSR clients and `getClaims()` in Proxy. The SDK owns rotation, retries and cookies; Core has no custom refresh cache or transport. See [the authentication contract](docs/agents/authentication-and-claims.md#refresh-contention-and-outage-containment) for cookie propagation and final-error handling.
 
 Transactional Brevo SQL functions use the `ext_brevo_transactional_` prefix, including consumer-owned adapters. Service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Old aliases are removed; every caller must use the prefixed names.
 

@@ -1,11 +1,11 @@
 // Ref: https://supabase.com/docs/guides/auth/server-side/nextjs
 import { type NextRequest, NextResponse } from 'next/server';
 
-import { createAuthTransport } from '@/lib/supabase/supacharger/refresh-transport';
 import type { Database } from '@/lib/supabase/types';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 import { createServerClient } from '@supabase/ssr';
+import { isAuthRetryableFetchError } from '@supabase/supabase-js';
 
 export type VerifiedAuthClaims = {
   is_anonymous?: boolean;
@@ -24,20 +24,16 @@ export type VerifiedAuthClaims = {
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
-  const transport = createAuthTransport(getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL, 'NEXT_PUBLIC_SUPABASE_URL'));
-
   const supabase = createServerClient<Database>(
     getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL, 'NEXT_PUBLIC_SUPABASE_URL'),
     getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'),
     {
-      global: { fetch: transport.fetch },
       cookies: {
         encode: 'tokens-only',
         getAll() {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet, headers) {
-          if (transport.isTemporarilyUnavailable()) return;
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           response = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
@@ -63,6 +59,11 @@ export async function updateSession(request: NextRequest) {
     isAuthenticated,
     response,
     verificationError,
-    temporarilyUnavailable: transport.isTemporarilyUnavailable(),
+    // The SDK owns refresh, retries and cookie state. Only classify its final error.
+    temporarilyUnavailable: Boolean(verificationError && (
+      isAuthRetryableFetchError(verificationError) ||
+      verificationError.status === 429 ||
+      (verificationError.status ?? 0) >= 500
+    )),
   };
 }

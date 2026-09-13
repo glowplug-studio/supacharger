@@ -1644,7 +1644,12 @@
       "description": "The page ran into a problem. Try again from the home page, or contact support if it keeps happening."
     },
     "goHome": "Go home",
-    "contactSupport": "Contact support"
+    "contactSupport": "Contact support",
+    "recovery": {
+      "title": "This password reset link could not be verified",
+      "description": "The link may have expired or already been used. Request a new password reset email and use its link.",
+      "action": "Request a new reset link"
+    }
   },
   "ImageUploadErrors": {
     "invalidRequest": "Expected one image file, a supported target, and optional valid destination and crop fields.",
@@ -1698,5 +1703,12 @@
     "SkipDescription": "Skip optional public skill selection",
     "OptionalFailed": "Optional skills were not installed: {reason}. Retry with supacharger skills install.",
     "RecoveryRetained": " Recovery files retained at {directory}: {reason}"
+  },
+  "AuthEmailTemplates": {
+    "recoverySubject": "Reset your password",
+    "recoveryHeading": "Reset your password",
+    "recoveryDescription": "We received a request to reset your password. Follow the link below to choose a new one.",
+    "recoveryAction": "Reset password",
+    "recoveryDisclaimer": "This link can be used once. If you did not request this change, you can ignore this email."
   }
 }

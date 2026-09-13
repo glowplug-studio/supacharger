@@ -10,7 +10,7 @@ Use Apple's current `appIDs` plus `components` AASA format without mixing it wit
 
 ## Authentication flow
 
-Six-digit email OTP verification remains an in-app code-entry flow. Magic links, link confirmation, and password reset use verified HTTPS callbacks. Recovery returns through `/auth/callback?flow=recovery`; associate and allow-list `/auth/callback`, not the internal recovery-session-only `/account/reset-password/new` page. Keep the hosted Supabase Site URL and exact redirect allow-list aligned with the deployed host and the paths in `ASSOCIATED_PATHS`. Local `supabase/config.toml` does not change hosted Auth settings.
+Six-digit email OTP verification remains an in-app code-entry flow. Magic links, link confirmation, and password reset use verified HTTPS callbacks. Recovery verifies `TokenHash` with `type=recovery` through `/auth/confirm`; associate that path alongside the OAuth `/auth/callback`, not the internal recovery-session-only `/account/reset-password/new` page. Keep the hosted Supabase Site URL and exact redirect allow-list aligned with the deployed host and the paths in `ASSOCIATED_PATHS`. Local `supabase/config.toml` does not change hosted Auth settings.
 
 When cross-device session transfer is enabled, add `/auth/session-transfer` to `ASSOCIATED_PATHS`. Native code must open the exact Universal Link, including its fragment, in a shared persistent browser session such as the application's established `ASWebAuthenticationSession` or `SFSafariViewController` flow. A private or isolated web view will not establish the intended reusable browser session. Do not read, log or send the fragment to native analytics. The web bootstrap owns token removal and redemption.
 

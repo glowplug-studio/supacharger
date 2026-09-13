@@ -1277,7 +1277,12 @@
       "description": "该页面遇到了问题。从主页重试，或者如果这种情况持续发生，请联系支持人员。"
     },
     "goHome": "回家吧",
-    "contactSupport": "联系支持人员"
+    "contactSupport": "联系支持人员",
+    "recovery": {
+      "title": "",
+      "description": "",
+      "action": ""
+    }
   },
   "PublicSkillsCli": {
     "UseAGitBranchTagOr": "",
@@ -1327,5 +1332,12 @@
     "SkipDescription": "",
     "OptionalFailed": "",
     "RecoveryRetained": ""
+  },
+  "AuthEmailTemplates": {
+    "recoverySubject": "",
+    "recoveryHeading": "",
+    "recoveryDescription": "",
+    "recoveryAction": "",
+    "recoveryDisclaimer": ""
   }
 }

@@ -44,11 +44,11 @@ export async function loadAccountSummary(verifiedUser?: User | null): Promise<Ac
   const identity = projectProfileIdentity(row, SC_CONFIG.PROFILE_IDENTITY.USERNAME, { ownerView: true });
   const signedMedia = await resolveSignedMediaUrls(supabase, [
     { key: 'avatar', bucket: 'user-avatars', path: row.avatar_path },
-    {
+    ...(SC_CONFIG.ORGANISATIONS.ENABLED ? [{
       key: 'activeOrganisationAvatar',
       bucket: 'organisation-avatars',
       path: row.active_organisation?.avatar_path,
-    },
+    }] : []),
   ]);
 
   return {
@@ -66,7 +66,7 @@ export async function loadAccountSummary(verifiedUser?: User | null): Promise<Ac
           handle: row.active_organisation.handle,
           name: row.active_organisation.name,
           role: row.active_organisation.role,
-          avatarUrl: signedMedia.activeOrganisationAvatar,
+          avatarUrl: signedMedia.activeOrganisationAvatar ?? null,
         }
       : null,
     organisationCount: row.organisation_count,
