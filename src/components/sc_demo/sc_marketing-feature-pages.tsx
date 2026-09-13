@@ -246,11 +246,11 @@ export function SCPaywallDemos() {
             <Image
               alt={content.heroImageAlt || englishMessages.MarketingFeaturePages.paywallDemos.heroImageAlt}
               className='aspect-[16/10] h-auto w-full rounded-sm object-cover object-left-top'
-              height={1006}
+              height={695}
               priority
               sizes='(max-width: 1024px) 100vw, 58vw'
-              src='/images/sc_demo/sc-marketing-chat-workspace.png'
-              width={1564}
+              src='/images/sc_demo/sc-marketing-chat-workspace.webp'
+              width={1080}
             />
           </div>
         </div>

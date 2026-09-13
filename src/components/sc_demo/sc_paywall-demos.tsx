@@ -236,10 +236,10 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                 <Image
                   alt={content.cart.imageAlt}
                   className='h-full min-h-64 w-full object-cover object-left-top'
-                  height={967}
+                  height={571}
                   sizes='(max-width: 640px) 100vw, 35vw'
-                  src='/images/sc_demo/sc-marketing-mobile-onboarding.png'
-                  width={1627}
+                  src='/images/sc_demo/sc-marketing-mobile-onboarding.webp'
+                  width={960}
                 />
                 <div className='p-6'>
                   <DemoHeading icon={demoIcons[4]} item={content.items[4]} />

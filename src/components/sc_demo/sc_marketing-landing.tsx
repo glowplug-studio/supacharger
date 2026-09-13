@@ -56,23 +56,23 @@ const platformFeatures = [
   {
     id: 'discovery',
     imageClassName: 'object-cover object-left-top',
-    imageHeight: 967,
-    imageSrc: '/images/sc_demo/sc-marketing-mobile-onboarding.png',
-    imageWidth: 1627,
+    imageHeight: 571,
+    imageSrc: '/images/sc_demo/sc-marketing-mobile-onboarding.webp',
+    imageWidth: 960,
   },
   {
     id: 'workspace',
     imageClassName: 'object-cover object-left-top',
-    imageHeight: 1006,
-    imageSrc: '/images/sc_demo/sc-marketing-chat-workspace.png',
-    imageWidth: 1564,
+    imageHeight: 695,
+    imageSrc: '/images/sc_demo/sc-marketing-chat-workspace.webp',
+    imageWidth: 1080,
   },
   {
     id: 'participation',
     imageClassName: 'object-cover object-center',
-    imageHeight: 941,
+    imageHeight: 450,
     imageSrc: '/images/sc_demo/sc-marketing-community-night.webp',
-    imageWidth: 1672,
+    imageWidth: 800,
   },
 ];
 
@@ -80,23 +80,23 @@ const connectedExperiences = [
   {
     href: '#overview',
     imageClassName: 'object-cover object-top',
-    imageHeight: 1254,
+    imageHeight: 900,
     imageSrc: '/images/sc_demo/sc-marketing-app-multi.webp',
-    imageWidth: 1254,
+    imageWidth: 900,
   },
   {
     href: '#benefits',
     imageClassName: 'object-cover object-left-top',
-    imageHeight: 1006,
-    imageSrc: '/images/sc_demo/sc-marketing-profile-discovery.png',
-    imageWidth: 1563,
+    imageHeight: 579,
+    imageSrc: '/images/sc_demo/sc-marketing-profile-discovery.webp',
+    imageWidth: 900,
   },
   {
     href: '/account/create',
     imageClassName: 'object-cover object-left-top',
-    imageHeight: 968,
-    imageSrc: '/images/sc_demo/sc-marketing-mobile-community.png',
-    imageWidth: 1625,
+    imageHeight: 536,
+    imageSrc: '/images/sc_demo/sc-marketing-mobile-community.webp',
+    imageWidth: 900,
   },
 ];
 
@@ -200,11 +200,11 @@ export default function SCMarketingLanding() {
             <Image
               alt={t('images.messagingWorkspace')}
               className='h-auto w-full rounded-sm'
-              height={1086}
+              height={960}
               priority
               sizes='(max-width: 1280px) 100vw, 1216px'
-              src='/images/sc_demo/sc-marketing-desktop-hero.jpeg'
-              width={1448}
+              src='/images/sc_demo/sc-marketing-desktop-hero.webp'
+              width={1280}
             />
           </div>
 
@@ -236,11 +236,11 @@ export default function SCMarketingLanding() {
             <Image
               alt={t('images.mobileScreens')}
               className='h-full w-full object-cover transition-transform duration-500 hover:scale-[1.015]'
-              height={1024}
+              height={600}
               loading='eager'
               sizes='(max-width: 1024px) 100vw, 58vw'
               src='/images/sc_demo/sc-marketing-hero.webp'
-              width={1536}
+              width={900}
             />
           </div>
         </div>
@@ -318,10 +318,10 @@ export default function SCMarketingLanding() {
               <Image
                 alt={t('images.neighboursAtNight')}
                 className='h-full w-full object-cover transition-transform duration-700 hover:scale-[1.02]'
-                height={941}
+                height={507}
                 sizes='(max-width: 1024px) 100vw, 52vw'
                 src='/images/sc_demo/sc-marketing-community-night-backup.webp'
-                width={1672}
+                width={900}
               />
             </div>
           </div>
@@ -517,10 +517,10 @@ export default function SCMarketingLanding() {
               <Image
                 alt={t('images.mobileExperience')}
                 className='h-full w-full object-cover object-left-top'
-                height={941}
+                height={507}
                 sizes='(max-width: 1024px) 100vw, 50vw'
                 src='/images/sc_demo/sc-marketing-hero-backup.webp'
-                width={1672}
+                width={900}
               />
             </div>
           </div>

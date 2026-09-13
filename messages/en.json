@@ -758,43 +758,42 @@
     "by": "by"
   },
   "LicensePage": {
-    "eyebrow": "Open-source licensing",
-    "title": "Use Supacharger with attribution, or choose a commercial license.",
-    "introduction": "This page summarises the repository license and the licenses declared by its direct dependencies. It is a practical guide, not a substitute for the governing license texts.",
-    "nonAttributionCta": "Get a non-attribution license",
+    "eyebrow": "Supacharger licensing",
+    "title": "Build with Supacharger. Choose the licence that fits your project.",
+    "introduction": "Use Supacharger for non-commercial projects under CC BY-NC-SA 4.0, or choose a commercial licence for your business.",
+    "nonAttributionCta": "Get a commercial licence",
     "readLicense": "Read CC BY-NC-SA 4.0",
-    "coreTitle": "The Supacharger source license",
-    "coreBody": "The repository LICENSE applies Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International to Supacharger-owned source. Attribution is required, commercial use is not permitted under that public license, and adaptations must use the same license.",
-    "commercialBody": "A separate paid license is the route for commercial or non-attribution use. Its terms are separate from the public repository license and should be reviewed before using Supacharger in a commercial product.",
-    "notLegalAdvice": "License summaries can omit important conditions and exceptions. Read the full texts and obtain legal advice for your use case.",
-    "dependenciesTitle": "Direct dependency license snapshot",
-    "dependenciesIntro": "The installed direct runtime and development dependencies are mostly permissively licensed. These groups are based on package metadata and bundled license files in the current lockfile, not a legal opinion or a complete transitive-dependency notice.",
+    "coreTitle": "The Supacharger source licence",
+    "coreBody": "Supacharger-owned source is licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International. For non-commercial use, credit Supacharger and share adaptations under the same licence.",
+    "commercialBody": "For commercial use or use without attribution, choose a separate paid Supacharger licence.",
+    "dependenciesTitle": "Licences for included third-party code",
+    "dependenciesIntro": "The licences below cover third-party component source included and redistributed with Supacharger, such as shadcn/ui, and runtime library code bundled into its built application. The source download contains dependency references, rather than copies of the installed packages. Development tools and externally hosted scripts are outside this list. Each licence applies to its respective third-party code; Supacharger-owned source retains its own licence.",
     "groups": {
       "mit": {
         "title": "MIT",
-        "description": "Permissive licenses that generally require preservation of copyright and license notices in redistributed copies."
+        "description": "Allows commercial use, modification and redistribution with the copyright and licence notices retained."
       },
       "apache": {
         "title": "Apache-2.0",
-        "description": "A permissive license with notice requirements and an express patent grant."
+        "description": "Allows commercial use, modification and redistribution, with notice requirements and an express patent grant."
       },
       "isc": {
-        "title": "ISC and MIT icon lineage",
-        "description": "Lucide declares ISC licensing and includes some Feather-derived icon work under MIT terms."
+        "title": "ISC and MIT",
+        "description": "Lucide icons use ISC, with MIT terms for icons derived from Feather. Retain the relevant copyright and licence notices."
       },
       "mpl": {
         "title": "MPL-2.0",
-        "description": "Vercel Analytics declares a file-level copyleft license. Modified covered files may carry source-availability obligations when distributed."
+        "description": "Vercel Analytics uses MPL-2.0. When distributing covered code, make its source available under MPL; separate application files can keep their own licence."
+      },
+      "unlicense": {
+        "title": "The Unlicense",
+        "description": "email-validator is dedicated to the public domain and permits commercial use, modification and redistribution."
       }
     },
-    "importsTitle": "Does an import count as distribution?",
-    "importsBody": "Import syntax alone does not answer that question. Client builds can copy dependency code into browser bundles, and deployments or source archives can include package files. A remotely hosted script may not be copied into Supacharger, but its service terms still apply. Compliance follows what is actually copied, modified, and distributed.",
-    "scopeTitle": "What this audit covers",
-    "scopeBody": "This snapshot groups declared licenses for direct packages in package.json. The lockfile also contains transitive packages, and assets, fonts, hosted services, and user-added code may have separate terms. Re-run a formal notice audit before each release.",
-    "auditDate": "Reviewed against the repository dependency set on 22 August 2026.",
-    "ccSoftwareFaq": "Creative Commons software FAQ",
-    "repositoryLicense": "Repository LICENSE",
-    "legalPage": "Korunet legal page"
+    "importsTitle": "What counts as distribution?",
+    "importsBody": "Distribution means supplying a copy of code: in the Supacharger source, in a downloadable application, or in JavaScript sent to a browser. An import or a reference to an externally hosted script alone does not redistribute that script. Developers must follow the licences for third-party code they use and distribute; those licences do not replace the licence for Supacharger-owned source.",
+    "repositoryLicense": "Supacharger source licence",
+    "legalPage": "Legal information"
   },
   "MarketingLanding": {
     "createAccount": "Create account",
