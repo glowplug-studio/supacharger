@@ -63,7 +63,7 @@ export function createServer() {
     'supacharger_get_email_template',
     {
       title: 'Get email template HTML',
-      description: 'Return optional email HTML from resources/sc-email-templates. Read email_templates guidance before applying through the connected Supabase MCP when requested.',
+      description: 'Return optional email HTML from resources/sc-email-templates. Read email_templates guidance: corroborate src/supacharger.config.ts provider and Auth intent against hosted settings, templates and implemented flows; report contradictions before adapting tokens. Verify the target and use the Management API or dashboard when Supabase MCP lacks Auth editing.',
       inputSchema: { template: z.enum(Object.keys(emailTemplateFiles)) },
     },
     async ({ template }) => textResult(await readEmailTemplate(template)),

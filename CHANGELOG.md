@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T18:05:21Z; base_commit=0d8120df1e6ee85e5ae8f8efbe489d5773c9f23a; main_commit=0d8120df1e6ee85e5ae8f8efbe489d5773c9f23a; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=0d8120df1e6ee85e5ae8f8efbe489d5773c9f23a; scope=main-and-reviewed-email-resources-release; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-13T18:20:16Z; base_commit=b5a6329b077b0f085fddc53344f64c005807b0e0; main_commit=b5a6329b077b0f085fddc53344f64c005807b0e0; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=b5a6329b077b0f085fddc53344f64c005807b0e0; scope=main-and-email-auth-guidance; excluded=local-auth-reports-and-hosted-project-settings; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -23,6 +23,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- Email-template guidance checks application Auth and provider intent against hosted settings and implemented flows before selecting tokens, reports contradictions, and supports the Management API when Supabase MCP cannot edit Auth settings.
 
 - Auth callbacks, email destinations, Stripe returns and session-transfer links preserve the validated initiating domain. `NEXT_PUBLIC_SITE_URL` remains canonical for metadata and background links; optional server-only `APP_ALLOWED_ORIGINS` accepts additional exact custom origins. Canonical and exact Vercel deployment origins are recognised automatically.
 - Callback adapters must pass the request origin to `getAuthLoginRedirect(destination, origin)` and construct their return URLs on that origin. Existing developer-owned adapters and hosted templates require the documented upgrade.
