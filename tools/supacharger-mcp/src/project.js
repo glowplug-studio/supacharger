@@ -75,6 +75,10 @@ export function classifyPath(inputPath) {
     return { ownership: 'developer-owned', guidance: 'Preserved during Core updates. Optional contributor instructions load only when installed; legacy directives are inactive. Read docs/agents/agent-guidance.md.' };
   }
 
+  if (relativePath === 'test' || relativePath.startsWith('test/')) {
+    return { ownership: 'developer-owned', guidance: 'Do not create or restore application tests; Supacharger Core does not install, generate or run them.' };
+  }
+
   if (relativePath.startsWith('extensions/') || relativePath.startsWith('tools/supacharger-extensions/')) {
     return { ownership: 'canonical-extension-tooling', guidance: 'Core owns bundles and installer. Read docs/agents/extensions.md; these are not automatically installed application runtime files.' };
   }
@@ -106,7 +110,6 @@ export function classifyPath(inputPath) {
     relativePath === 'postcss.config.mjs' ||
     relativePath === 'tailwind.config.ts' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
-    relativePath === 'supabase/functions/_shared/image-transform-runtime.test.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
     relativePath === 'supabase/functions/process-image-upload' ||
     relativePath.startsWith('supabase/functions/process-image-upload/') ||
@@ -153,22 +156,6 @@ export function classifyPath(inputPath) {
       ownership: 'developer-owned',
       guidance:
         'Audited canonical-to-consumer mapping for an intentionally adapted immutable migration. The CLI validates targets and preserves this file.',
-    };
-  }
-
-  if (relativePath === 'test/billing-schema-contract.test.mjs') {
-    return {
-      ownership: 'cli-managed-core',
-      guidance:
-        'Byte-identical shared billing contract test. Keep only reusable Core assertions here; put product catalogue, table, RPC, and policy assertions in test/project-billing-schema-contract.test.mjs.',
-    };
-  }
-
-  if (relativePath === 'test/project-billing-schema-contract.test.mjs') {
-    return {
-      ownership: 'developer-owned-contract-test',
-      guidance:
-        "Application billing contract test seam. Core updates preserve this file; add it to the consumer's merge-managed test:billing-schema package script when present.",
     };
   }
 

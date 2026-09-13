@@ -65,8 +65,6 @@ For resource-owned destinations that cannot be safely represented below the curr
 Run:
 
 ```bash
-npm run test:image-transform
-npm run test:image-transform-runtime
 npx supabase functions serve process-image-upload
 npx supabase functions deploy process-image-upload
 ```

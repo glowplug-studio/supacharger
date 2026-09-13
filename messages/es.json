@@ -305,7 +305,7 @@
   },
   "MarketingFeaturePages": {
     "coreWidgetDemos": {
-      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":""
+      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":"","simulateUpload":"","simulateAgain":"","uploading":"","uploadComplete":"","loadersTitle":"","loadersDescription":"","inlineLoaderLabel":"","inverseLoaderLabel":"","imageLoaderLabel":"","modalTitle":"","modalDescription":"","openModal":"","closeModal":"","modalDialogTitle":"","modalBody":"","toastLabel":"","toastDescription":"","toastMessage":""
     },
     "whatsIncluded": {
       "title": "Qué incluye realmente Supacharger",
@@ -1265,6 +1265,7 @@
   },
   "SCWidgets": {
     "fileUpload": {"label":"","description":"","limitations":"","add":"","drop":"","emptyFile":"","invalidType":"","remove":"","tooLarge":""},
+    "imageCrop": {"cancel":"","circleDescription":"","done":"","dragLabel":"","failed":"","rectangleDescription":"","reposition":"","title":"","verticalDescription":"","verticalDragLabel":"","zoom":""},
     "profileMedia": {"title":"","description":"","avatar":"","banner":"","unnamed":"","avatarPreviewAlt":"","bannerPreviewAlt":"","saving":"","save":"","saved":"","uploadFailed":"","saveFailed":""}
   },
   "ImageUploadErrors": {"invalidRequest":"","invalidCrop":""},

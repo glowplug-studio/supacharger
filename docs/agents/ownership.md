@@ -2,7 +2,7 @@
 
 ## Versioned ownership manifest
 
-`.supacharger/managed-files.json` is the authoritative versioned ownership contract. Version 2 separates exact managed paths, merge-managed contracts, forward-only migration histories, developer-owned paths, and post-update checks. `coreupdate --plan` compares the installed baseline with latest core without changing project files or a database. A real update replaces only exact managed paths, merges approved dependency contracts, copies only new forward migrations, backs up overwritten files under `.supacharger/backups/`, runs declared checks, and advances the core lock only after completion.
+`.supacharger/managed-files.json` is the authoritative versioned ownership contract. Version 2 separates exact managed paths, merge-managed contracts, forward-only migration histories and developer-owned paths. `coreupdate --plan` compares the installed baseline with latest Core without changing project files or a database. A real update replaces only exact managed paths, merges approved dependency contracts, copies only new forward migrations, backs up overwritten files and advances the Core lock after direct file comparison succeeds.
 
 ## CLI-managed paths
 
@@ -18,21 +18,13 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 - `supabase/functions/_shared/image-transform.ts`
 - `supabase/functions/process-image-upload/`
 - `docs/bruno/supacharger-rpc/`
-- `scripts/check-bruno-rpc-parity.mjs`
-- the exact protected contract tests listed in the manifest
 - `.supacharger/managed-files.json`
 
 Application developers should not edit exact managed paths. Core maintainers edit them in this canonical repository and distribute approved changes through the CLI. The managed browser, server, and Proxy Supabase clients keep `tokens-only` cookie encoding aligned; consumers must not replace one client independently because mixed encodings can expand or invalidate refreshed session state. Reusable authentication and account routes live under `src/app/(supacharger)/`; product routes and extensions live under `src/app/(project)/`. Authentication presentation is customised through the explicit developer seams below, not by duplicating a managed public route.
 
-### Shared and project contract tests
-
-Exact managed contract tests assert only reusable Supacharger behaviour. `test/billing-schema-contract.test.mjs` covers the shared account-based billing model, canonical Stripe customer mapping identifiers, exposed RPC argument conventions and grants, generated type alignment, and entitlement-based access repair. It must remain byte-identical in CLI-managed consumers.
-
-Product catalogue RPCs, product tables, application-only policies, and other consumer-specific database behaviour do not belong in that managed file. Put those assertions in the developer-owned `test/project-billing-schema-contract.test.mjs` seam and extend the consumer's merge-managed `test:billing-schema` package script to run both files. The project test may be absent when a consumer has no product-specific billing assertions. Core updates preserve it when present.
-
 ## Merge-managed contracts
 
-`package.json`, `package-lock.json`, and `supabase/config.toml` are not byte-replaced. The CLI merges canonical dependency requirements and any missing manifest-required package scripts while preserving existing product dependencies and scripts, then regenerates the lock through the package manager when dependencies change. Supabase local configuration retains project-specific values and requires contract-aware merge logic. `tailwind.config.ts` is exact managed; application Tailwind additions belong in developer-owned `tailwind.project.config.ts`.
+`package.json`, `package-lock.json`, and `supabase/config.toml` are not byte-replaced. The CLI merges canonical dependency requirements while preserving existing product dependencies and scripts, then regenerates the lock through the package manager when dependencies change. Supabase local configuration retains project-specific values and requires contract-aware merge logic. `tailwind.config.ts` is exact managed; application Tailwind additions belong in developer-owned `tailwind.project.config.ts`.
 
 ## Forward-only migration history
 
@@ -80,7 +72,7 @@ Keep a UI SVG under the developer-owned `src/` path belonging to its feature or 
 
 Every responsive SVG source must retain a correct `viewBox` and omit root-level `width` and `height` when CSS controls its size. Size the React component at the call site with `size-*`, `w-*`, `h-*`, or `size-[1em]`, usually with `shrink-0` beside text. Preserve the source aspect ratio rather than forcing mismatched dimensions, and never conceal clipping with arbitrary component props. Use `fill='currentColor'` or `stroke='currentColor'` only when the artwork is designed to inherit text colour.
 
-Before changing sizing classes, inspect the rendered `<svg>` to confirm that SVGR/SVGO preserved the `viewBox`, then check the complete artwork at every intended viewport size. Add a regression test proving responsive assets keep their `viewBox` and omit root-level intrinsic dimensions, and visually verify every affected page.
+Before changing sizing classes, inspect the rendered `<svg>` to confirm that SVGR/SVGO preserved the `viewBox`, then check the complete artwork at every intended viewport size and visually verify every affected page.
 
 `src/components/sc_demo/` contains example application presentation that developers may replace. Keep demo-only assets beneath this directory so removing the demo also removes its assets. Import its UI SVGs as SVGR components; do not place them in `public/` unless they require a stable public URL independently of the demo.
 
@@ -96,7 +88,7 @@ Other routes, features, assets, and components outside managed paths are not aut
 
 ## Build-runtime boundary
 
-The root `tsconfig.json` belongs to the Next.js application runtime and must exclude `supabase/functions/**/*`. Supabase Edge Functions belong to Deno and may use Deno globals, explicit `.ts` imports, URL imports, and `jsr:` packages that the Next.js TypeScript program must not resolve. Keep this exclusion identical in core and consumers, then verify Edge Function code through the dedicated Deno test scripts instead of weakening either runtime's compiler settings.
+The root `tsconfig.json` belongs to the Next.js application runtime and must exclude `supabase/functions/**/*`. Supabase Edge Functions belong to Deno and may use Deno globals, explicit `.ts` imports, URL imports, and `jsr:` packages that the Next.js TypeScript program must not resolve. Keep this exclusion identical in Core and consumers without weakening either runtime's compiler settings.
 
 ## Styling ownership
 

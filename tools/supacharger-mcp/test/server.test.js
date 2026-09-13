@@ -33,7 +33,7 @@ test('serves repository resources and read-only tools over stdio', async () => {
       name: 'supacharger_classify_path',
       arguments: { path: 'test/project-billing-schema-contract.test.mjs' },
     });
-    assert.match(projectBillingTest.content[0].text, /developer-owned-contract-test/);
+    assert.match(projectBillingTest.content[0].text, /developer-owned/);
 
     const { resources } = await client.listResources();
     assert.ok(resources.some((resource) => resource.uri === 'supacharger://project/ownership'));

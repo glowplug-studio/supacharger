@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
-import { Move } from 'lucide-react';
+import { ArrowUpDown, Move } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
+import { cn } from '@/utils/cn';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
 
@@ -22,7 +23,7 @@ import { calculateImageCrop } from './image-crop';
 import { FullSizeImageWithLoader } from './image-with-loader';
 import { useObjectUrl } from './use-object-url';
 
-type ImageRepositionCopy = {
+export type ImageRepositionCopy = {
   cancel: string;
   circleDescription: string;
   done: string;
@@ -31,6 +32,8 @@ type ImageRepositionCopy = {
   rectangleDescription: string;
   reposition: string;
   title: string;
+  verticalDescription: string;
+  verticalDragLabel: string;
   zoom: string;
 };
 
@@ -43,28 +46,36 @@ const defaultCopy: ImageRepositionCopy = {
   rectangleDescription: 'Drag and zoom the image inside the crop area.',
   reposition: 'Reposition',
   title: 'Reposition image',
+  verticalDescription: 'Drag the image vertically to position it inside the banner crop.',
+  verticalDragLabel: 'Drag vertically to reposition',
   zoom: 'Zoom',
 };
 
 export function ImageRepositionDialog({
+  autoOpen = false,
   aspectRatio = 1,
   copy = defaultCopy,
   disabled,
   file,
+  allowZoom = true,
+  movement = 'free',
   onDone,
   shape = 'circle',
   value,
 }: {
+  autoOpen?: boolean;
   aspectRatio?: number;
   copy?: ImageRepositionCopy;
   disabled: boolean;
   file: File;
+  allowZoom?: boolean;
+  movement?: 'free' | 'vertical';
   onDone: (crop: ImageCrop, preview: string) => void;
   shape?: 'circle' | 'rectangle';
   value?: ImageCrop;
 }) {
   const zoomId = useId();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(autoOpen);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [failed, setFailed] = useState(false);
   const [zoom, setZoom] = useState(1);
@@ -72,12 +83,26 @@ export function ImageRepositionDialog({
   const drag = useRef<{ centreX: number; centreY: number; scale: number; x: number; y: number } | null>(null);
   const src = useObjectUrl(file);
   const crop = image
-    ? calculateImageCrop(image.naturalWidth, image.naturalHeight, zoom, centre.x, centre.y, aspectRatio)
+    ? calculateImageCrop(
+        image.naturalWidth,
+        image.naturalHeight,
+        zoom,
+        movement === 'vertical' ? image.naturalWidth / 2 : centre.x,
+        centre.y,
+        aspectRatio,
+      )
     : null;
 
   function move(x: number, y: number, nextZoom = zoom) {
     if (!image) return;
-    const next = calculateImageCrop(image.naturalWidth, image.naturalHeight, nextZoom, x, y, aspectRatio);
+    const next = calculateImageCrop(
+      image.naturalWidth,
+      image.naturalHeight,
+      nextZoom,
+      movement === 'vertical' ? image.naturalWidth / 2 : x,
+      y,
+      aspectRatio,
+    );
     setCentre({ x: next.x + next.width / 2, y: next.y + next.height / 2 });
   }
 
@@ -93,20 +118,33 @@ export function ImageRepositionDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button disabled={disabled} size='sm' type='button' variant='outline'>
+        <Button disabled={disabled} type='button' variant='outline'>
           <Move aria-hidden='true' className='size-4' />
           {copy.reposition}
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-h-[90dvh] overflow-y-auto sm:max-w-lg'>
+      <DialogContent
+        className={cn(
+          'max-h-[90dvh] overflow-y-auto duration-150',
+          shape === 'circle' ? 'sm:max-w-lg' : 'sm:max-w-3xl',
+        )}
+        motion='fade'
+      >
         <DialogHeader>
           <DialogTitle>{copy.title}</DialogTitle>
           <DialogDescription>
-            {shape === 'circle' ? copy.circleDescription : copy.rectangleDescription}
+            {movement === 'vertical'
+              ? copy.verticalDescription
+              : shape === 'circle'
+                ? copy.circleDescription
+                : copy.rectangleDescription}
           </DialogDescription>
         </DialogHeader>
         <div
-          className='relative mx-auto w-full max-w-[50dvh] overflow-hidden rounded-md bg-muted'
+          className={cn(
+            'relative mx-auto w-full overflow-hidden rounded-md bg-muted',
+            shape === 'circle' ? 'max-w-[50dvh]' : 'max-w-3xl',
+          )}
           style={{ aspectRatio }}
         >
           {src ? (
@@ -130,7 +168,7 @@ export function ImageRepositionDialog({
                 const loaded = event.currentTarget;
                 setImage(loaded);
                 setZoom(
-                  value
+                  allowZoom && value
                     ? Math.min(4, Math.min(loaded.naturalWidth, loaded.naturalHeight * aspectRatio) / value.width)
                     : 1,
                 );
@@ -144,20 +182,27 @@ export function ImageRepositionDialog({
           ) : null}
           <div
             aria-hidden='true'
-            className={`pointer-events-none absolute inset-[10%] border border-foreground/70 ${shape === 'circle' ? 'rounded-full' : 'rounded-md'}`}
+            className={cn(
+              'pointer-events-none absolute inset-[10%] z-10 border border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.58)]',
+              shape === 'circle' ? 'rounded-full' : 'rounded-md',
+            )}
           />
           <Button
-            aria-label={copy.dragLabel}
-            className='absolute inset-0 h-full w-full touch-none rounded-none bg-transparent p-0 hover:bg-transparent focus-visible:ring-inset'
+            aria-label={movement === 'vertical' ? copy.verticalDragLabel : copy.dragLabel}
+            className='absolute inset-0 z-20 h-full w-full touch-none rounded-none bg-transparent p-0 hover:bg-transparent focus-visible:ring-inset active:bg-transparent dark:hover:bg-transparent dark:active:bg-transparent'
             disabled={!image || failed}
             type='button'
             variant='ghost'
             onKeyDown={(event) => {
-              if (!crop || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+              const permittedKeys =
+                movement === 'vertical' ? ['ArrowUp', 'ArrowDown'] : ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+              if (!crop || !image || !permittedKeys.includes(event.key)) return;
               event.preventDefault();
               const step = crop.width * 0.025;
               move(
-                centre.x + (event.key === 'ArrowLeft' ? step : event.key === 'ArrowRight' ? -step : 0),
+                movement === 'vertical'
+                  ? image.naturalWidth / 2
+                  : centre.x + (event.key === 'ArrowLeft' ? step : event.key === 'ArrowRight' ? -step : 0),
                 centre.y + (event.key === 'ArrowUp' ? step : event.key === 'ArrowDown' ? -step : 0),
               );
             }}
@@ -182,7 +227,7 @@ export function ImageRepositionDialog({
               const start = drag.current;
               if (start) {
                 move(
-                  start.centreX - (event.clientX - start.x) / start.scale,
+                  movement === 'vertical' ? start.centreX : start.centreX - (event.clientX - start.x) / start.scale,
                   start.centreY - (event.clientY - start.y) / start.scale,
                 );
               }
@@ -193,34 +238,43 @@ export function ImageRepositionDialog({
                 event.currentTarget.releasePointerCapture(event.pointerId);
               }
             }}
-          />
+          >
+            {movement === 'vertical' ? (
+              <span className='pointer-events-none flex items-center gap-2 rounded-md border border-white/30 bg-black/65 px-3 py-2 text-xs font-medium text-white shadow-sm backdrop-blur-sm'>
+                <ArrowUpDown aria-hidden='true' className='size-4 shrink-0' />
+                {copy.verticalDragLabel}
+              </span>
+            ) : null}
+          </Button>
         </div>
         {failed ? (
           <p className='text-sm text-destructive' role='alert'>
             {copy.failed}
           </p>
         ) : null}
-        <div className='flex items-center gap-4'>
-          <Label className='shrink-0' htmlFor={zoomId}>
-            {copy.zoom}
-          </Label>
-          <Slider
-            aria-label={copy.zoom}
-            disabled={!image || failed}
-            id={zoomId}
-            max={4}
-            min={1}
-            step={0.01}
-            value={[zoom]}
-            onValueChange={([next]) => {
-              setZoom(next);
-              move(centre.x, centre.y, next);
-            }}
-          />
-          <span className='w-12 shrink-0 text-right text-sm tabular-nums text-muted-foreground'>
-            {Math.round(zoom * 100)}%
-          </span>
-        </div>
+        {allowZoom ? (
+          <div className='flex items-center gap-4'>
+            <Label className='shrink-0' htmlFor={zoomId}>
+              {copy.zoom}
+            </Label>
+            <Slider
+              aria-label={copy.zoom}
+              disabled={!image || failed}
+              id={zoomId}
+              max={4}
+              min={1}
+              step={0.01}
+              value={[zoom]}
+              onValueChange={([next]) => {
+                setZoom(next);
+                move(centre.x, centre.y, next);
+              }}
+            />
+            <span className='w-12 shrink-0 text-right text-sm tabular-nums text-muted-foreground'>
+              {Math.round(zoom * 100)}%
+            </span>
+          </div>
+        ) : null}
         <DialogFooter className='flex-row justify-between sm:justify-between'>
           <Button type='button' variant='outline' onClick={() => setOpen(false)}>
             {copy.cancel}

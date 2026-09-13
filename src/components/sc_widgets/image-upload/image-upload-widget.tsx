@@ -9,9 +9,8 @@ import { Progress } from '@/components/ui/progress';
 import { cn } from '@/utils/cn';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
-import { BannerCropPreview } from '../media/banner-crop-preview';
 import { calculateImageCrop } from '../media/image-crop';
-import { ImageRepositionDialog } from '../media/image-reposition-dialog';
+import { type ImageRepositionCopy, ImageRepositionDialog } from '../media/image-reposition-dialog';
 import { ImageWithLoader } from '../media/image-with-loader';
 import { useObjectUrl } from '../media/use-object-url';
 
@@ -50,7 +49,9 @@ export function ImageUploadWidget({
   onChange,
   onCropChange,
   processing = false,
+  processingProgress = 65,
   processingText = 'Processing image…',
+  repositionCopy,
   shape,
   variant,
 }: {
@@ -66,7 +67,9 @@ export function ImageUploadWidget({
   onChange: (file: File | null) => void;
   onCropChange: (crop: ImageCrop | undefined, preview?: string) => void;
   processing?: boolean;
+  processingProgress?: number;
   processingText?: string;
+  repositionCopy?: ImageRepositionCopy;
   shape: 'circle' | 'rectangle';
   variant: 'avatar' | 'banner';
 }) {
@@ -75,6 +78,7 @@ export function ImageUploadWidget({
   const [cropPreview, setCropPreview] = useState<string | undefined>();
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectionRevision, setSelectionRevision] = useState(0);
   const objectUrl = useObjectUrl(file);
   const previewUrl = cropPreview ?? objectUrl ?? existingPreviewUrl ?? null;
   const isDisabled = disabled || processing;
@@ -97,6 +101,7 @@ export function ImageUploadWidget({
       return;
     }
     updateCrop(undefined);
+    setSelectionRevision((current) => current + 1);
     onChange(nextFile);
   }
 
@@ -147,23 +152,16 @@ export function ImageUploadWidget({
           onChange={handleInputChange}
         />
 
-        <div className='grid gap-4 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-start'>
+        <div className='grid gap-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-start'>
           <div
             className={cn(
-              'relative flex min-h-32 items-center justify-center overflow-hidden border border-border bg-muted',
-              variant === 'avatar' ? 'mx-auto aspect-square w-32 rounded-full sm:mx-0' : 'aspect-[8/3] w-full rounded-md',
+              'relative flex items-center justify-center overflow-hidden border border-border bg-muted',
+              variant === 'avatar'
+                ? 'mx-auto aspect-square w-24 rounded-full sm:mx-0'
+                : 'aspect-[8/3] w-full max-w-64 rounded-md sm:max-w-none',
             )}
           >
-            {file && objectUrl && variant === 'banner' ? (
-              <BannerCropPreview
-                aspectRatio={aspectRatio}
-                disabled={isDisabled}
-                file={file}
-                initialCrop={crop}
-                src={objectUrl}
-                onCropChange={(_, nextCrop) => updateCrop(nextCrop)}
-              />
-            ) : previewUrl ? (
+            {previewUrl ? (
               <ImageWithLoader
                 fill
                 unoptimized
@@ -172,7 +170,7 @@ export function ImageUploadWidget({
                 sizes={variant === 'avatar' ? '128px' : '(min-width: 640px) 224px, 100vw'}
                 src={previewUrl}
                 onLoad={(event) => {
-                  if (file && variant === 'avatar' && !crop) {
+                  if (file && !crop) {
                     const { naturalHeight, naturalWidth } = event.currentTarget;
                     updateCrop(
                       calculateImageCrop(
@@ -198,11 +196,16 @@ export function ImageUploadWidget({
                 <Upload aria-hidden='true' className='size-4' />
                 {hasImage ? copy.change : copy.select}
               </Button>
-              {file && variant === 'avatar' ? (
+              {file ? (
                 <ImageRepositionDialog
+                  allowZoom={variant === 'avatar'}
                   aspectRatio={aspectRatio}
+                  autoOpen
+                  copy={repositionCopy}
                   disabled={isDisabled}
                   file={file}
+                  key={selectionRevision}
+                  movement={variant === 'banner' ? 'vertical' : 'free'}
                   shape={shape}
                   value={crop}
                   onDone={(nextCrop, preview) => updateCrop(nextCrop, preview)}
@@ -232,7 +235,12 @@ export function ImageUploadWidget({
             </p>
             {processing ? (
               <div className='space-y-1'>
-                <Progress value={65} />
+                <div className='flex items-center gap-3'>
+                  <Progress className='flex-1' value={processingProgress} />
+                  <span className='w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground'>
+                    {Math.round(processingProgress)}%
+                  </span>
+                </div>
                 <p className='text-xs text-muted-foreground'>{processingText}</p>
               </div>
             ) : null}

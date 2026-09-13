@@ -31,9 +31,7 @@ The configured `BILLING_ACCESS.REDIRECT_PATH` must inherit `requireOnboardedUser
 
 ## Test ownership boundary
 
-The CLI-managed `test/billing-schema-contract.test.mjs` verifies only the reusable billing contract: account-based ownership, canonical Stripe customer mapping identifiers, shared RPC argument and grant conventions, generated database type alignment, and entitlement-based access. Keep it byte-identical across Core, SnapScreen, and Wakekeeper.
-
-Application product catalogues, application-only tables, RPCs, policies, and entitlement definitions remain developer-owned. Test them in `test/project-billing-schema-contract.test.mjs`, not in the managed shared test. A consumer with that file extends its merge-managed `test:billing-schema` package script to execute both tests, so Core updates can replace the shared assertions without discarding or absorbing product behaviour.
+Core does not distribute, generate or run billing tests. Application product catalogues, tables, RPCs, policies and entitlement definitions remain developer-owned.
 
 ## Checkout and lifecycle
 
@@ -69,7 +67,7 @@ Subscribe only to implemented events:
 
 Stripe events can be duplicated and delivered out of order. Subscription handlers retrieve the current object and atomically replace its complete item set. The processor route uses `STRIPE_EVENT_PROCESSOR_SECRET`. The independently scheduled reconciliation route uses `STRIPE_RECONCILIATION_SECRET`, refreshes every mapped Customer's subscriptions and entitlements, and reports per-Customer failures. Configure both routes in the deployment scheduler.
 
-Do not select all events. Add an event only with a handler, idempotency rule, retry behaviour, fixture, tests, and matching human/agent documentation.
+Do not select all events. Add an event only with a handler, idempotency rule, retry behaviour and matching human/agent documentation.
 
 ## Database and security
 
@@ -80,11 +78,11 @@ Billing storage lives in the internal `app` schema. Browser access is through na
 ## Required verification
 
 - Execute both fresh and upgrade migrations; regenerate types from the resulting schema.
-- Run database advisors plus explicit `anon`, `authenticated`, and `service_role` grant/RLS tests.
+- Run database advisors and directly inspect `anon`, `authenticated`, and `service_role` grants and RLS policies.
 - Test multiple accounts per user, multiple members per account, multiple subscriptions, multiple items, quantities, mixed intervals, and independent cancellation dates.
 - Test Dynamic Payment Methods in a Stripe Sandbox, including delayed/async methods where enabled.
 - Test duplicate and reverse-order events, processing leases, poison events, replay, entitlement replacement, and scheduled reconciliation.
 - Test Customer Portal authorisation so ordinary members cannot open a management session.
-- Upgrade SDK, API/event-destination version, fixtures, types, tests, README, Docusaurus, and this guidance together.
+- Upgrade SDK, API/event-destination version, fixtures, types, README, Docusaurus, and this guidance together.
 
 Stripe Sync Engine is not the canonical default. Treat it only as a separately approved architecture and security migration. The repository MCP remains descriptive and read-only: it must not receive Stripe secrets, call Stripe, expose records, or apply migrations.

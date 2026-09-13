@@ -32,4 +32,4 @@ Organisation billing appears only when `BILLING.ACCOUNT_SUBJECTS.ORGANISATION` i
 
 ## Verification
 
-Run `npm run test:organisation-ui`, the English-catalogue check, `next typegen`, TypeScript, and a production build. Verify keyboard focus, mobile layout, empty and error states, owner/admin/member controls, reserved and duplicate handles, invitation expiry/replay/wrong-email denial, session refresh after switching, and exact managed-path hashes in CLI-installed consumers.
+Verify keyboard focus, mobile layout, empty and error states, owner/admin/member controls, reserved and duplicate handles, invitation expiry/replay/wrong-email denial and session refresh after switching. The CLI directly compares managed file contents during installation and diagnosis.

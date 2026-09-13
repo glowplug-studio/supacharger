@@ -69,7 +69,7 @@ export function FileUploadWidget({
   onExistingFileRemove,
   onFilesChange,
   processingText = 'Uploading files…',
-  uploadProgress,
+  uploadProgress = 0,
 }: {
   accept?: string;
   className?: string;
@@ -182,7 +182,12 @@ export function FileUploadWidget({
 
         {isProcessing ? (
           <div className='mt-4 space-y-2'>
-            <Progress value={uploadProgress} />
+            <div className='flex items-center gap-3'>
+              <Progress className='flex-1' value={uploadProgress} />
+              <span className='w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground'>
+                {Math.round(uploadProgress)}%
+              </span>
+            </div>
             <p className='text-xs text-muted-foreground'>{processingText}</p>
           </div>
         ) : null}

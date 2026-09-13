@@ -53,12 +53,9 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('tailwind.project.config.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('supabase/migrations/20260812113258_billing.sql').ownership, 'forward-only-history');
   assert.equal(classifyPath('.supacharger/migration-aliases.json').ownership, 'developer-owned');
-  assert.equal(classifyPath('test/billing-schema-contract.test.mjs').ownership, 'cli-managed-core');
-  assert.equal(
-    classifyPath('test/project-billing-schema-contract.test.mjs').ownership,
-    'developer-owned-contract-test',
-  );
-  assert.match(classifyPath('test/project-billing-schema-contract.test.mjs').guidance, /package script/);
+  assert.equal(classifyPath('test/billing-schema-contract.test.mjs').ownership, 'developer-owned');
+  assert.equal(classifyPath('test/project-billing-schema-contract.test.mjs').ownership, 'developer-owned');
+  assert.match(classifyPath('test/project-billing-schema-contract.test.mjs').guidance, /Do not create or restore/);
   assert.equal(classifyPath('postcss.config.mjs').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/process-image-upload/index.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/_shared/image-transform.ts').ownership, 'cli-managed-core');
@@ -108,10 +105,9 @@ test('searches the CLI upgrade guidance exposed to the MCP', async () => {
   assert.ok(matches.some((match) => match.path === 'docs/agents/cli-upgrades.md'));
 });
 
-test('searches the billing test ownership guidance exposed to the MCP', async () => {
-  const matches = await searchGuidance('project-billing-schema-contract');
-  assert.ok(matches.some((match) => match.path === 'docs/agents/billing.md'));
-  assert.ok(matches.some((match) => match.path === 'docs/agents/ownership.md'));
+test('searches the direct file-comparison guidance exposed to the MCP', async () => {
+  const matches = await searchGuidance('directly compares');
+  assert.ok(matches.some((match) => match.path === 'docs/agents/cli-upgrades.md'));
 });
 
 test('searches the image transformation guidance exposed to the MCP', async () => {

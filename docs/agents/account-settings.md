@@ -27,7 +27,7 @@ Keep an extension's client and server schemas aligned. The managed route validat
 
 ## Configuration and ownership
 
-`ACCOUNT_SETTINGS`, profile media policies, organisation chooser settings, and billing subjects are required fields in the typed `SupachargerConfig` contract. The values remain developer-owned. Managed account code and tests must be byte-identical in CLI-installed consumers, while messages and account adapters remain preserved developer paths.
+`ACCOUNT_SETTINGS`, profile media policies, organisation chooser settings, and billing subjects are required fields in the typed `SupachargerConfig` contract. The values remain developer-owned. Managed account code must be byte-identical in CLI-installed consumers, while messages and account adapters remain preserved developer paths.
 
 Specdrive consumes the non-visual contracts but retains its licensed presentation through the details-page and passthrough adapters. Do not copy that presentation into Core.
 

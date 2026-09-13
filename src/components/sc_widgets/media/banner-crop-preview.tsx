@@ -71,7 +71,7 @@ export function BannerCropPreview({
       />
       <Button
         aria-label={dragLabel}
-        className='absolute inset-0 h-full w-full touch-none rounded-none bg-transparent p-0 hover:bg-background/10 focus-visible:ring-inset active:bg-background/10 disabled:opacity-100'
+        className='absolute inset-0 h-full w-full touch-none rounded-none bg-transparent p-0 hover:bg-background/10 focus-visible:ring-inset active:bg-background/10 disabled:opacity-100 dark:hover:bg-background/10 dark:active:bg-background/10'
         disabled={disabled || !canDrag}
         type='button'
         variant='ghost'
