@@ -102,21 +102,26 @@ export default function ResetPasswordForm() {
           email={email}
           purpose='recovery'
           onResend={async () => {
-            await post('/api/account/request-password-reset', { email });
-            return true;
+            setIsLoading(true);
+            try {
+              await post('/api/account/request-password-reset', { email });
+              return true;
+            } finally {
+              setIsLoading(false);
+            }
           }}
         />
       ) : null}
       <div className='sc-auth-actions sc-auth-actions-between'>
-        {!isSuccess ? <SaveButton
+        <SaveButton
           isLoading={isLoading}
-          isSuccess={isSuccess}
+          isSuccess={isSuccess && !isLoading}
           initialLabel={tPasswordResetPage('getResetLink')}
           savingLabel={tAuthTerms('sendNewAuthEmailSendingButtonLabel')}
           completeLabel={tAuthTerms('sendNewAuthEmailSentButtonLabel')}
           disabled={isSuccess || isLoading}
           className='sc-auth-primary-button'
-        /> : null}
+        />
         <Link className='sc-auth-link' href='/account/login'>
           {tAuthTerms('backToSignIn')}
         </Link>

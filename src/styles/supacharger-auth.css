@@ -300,7 +300,13 @@
     line-height: 1.625;
   }
 
-  .sc-auth-error-action {
+  .sc-auth-page .sc-auth-error-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.25;
+    padding-block: var(--auth-action-padding-block, 0.75rem);
+    padding-inline: var(--auth-action-padding-inline, 1.25rem);
     justify-self: start;
     margin-top: 0.5rem;
   }
@@ -955,4 +961,20 @@
     text-decoration: underline;
     text-underline-offset: 2px;
   }
+}
+
+/* Developer-owned feedback colours; Core exposes state through data-state. */
+.sc-auth-page .sc-auth-primary-button[data-state='sent'] {
+  background: var(--auth-sent-background, #86efac) !important;
+  color: var(--auth-sent-foreground, #166534) !important;
+  opacity: 1;
+}
+
+.sc-auth-page .sc-auth-primary-button[data-state='sent'] :is(span, svg) {
+  color: inherit !important;
+}
+
+.sc-auth-page .sc-auth-resend-button[data-state='sent'] {
+  color: var(--auth-resend-sent-foreground, #4ade80);
+  opacity: 1;
 }

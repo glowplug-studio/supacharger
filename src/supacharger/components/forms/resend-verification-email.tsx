@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { ArrowRight, MailCheck } from 'lucide-react';
+import { ArrowRight, Check, MailCheck } from 'lucide-react';
 
 import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -28,6 +28,7 @@ export function ResendVerificationEmail({
   purpose?: ResendPurpose;
 }) {
   const t = useTranslations('AuthJourney');
+  const tAuthTerms = useTranslations('AuthTerms');
   const signInCodeResendSuccessLabel = t.has('signInCodeResendSuccess')
     ? t('signInCodeResendSuccess')
     : 'A new login code has been sent.';
@@ -71,6 +72,7 @@ export function ResendVerificationEmail({
 
     setIsSending(false);
     if (succeeded) {
+      setSecondsRemaining(SC_CONFIG.EMAIL_RESEND_COOLDOWN_SECONDS);
       setCooldownEndsAt(Date.now() + SC_CONFIG.EMAIL_RESEND_COOLDOWN_SECONDS * 1000);
     }
     setMessage({
@@ -96,18 +98,21 @@ export function ResendVerificationEmail({
           <span className='sc-auth-resend-timer' role='timer'>
             {t('sendAgainIn', { seconds: secondsRemaining })}
           </span>
-        ) : (
+        ) : null}
+        {secondsRemaining === 0 || isSending || message?.kind === 'success' ? (
           <button
             type='button'
             className='sc-auth-link sc-auth-resend-button'
-            disabled={isSending}
+            disabled={isSending || secondsRemaining > 0}
+            aria-busy={isSending}
+            data-state={isSending ? 'sending' : secondsRemaining > 0 ? 'sent' : 'idle'}
             onClick={resend}
           >
-            {isSending ? <Loader2 className='sc-auth-icon' aria-hidden='true' /> : null}
-            <span>{t('sendAnother')}</span>
-            <ArrowRight className='sc-auth-icon' aria-hidden='true' />
+            {isSending ? <Loader2 className='sc-auth-icon' aria-hidden='true' /> : secondsRemaining > 0 ? <Check className='sc-auth-icon' aria-hidden='true' /> : null}
+            <span>{isSending ? tAuthTerms('sendNewAuthEmailSendingButtonLabel') : secondsRemaining > 0 ? tAuthTerms('sendNewAuthEmailSentButtonLabel') : t('sendAnother')}</span>
+            {!isSending && secondsRemaining === 0 ? <ArrowRight className='sc-auth-icon' aria-hidden='true' /> : null}
           </button>
-        )}
+        ) : null}
       </div>
       {message ? (
         <div

@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T20:35:11Z; base_commit=9ffe4f61c9add56e73358ac9bbbc5e000695f288; main_commit=9ffe4f61c9add56e73358ac9bbbc5e000695f288; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=9ffe4f61c9add56e73358ac9bbbc5e000695f288; scope=logout-guard-correction; excluded=separate-documentation-repository; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-13T20:58:14Z; base_commit=6efc5e7540384deb2cfb87730d84904ff34e3640; main_commit=6efc5e7540384deb2cfb87730d84904ff34e3640; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=6efc5e7540384deb2cfb87730d84904ff34e3640; scope=auth-sent-feedback-and-action-alignment; excluded=uncommitted-login-validation-work-and-separate-documentation-repository; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -37,6 +37,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Password-reset forms retain their green Sent action alongside the resend countdown, with loading and sent feedback for resends. Email-change action links have centred labels and developer-owned padding and colour controls.
 
 - Logout reaches its cookie-clearing handler even when the session has expired or disappeared, preventing POST redirects to login and subsequent 405 errors. Logout responses are never cached.
 

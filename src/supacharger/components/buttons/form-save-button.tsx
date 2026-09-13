@@ -29,6 +29,8 @@ export default function SaveButton({
   return (
     <Button
       type={type}
+      data-state={isLoading ? 'sending' : isSuccess ? 'sent' : 'idle'}
+      aria-busy={isLoading}
       onClick={onClick}
       disabled={isLoading || isSuccess || disabled}
       className={`
