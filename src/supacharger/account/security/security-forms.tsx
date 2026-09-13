@@ -24,6 +24,7 @@ export function SecurityForms({ currentMethod, email, hasPasswordIdentity, pendi
   providers: string[];
 }) {
   const t = useTranslations('AccountSecurity');
+  const tSupabaseErrors = useTranslations('SupabaseErrorCodes');
   const [emailState, setEmailState] = useState<ActionState>(null);
   const [passwordState, setPasswordState] = useState<ActionState>(null);
   const [emailPending, setEmailPending] = useState(false);
@@ -80,7 +81,10 @@ export function SecurityForms({ currentMethod, email, hasPasswordIdentity, pendi
         setPasswordState(publish({ kind: 'success', text: t('password.saved') }));
       } else {
         const knownError = result.error && ['oldPasswordRequired', 'provided_password_mismatch', 'oldPasswordIncorrect', 'passwordUpdateFailed', 'unauthenticated'].includes(result.error) ? result.error : 'passwordUpdateFailed';
-        setPasswordState(publish({ kind: 'error', text: t(`errors.${knownError}`) }));
+        const message = result.error === 'samePassword'
+          ? tSupabaseErrors('samePassword')
+          : t(`errors.${knownError}`);
+        setPasswordState(publish({ kind: 'error', text: message }));
       }
     } catch {
       setPasswordState(publish({ kind: 'error', text: t('errors.passwordUpdateFailed') }));

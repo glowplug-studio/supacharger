@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T20:58:14Z; base_commit=6efc5e7540384deb2cfb87730d84904ff34e3640; main_commit=6efc5e7540384deb2cfb87730d84904ff34e3640; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=6efc5e7540384deb2cfb87730d84904ff34e3640; scope=auth-sent-feedback-and-action-alignment; excluded=uncommitted-login-validation-work-and-separate-documentation-repository; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-13T21:04:55Z; base_commit=27bf74b241a33bd0f2f4725b88c7199de4d9bc56; main_commit=27bf74b241a33bd0f2f4725b88c7199de4d9bc56; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=27bf74b241a33bd0f2f4725b88c7199de4d9bc56; scope=password-reuse-error-feedback; excluded=uncommitted-login-validation-work-and-separate-documentation-repository; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -37,6 +37,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Password reset and account-security forms explain when the new password matches the current password, instead of showing a generic update failure.
 
 - Password-reset forms retain their green Sent action alongside the resend countdown, with loading and sent feedback for resends. Email-change action links have centred labels and developer-owned padding and colour controls.
 

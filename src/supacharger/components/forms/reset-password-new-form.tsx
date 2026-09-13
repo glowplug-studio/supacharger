@@ -13,6 +13,7 @@ export default function ResetPasswordNewForm() {
   const tPasswordResetPage = useTranslations('PasswordResetPage');
   const tGlobalUI = useTranslations('GlobalUI');
   const tAuthTerms = useTranslations('AuthTerms');
+  const tSupabaseErrors = useTranslations('SupabaseErrorCodes');
   const tPasswordErrors = useTranslations('evaluatePasswordStrengthErrorCodes');
   const router = useRouter();
   const [newPassword, setNewPassword] = useState('');
@@ -57,7 +58,9 @@ export default function ResetPasswordNewForm() {
       ].includes(result.error)
         ? result.error
         : 'passwordUpdateFailed';
-      const message = tPasswordErrors(errorKey);
+      const message = result?.error === 'samePassword'
+        ? tSupabaseErrors('samePassword')
+        : tPasswordErrors(errorKey);
       toast.error(message);
       setStatus(message);
       setIsLoading(false);

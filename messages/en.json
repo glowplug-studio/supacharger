@@ -94,7 +94,7 @@
     "otpAlreadyVerified": "Your email has already been verified.",
     "providerDisabled": "That sign-in provider is currently disabled.",
     "otpExpired": "The One Time Passcode has expired or is invalid",
-    "samePassword": "New password should be different from the old password",
+    "samePassword": "Your new password must be different from your current password.",
     "tokenAuthApiError": "Token has expired or is invalid",
     "signupApiAuthError": "Email address and password do not meet security requirements"
   },
