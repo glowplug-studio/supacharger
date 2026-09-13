@@ -12,7 +12,7 @@
  *
  * ========================================================================= */
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -23,6 +23,8 @@ import { Input } from '@/supacharger/components/primitives/input';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import SaveButton from '../buttons/form-save-button';
+
+import { ResendVerificationEmail } from './resend-verification-email';
 
 async function post<T = any>(url: string, data: any): Promise<T> {
   const res = await fetch(url, {
@@ -45,16 +47,9 @@ export default function ResetPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [hideEmailField, setHideEmailField] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading || isSuccess) return;
     setIsLoading(true);
 
     try {
@@ -62,7 +57,6 @@ export default function ResetPasswordForm() {
       toast.success(tPasswordResetPage('emailSent'), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
       setHideEmailField(true);
       setIsSuccess(true);
-      timeoutRef.current = setTimeout(() => setIsSuccess(false), 24 * 60 * 60 * 1000);
     } catch (error: any) {
       const errorMsg =
         error?.error_description || error?.error || error?.message || tSupabaseErrorCodes('genericError');
@@ -74,6 +68,13 @@ export default function ResetPasswordForm() {
 
   return (
     <form className='sc-auth-form' onSubmit={handleSubmit}>
+      {isSuccess ? (
+        <p className='sc-auth-description' role='status'>
+          {tPasswordResetPage.has('emailSentConfirmation') && tPasswordResetPage('emailSentConfirmation', { email })
+            ? tPasswordResetPage('emailSentConfirmation', { email })
+            : `We've sent a password reset link to ${email}. Check your inbox and spam folder.`}
+        </p>
+      ) : null}
       <div
         className='sc-auth-collapsible-field'
         data-hidden={hideEmailField ? 'true' : 'false'}
@@ -96,8 +97,18 @@ export default function ResetPasswordForm() {
           />
         </div>
       </div>
+      {isSuccess ? (
+        <ResendVerificationEmail
+          email={email}
+          purpose='recovery'
+          onResend={async () => {
+            await post('/api/account/request-password-reset', { email });
+            return true;
+          }}
+        />
+      ) : null}
       <div className='sc-auth-actions sc-auth-actions-between'>
-        <SaveButton
+        {!isSuccess ? <SaveButton
           isLoading={isLoading}
           isSuccess={isSuccess}
           initialLabel={tPasswordResetPage('getResetLink')}
@@ -105,7 +116,7 @@ export default function ResetPasswordForm() {
           completeLabel={tAuthTerms('sendNewAuthEmailSentButtonLabel')}
           disabled={isSuccess || isLoading}
           className='sc-auth-primary-button'
-        />
+        /> : null}
         <Link className='sc-auth-link' href='/account/login'>
           {tAuthTerms('backToSignIn')}
         </Link>

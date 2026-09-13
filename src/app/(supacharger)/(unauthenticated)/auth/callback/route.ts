@@ -8,6 +8,7 @@ import {
   resolveAuthCallbackFailure,
   resolveAuthCallbackSuccess,
 } from '@/supacharger.adapters/auth-callback';
+import { EMAIL_CHANGE_PENDING_MESSAGE, emailChangeResultPath } from '@/supacharger/auth/email-change';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { appURL } from '@/supacharger/utils/app-origin';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
@@ -21,7 +22,14 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const context = { code, nextPath, requestUrl, supabase };
 
+  if (flow === 'email-change' && requestUrl.searchParams.get('message') === EMAIL_CHANGE_PENDING_MESSAGE) {
+    return NextResponse.redirect(appURL(emailChangeResultPath('pending'), origin));
+  }
+
   if (!code) {
+    if (flow === 'email-change') {
+      return NextResponse.redirect(appURL(emailChangeResultPath('invalid'), origin));
+    }
     return NextResponse.redirect(
       await resolveAuthCallbackFailure({ ...context, reason: 'missing-code' }),
     );
@@ -29,6 +37,9 @@ export async function GET(request: NextRequest) {
 
   const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
   if (exchangeError) {
+    if (flow === 'email-change') {
+      return NextResponse.redirect(appURL(emailChangeResultPath('invalid'), origin));
+    }
     return NextResponse.redirect(
       await resolveAuthCallbackFailure({ ...context, error: exchangeError, reason: 'exchange-error' }),
     );
@@ -41,6 +52,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(
       await resolveAuthCallbackFailure({ ...context, reason: 'missing-user' }),
     );
+  }
+
+  if (flow === 'email-change') {
+    return NextResponse.redirect(appURL(emailChangeResultPath('complete'), origin));
   }
 
   if (flow === 'recovery') {

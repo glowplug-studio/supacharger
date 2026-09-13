@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T19:09:16Z; base_commit=b2940b733a3f04f73392ad79754d052965969c04; main_commit=b2940b733a3f04f73392ad79754d052965969c04; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=b2940b733a3f04f73392ad79754d052965969c04; scope=recovery-guidance-correction; excluded=unrelated-working-tree-changes-and-separate-documentation-repository-and-hosted-project-settings; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-13T20:18:58Z; base_commit=f5af049463749de17374bbf5c8e5f11372c40b7a; main_commit=f5af049463749de17374bbf5c8e5f11372c40b7a; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=f5af049463749de17374bbf5c8e5f11372c40b7a; scope=auth-recovery-and-profile-reconciliation; excluded=separate-documentation-repository-and-hosted-project-settings; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -37,6 +37,9 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Password recovery now keeps an inbox confirmation and timed resend action visible. Legacy root token links reach verification, and email changes distinguish the first inbox confirmation, completed PKCE/token verification and invalid links.
+- A forward migration reconciles older profiles with nullable usernames so administrative creation and invitations retain automatic profile creation.
 
 - Password recovery accepts Supabase’s token-hash verification without requiring a `recovery` AMR that this flow does not issue. The new-password page and API verify the current non-anonymous user, and Supabase authorises `updateUser`. Deploy the updated Core routes together; no database migration or additional recovery credential is required.
 

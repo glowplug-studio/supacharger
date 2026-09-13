@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
 import { resolveAuthConfirmationRedirect } from '@/supacharger/auth/confirmation-redirect';
+import { EMAIL_CHANGE_PENDING_MESSAGE, emailChangeResultPath } from '@/supacharger/auth/email-change';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
@@ -27,10 +28,27 @@ export async function GET(request: NextRequest) {
   const requestedNext = searchParams.get('next');
   const supabase = await createClient();
 
+  if (searchParams.get('message') === EMAIL_CHANGE_PENDING_MESSAGE) {
+    return redirectWithoutCaching(emailChangeResultPath('pending'), request.url);
+  }
+
+  // Native ConfirmationURL templates complete PKCE here; token-hash templates
+  // still verify directly below. Preserve only the intended account destination.
+  const code = searchParams.get('code');
+  if (!token_hash && code && requestedNext === '/account/security') {
+    const callback = new URL('/auth/callback', request.url);
+    callback.searchParams.set('code', code);
+    callback.searchParams.set('flow', 'email-change');
+    return redirectWithoutCaching(callback, request.url);
+  }
+
   const parsed = confirmationSchema.safeParse({ token_hash, type });
   if (parsed.success) {
-    const { error } = await supabase.auth.verifyOtp(parsed.data);
+    const { data, error } = await supabase.auth.verifyOtp(parsed.data);
     if (!error) {
+      if (type === 'email_change') {
+        return redirectWithoutCaching(emailChangeResultPath(data.session ? 'complete' : 'pending'), request.url);
+      }
       if (type === 'recovery') {
         // Supabase's token-hash verification establishes the session. Its AMR
         // is `otp`, not a recovery-specific permission or session type.
@@ -44,6 +62,10 @@ export async function GET(request: NextRequest) {
         outcome: 'verified',
       }), request.url);
     }
+  }
+
+  if (type === 'email_change') {
+    return redirectWithoutCaching(emailChangeResultPath('invalid'), request.url);
   }
 
   // A signed-in browser must never turn a failed recovery token into success.

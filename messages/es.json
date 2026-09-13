@@ -165,7 +165,8 @@
     "sendAgainIn": "Enviar de nuevo en {seconds}s",
     "sendAnother": "Enviar de nuevo",
     "loginHere": "Inicia sesión aquí",
-    "getVerificationLink": "Obtener enlace de verificación"
+    "getVerificationLink": "Obtener enlace de verificación",
+    "recoveryResendSuccess": ""
   },
   "LoginPage": {
     "title": "Iniciar sesión",
@@ -180,7 +181,8 @@
     "noCode": "El enlace de verificación ha caducado o el código no es válido",
     "getResetLink": "Enviar enlace",
     "emailSent": "Enlace enviado, revisa tu bandeja de entrada.",
-    "enterEmailPlaceholder": "Introduce tu correo electrónico"
+    "enterEmailPlaceholder": "Introduce tu correo electrónico",
+    "emailSentConfirmation": ""
   },
   "CreateAccountPage": {
     "title": "Crear una cuenta",
@@ -554,6 +556,8 @@
     "by": "por"
   },
   "LicensePage": {
+    "readThirdPartyLicense": "",
+    "distributionBody": "",
     "eyebrow": "Licencias de código abierto",
     "title": "Utilice Supacharger con atribución o elija una licencia comercial.",
     "introduction": "Esta página resume la licencia del repositorio y las licencias declaradas por sus dependencias directas. Es una guía práctica, no un sustituto de los textos de licencia que rigen.",
@@ -566,6 +570,7 @@
     "dependenciesTitle": "Instantánea de licencia de dependencia directa",
     "dependenciesIntro": "El tiempo de ejecución directo instalado y las dependencias de desarrollo tienen en su mayoría licencias permisivas. Estos grupos se basan en metadatos de paquetes y archivos de licencia incluidos en el archivo de bloqueo actual, no en una opinión legal ni en un aviso completo de dependencia transitiva.",
     "groups": {
+      "unlicense": { "title": "", "description": "" },
       "mit": {
         "title": "MIT",
         "description": "Licencias permisivas que generalmente requieren la preservación de los derechos de autor y avisos de licencia en copias redistribuidas."
@@ -1449,5 +1454,13 @@
         ""
       ]
     }
+  },
+  "EmailChangeResult": {
+    "pendingTitle": "",
+    "pendingDescription": "",
+    "completeTitle": "",
+    "completeDescription": "",
+    "invalidTitle": "",
+    "invalidDescription": ""
   }
 }

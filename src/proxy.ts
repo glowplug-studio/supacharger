@@ -5,6 +5,7 @@ import englishMessages from '../messages/en.json';
 import { isSupportedLocale, LOCALE_COOKIE_NAME } from './i18n/config';
 import { updateSession } from './lib/supabase/supacharger/proxy';
 import { resolveProjectRequest } from './supacharger.adapters/request-guard';
+import { EMAIL_CHANGE_PENDING_MESSAGE } from './supacharger/auth/email-change';
 import { copySupabaseResponseState } from './supacharger/auth/proxy-response';
 import { pathMatches } from './supacharger/auth/route-policy';
 import { withNextPath } from './supacharger/auth/safe-next-path';
@@ -28,6 +29,25 @@ function redirectWithSessionState(request: NextRequest, response: NextResponse, 
 }
 
 export async function proxy(request: NextRequest) {
+  // Older hosted templates fell back to the Site URL. Route their credentials
+  // to the verifier before the ordinary page guard can wrap them in `next`.
+  if (request.nextUrl.pathname === '/') {
+    const params = request.nextUrl.searchParams;
+    const isTokenLink = params.has('token_hash') &&
+      ['email', 'signup', 'invite', 'magiclink', 'recovery', 'email_change'].includes(params.get('type') ?? '');
+    if (isTokenLink || params.get('message') === EMAIL_CHANGE_PENDING_MESSAGE) {
+      const target = new URL('/auth/confirm', request.url);
+      for (const key of ['token_hash', 'type', 'message', 'lang']) {
+        const value = params.get(key);
+        if (value) target.searchParams.set(key, value);
+      }
+      const response = NextResponse.redirect(target);
+      response.headers.set('Cache-Control', 'private, no-store');
+      response.headers.set('Referrer-Policy', 'no-referrer');
+      return response;
+    }
+  }
+
   const hasLanguageHandoff = request.nextUrl.searchParams.has('lang');
   const handoffLocale = request.nextUrl.searchParams.get('lang');
   const acceptedHandoffLocale = isSupportedLocale(handoffLocale) ? handoffLocale : null;

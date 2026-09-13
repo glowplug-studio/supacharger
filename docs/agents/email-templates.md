@@ -29,3 +29,5 @@ Keep `{{ .SiteURL }}`, `{{ .Email }}` and other Supabase variables intact. Repla
 Reference: https://supabase.com/docs/guides/auth/auth-email-templates
 
 The repository MCP exposes `supacharger_get_email_template` and `supacharger://email-templates/{template}` resources. `brevo` returns the generic HTML; `supabase_` names identify the Auth files with hyphens replaced by underscores. The optional signup OTP alternative is deliberately excluded from the MCP catalogue.
+
+For email changes, the supplied `change-email-address.html` uses `{{ .ConfirmationURL }}`. Core supports its pending dual-confirmation message and subsequent PKCE return to `/auth/confirm?next=/account/security`. A custom token-hash alternative uses `{{ .RedirectTo }}&amp;token_hash={{ .TokenHash }}&amp;type=email_change`; keep the existing `next` query. Do not change secure email-change policy to hide the intermediate state.

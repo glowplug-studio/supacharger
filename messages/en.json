@@ -166,7 +166,8 @@
     "sendAgainIn": "Send again in {seconds}s",
     "sendAnother": "Send again",
     "loginHere": "Login Here",
-    "getVerificationLink": "Get verification link"
+    "getVerificationLink": "Get verification link",
+    "recoveryResendSuccess": "A new password reset link has been sent."
   },
   "LoginPage": {
     "title": "Sign In",
@@ -181,7 +182,8 @@
     "noCode": "The verification link has expired, or the code is invalid",
     "getResetLink": "Send link",
     "emailSent": "Link sent, check your inbox",
-    "enterEmailPlaceholder": "Enter your email"
+    "enterEmailPlaceholder": "Enter your email",
+    "emailSentConfirmation": "We've sent a password reset link to {email}. Check your inbox and spam folder."
   },
   "CreateAccountPage": {
     "title": "Create an Account",
@@ -1815,5 +1817,13 @@
         "If you did not make this change, please contact support immediately."
       ]
     }
+  },
+  "EmailChangeResult": {
+    "pendingTitle": "Check your other inbox",
+    "pendingDescription": "This link has been accepted. Confirm the link sent to your other email address to finish changing your email.",
+    "completeTitle": "Email address updated",
+    "completeDescription": "Your email change is confirmed. You can now sign in with your new email address.",
+    "invalidTitle": "Email confirmation failed",
+    "invalidDescription": "This link is invalid or has expired. Return to account security to request another email change."
   }
 }

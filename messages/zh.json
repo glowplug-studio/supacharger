@@ -165,7 +165,8 @@
     "sendAgainIn": "以 {seconds}s 再次发送",
     "sendAnother": "再次发送",
     "loginHere": "在此登录",
-    "getVerificationLink": "获取验证链接"
+    "getVerificationLink": "获取验证链接",
+    "recoveryResendSuccess": ""
   },
   "LoginPage": {
     "title": "登入",
@@ -180,7 +181,8 @@
     "noCode": "验证链接已过期或代码无效",
     "getResetLink": "发送链接",
     "emailSent": "链接已发送，请检查您的收件箱",
-    "enterEmailPlaceholder": "输入您的电子邮件"
+    "enterEmailPlaceholder": "输入您的电子邮件",
+    "emailSentConfirmation": ""
   },
   "CreateAccountPage": {
     "title": "创建一个帐户",
@@ -550,6 +552,8 @@
     "by": "经过"
   },
   "LicensePage": {
+    "readThirdPartyLicense": "",
+    "distributionBody": "",
     "eyebrow": "开源许可",
     "title": "使用 Supacharger 并注明归属，或选择商业许可证。",
     "introduction": "本页总结了存储库许可证及其直接依赖项声明的许可证。它是实用指南，不能替代管理许可文本。",
@@ -562,6 +566,7 @@
     "dependenciesTitle": "直接依赖许可证快照",
     "dependenciesIntro": "安装的直接运行时和开发依赖项大多是经过许可的。这些组基于当前锁定文件中的包元数据和捆绑许可证文件，而不是法律意见或完整的传递依赖通知。",
     "groups": {
+      "unlicense": { "title": "", "description": "" },
       "mit": {
         "title": "麻省理工学院",
         "description": "许可通常要求在重新分发的副本中保留版权和许可声明。"
@@ -1445,5 +1450,13 @@
         ""
       ]
     }
+  },
+  "EmailChangeResult": {
+    "pendingTitle": "",
+    "pendingDescription": "",
+    "completeTitle": "",
+    "completeDescription": "",
+    "invalidTitle": "",
+    "invalidDescription": ""
   }
 }

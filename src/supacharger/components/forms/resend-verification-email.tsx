@@ -12,7 +12,7 @@ type ResendMessage = {
   text: string;
 };
 
-type ResendPurpose = 'signup' | 'signin-code' | 'signin-link';
+type ResendPurpose = 'signup' | 'signin-code' | 'signin-link' | 'recovery';
 
 export function ResendVerificationEmail({
   email,
@@ -76,7 +76,10 @@ export function ResendVerificationEmail({
     setMessage({
       kind: succeeded ? 'success' : 'error',
       text: succeeded
-        ? purpose === 'signin-code'
+        ? purpose === 'recovery'
+          ? (t.has('recoveryResendSuccess') && t('recoveryResendSuccess')
+            ? t('recoveryResendSuccess') : 'A new password reset link has been sent.')
+          : purpose === 'signin-code'
           ? signInCodeResendSuccessLabel
           : purpose === 'signin-link'
             ? signInLinkResendSuccessLabel
