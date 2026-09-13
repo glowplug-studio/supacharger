@@ -20,7 +20,7 @@ Report:
 - recommended canonical behaviour; and
 - any decision still required from the human owner.
 
-For a Supacharger Core gate report, state that Supacharger Core is affected, identify every consumer requiring synchronisation, and update Supacharger Core first after approval, then human documentation, then consumers. For a project core gate report, state that Supacharger Core and other consumers are unaffected, then change only the owning application's protected contract after approval.
+For a Supacharger Core gate report, state that Supacharger Core is affected, identify every consumer requiring synchronisation, and update Supacharger Core first after approval, then consumers. Core contributor policy determines whether the promoted change needs Docusaurus documentation. For a project core gate report, state that Supacharger Core and other consumers are unaffected, then change only the owning application's protected contract after approval.
 
 ## Protect updates
 

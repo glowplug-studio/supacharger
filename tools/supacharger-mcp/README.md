@@ -87,3 +87,5 @@ The `instructions` topic exposes root `AGENTS.md`, `working_rules` exposes `.age
 Project instructions and installed skills are developer-owned. The independent public-skills installer is maintained in `tools/supacharger-skills/` and distributed through the CLI. The optional private Core contributor submodule remains absent and inert unless a contributor explicitly runs `supacharger coredev install`; `supacharger coredev update` is its only CLI update path and refuses local changes. This knowledge MCP remains read-only. See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing).
 
 Application copies of `docs/agents/` are developer-owned. Core updates install missing references and preserve existing ones; review changed conventions against the actual installed implementation. The MCP exposes those local references and does not imply that the application is at the latest Core revision.
+
+Installed skills are local tooling in Core and are not part of its committed reference set. The changelog skill is maintained in the public skills catalogue; contributor policy owns Core-specific decisions.

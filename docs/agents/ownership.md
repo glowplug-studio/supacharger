@@ -125,3 +125,5 @@ The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-ma
 `docs/agents/` is canonical technical reference, currently preserved rather than exact-managed by the Core updater. A project override belongs in `.agents/project/AGENTS.md`; editing exact shared guidance creates a detectable upgrade conflict. See `agent-guidance.md` for routing and `cli-upgrades.md` for starter installation.
 
 `docs/agents/` is developer-owned in consuming applications. The updater adds missing Markdown references but never overwrites existing product notes. Review and merge changed Core conventions deliberately. This is distinct from exact-managed `.agents/supacharger/guidance.md`.
+
+`.supacharger/skills-lock.json` is CLI-generated metadata for skills installed through the Supacharger CLI. Do not edit it manually. Its inclusion in `developerOwnedPaths` means Core updates preserve the project’s installation record; it does not make the file developer-editable. Use the skills install/update commands to maintain it.

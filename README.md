@@ -585,4 +585,4 @@ Use `supacharger skills install` to select free public skills, or `supacharger s
 
 See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing) for installation and ownership details.
 
-Technical references under `docs/agents/` are developer-owned in applications: Core updates install missing files and preserve existing notes. Initialisation excludes test suites, fixtures and test scripts, including nested maintainer tests. Updates remove obsolete test scripts; previously installed application tests require deliberate removal. Public skills remain independent copied folders, not the optional contributor submodule.
+Technical references under `docs/agents/` are developer-owned in applications: Core updates install missing files and preserve existing notes. Public skills are independently installed folders, not the optional contributor submodule. In this Core repository, installed skills and their records remain local and are ignored by Git. Generated applications may commit their own selected skills and records; the CLI removes the Core-only skill ignore rules during initialisation.

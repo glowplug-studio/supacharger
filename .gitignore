@@ -51,3 +51,9 @@ tools/supacharger-mcp/node_modules
 .supacharger/skills-transaction-*/
 
 tools/supacharger-skills/node_modules/
+
+# BEGIN SUPACHARGER CORE-ONLY SKILLS
+/.agents/skills/
+/.supacharger/skills-lock.json
+/skills-lock.json
+# END SUPACHARGER CORE-ONLY SKILLS

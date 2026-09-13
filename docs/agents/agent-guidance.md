@@ -20,3 +20,5 @@
 `CHANGELOG.project.md` is application-owned. `CHANGELOG.md` records Core history and requires a human request to update Core release notes or commit Core changes. The optional contributor policy delegates writing to the general changelog skill. Installing that skill does not activate Core contributor obligations.
 
 See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing) for the structure and setup instructions.
+
+Installed skills and their records are ignored in the upstream Core repository. The public catalogue owns reusable skill source. Applications may commit their own selected installations and generated records; records protect local edits and do not restrict which skills may be installed. The CLI removes Core-only skill ignore rules when creating an application.
