@@ -16,7 +16,7 @@ Both supplied assets expose their artwork colour through the root SVG `fill` att
 
 Store every UI SVG under the developer-owned `src/` path belonging to its feature or surface, with demo-only artwork under `src/components/sc_demo/`, and render it as an SVGR component. Keep an SVG in `public` only when metadata, a manifest, a third-party callback, or another URL-based contract requires it. Do not use `<img>`, `next/image`, CSS public URLs, or public path strings for component-owned SVG artwork unless that URL delivery is explicitly requested.
 
-Responsive sources must keep a correct `viewBox` and omit root `width` and `height` when CSS controls sizing. Size the component at the call site with `size-*`, `w-*`, `h-*`, or `size-[1em]`; usually add `shrink-0` beside text and preserve the source aspect ratio. Use `currentColor` only when inheritance is intentional. Test this source contract and inspect the rendered SVG at every affected viewport rather than hiding clipping with arbitrary dimensions.
+Responsive sources must keep a correct `viewBox` and omit root `width` and `height` when CSS controls sizing. Size the component at the call site with `size-*`, `w-*`, `h-*`, or `size-[1em]`; usually add `shrink-0` beside text and preserve the source aspect ratio. Use `currentColor` only when inheritance is intentional. Verify this source contract directly and inspect the rendered SVG at every affected viewport rather than hiding clipping with arbitrary dimensions.
 
 When sourcing a replacement from [SVG Backgrounds animated SVG preloaders](https://www.svgbackgrounds.com/elements/animated-svg-preloaders/), verify and satisfy the asset's current licence and attribution terms before shipping it.
 

@@ -57,6 +57,7 @@
     ".agents/supacharger/core-development",
     ".gitmodules",
     "CHANGELOG.project.md",
-    ".supacharger/skills-lock.json"
+    ".supacharger/skills-lock.json",
+    "docs/agents"
   ]
 }

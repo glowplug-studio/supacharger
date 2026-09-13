@@ -19,3 +19,7 @@ Read `docs/agents/agent-guidance.md` and the references relevant to the task bef
 Skills installed in `.agents/skills/` are preserved during Core updates. Use `supacharger skills install` to select free public Glowplug skills, or `supacharger skills install general/changelog` for a named installation. Updating an installed skill requires an explicit `supacharger skills update` request. Never treat a general skill as permission to modify Core history.
 
 `CHANGELOG.project.md` records application changes. `CHANGELOG.md` belongs to Core contributors: only a human request to update Core release notes or commit Core changes authorises agent edits. Ordinary application commits do not. Installing an upstream Core version may copy its published changelog unchanged; this is not authoring new entries. Follow the optional contributor instructions when working on Core; do not require application developers to install them.
+
+## Existing technical references
+
+`docs/agents/` is developer-owned in applications. Core updates install missing references and preserve existing files; review changed upstream conventions and merge them deliberately, keeping product details accurate. A reference to a newer Core feature does not establish that the installed application implements it.
