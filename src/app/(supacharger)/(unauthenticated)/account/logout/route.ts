@@ -31,16 +31,19 @@ async function getLogoutResult(): Promise<LogoutRouteResult> {
 export async function GET(): Promise<NextResponse> {
   const logoutResult = await getLogoutResult();
   if (!logoutResult.success) {
-    return NextResponse.json(logoutResult, { status: 500 });
+    return NextResponse.json(logoutResult, { status: 500, headers: { "Cache-Control": "private, no-store" } });
   }
 
   return new NextResponse(null, {
     status: 303,
-    headers: { Location: logoutResult.redirectTo },
+    headers: { Location: logoutResult.redirectTo, "Cache-Control": "private, no-store" },
   });
 }
 
 export async function POST(): Promise<NextResponse> {
   const logoutResult = await getLogoutResult();
-  return NextResponse.json(logoutResult, { status: logoutResult.success ? 200 : 500 });
+  return NextResponse.json(logoutResult, {
+    status: logoutResult.success ? 200 : 500,
+    headers: { "Cache-Control": "private, no-store" },
+  });
 }

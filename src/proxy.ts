@@ -29,6 +29,14 @@ function redirectWithSessionState(request: NextRequest, response: NextResponse, 
 }
 
 export async function proxy(request: NextRequest) {
+  // Logout must reach its own SSR client even when the session is absent,
+  // expired or cannot be refreshed. Page guards must never redirect its POST.
+  if (request.nextUrl.pathname === '/account/logout') {
+    const response = NextResponse.next({ request });
+    response.headers.set('Cache-Control', 'private, no-store');
+    return response;
+  }
+
   // Older hosted templates fell back to the Site URL. Route their credentials
   // to the verifier before the ordinary page guard can wrap them in `next`.
   if (request.nextUrl.pathname === '/') {
