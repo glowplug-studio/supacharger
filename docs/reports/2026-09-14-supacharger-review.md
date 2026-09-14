@@ -1,6 +1,6 @@
 # Supacharger setup and Core distribution review
 
-Status: **In progress — documentation and bootstrap checkpoint verified**
+Status: **CLI 1.1.0 release candidate verified — npm publication pending**
 
 Last updated: 2026-09-14
 
@@ -38,15 +38,15 @@ Excluded until separately authorised:
 - [x] **Installation guidance ownership split defined.** `docs/agents/installation.md` is installed once and remains developer-editable. `docs/reports/sc-install/first-install-handhold-me-core.md` is Core-managed and must not be edited in a consuming application.
 - [x] **Setup version policy decided.** Installation guidance uses `@glowplug/supacharger-cli@latest`; `init` obtains the current Core selected by that CLI. Fixed minimum CLI or Core versions are not maintained in the setup instructions.
 
-## CLI audit findings to resolve or accept
+## CLI audit findings
 
-- [ ] **Confirm the publish target.** The inspected local CLI source is newer than the currently published npm package. Before deployment, select the intended source commit, version and release notes. Owner: human and CLI maintainer. Evidence required: chosen immutable commit and package version.
-- [ ] **Protect initialisation failure recovery.** Current initialisation can remove its target before a download succeeds. Decide and implement a staging/atomic replacement strategy before treating installation as failure-safe. Owner: CLI maintainer.
-- [ ] **Correct configuration inspection.** `doctor` uses a flattened regex-based TypeScript configuration parser and can misreport nested or wildcard values. Replace or constrain this inspection before relying on it as authoritative compatibility evidence. Owner: CLI maintainer.
-- [ ] **Handle new-path collisions.** Confirm that an incoming Core-managed path cannot silently replace an unrelated developer file that did not exist in the installed baseline. Owner: CLI maintainer.
-- [ ] **Define update recovery.** The updater does not provide a complete transaction rollback for every partial failure. Document recovery or implement atomic update staging. Owner: CLI maintainer.
-- [ ] **Clarify skip semantics.** A skipped missing or modified managed file may subsequently fail exact verification. Align prompts, actions and verification outcome. Owner: CLI maintainer.
-- [ ] **Review merge-managed limits.** `package.json`, `package-lock.json` and `supabase/config.toml` use known merge/migration logic rather than a generic semantic merge. Document supported changes and report unsupported upstream changes clearly. Owner: CLI maintainer.
+- [x] **Publish target selected.** CLI commit `be5e782` is the 1.1.0 release candidate and contains its release notes. npm `latest` remains 1.0.4 until publication.
+- [x] **Initialisation failure recovery protected.** `init` downloads and prepares Core in a sibling transaction directory, touches the target only after preparation succeeds, preserves `.git`, and restores the original target contents after installation failure.
+- [x] **Configuration inspection corrected.** `doctor` uses the TypeScript parser, compares exact nested configuration paths, and fails clearly when object structure cannot be resolved.
+- [x] **New-path collisions blocked.** Planning reports an incoming managed path that collides with an unrelated project file; a real update stops before overwriting it.
+- [x] **Update recovery defined.** The Core lock is not advanced after failure. Recovery uses the Git diff and locally excluded `.supacharger/backups/`; applied database migrations remain forward-only.
+- [x] **Skip semantics removed.** A managed-file conflict can be overwritten after recovery copies are created or the update can exit. Partial skip no longer presents a state that exact verification cannot accept.
+- [x] **Merge-managed limits enforced.** The README names the supported package and Supabase merges. Incoming non-test script changes, lockfile-only changes, unsupported Supabase configuration and other unimplemented merge-managed changes stop with the affected file named.
 - [x] **Keep extensions out of deployment.** Extension installers remain explicitly sidelined from the npm CLI release until their separate workflow is implemented and verified. Evidence: CLI `TODO.extensions.md` and package guidance.
 
 ## Installation and resumption checkpoints
@@ -81,9 +81,9 @@ Runtime authentication and route protection remain application/Core configuratio
 
 ## Decisions still required
 
-- Whether to address the CLI audit findings before the next npm release or publish the current supported subset with explicit limitations.
+- Publish CLI 1.1.0 from commit `be5e782` after authenticating to npm, then verify a clean install through `@latest`.
 - Review and refine the first version of the `core-upgrade-review` skill in the public Glowplug skills repository.
 
 ## Current checkpoint
 
-The documentation, ownership model and public bootstrap are verified. The next proposed engineering checkpoint is to choose which CLI audit findings block release, then test the public setup flow from a clean project using the released `@latest` CLI.
+The documentation, ownership model, public bootstrap and CLI 1.1.0 release candidate are verified. `npm run check` passes all 71 existing tests, the package dry run contains 15 intended files and no test directory, initialisation succeeds from the private Core repository, and `doctor` plus `coreupdate --plan` pass against an installed consumer and the current local Core. The remaining checkpoint is npm publication followed by a clean public `@latest` setup.
