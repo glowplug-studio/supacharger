@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -90,6 +90,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const [choicePanelMounted, setChoicePanelMounted] = useState(!startsInEmailMode);
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState('');
+  const [emailInvalid, setEmailInvalid] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordAgain, setPasswordAgain] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -105,6 +106,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const [loginFailed, setLoginFailed] = useState(false);
   const [emailNotConfirmed, setEmailNotConfirmed] = useState(false);
   const [otpFailure, setOtpFailure] = useState<'expired-or-invalid' | 'already-verified' | null>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
   const [, startAuthTransition] = useTransition();
   const parsedEmail = emailSchema.safeParse(email);
   const normalisedEmail = parsedEmail.success ? parsedEmail.data : email.trim();
@@ -169,6 +171,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     setOtp('');
     setOtpVerificationSucceeded(false);
     setShowPassword(false);
+    setEmailInvalid(false);
     setError(null);
     setLoginFailed(false);
     setEmailNotConfirmed(false);
@@ -197,11 +200,17 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   }
 
   function validateEmail() {
-    if (!parsedEmail.success) {
+    const inputEmail = emailInputRef.current?.value ?? email;
+    const result = emailSchema.safeParse(inputEmail);
+    if (!result.success) {
+      setEmailInvalid(true);
       setError(t('validEmail'));
-      return false;
+      emailInputRef.current?.focus();
+      return null;
     }
-    return true;
+    setEmailInvalid(false);
+    if (result.data !== email) setEmail(result.data);
+    return result.data;
   }
 
   function getAuthErrorMessage(
@@ -356,27 +365,33 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   function sendPasswordlessEmail() {
     setError(null);
     setLoginFailed(false);
-    if (!validateEmail()) return;
+    const validatedEmail = validateEmail();
+    if (!validatedEmail) return;
     setPendingAction('passwordless-email');
     startAuthTransition(async () => {
-      const result = await signInWithEmail(normalisedEmail, safeNextPath);
-      setPendingAction(null);
-      if (result?.error) {
-        return setError(
-          result.error.code === 'otp_disabled'
-            ? passwordlessSignInUnavailableLabel
-            : getAuthErrorMessage(result.error, 'emailSendFailed'),
-        );
-      }
-      setVerificationEmail(normalisedEmail);
-      setVerificationPurpose('signin');
-      setVerificationDeliveryMode(passwordlessEmailMode);
-      if (passwordlessModeHasOtp(passwordlessEmailMode)) {
-        setStep('verify-email');
-        onFormHeadingChange?.(enterSignInCodeLabel);
-      } else {
-        setStep('check-email');
-        onFormHeadingChange?.(t('checkEmail'));
+      try {
+        const result = await signInWithEmail(validatedEmail, safeNextPath);
+        if (result?.error) {
+          return setError(
+            result.error.code === 'otp_disabled'
+              ? passwordlessSignInUnavailableLabel
+              : getAuthErrorMessage(result.error, 'emailSendFailed'),
+          );
+        }
+        setVerificationEmail(validatedEmail);
+        setVerificationPurpose('signin');
+        setVerificationDeliveryMode(passwordlessEmailMode);
+        if (passwordlessModeHasOtp(passwordlessEmailMode)) {
+          setStep('verify-email');
+          onFormHeadingChange?.(enterSignInCodeLabel);
+        } else {
+          setStep('check-email');
+          onFormHeadingChange?.(t('checkEmail'));
+        }
+      } catch {
+        setError(t('emailSendFailed'));
+      } finally {
+        setPendingAction(null);
       }
     });
   }
@@ -619,6 +634,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           <div className='sc-auth-field'>
             <label className='sc-auth-label' htmlFor='email'>{t('email')}</label>
             <Input
+              ref={emailInputRef}
               id='email'
               className='sc-auth-input'
               type='email'
@@ -628,8 +644,11 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               autoComplete='email'
               placeholder={t('email')}
               value={email}
+              aria-invalid={emailInvalid}
+              aria-describedby={emailInvalid ? 'login-email-error' : undefined}
               onChange={(event) => {
                 setEmail(event.target.value);
+                setEmailInvalid(false);
                 setError(null);
                 setEmailNotConfirmed(false);
               }}
@@ -735,7 +754,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               </button>
             </div>
           ) : error ? (
-            <p className='sc_message sc_message-error' role='alert'>
+            <p id={emailInvalid ? 'login-email-error' : undefined} className='sc_message sc_message-error' role='alert'>
               {error}
             </p>
           ) : null}
@@ -778,7 +797,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               <Button
                 type='button'
                 className='sc-auth-primary-button sc-auth-submit'
-                disabled={pendingAction !== null || !parsedEmail.success}
+                disabled={pendingAction !== null}
                 onClick={sendPasswordlessEmail}
               >
                 {pendingAction === 'passwordless-email' ? (

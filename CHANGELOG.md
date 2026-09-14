@@ -9,11 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-13T21:04:55Z; base_commit=27bf74b241a33bd0f2f4725b88c7199de4d9bc56; main_commit=27bf74b241a33bd0f2f4725b88c7199de4d9bc56; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=27bf74b241a33bd0f2f4725b88c7199de4d9bc56; scope=password-reuse-error-feedback; excluded=uncommitted-login-validation-work-and-separate-documentation-repository; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-14T13:09:37Z; base_commit=9d9971a27525958d9f0ffaec82e78bcbeb717a7f; main_commit=9d9971a27525958d9f0ffaec82e78bcbeb717a7f; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=9d9971a27525958d9f0ffaec82e78bcbeb717a7f; scope=installation-checklist-ownership-and-login-validation; excluded=separate-documentation-and-consumer-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- Resumable installation guidance with a developer-owned first-install record and a separate CLI-managed upstream checklist, plus links to the full online Markdown documentation.
 
 - Optional Auth, security-notification and Brevo email resources under developer-owned `resources/sc-email-templates`, with read-only MCP access to complete HTML and setup guidance.
 - A replaceable default email logo for application-owned branding.
@@ -23,6 +25,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- Installation reports remain committable but are excluded from deployment uploads and traced runtime bundles. System prerequisites are installed manually before agent setup.
 
 - Optional email examples use smaller headings, body text and content padding, with a revised default email logo.
 
@@ -37,6 +41,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Passwordless sign-in validates the current email input, including browser autofill, shows accessible invalid-email feedback and clears pending state when sending fails.
 
 - Password reset and account-security forms explain when the new password matches the current password, instead of showing a generic update failure.
 

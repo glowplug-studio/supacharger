@@ -1,3 +1,6 @@
 
 # Optional agent resources; keep out of deployment uploads.
 resources/sc-email-templates/
+
+# Internal installation checklists and reports; retained in Git.
+docs/reports/

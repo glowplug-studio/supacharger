@@ -574,6 +574,8 @@ Supabase database or downstream service failure.
 
 ## Agent instructions and public skills
 
+For handhold-me installation checklists, follow [the project-editable installation guide](docs/agents/installation.md), compare Core updates with [the immutable Core reference](docs/reports/sc-install/first-install-handhold-me-core.md), and save progress under `docs/reports/sc-install/`. Reports can be committed and are excluded from deployment uploads and traced server bundles.
+
 Start at `AGENTS.md`. Shared working rules live in `.agents/supacharger/guidance.md`, project rules in `.agents/project/AGENTS.md`, and optional Core contributor rules in `.agents/supacharger/core-development/`. Normal CLI use ignores the optional contributor path; install or update it explicitly with `supacharger coredev install` or `supacharger coredev update`. Existing instructions and skills stay in place. Archived directives are inactive.
 
 `docs/agents/agent-guidance.md` indexes the technical references exposed by the read-only repository-knowledge MCP. Keep Supacharger development conventions in `docs/agents/` and repository working rules in `.agents/`.

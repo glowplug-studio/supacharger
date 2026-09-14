@@ -70,6 +70,13 @@ export function classifyPath(inputPath) {
     return { ownership: 'developer-owned', guidance: 'Initial-install email branding. Replace and commit the logo; Core updates neither install nor overwrite this directory.' };
   }
 
+  if (relativePath === 'docs/reports/sc-install/first-install-handhold-me-core.md') {
+    return { ownership: 'cli-managed-core', guidance: 'DO NOT EDIT. Upstream installation checklist refreshed by Core updates. Keep live progress in the developer-owned first-install-handhold-me.md beside it.' };
+  }
+  if (relativePath.startsWith('docs/reports/')) {
+    return { ownership: 'developer-owned', guidance: 'Installation progress and reports are preserved during Core updates. Keep them committable and excluded from deployment; never record credentials.' };
+  }
+
   if (relativePath === '.agents/supacharger/guidance.md' || relativePath === 'CHANGELOG.md') {
     return { ownership: 'cli-managed-core', guidance: 'Shared guidance or Core changelog. Application overrides belong in .agents/project/AGENTS.md; application history belongs in CHANGELOG.project.md.' };
   }

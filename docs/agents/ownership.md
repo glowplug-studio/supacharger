@@ -131,3 +131,7 @@ The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-ma
 ## Email template images
 
 `public/images/email-template/` is developer-owned, Git-tracked branding copied on initial installation only. Replace `email-logo.png`, commit it and use its deployed absolute HTTPS URL in templates. Core updates neither overwrite nor add files here. See [Email templates](email-templates.md).
+
+## Installation records
+
+`docs/reports/sc-install/first-install-handhold-me.md` is developer-owned, supplied by the initial Core clone and preserved by updates. Initialise it in place and record verified progress. `docs/reports/sc-install/first-install-handhold-me-core.md` is the sibling Core CLI-managed **DO NOT EDIT** checklist reference, replaced on updates so developers can review the new installation procedure. Merge relevant changes into unfinished work deliberately; never replace completed evidence. Both files are committable and excluded from deployment.
