@@ -102,7 +102,7 @@ export function SCWhatsIncluded() {
             <p className='text-muted-foreground mt-5 max-w-sm text-sm leading-6'>
               {translatedText(translated.capabilitiesDescription, fallback.capabilitiesDescription)}
             </p>
-            <Button asChild className='mt-7 h-auto rounded-sm px-5 py-3' variant='outline'>
+            <Button asChild className='mt-7 h-auto rounded-lg px-5 py-3' variant='outline'>
               <a href='https://supacharger.dev/product/features' rel='noreferrer' target='_blank'>
                 {translatedText(translated.fullFeatureSet, fallback.fullFeatureSet)}
                 <ExternalLink aria-hidden='true' />
@@ -143,7 +143,7 @@ export function SCWhatsIncluded() {
 
               return (
                 <article
-                  className={`border-border rounded-sm border p-6 sm:p-8 ${index === 0 ? 'bg-primary/5 lg:col-span-2' : 'bg-card'}`}
+                  className={`border-border rounded-lg border p-6 sm:p-8 ${index === 0 ? 'bg-primary/5 lg:col-span-2' : 'bg-card'}`}
                   key={boundary.title}
                 >
                   <div className={index === 0 ? 'grid gap-6 lg:grid-cols-[0.8fr_1.2fr]' : ''}>
@@ -152,7 +152,7 @@ export function SCWhatsIncluded() {
                       <h3 className='mt-5 text-xl font-medium tracking-tight'>{boundary.title}</h3>
                       <p className='text-muted-foreground mt-3 max-w-xl text-sm leading-6'>{boundary.description}</p>
                     </div>
-                    <code className='border-border bg-background mt-6 block overflow-x-auto rounded-sm border p-4 font-mono text-xs leading-6 lg:mt-0'>
+                    <code className='border-border bg-background mt-6 block overflow-x-auto rounded-lg border p-4 font-mono text-xs leading-6 lg:mt-0'>
                       {boundary.paths}
                     </code>
                   </div>
@@ -209,7 +209,7 @@ export function SCWhatsIncluded() {
             />
           </div>
 
-          <div className='border-border bg-card mt-8 overflow-hidden rounded-sm border'>
+          <div className='border-border bg-card mt-8 overflow-hidden rounded-lg border'>
             <div className='border-border text-muted-foreground flex items-center gap-2 border-b px-4 py-3 font-mono text-xs'>
               <FileCode2 aria-hidden='true' className='size-4' />
               {translatedText(translated.packageFile, fallback.packageFile)}
@@ -242,10 +242,10 @@ export function SCPaywallDemos() {
             </h1>
             <p className='text-muted-foreground mt-6 max-w-xl text-base leading-7'>{content.description}</p>
           </div>
-          <div className='border-border bg-card overflow-hidden rounded-sm border p-2 sm:p-3'>
+          <div className='border-border bg-card overflow-hidden rounded-lg border p-2 sm:p-3'>
             <Image
               alt={content.heroImageAlt || englishMessages.MarketingFeaturePages.paywallDemos.heroImageAlt}
-              className='aspect-[16/10] h-auto w-full rounded-sm object-cover object-left-top'
+              className='aspect-[16/10] h-auto w-full rounded-lg object-cover object-left-top'
               height={695}
               priority
               sizes='(max-width: 1024px) 100vw, 58vw'

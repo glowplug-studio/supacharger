@@ -6,13 +6,15 @@ Keep `src/components/ui/` for shadcn primitives and other low-level UI building 
 
 The supplied widget groups are:
 
+- `auth/`: a button-triggered login/signup modal wrapping the complete managed authentication entry, including its typewriter heading. `LoginModal` accepts a trigger element, title, description, initial mode and return path. Its supplied media panel includes rounded artwork and attribution. It provides presentation only; enforce feature access on the server.
+
 - `file-upload/`: controlled single or multi-file selection, validation, drag and drop, progress and existing-file presentation. It contains no Untitled UI source or assets.
 - `image-upload/`: avatar and banner selection plus project-owned target, crop ratio, maximum input size and upload destination mapping.
 - `media/`: crop maths, modal-based vertical banner positioning, pan and zoom repositioning, object URL lifecycle, authenticated image upload and decoded-image presentation.
 - `profile/`: the editable account profile media preview and upload composition.
 - `attribution/`, `error-page/` and `layout/`: other Supacharger-provided application presentation that developers may style while preserving any applicable licence requirements.
 
-The public Core Widget Demos page uses local simulated uploads to expose progress bars, percentages and completion states without authentication or network writes. It also previews the project loading assets and the shared centred, fade-only modal. Banner repositioning opens automatically after image selection, is vertical-only and has no zoom control; avatar repositioning opens automatically and supports free dragging and zoom.
+The public Core Widget Demos page uses local simulated uploads to expose progress bars, percentages and completion states without authentication or network writes. It also previews the project loading assets and the shared centred, fade-only modal. The UI section places a toast button alongside a signup/login modal button; the authentication modal uses the real configured sign-in flow. Banner repositioning opens automatically after image selection, is vertical-only and has no zoom control; avatar repositioning opens automatically and supports free dragging and zoom.
 
 ## Image policy boundary
 

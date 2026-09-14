@@ -6,6 +6,7 @@ import { CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCl
 import { toast } from 'react-toastify';
 
 import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
+import { LoginModal } from '@/components/sc_widgets/auth/login-modal';
 import { FileUploadWidget } from '@/components/sc_widgets/file-upload/file-upload-widget';
 import { ImageUploadWidget } from '@/components/sc_widgets/image-upload/image-upload-widget';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Switch } from '@/components/ui/switch';
 import { SC_CONFIG } from '@/supacharger.config';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 
@@ -80,7 +80,7 @@ function SimulationAction({
 }) {
   return (
     <div className='mt-4 flex flex-wrap items-center gap-3'>
-      <Button disabled={disabled || running} type='button' variant='outline' onClick={start}>
+      <Button className='rounded-lg' disabled={disabled || running} type='button' variant='outline' onClick={start}>
         <UploadCloud aria-hidden='true' className='size-4' />
         {progress === 100 ? uploadAgainLabel : uploadLabel}
       </Button>
@@ -97,15 +97,15 @@ function SimulationAction({
 function LoaderDemos({ imageLabel, inlineLabel, inverseLabel }: { imageLabel: string; inlineLabel: string; inverseLabel: string }) {
   return (
     <div className='grid gap-3 sm:grid-cols-3'>
-      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-md border border-border bg-background p-4 text-primary' role='status'>
+      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-border bg-background p-4 text-primary' role='status'>
         <LoadingSpinner className='size-9' fill='currentColor' label={inlineLabel} />
         <span className='text-sm text-foreground'>{inlineLabel}</span>
       </div>
-      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-md border border-border bg-primary p-4 text-primary-foreground' role='status'>
+      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-border bg-primary p-4 text-primary-foreground' role='status'>
         <LoadingSpinner className='size-9' fill='currentColor' label={inverseLabel} variant='dark' />
         <span className='text-sm'>{inverseLabel}</span>
       </div>
-      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-md border border-border bg-muted/40 p-4 text-muted-foreground' role='status'>
+      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-border bg-muted/40 p-4 text-muted-foreground' role='status'>
         <ImageLoader aria-hidden='true' className='size-[50px] shrink-0' />
         <span className='text-sm text-foreground'>{imageLabel}</span>
       </div>
@@ -117,19 +117,19 @@ function ModalDemo({ closeLabel, description, openLabel, title }: { closeLabel: 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type='button' variant='outline'>
+        <Button className='rounded-lg' type='button' variant='outline'>
           <PanelsTopLeft aria-hidden='true' className='size-4' />
           {openLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent motion='fade'>
+      <DialogContent className='rounded-lg' motion='fade'>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className='flex justify-end'>
           <DialogClose asChild>
-            <Button type='button'>{closeLabel}</Button>
+            <Button className='rounded-lg' type='button'>{closeLabel}</Button>
           </DialogClose>
         </div>
       </DialogContent>
@@ -149,6 +149,10 @@ function UIDemos({
   toastDescription,
   toastLabel,
   toastMessage,
+  toastButtonLabel,
+  gatingTitle,
+  gatingDescription,
+  gatingButtonLabel,
 }: {
   closeLabel: string;
   imageLoaderLabel: string;
@@ -161,20 +165,16 @@ function UIDemos({
   toastDescription: string;
   toastLabel: string;
   toastMessage: string;
+  toastButtonLabel: string;
+  gatingTitle: string;
+  gatingDescription: string;
+  gatingButtonLabel: string;
 }) {
-  const [toastEnabled, setToastEnabled] = useState(false);
-  const toastId = 'core-widget-demo-toast';
-
-  function toggleToast(checked: boolean) {
-    setToastEnabled(checked);
-    if (checked) {
-      toast.success(toastMessage, {
-        ...resolveToastOptions(SC_CONFIG.TOAST_CONFIG),
-        toastId,
-      });
-    } else {
-      toast.dismiss(toastId);
-    }
+  function showToast() {
+    toast.success(toastMessage, {
+      ...resolveToastOptions(SC_CONFIG.TOAST_CONFIG),
+      toastId: 'core-widget-demo-toast',
+    });
   }
 
   return (
@@ -184,14 +184,25 @@ function UIDemos({
         <LoaderDemos imageLabel={imageLoaderLabel} inlineLabel={inlineLoaderLabel} inverseLabel={inverseLoaderLabel} />
       </section>
       <ModalDemo closeLabel={closeLabel} description={modalDescription} openLabel={modalOpenLabel} title={modalTitle} />
-      <div className='flex items-center justify-between gap-6 rounded-md border border-border bg-background p-4'>
-        <div>
-          <label className='text-sm font-medium text-foreground' htmlFor='core-widget-toast-toggle'>
-            {toastLabel}
-          </label>
-          <p className='mt-1 text-sm text-muted-foreground'>{toastDescription}</p>
-        </div>
-        <Switch id='core-widget-toast-toggle' checked={toastEnabled} onCheckedChange={toggleToast} />
+      <div className='grid gap-4 sm:grid-cols-2'>
+        <section className='flex flex-col items-start rounded-lg border border-border bg-background p-4'>
+          <h3 className='text-sm font-medium text-foreground'>{toastLabel}</h3>
+          <p className='mt-1 mb-4 text-sm text-muted-foreground'>{toastDescription}</p>
+          <Button className='mt-auto rounded-lg' type='button' variant='outline' onClick={showToast}>
+            {toastButtonLabel}
+          </Button>
+        </section>
+        <section className='flex flex-col items-start rounded-lg border border-border bg-background p-4'>
+          <h3 className='text-sm font-medium text-foreground'>{gatingTitle}</h3>
+          <p className='mt-1 mb-4 text-sm text-muted-foreground'>{gatingDescription}</p>
+          <LoginModal
+            title={gatingTitle}
+            description={gatingDescription}
+            initialMode='signup'
+            nextPath='/features/core-widget-demos'
+            trigger={<Button className='mt-auto rounded-lg' type='button' variant='outline'>{gatingButtonLabel}</Button>}
+          />
+        </section>
       </div>
     </div>
   );
@@ -350,6 +361,10 @@ export function SCCoreWidgetDemos() {
           toastDescription={t('toastDescription')}
           toastLabel={t('toastLabel')}
           toastMessage={t('toastMessage')}
+          toastButtonLabel={t('toastButtonLabel')}
+          gatingTitle={t('gatingTitle')}
+          gatingDescription={t('gatingDescription')}
+          gatingButtonLabel={t('gatingButtonLabel')}
         />
       ),
     },
@@ -372,7 +387,7 @@ export function SCCoreWidgetDemos() {
           {demos.map(({ description, icon: Icon, title, widget }) => (
             <article className='grid overflow-hidden rounded-lg border border-border bg-card lg:grid-cols-[0.62fr_1.38fr]' key={title}>
               <div className='border-b border-border p-6 lg:border-r lg:border-b-0 lg:p-8'>
-                <div className='flex size-10 items-center justify-center rounded-md border border-border bg-background text-primary'>
+                <div className='flex size-10 items-center justify-center rounded-lg border border-border bg-background text-primary'>
                   <Icon aria-hidden='true' className='size-4' />
                 </div>
                 <h2 className='mt-8 text-2xl font-medium tracking-tight'>{title}</h2>

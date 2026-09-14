@@ -30,10 +30,10 @@ const marketingNavigation = [
 ];
 
 const navigationLinkClassName =
-  'inline-flex h-9 items-center rounded-sm px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
+  'inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const navigationTriggerClassName =
-  'h-9 rounded-sm px-3 py-0 text-sm text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-foreground';
-const authControlClassName = 'h-auto rounded-sm px-5 py-3 text-sm';
+  'h-9 rounded-lg px-3 py-0 text-sm text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-foreground';
+const authControlClassName = 'h-auto rounded-lg px-5 py-3 text-sm';
 
 export function SCMarketingMenu() {
   const t = useTranslations('MarketingNavigation');
@@ -84,7 +84,7 @@ export function SCMarketingMenu() {
               <NavigationMenuTrigger className={navigationTriggerClassName}>
                 {t('inPageAnchors')}
               </NavigationMenuTrigger>
-              <NavigationMenuContent className='w-[15rem] max-w-none p-2 md:w-[15rem]'>
+              <NavigationMenuContent className='w-[15rem] max-w-none rounded-lg p-2 md:w-[15rem]'>
                 <ul className='grid gap-1'>
                   {marketingNavigation.map((item) => {
                     const isActive = activeHref === item.href;
@@ -95,7 +95,7 @@ export function SCMarketingMenu() {
                           <Link
                             aria-current={isActive ? 'location' : undefined}
                             className={cn(
-                              'text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground block rounded-sm px-3 py-2.5 text-sm font-medium transition-colors outline-none',
+                              'text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors outline-none',
                               isActive && 'bg-accent text-foreground',
                             )}
                             href={item.href}
@@ -115,7 +115,7 @@ export function SCMarketingMenu() {
               <NavigationMenuTrigger className={navigationTriggerClassName}>
                 {t('supachargerFeatures')}
               </NavigationMenuTrigger>
-              <NavigationMenuContent className='w-[58rem] max-w-none p-0 md:w-[58rem]'>
+              <NavigationMenuContent className='w-[58rem] max-w-none rounded-lg p-0 md:w-[58rem]'>
                 <div className='grid grid-cols-4'>
                   <NavigationMenuLink asChild>
                     <Link
@@ -204,7 +204,7 @@ export function SCMarketingMenu() {
 
         <div className='hidden items-center gap-3 justify-self-end xl:flex'>
           <Link
-            className='text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center rounded-sm px-5 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none'
+            className='text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center rounded-lg px-5 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none'
             href='/account/login'
           >
             {t('login')}
@@ -225,7 +225,7 @@ export function SCMarketingMenu() {
             <SheetTrigger asChild>
               <Button
                 aria-label={t('openNavigation')}
-                className='border-border text-foreground hover:bg-accent hover:text-foreground size-11 rounded-sm bg-transparent shadow-none'
+                className='border-border text-foreground hover:bg-accent hover:text-foreground size-11 rounded-lg bg-transparent shadow-none'
                 size='icon'
                 variant='outline'
               >
@@ -252,7 +252,7 @@ export function SCMarketingMenu() {
                           <Link
                             aria-current={isActive ? 'location' : undefined}
                             className={cn(
-                              'text-muted-foreground hover:bg-accent hover:text-foreground rounded-sm px-3 py-2.5 text-sm font-medium transition-colors',
+                              'text-muted-foreground hover:bg-accent hover:text-foreground rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
                               isActive && 'bg-accent text-foreground hover:bg-accent',
                             )}
                             href={item.href}
@@ -272,7 +272,7 @@ export function SCMarketingMenu() {
                   </p>
                   <div className='grid gap-1'>
                     <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/features/whats-included'>
+                      <Link className='hover:bg-accent rounded-lg px-3 py-3' href='/features/whats-included'>
                         <span className='text-foreground block text-sm font-semibold'>
                           {t('whatsIncluded')}
                         </span>
@@ -282,7 +282,7 @@ export function SCMarketingMenu() {
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/features/paywall-demos'>
+                      <Link className='hover:bg-accent rounded-lg px-3 py-3' href='/features/paywall-demos'>
                         <span className='text-foreground block text-sm font-semibold'>
                           {t('paywallDemos')}
                         </span>
@@ -292,14 +292,14 @@ export function SCMarketingMenu() {
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-sm px-3 py-3' href='/features/core-widget-demos'>
+                      <Link className='hover:bg-accent rounded-lg px-3 py-3' href='/features/core-widget-demos'>
                         <span className='text-foreground block text-sm font-semibold'>{t('coreWidgetDemos')}</span>
                         <span className='text-muted-foreground mt-1 block text-sm leading-5'>
                           {t('coreWidgetDemosDescription')}
                         </span>
                       </Link>
                     </SheetClose>
-                    <SheetClose asChild><Link className='bg-muted/35 hover:bg-accent rounded-sm px-3 py-3' href='/license'>
+                    <SheetClose asChild><Link className='bg-muted/35 hover:bg-accent rounded-lg px-3 py-3' href='/license'>
                       <span className='text-foreground block text-sm font-semibold'>
                         {t('licenseInformation')}
                       </span>
@@ -313,7 +313,7 @@ export function SCMarketingMenu() {
                 <SheetClose asChild>
                   <a
                     aria-label={`${t('supacharger')} (${t('opensInNewTab')})`}
-                    className='text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center gap-2 rounded-sm px-3 py-3 text-sm font-semibold'
+                    className='text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center gap-2 rounded-lg px-3 py-3 text-sm font-semibold'
                     href='https://supacharger.dev'
                     rel='noopener noreferrer'
                     target='_blank'
@@ -323,7 +323,7 @@ export function SCMarketingMenu() {
                   </a>
                 </SheetClose>
                 <SheetClose asChild>
-                  <Link className='text-muted-foreground hover:bg-accent hover:text-foreground rounded-sm px-3 py-3 text-sm font-semibold' href='/license'>
+                  <Link className='text-muted-foreground hover:bg-accent hover:text-foreground rounded-lg px-3 py-3 text-sm font-semibold' href='/license'>
                     {t('license')}
                   </Link>
                 </SheetClose>
@@ -331,7 +331,7 @@ export function SCMarketingMenu() {
               <div className='border-border mt-8 grid gap-3 border-t pt-6'>
                 <SheetClose asChild>
                   <Link
-                    className='text-muted-foreground hover:text-foreground rounded-sm px-5 py-3 text-sm font-medium'
+                    className='text-muted-foreground hover:text-foreground rounded-lg px-5 py-3 text-sm font-medium'
                     href='/account/login'
                   >
                     {t('login')}
@@ -340,7 +340,7 @@ export function SCMarketingMenu() {
                 <SheetClose asChild>
                   <Button
                     asChild
-                    className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-sm px-5 py-3 text-sm'
+                    className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-lg px-5 py-3 text-sm'
                   >
                     <Link href='/account/create'>{t('createAccount')}</Link>
                   </Button>

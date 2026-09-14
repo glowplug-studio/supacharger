@@ -35,7 +35,7 @@ import SCLogoMarquee from './sc_logo_marquee';
 
 type DemoLogo = ComponentType<SVGProps<SVGSVGElement>>;
 
-const marketingButtonClassName = 'h-auto rounded-sm px-5 py-3 text-sm';
+const marketingButtonClassName = 'h-auto rounded-lg px-5 py-3 text-sm';
 
 const communityPillars = [
   {
@@ -157,7 +157,7 @@ export default function SCMarketingLanding() {
   const localisedTestimonials = testimonials.map((item, index) => ({ ...item, ...t.raw(`testimonials.${index}`) }));
   const localisedPlans = plans.map((item, index) => ({ ...item, ...t.raw(`plans.${index}`) }));
   const faqs = t.raw('faqs') as { answer: string; question: string }[];
-  // Marketing shape system: 4px surfaces and controls, with circular avatars preserved.
+  // Marketing shape system: 8px surfaces and controls, with circular avatars preserved.
   return (
     <main className='bg-background text-foreground overflow-hidden'>
       <section className='relative min-h-[100dvh] scroll-mt-16 pt-16' id='hero'>
@@ -196,10 +196,10 @@ export default function SCMarketingLanding() {
 
           <SCLogoMarquee label={t('trustedOrganisations')} />
 
-          <div className='sc-home-enter-delayed border-border bg-card shadow-foreground/20 mt-14 overflow-hidden rounded-sm border p-2 shadow-2xl sm:p-4'>
+          <div className='sc-home-enter-delayed border-border bg-card shadow-foreground/20 mt-14 overflow-hidden rounded-lg border p-2 shadow-2xl sm:p-4'>
             <Image
               alt={t('images.messagingWorkspace')}
-              className='h-auto w-full rounded-sm'
+              className='h-auto w-full rounded-lg'
               height={960}
               priority
               sizes='(max-width: 1280px) 100vw, 1216px'
@@ -232,7 +232,7 @@ export default function SCMarketingLanding() {
       <section className='scroll-mt-16 py-[72px]' id='overview'>
         <div className='mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8'>
           <SCSectionHeading description={t('overview.description')} title={t('overview.title')} />
-          <div className='border-border bg-card overflow-hidden rounded-sm border'>
+          <div className='border-border bg-card overflow-hidden rounded-lg border'>
             <Image
               alt={t('images.mobileScreens')}
               className='h-full w-full object-cover transition-transform duration-500 hover:scale-[1.015]'
@@ -254,7 +254,7 @@ export default function SCMarketingLanding() {
           <div className='relative mt-12 grid gap-5 md:grid-cols-3'>
             {localisedFeatures.map((feature) => (
               <Card
-                className='group border-border bg-card text-foreground overflow-hidden rounded-sm py-0 shadow-none'
+                className='group border-border bg-card text-foreground overflow-hidden rounded-lg py-0 shadow-none'
                 key={feature.id}
               >
                 <div className='bg-primary/10 aspect-[4/3] overflow-hidden'>
@@ -282,7 +282,7 @@ export default function SCMarketingLanding() {
       <section className='scroll-mt-16 py-[72px]' id='integrations'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <SCSectionHeading description={t('integrations.description')} title={t('integrations.title')} />
-          <div className='border-border bg-foreground/10 mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-sm border sm:grid-cols-3 lg:grid-cols-6'>
+          <div className='border-border bg-foreground/10 mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-lg border sm:grid-cols-3 lg:grid-cols-6'>
             {integrations.map(({ Logo, name }) => (
               <div
                 className='bg-muted hover:bg-accent flex min-h-32 items-center justify-center p-6 transition-colors'
@@ -314,7 +314,7 @@ export default function SCMarketingLanding() {
                 );
               })}
             </div>
-            <div className='border-border bg-card min-h-[420px] overflow-hidden rounded-sm border'>
+            <div className='border-border bg-card min-h-[420px] overflow-hidden rounded-lg border'>
               <Image
                 alt={t('images.neighboursAtNight')}
                 className='h-full w-full object-cover transition-transform duration-700 hover:scale-[1.02]'
@@ -336,7 +336,7 @@ export default function SCMarketingLanding() {
             {localisedExperiences.map((experience, index) => (
               <div className='grid items-center gap-9 md:grid-cols-2 lg:gap-16' key={experience.title}>
                 <div
-                  className={`border-border bg-card overflow-hidden rounded-sm border ${
+                  className={`border-border bg-card overflow-hidden rounded-lg border ${
                     index % 2 === 1 ? 'md:order-2' : ''
                   }`}
                 >
@@ -376,7 +376,7 @@ export default function SCMarketingLanding() {
 
           <div className='mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3'>
             {localisedTestimonials.map((testimonial) => (
-              <Card className='border-border bg-muted text-foreground rounded-sm shadow-none' key={testimonial.name}>
+              <Card className='border-border bg-muted text-foreground rounded-lg shadow-none' key={testimonial.name}>
                 <CardContent className='flex min-h-[320px] flex-col p-7 sm:p-8'>
                   <p className='text-foreground/80 text-lg leading-8 tracking-[-0.02em]'>“{testimonial.quote}”</p>
                   <div className='mt-auto pt-8'>
@@ -411,7 +411,7 @@ export default function SCMarketingLanding() {
           <div className='mt-14 grid gap-5 lg:grid-cols-3 lg:items-stretch'>
             {localisedPlans.map((plan) => (
               <Card
-                className={`border-border bg-muted text-foreground flex flex-col rounded-sm shadow-none ${
+                className={`border-border bg-muted text-foreground flex flex-col rounded-lg shadow-none ${
                   plan.popular ? 'lg:-mt-4' : ''
                 }`}
                 key={plan.name}
@@ -420,7 +420,7 @@ export default function SCMarketingLanding() {
                   <div className='flex items-center justify-between gap-4'>
                     <CardTitle className='text-lg font-medium'>{plan.name}</CardTitle>
                     {plan.popular ? (
-                      <Badge className='bg-primary/10 text-primary hover:bg-primary/10 rounded-sm'>
+                      <Badge className='bg-primary/10 text-primary hover:bg-primary/10 rounded-lg'>
                         {t('mostPopular')}
                       </Badge>
                     ) : null}
@@ -466,7 +466,7 @@ export default function SCMarketingLanding() {
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end'>
             <SCSectionHeading description={t('compliance.description')} title={t('compliance.title')} />
-            <div className='border-border bg-foreground/10 grid grid-cols-2 gap-px overflow-hidden rounded-sm border sm:grid-cols-3'>
+            <div className='border-border bg-foreground/10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border sm:grid-cols-3'>
               {(t.raw('compliance.items') as string[]).map((item) => (
                 <div className='bg-muted flex items-center gap-3 px-5 py-6' key={item}>
                   <CircleCheckBig aria-hidden='true' className='text-primary size-4 shrink-0' />
@@ -498,7 +498,7 @@ export default function SCMarketingLanding() {
 
       <section className='scroll-mt-16 py-[72px]' id='cta'>
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-          <div className='border-border bg-card grid overflow-hidden rounded-sm border lg:grid-cols-2'>
+          <div className='border-border bg-card grid overflow-hidden rounded-lg border lg:grid-cols-2'>
             <div className='flex flex-col justify-center p-8 sm:p-12 lg:p-16'>
               <h2 className='text-[2.375rem] leading-[1.1] font-normal tracking-[-0.04em] text-balance'>
                 {t('cta.title')}

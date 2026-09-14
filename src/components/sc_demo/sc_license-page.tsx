@@ -21,16 +21,16 @@ export default async function SCLicensePage() {
     <main className='bg-background text-foreground min-h-screen pt-16'>
       <section className='border-border border-b'>
         <div className='mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28'>
-          <Badge className='bg-primary/10 text-primary rounded-sm shadow-none' variant='secondary'>{t('eyebrow')}</Badge>
+          <Badge className='bg-primary/10 text-primary rounded-lg shadow-none' variant='secondary'>{t('eyebrow')}</Badge>
           <h1 className='mt-6 max-w-4xl text-4xl font-normal tracking-[-0.04em] text-balance sm:text-5xl'>{t('title')}</h1>
           <p className='text-muted-foreground mt-6 max-w-3xl text-base leading-7'>{t('introduction')}</p>
           <div className='mt-8 flex flex-wrap gap-3'>
-            <Button asChild className='h-auto rounded-sm px-5 py-3'>
+            <Button asChild className='h-auto rounded-lg px-5 py-3'>
               <a href='https://supacharger.dev/product/pricing' rel='noopener noreferrer' target='_blank'>
                 {t('nonAttributionCta')} <ExternalLink aria-hidden='true' />
               </a>
             </Button>
-            <Button asChild className='h-auto rounded-sm px-5 py-3' variant='outline'>
+            <Button asChild className='h-auto rounded-lg px-5 py-3' variant='outline'>
               <a href='https://creativecommons.org/licenses/by-nc-sa/4.0/' rel='noopener noreferrer' target='_blank'>
                 {t('readLicense')} <ExternalLink aria-hidden='true' />
               </a>
@@ -64,7 +64,7 @@ export default async function SCLicensePage() {
           </div>
           <div className='mt-10 grid gap-4 md:grid-cols-2'>
             {dependencyGroups.map((group) => (
-              <Card className='rounded-sm shadow-none' key={group.key}>
+              <Card className='rounded-lg shadow-none' key={group.key}>
                 <CardHeader><CardTitle className='text-lg'>{t(`groups.${group.key}.title`)}</CardTitle></CardHeader>
                 <CardContent>
                   <p className='font-mono text-xs leading-6'>{group.packages}</p>

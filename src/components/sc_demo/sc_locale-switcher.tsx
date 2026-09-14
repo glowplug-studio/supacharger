@@ -63,7 +63,7 @@ export default function LocaleSwitcher({ appearance = 'default', className }: Lo
           className={cn(
             'gap-2',
             appearance === 'marketing' &&
-              'border-border text-foreground hover:bg-accent hover:text-foreground h-auto rounded-sm bg-transparent px-5 py-3 text-sm shadow-none',
+              'border-border text-foreground hover:bg-accent hover:text-foreground h-auto rounded-lg bg-transparent px-5 py-3 text-sm shadow-none',
             className,
           )}
           size='sm'
@@ -77,7 +77,7 @@ export default function LocaleSwitcher({ appearance = 'default', className }: Lo
       <DropdownMenuContent
         align='end'
         className={cn(
-          appearance === 'marketing' && 'border-border bg-popover text-popover-foreground rounded-sm shadow-xl',
+          appearance === 'marketing' && 'border-border bg-popover text-popover-foreground rounded-lg shadow-xl',
         )}
       >
         {localeOptions.map((option) => (

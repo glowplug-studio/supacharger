@@ -307,7 +307,7 @@
   },
   "MarketingFeaturePages": {
     "coreWidgetDemos": {
-      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":"","simulateUpload":"","simulateAgain":"","uploading":"","uploadComplete":"","loadersTitle":"","loadersDescription":"","inlineLoaderLabel":"","inverseLoaderLabel":"","imageLoaderLabel":"","modalTitle":"","modalDescription":"","openModal":"","closeModal":"","modalDialogTitle":"","modalBody":"","toastLabel":"","toastDescription":"","toastMessage":""
+      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":"","simulateUpload":"","simulateAgain":"","uploading":"","uploadComplete":"","loadersTitle":"","loadersDescription":"","inlineLoaderLabel":"","inverseLoaderLabel":"","imageLoaderLabel":"","modalTitle":"","modalDescription":"","openModal":"","closeModal":"","modalDialogTitle":"","modalBody":"","toastLabel":"","toastDescription":"","toastButtonLabel": "", "gatingTitle": "", "gatingDescription": "", "gatingButtonLabel": "", "toastMessage":""
     },
     "whatsIncluded": {
       "title": "Supacharger 实际包含什么",

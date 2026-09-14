@@ -5,6 +5,10 @@
  * The Supacharger CLI must preserve this file.
  */
 
+@theme inline {
+  --font-sans: var(--font-host-grotesk);
+}
+
 @layer base {
   :root {
     --background: 72 28% 99%;
@@ -77,6 +81,16 @@
     font-feature-settings:
       'rlig' 1,
       'calt' 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .sc-auth-entry-mode {
+    font-family: var(--font-host-grotesk), ui-sans-serif, system-ui, sans-serif;
   }
 }
 

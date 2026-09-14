@@ -104,31 +104,31 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
           <p className='text-muted-foreground mt-5 max-w-2xl text-base leading-7'>{content.galleryDescription}</p>
 
           <div className='mt-12 grid gap-5 lg:grid-cols-12'>
-            <article className='border-border bg-card rounded-sm border p-6 lg:col-span-5' data-paywall-demo='modal'>
+            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-5' data-paywall-demo='modal'>
               <DemoHeading icon={demoIcons[0]} item={content.items[0]} />
               <Dialog onOpenChange={setUpgradeModalOpen} open={upgradeModalOpen}>
-                <Button className='mt-8 h-auto rounded-sm px-4 py-2.5' onClick={openUpgradeModal}>
+                <Button className='mt-8 h-auto rounded-lg px-4 py-2.5' onClick={openUpgradeModal}>
                   {content.items[0].cta}
                 </Button>
-                <DialogContent className='border-border bg-background text-foreground rounded-sm'>
+                <DialogContent className='border-border bg-background text-foreground rounded-lg'>
                   <DialogHeader>
                     <DialogTitle>{content.modal.title}</DialogTitle>
                     <DialogDescription className='text-muted-foreground leading-6'>
                       {content.modal.description}
                     </DialogDescription>
                   </DialogHeader>
-                  <div className='border-border bg-muted/40 mt-2 rounded-sm border p-5'>
+                  <div className='border-border bg-muted/40 mt-2 rounded-lg border p-5'>
                     <p className='text-sm font-medium'>{content.modal.plan}</p>
                     <p className='mt-2 text-3xl tracking-[-0.03em]'>{content.modal.price}</p>
                     <p className='text-muted-foreground mt-2 text-sm'>{content.modal.priceCaption}</p>
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button className='rounded-sm' variant='outline'>
+                      <Button className='rounded-lg' variant='outline'>
                         {content.modal.dismiss}
                       </Button>
                     </DialogClose>
-                    <Button asChild className='rounded-sm'>
+                    <Button asChild className='rounded-lg'>
                       <Link href={content.billingCta.href}>{content.modal.continue}</Link>
                     </Button>
                   </DialogFooter>
@@ -144,7 +144,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                     errorLabel={modalExample.copyFailed}
                   />
                 </div>
-                <pre className='border-border bg-muted/45 mt-3 overflow-x-auto rounded-sm border p-4 text-xs leading-6'>
+                <pre className='border-border bg-muted/45 mt-3 overflow-x-auto rounded-lg border p-4 text-xs leading-6'>
                   <code>{modalExample.code}</code>
                 </pre>
                 <p className='text-muted-foreground mt-3 text-xs leading-5'>{modalExample.agentNote}</p>
@@ -152,7 +152,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             </article>
 
             <article
-              className='border-border bg-muted/35 rounded-sm border p-6 lg:col-span-7'
+              className='border-border bg-muted/35 rounded-lg border p-6 lg:col-span-7'
               data-paywall-demo='redirect'
             >
               <DemoHeading icon={demoIcons[1]} item={content.items[1]} />
@@ -161,7 +161,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                   <p className='text-sm font-medium'>{content.products.plan}</p>
                   <p className='text-muted-foreground mt-2 text-sm leading-6'>{content.products.caption}</p>
                 </div>
-                <Button asChild className='h-auto rounded-sm px-4 py-2.5' variant='outline'>
+                <Button asChild className='h-auto rounded-lg px-4 py-2.5' variant='outline'>
                   <Link href='/pricing'>
                     {content.items[1].cta}
                     <ArrowRight aria-hidden='true' />
@@ -170,25 +170,25 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
               </div>
             </article>
 
-            <article className='border-border bg-card rounded-sm border p-6 lg:col-span-4' data-paywall-demo='tooltip'>
+            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-4' data-paywall-demo='tooltip'>
               <DemoHeading icon={demoIcons[2]} item={content.items[2]} />
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className='mt-8 block cursor-help' tabIndex={0}>
-                      <Button className='w-full rounded-sm' disabled>
+                      <Button className='w-full rounded-lg' disabled>
                         {content.tooltip.feature}
                       </Button>
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className='max-w-64 rounded-sm px-3 py-2 leading-5'>
+                  <TooltipContent className='max-w-64 rounded-lg px-3 py-2 leading-5'>
                     {content.tooltip.explanation}
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </article>
 
-            <article className='border-border bg-card rounded-sm border p-6 lg:col-span-8' data-paywall-demo='services'>
+            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-8' data-paywall-demo='services'>
               <DemoHeading icon={demoIcons[3]} item={content.items[3]} />
               <div className='mt-8 grid gap-6 md:grid-cols-[1fr_15rem]'>
                 <div className='grid gap-3'>
@@ -198,7 +198,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                     return (
                       <button
                         aria-pressed={selected}
-                        className='border-border hover:bg-accent flex items-center justify-between gap-4 rounded-sm border p-4 text-left transition-colors active:scale-[0.99]'
+                        className='border-border hover:bg-accent flex items-center justify-between gap-4 rounded-lg border p-4 text-left transition-colors active:scale-[0.99]'
                         key={service.id}
                         onClick={() => toggleService(service.id)}
                         type='button'
@@ -219,7 +219,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                     );
                   })}
                 </div>
-                <div className='bg-muted/45 rounded-sm p-5'>
+                <div className='bg-muted/45 rounded-lg p-5'>
                   <p className='text-muted-foreground text-xs font-medium uppercase'>{content.services.planLabel}</p>
                   <p className='mt-2 text-lg font-medium'>{activePlan}</p>
                   <p className='mt-5 text-3xl tracking-[-0.03em]'>{currency.format(monthlyTotal)}</p>
@@ -229,7 +229,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             </article>
 
             <article
-              className='border-border bg-muted/35 overflow-hidden rounded-sm border lg:col-span-7'
+              className='border-border bg-muted/35 overflow-hidden rounded-lg border lg:col-span-7'
               data-paywall-demo='cart'
             >
               <div className='grid h-full sm:grid-cols-[0.8fr_1.2fr]'>
@@ -244,23 +244,23 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                 <div className='p-6'>
                   <DemoHeading icon={demoIcons[4]} item={content.items[4]} />
                   <p className='mt-6 text-2xl tracking-[-0.03em]'>{content.cart.price}</p>
-                  <Button className='mt-6 h-auto rounded-sm px-4 py-2.5' onClick={() => setCartOpen(true)}>
+                  <Button className='mt-6 h-auto rounded-lg px-4 py-2.5' onClick={() => setCartOpen(true)}>
                     {content.items[4].cta}
                   </Button>
                 </div>
               </div>
             </article>
 
-            <article className='border-border bg-card rounded-sm border p-6 lg:col-span-5' data-paywall-demo='in-app'>
+            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-5' data-paywall-demo='in-app'>
               <DemoHeading icon={demoIcons[5]} item={content.items[5]} />
-              <div className='border-border mt-8 rounded-sm border p-4'>
+              <div className='border-border mt-8 rounded-lg border p-4'>
                 <div className='flex items-center justify-between gap-4'>
                   <div>
                     <p className='text-sm font-medium'>{content.inApp.product}</p>
                     <p className='text-muted-foreground mt-1 text-xs'>{content.inApp.price}</p>
                   </div>
                   <Button
-                    className='rounded-sm'
+                    className='rounded-lg'
                     onClick={() => setInAppPurchaseReady(true)}
                     variant={inAppPurchaseReady ? 'outline' : 'default'}
                   >
@@ -276,18 +276,18 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             </article>
 
             <article
-              className='border-border bg-card rounded-sm border p-6 lg:col-span-12'
+              className='border-border bg-card rounded-lg border p-6 lg:col-span-12'
               data-paywall-demo='stripe-embedded-checkout'
               id='stripeEmbeddedCheckout'
             >
               <div className='grid gap-8 lg:grid-cols-[0.8fr_1.2fr]'>
                 <DemoHeading icon={demoIcons[6]} item={content.items[6]} />
-                <form className='bg-muted/35 rounded-sm p-5' onSubmit={submitStripePreview}>
+                <form className='bg-muted/35 rounded-lg p-5' onSubmit={submitStripePreview}>
                   <div className='grid gap-4 sm:grid-cols-2'>
                     <label className='grid gap-2 text-sm font-medium'>
                       {content.stripe.emailLabel}
                       <input
-                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-sm border px-3 text-sm outline-none focus-visible:ring-2'
+                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-lg border px-3 text-sm outline-none focus-visible:ring-2'
                         defaultValue='demo@example.com'
                         type='email'
                       />
@@ -295,13 +295,13 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                     <label className='grid gap-2 text-sm font-medium'>
                       {content.stripe.cardLabel}
                       <input
-                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-sm border px-3 text-sm outline-none focus-visible:ring-2'
+                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-lg border px-3 text-sm outline-none focus-visible:ring-2'
                         inputMode='numeric'
                         placeholder={content.stripe.cardPlaceholder}
                       />
                     </label>
                   </div>
-                  <Button className='mt-5 h-auto rounded-sm px-4 py-2.5' type='submit'>
+                  <Button className='mt-5 h-auto rounded-lg px-4 py-2.5' type='submit'>
                     {content.items[6].cta}
                   </Button>
                   <p className='text-muted-foreground mt-3 text-xs leading-5'>{content.stripe.disclaimer}</p>
@@ -324,7 +324,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             {content.billingCta.title}
           </h2>
           <p className='text-muted-foreground mt-5 max-w-xl text-base leading-7'>{content.billingCta.description}</p>
-          <Button asChild className='mt-8 h-auto rounded-sm px-5 py-3'>
+          <Button asChild className='mt-8 h-auto rounded-lg px-5 py-3'>
             <Link href={content.billingCta.href}>
               {content.billingCta.label}
               <ArrowRight aria-hidden='true' />
@@ -339,7 +339,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             <SheetTitle className='text-foreground'>{content.cart.title}</SheetTitle>
             <SheetDescription className='text-muted-foreground'>{content.cart.description}</SheetDescription>
           </SheetHeader>
-          <div className='border-border flex items-center gap-4 rounded-sm border p-4'>
+          <div className='border-border flex items-center gap-4 rounded-lg border p-4'>
             <PackagePlus aria-hidden='true' className='text-primary size-5' />
             <div className='min-w-0 flex-1'>
               <p className='text-sm font-medium'>{content.cart.product}</p>
@@ -348,7 +348,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             <p className='text-sm font-medium'>{content.cart.price}</p>
           </div>
           <SheetFooter className='mt-auto'>
-            <Button asChild className='w-full rounded-sm'>
+            <Button asChild className='w-full rounded-lg'>
               <Link href={content.billingCta.href}>{content.cart.checkout}</Link>
             </Button>
           </SheetFooter>

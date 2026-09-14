@@ -15,6 +15,27 @@ export default function SCAccountLoginLeft() {
       <div className='relative flex h-16 w-full items-center px-4 sm:px-6 lg:px-8 xl:px-12'>
         <SCSiteLogo darkMode={true} showSiteTitle={true} />
       </div>
+
+      <p className='relative mt-auto px-4 pb-6 text-xs text-white/75 sm:px-6 lg:px-8 xl:px-12'>
+        Photo by{' '}
+        <a
+          className='underline underline-offset-2 hover:text-white'
+          href='https://unsplash.com/@olenkasergienko?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Olena Bohovyk
+        </a>{' '}
+        on{' '}
+        <a
+          className='underline underline-offset-2 hover:text-white'
+          href='https://unsplash.com/photos/green-fern-plant-in-close-up-photography-r0M9HrfJMBM?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'
+          rel='noreferrer'
+          target='_blank'
+        >
+          Unsplash
+        </a>
+      </p>
     </div>
   );
 }

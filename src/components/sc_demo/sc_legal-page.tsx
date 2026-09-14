@@ -21,10 +21,10 @@ export default function SCLegalPage() {
       <h1 className='mt-4 text-4xl font-normal tracking-[-0.04em] sm:text-6xl'>{t('title')}</h1>
       <p className='text-muted-foreground mt-5 max-w-2xl leading-7'>{t('description')}</p>
       <Tabs className='mt-12' defaultValue='terms'>
-        <TabsList className='h-auto w-full justify-start overflow-x-auto rounded-sm p-1'>
-          <TabsTrigger className='rounded-sm px-4 py-2.5' value='terms'>{t('tabs.terms')}</TabsTrigger>
-          <TabsTrigger className='rounded-sm px-4 py-2.5' value='privacy'>{t('tabs.privacy')}</TabsTrigger>
-          <TabsTrigger className='rounded-sm px-4 py-2.5' value='cookies'>{t('tabs.cookies')}</TabsTrigger>
+        <TabsList className='h-auto w-full justify-start overflow-x-auto rounded-lg p-1'>
+          <TabsTrigger className='rounded-lg px-4 py-2.5' value='terms'>{t('tabs.terms')}</TabsTrigger>
+          <TabsTrigger className='rounded-lg px-4 py-2.5' value='privacy'>{t('tabs.privacy')}</TabsTrigger>
+          <TabsTrigger className='rounded-lg px-4 py-2.5' value='cookies'>{t('tabs.cookies')}</TabsTrigger>
         </TabsList>
         {(['terms', 'privacy', 'cookies'] as const).map((key) => <TabsContent className='mt-8' key={key} value={key}>
           <h2 className='text-3xl font-normal tracking-[-0.03em]'>{t(`${key}.title`)}</h2>
