@@ -1,6 +1,6 @@
 # Supacharger setup and Core distribution review
 
-Status: **In progress — documentation checkpoint verified**
+Status: **In progress — documentation and bootstrap checkpoint verified**
 
 Last updated: 2026-09-14
 
@@ -20,14 +20,12 @@ Included:
 - `handhold-me` installation, persistent setup checklists and resuming later;
 - editable and Core-managed installation guidance;
 - Core change protection routing; and
-- a proposed breaking-change review skill.
+- a breaking-change review skill.
 
 Excluded until separately authorised:
 
 - publishing the CLI or documentation site;
-- uploading the public `setup-supacharger.md` endpoint;
 - applying hosted database migrations or changing production services;
-- creating a new compatibility-review skill; and
 - adding CLI regression tests.
 
 ## Confirmed facts and decisions
@@ -36,8 +34,9 @@ Excluded until separately authorised:
 - [x] **Password reset aligned in Core and consumers.** Today’s Core history includes the reset form alignment and follow-up password-reuse explanation. SnapScreen, Specdrive and Wakekeeper each contain corresponding reset-form and password-reuse commits. Evidence: Core commits `f5af049` and `9d9971a`; consumer histories inspected on 2026-09-14.
 - [x] **Setup routes documented.** The documentation Getting Started page now presents Manual Git, CLI and MCP routes; the manual guide is labelled accordingly and agentic material is grouped in the Agentic Development section. Evidence: current `supacharger-docs` worktree and successful local documentation build.
 - [x] **Pause and resume behaviour defined.** First setup tells the developer they can return and say “let’s resume setup” or “let’s resume installation”. Progress is stored in a task checklist and verified against current state on return. Evidence: `docs/agents/installation.md` and `.agents/supacharger/guidance.md`.
-- [x] **Public setup prompt drafted.** A complete draft exists for the public `agents/setup-supacharger.md` endpoint. It has not been uploaded.
+- [x] **Public setup prompt published.** The version 3 bootstrap payload is live at `https://app.specdrive.dev/agents/setup-supacharger.md`. It verifies the manually installed CLI, obtains Core, creates the live checklist and loads `handhold-me` before handing over to installed guidance.
 - [x] **Installation guidance ownership split defined.** `docs/agents/installation.md` is installed once and remains developer-editable. `docs/reports/sc-install/first-install-handhold-me-core.md` is Core-managed and must not be edited in a consuming application.
+- [x] **Setup version policy decided.** Installation guidance uses `@glowplug/supacharger-cli@latest`; `init` obtains the current Core selected by that CLI. Fixed minimum CLI or Core versions are not maintained in the setup instructions.
 
 ## CLI audit findings to resolve or accept
 
@@ -56,9 +55,7 @@ Excluded until separately authorised:
 - [x] Add an immutable Core-managed installation reference with a do-not-edit notice.
 - [x] Classify the editable guide as developer-owned and the reference as managed in `.supacharger/managed-files.json`.
 - [x] Require an agent to compare the previous and installed Core reference when Core changes during an active installation.
-- [ ] Upload the prepared `setup-supacharger.md` content to `https://app.specdrive.dev/agents/setup-supacharger.md`. Owner: human. Evidence: endpoint returns the intended Markdown.
 - [ ] Verify the public setup prompt from a clean project with the released CLI version. Owner: human and agent. Evidence: completed task checklist and clean verification output.
-- [ ] Decide whether the public setup prompt should pin a minimum CLI/Core version. Owner: human.
 
 ## Core protection and compatibility review
 
@@ -72,22 +69,21 @@ The current protection system has three distinct responsibilities:
 
 Runtime authentication and route protection remain application/Core configuration and code concerns; `.supacharger/` metadata does not enforce runtime access.
 
-### Proposed breaking-change review skill
+### Breaking-change review skill
 
-- [ ] Define a `core-upgrade-review` skill that compares the installed Core revision with a proposed immutable revision.
-- [ ] Inspect actual diffs and commit history for exports, configuration shapes, environment variables, routes, RPCs, database contracts, adapters and deployment assumptions.
-- [ ] Search developer-owned consumer code for affected usage.
-- [ ] Classify findings as confirmed breakage, likely incompatibility, compatible change or insufficient evidence.
-- [ ] Report affected files and symbols, required consumer changes, migration/deployment order, verification and recovery.
-- [ ] Invoke the existing project/Core protection gate rather than defining a second approval system.
-- [ ] Keep static analysis claims bounded: the skill cannot guarantee detection of every behavioural break.
+- [x] Define a `core-upgrade-review` skill that compares the installed Core revision with a proposed immutable revision.
+- [x] Inspect actual diffs and commit history for exports, configuration shapes, environment variables, routes, RPCs, database contracts, adapters and deployment assumptions.
+- [x] Search developer-owned consumer code for affected usage.
+- [x] Classify findings as confirmed breakage, likely incompatibility, compatible change or insufficient evidence.
+- [x] Report affected files and symbols, required consumer changes, migration/deployment order, verification and recovery.
+- [x] Invoke the existing project/Core protection gate rather than defining a second approval system.
+- [x] Keep static analysis claims bounded: the skill cannot guarantee detection of every behavioural break.
 
 ## Decisions still required
 
 - Whether to address the CLI audit findings before the next npm release or publish the current supported subset with explicit limitations.
-- Whether to create the `core-upgrade-review` skill now and where its canonical source repository should live.
-- Whether the public agent setup endpoint should require a minimum CLI/Core version.
+- Review and refine the first version of the `core-upgrade-review` skill in the public Glowplug skills repository.
 
 ## Current checkpoint
 
-The documentation and ownership model have been verified. The next human-owned action is uploading the prepared public setup Markdown. The next proposed engineering checkpoint is to choose which CLI audit findings block release before implementing or publishing anything.
+The documentation, ownership model and public bootstrap are verified. The next proposed engineering checkpoint is to choose which CLI audit findings block release, then test the public setup flow from a clean project using the released `@latest` CLI.

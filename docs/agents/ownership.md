@@ -114,6 +114,8 @@ Protected code imports `src/supacharger/supacharger-config.ts`. That module cont
 
 `.supacharger/core-lock.json` records the upstream repository and installed commit. It is CLI-owned metadata, not application configuration.
 
+`.supacharger/backups/<timestamp>/` contains local recovery copies created by the CLI before it overwrites or removes files during an update. It is not the installed Core baseline or a complete transactional rollback. Keep a backup until the update and project diff have been reviewed, then remove it deliberately when it is no longer needed. Do not commit backup contents.
+
 ## Image loading placeholders
 
 Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.

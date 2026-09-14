@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-14T14:26:00Z; base_commit=6eb6b1129e45f090e42108392fb4fb78c8b71dfb; main_commit=6eb6b1129e45f090e42108392fb4fb78c8b71dfb; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=6eb6b1129e45f090e42108392fb4fb78c8b71dfb; scope=minimal-bootstrap-and-persistent-local-setup; excluded=separate-documentation-and-consumer-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-09-14T15:38:02Z; base_commit=ead8e0e9bd6611fead94c5128b4da2f823daa2a3; main_commit=ead8e0e9bd6611fead94c5128b4da2f823daa2a3; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=ead8e0e9bd6611fead94c5128b4da2f823daa2a3; scope=installation-report-boundary-and-update-backup-guidance; excluded=separate-cli-documentation-skills-and-consumer-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -25,6 +25,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- The `docs/reports/sc-install/` directory is reserved for installation records and required installation evidence. General audits and upgrade reviews use the normal reports location. CLI-generated `.supacharger/backups/` are documented as temporary local recovery copies that should not be committed.
 
 - Remote setup now hands over immediately after obtaining Core and loading handhold-me. The local first-install checklist owns the remaining wizard and Core configuration, saving progress before skill installation and after each step so interrupted setup can resume.
 
