@@ -8,7 +8,7 @@ const sensitiveAuthQueryKeys = [
   'mfa-code',
 ] as const;
 
-const authenticationPathPrefixes = ['/account', '/auth'] as const;
+const authenticationPathPrefixes = ['/account', '/auth', '/organisation'] as const;
 
 export function hasSensitiveAuthQuery(pathname: string, searchParams: URLSearchParams) {
   const isAuthenticationPath = authenticationPathPrefixes.some(

@@ -195,10 +195,10 @@ export function classifyPath(inputPath) {
   if (
     relativePath === 'src/supacharger/organisations' ||
     relativePath.startsWith('src/supacharger/organisations/') ||
-    relativePath === 'src/app/(supacharger)/(authenticated)/account/organisation' ||
-    relativePath.startsWith('src/app/(supacharger)/(authenticated)/account/organisation/') ||
-    relativePath === 'src/app/(supacharger)/(authenticated)/[handle]/settings' ||
-    relativePath.startsWith('src/app/(supacharger)/(authenticated)/[handle]/settings/') ||
+    relativePath === 'src/app/(supacharger)/(authenticated)/organisation/choose' ||
+    relativePath.startsWith('src/app/(supacharger)/(authenticated)/organisation/choose/') ||
+    relativePath === 'src/app/(supacharger)/(authenticated)/organisation/[org-handle]/settings' ||
+    relativePath.startsWith('src/app/(supacharger)/(authenticated)/organisation/[org-handle]/settings/') ||
     relativePath === 'src/app/(supacharger)/api/organisations' ||
     relativePath.startsWith('src/app/(supacharger)/api/organisations/')
   ) {

@@ -59,7 +59,7 @@ export async function OrganisationBillingPage({
             )}
             {canManage ? (
               <form
-                action={`/${encodeURIComponent(organisation.handle)}/settings/billing/portal`}
+                action={`/organisation/${encodeURIComponent(organisation.handle)}/settings/billing/portal`}
                 className='sc-organisation-billing-action'
                 method='post'
               >

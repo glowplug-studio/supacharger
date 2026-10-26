@@ -11,10 +11,10 @@ export default async function BillingPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ handle: string }>;
+  params: Promise<{ 'org-handle': string }>;
   searchParams: Promise<{ portal?: string }>;
 }) {
-  const parsed = organisationHandleSchema.safeParse((await params).handle);
+  const parsed = organisationHandleSchema.safeParse((await params)['org-handle']);
   if (!parsed.success) notFound();
   const [organisation, query] = await Promise.all([loadOrganisationDetails(parsed.data), searchParams]);
   if (organisationBillingPageOverride) {

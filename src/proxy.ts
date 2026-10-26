@@ -29,6 +29,13 @@ function redirectWithSessionState(request: NextRequest, response: NextResponse, 
 }
 
 export async function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === '/organisation') {
+    const destination = request.nextUrl.clone();
+    destination.pathname = SC_CONFIG.ORGANISATIONS.CHOOSER_PATH;
+    removeSensitiveAuthQuery(destination.searchParams);
+    return NextResponse.redirect(destination, 301);
+  }
+
   // Logout must reach its own SSR client even when the session is absent,
   // expired or cannot be refreshed. Page guards must never redirect its POST.
   if (request.nextUrl.pathname === '/account/logout') {

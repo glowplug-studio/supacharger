@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         organisationId,
         values: parsed.data.extension,
       });
-      revalidatePath(`/${parsed.data.handle}/settings`);
+      revalidatePath(`/organisation/${parsed.data.handle}/settings`);
     }
     revalidatePath(SC_CONFIG.ORGANISATIONS.CHOOSER_PATH);
     return NextResponse.json({ ok: true, organisation: result });

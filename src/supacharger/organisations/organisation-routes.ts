@@ -7,5 +7,5 @@ export function organisationSettingsPath(handleInput: string, section?: string) 
   if (section && !organisationSettingsSectionPattern.test(section)) {
     throw new Error(`Invalid organisation settings section: ${section}`);
   }
-  return `/${encodeURIComponent(handle)}/settings${section ? `/${section}` : ''}`;
+  return `/organisation/${encodeURIComponent(handle)}/settings${section ? `/${section}` : ''}`;
 }

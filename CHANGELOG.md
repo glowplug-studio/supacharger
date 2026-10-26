@@ -9,11 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-09-14T16:01:00Z; base_commit=a76380b343fd9a1089832899da2d1e6e8fd5dc81; main_commit=a76380b343fd9a1089832899da2d1e6e8fd5dc81; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=a76380b343fd9a1089832899da2d1e6e8fd5dc81; scope=cli-1.1.0-release-readiness-audit; excluded=separate-cli-documentation-skills-and-consumer-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-26T07:17:51Z; base_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; main_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; scope=organisation-routes-and-prior-widget-changes; excluded=uncommitted-sidebar-demo-edit-and-separate-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- A developer-owned login/signup modal widget using the configured authentication flow, with a feature-gating demonstration.
 
 - Resumable installation guidance with a developer-owned first-install record and a separate CLI-managed upstream checklist, plus links to the full online Markdown documentation.
 
@@ -25,6 +27,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- **Breaking:** organisation selection moves to the standalone `/organisation/choose` page and settings move to `/organisation/{org-handle}/settings`. `/organisation` redirects with HTTP 301; previous chooser and root-handle settings routes are removed without redirects. Update developer-owned links and return destinations, and use `CHOOSER_PATH: "/organisation/choose"` with `ROUTE_MODE: "organisation-handle"`.
 
 - The durable setup and distribution review records CLI 1.1.0 as release-ready at commit `be5e782`, with npm publication and a clean public `@latest` installation remaining.
 

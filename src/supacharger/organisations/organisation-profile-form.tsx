@@ -80,7 +80,7 @@ export function OrganisationProfileForm({
     showActionToast('success', successMessage);
     setIsSaving(false);
     const nextHandle = String(result.organisation.handle || values.handle);
-    if (nextHandle !== organisation.handle) router.replace(`/${encodeURIComponent(nextHandle)}/settings`);
+    if (nextHandle !== organisation.handle) router.replace(`/organisation/${encodeURIComponent(nextHandle)}/settings`);
     router.refresh();
   });
 

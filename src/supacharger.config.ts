@@ -203,8 +203,8 @@ export const SC_CONFIG: SupachargerConfig = {
   ORGANISATIONS: {
     ENABLED: false,
     AUTHENTICATION_HANDLE: 'disabled',
-    CHOOSER_PATH: '/account/organisation',
-    ROUTE_MODE: 'root-handle',
+    CHOOSER_PATH: '/organisation/choose',
+    ROUTE_MODE: 'organisation-handle',
     PROFILE_MEDIA: true,
   },
   BILLING_ACCESS: {

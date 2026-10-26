@@ -8,8 +8,8 @@ import { organisationHandleSchema } from '@/supacharger/organisations/organisati
 import { OrganisationProfileForm } from '@/supacharger/organisations/organisation-profile-form';
 import { loadOrganisationProfile } from '@/supacharger/organisations/organisation-service';
 
-export default async function OrganisationProfilePage({ params }: { params: Promise<{ handle: string }> }) {
-  const parsed = organisationHandleSchema.safeParse((await params).handle);
+export default async function OrganisationProfilePage({ params }: { params: Promise<{ 'org-handle': string }> }) {
+  const parsed = organisationHandleSchema.safeParse((await params)['org-handle']);
   if (!parsed.success) notFound();
   const [{ details, extension }, supabase] = await Promise.all([loadOrganisationProfile(parsed.data), createClient()]);
   const media = await resolveSignedMediaUrls(supabase, [

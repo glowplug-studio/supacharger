@@ -121,8 +121,8 @@ export type SupachargerConfig = {
   ORGANISATIONS: {
     /** Expose organisation journeys and context actions. */ ENABLED: boolean;
     /** `disabled`, `optional`, or `required` handle input during authentication. */ AUTHENTICATION_HANDLE: 'disabled' | 'optional' | 'required';
-    /** Canonical organisation chooser route. */ CHOOSER_PATH: '/account/organisation';
-    /** Organisation URLs use a root `[handle]` segment. */ ROUTE_MODE: 'root-handle';
+    /** Canonical organisation chooser route. */ CHOOSER_PATH: '/organisation/choose';
+    /** Organisation settings use `/organisation/[org-handle]/settings`. */ ROUTE_MODE: 'organisation-handle';
     /** Expose organisation avatar/header media. */ PROFILE_MEDIA: boolean;
   };
   /** Optional account-settings sections. */

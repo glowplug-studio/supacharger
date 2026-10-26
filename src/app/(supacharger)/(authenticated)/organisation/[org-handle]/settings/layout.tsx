@@ -13,10 +13,10 @@ export default async function Layout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ handle: string }>;
+  params: Promise<{ 'org-handle': string }>;
 }) {
-  if (!SC_CONFIG.ORGANISATIONS.ENABLED || SC_CONFIG.ORGANISATIONS.ROUTE_MODE !== 'root-handle') notFound();
-  const parsed = organisationHandleSchema.safeParse((await params).handle);
+  if (!SC_CONFIG.ORGANISATIONS.ENABLED || SC_CONFIG.ORGANISATIONS.ROUTE_MODE !== 'organisation-handle') notFound();
+  const parsed = organisationHandleSchema.safeParse((await params)['org-handle']);
   if (!parsed.success) notFound();
   const organisation = await requireOrganisationDetails(parsed.data);
   return (

@@ -48,7 +48,7 @@ The database and profile resources record the one-profile-per-Auth-user model, t
 
 The account-settings resource records the managed `/account` shell and mutation boundary, profile media cleanup order, language persistence, visible cancellation policy, descriptor-driven privacy/notification surfaces, honest disabled defaults, and preserved navigation, field, persistence, and presentation adapters.
 
-The organisations resource records the managed chooser and root-handle settings routes, disabled-route behaviour, session refresh before context navigation, owner/admin/member visibility, hashed invitation and reviewed-access UX, private media paths, organisation billing visibility, `FormProvider` extension seam with authoritative server Zod validation, Specdrive compatibility redirects, and the exclusion of product usage and agent-licence surfaces from Core.
+The organisations resource records the managed chooser and organisation-prefixed settings routes, disabled-route behaviour, session refresh before context navigation, owner/admin/member visibility, hashed invitation and reviewed-access UX, private media paths, organisation billing visibility, `FormProvider` extension seam with authoritative server Zod validation, the organisation chooser 301 redirect, and the exclusion of product usage and agent-licence surfaces from Core.
 
 The CLI-upgrades resource records the version 2 ownership flow, direct three-way file comparison, configuration-property comparison, developer-owned preservation, migration handling and Core-lock advancement.
 

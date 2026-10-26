@@ -53,7 +53,7 @@ export function OrganisationTeam({ initialOrganisation }: { initialOrganisation:
       typeof result.organisation.inviteToken === 'string'
     ) {
       setInviteLink(
-        `${window.location.origin}/account/organisation?invite=${encodeURIComponent(result.organisation.inviteToken)}`,
+        `${window.location.origin}/organisation/choose?invite=${encodeURIComponent(result.organisation.inviteToken)}`,
       );
       setEmail('');
     }
