@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
 
 import { SCDashboardSidebar } from '@/components/sc_demo/sc_dashboard-sidebar';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('DashboardDemo');
-  return { title: t('sidebarNav'), description: t('description') };
-}
+export const metadata: Metadata = {
+  title: 'Sidebar Nav',
+  description: 'Track performance, review active work, and keep the team moving from one focused workspace.',
+};
 
 export default function SidebarDemoPage() {
   return <SCDashboardSidebar />;

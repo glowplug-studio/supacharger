@@ -70,3 +70,7 @@ npx supabase functions deploy process-image-upload
 ```
 
 Exercise unauthenticated, unsupported-target, unsafe-destination, malformed-crop, out-of-bounds-crop, rotated-source, invalid-image, byte-limit, pixel-limit, JPEG, PNG, private signed-URL, and Storage-policy failure cases before deployment. The checked-in `magick.wasm` is declared through `static_files`; deploy with Docker because API-only deployment cannot bundle static files. Large image processing is bounded by hosted Edge Function memory and CPU limits; keep source files at or below 5 MiB unless a reviewed product target has a stricter reason to increase it.
+
+## Source dimension policy
+
+Targets may set `minInputWidth` and `minInputHeight` (positive integers up to 4096). The processor checks these after EXIF orientation and optional cropping, before resizing; undersized sources return 422. Omitted minimums preserve existing behaviour. `maxInputPixels` defaults to 25 million; an explicit `null` disables the configured pixel cap for that target. Byte, format and decode checks still apply, and very large sources can exceed runtime resources. This policy is server-owned and cannot be overridden by multipart fields. Deploy the updated processor before enabling these target options.

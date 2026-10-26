@@ -47,6 +47,12 @@ docs {
   retain their own target maps and document product targets separately. Source limits
   apply before cropping: starter limits are 5 MiB and 25 megapixels.
 
+  Target policy may set minInputWidth/minInputHeight (1–4096); undersized oriented
+  sources or selected crops return 422 before resize/storage. Omitted minimums keep
+  existing behaviour. maxInputPixels defaults to 25 million; explicit null disables
+  the configured cap. Byte and decode checks still apply; runtime resources remain
+  finite. These settings are server-owned, never accepted as multipart options.
+
   200: target, bucket, path, content_type, width, height, bytes, plus configured signed_url
   and signed_url_expires_in or public_url. No crop is echoed. Persist path for profile images.
   400: malformed/unknown/duplicate/missing multipart fields, unsupported target, unsafe

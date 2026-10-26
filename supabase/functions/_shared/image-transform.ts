@@ -23,7 +23,7 @@ const wasmBytes = await Deno.readFile(new URL('../process-image-upload/magick.wa
 await initializeImageMagick(wasmBytes);
 
 export type ImageTransformErrorCode =
-  'invalid_crop' | 'decode_failed' | 'input_too_large' | 'pixel_limit_exceeded' | 'storage_failed' | 'unsupported_input';
+  'input_too_small' | 'invalid_crop' | 'decode_failed' | 'input_too_large' | 'pixel_limit_exceeded' | 'storage_failed' | 'unsupported_input';
 
 export class ImageTransformError extends Error {
   constructor(
@@ -92,7 +92,7 @@ function transformImage(source: Uint8Array, target: ImageUploadTarget, crop?: Im
       image.autoOrient();
 
       const pixelCount = image.width * image.height;
-      if (!Number.isSafeInteger(pixelCount) || pixelCount > (target.maxInputPixels ?? defaultMaxInputPixels)) {
+      if (!Number.isSafeInteger(pixelCount) || (target.maxInputPixels !== null && pixelCount > (target.maxInputPixels ?? defaultMaxInputPixels))) {
         throw new ImageTransformError('pixel_limit_exceeded', 'The decoded image dimensions are too large.');
       }
 
@@ -105,6 +105,11 @@ function transformImage(source: Uint8Array, target: ImageUploadTarget, crop?: Im
         image.resetPage();
         image.crop(new MagickGeometry(crop.x, crop.y, crop.width, crop.height));
         image.resetPage();
+      }
+
+      // Check the oriented source (or selected crop), before output resizing.
+      if (image.width < (target.minInputWidth ?? 1) || image.height < (target.minInputHeight ?? 1)) {
+        throw new ImageTransformError('input_too_small', `Image must be at least ${target.minInputWidth ?? 1} × ${target.minInputHeight ?? 1}px.`);
       }
 
       if (target.fit === 'cover') {

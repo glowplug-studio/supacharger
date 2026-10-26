@@ -66,7 +66,7 @@ Deno.serve(
       });
     } catch (error) {
       if (error instanceof ImageTransformError) {
-        if (error.code === 'invalid_crop') return errorResponse(error.message, 422);
+        if (error.code === 'invalid_crop' || error.code === 'input_too_small') return errorResponse(error.message, 422);
         if (error.code === 'input_too_large') return errorResponse(error.message, 413);
         if (error.code === 'unsupported_input') return errorResponse(error.message, 415);
         if (error.code === 'decode_failed' || error.code === 'pixel_limit_exceeded') {

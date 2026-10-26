@@ -5,4 +5,15 @@ cwd = "."
 startup_timeout_sec = 30.0
 
 [mcp_servers.supabase]
+enabled = false
+
+[mcp_servers.supabase-core]
+enabled = true
 url = "https://mcp.supabase.com/mcp?project_ref=lubojzqjhvjoextyhfqn&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching"
+
+[mcp_servers.supabase-specdrive]
+enabled = false
+
+[mcp_servers.supabase-snapscreen]
+enabled = false
+url = "https://mcp.supabase.com/mcp?project_ref=cvgunswowcbdaoxvokfy&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching"

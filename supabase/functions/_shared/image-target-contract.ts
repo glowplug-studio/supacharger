@@ -24,7 +24,10 @@ export type ImageUploadTarget = Readonly<{
   fit: ImageResizeFit;
   maxHeight?: number;
   maxInputBytes?: number;
-  maxInputPixels?: number;
+  /** null disables the decoded-pixel cap; omitted retains the default. */
+  maxInputPixels?: number | null;
+  minInputWidth?: number;
+  minInputHeight?: number;
   maxWidth?: number;
   outputFormat: ImageOutputFormat;
   pathPrefix: string;
@@ -102,7 +105,9 @@ export function defineImageUploadTargets<const TTargets extends Record<string, I
     requireIntegerInRange(target.maxWidth, 1, 4096, 'maxWidth', targetName);
     requireIntegerInRange(target.maxHeight, 1, 4096, 'maxHeight', targetName);
     requireIntegerInRange(target.maxInputBytes, 1, 10 * 1024 * 1024, 'maxInputBytes', targetName);
-    requireIntegerInRange(target.maxInputPixels, 1, 40_000_000, 'maxInputPixels', targetName);
+    if (target.maxInputPixels !== null) requireIntegerInRange(target.maxInputPixels, 1, 40_000_000, 'maxInputPixels', targetName);
+    requireIntegerInRange(target.minInputWidth, 1, 4096, 'minInputWidth', targetName);
+    requireIntegerInRange(target.minInputHeight, 1, 4096, 'minInputHeight', targetName);
     requireIntegerInRange(target.qualityPercent, 1, 100, 'qualityPercent', targetName);
     requireIntegerInRange(target.pngCompressionPercent, 0, 100, 'pngCompressionPercent', targetName);
     requireIntegerInRange(target.signedUrlSeconds, 1, 86_400, 'signedUrlSeconds', targetName);
