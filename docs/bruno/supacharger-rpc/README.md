@@ -35,3 +35,9 @@ The canonical origin is allowed automatically. Exact `VERCEL_URL` and `VERCEL_PR
 Register the same supported domains and actual redirect destinations in Supabase Auth's redirect allow-list. Recovery sends `redirectTo=<origin>/auth/confirm`; signup and email changes also supply a complete `/auth/confirm?next=...` URL. Recovery templates append `?token_hash=...&type=recovery` to the query-free `RedirectTo`. Signup and email-change templates append `&token_hash=...&type=...` to their query-bearing `RedirectTo`. Never append another route. Query-bearing redirect destinations must match the hosted allow-list; do not register token-bearing links. Keep Supabase Site URL as the default for dashboard/admin/background operations without an explicit destination. Invitations issued without an application request keep that default.
 
 Deploy application changes before installing the new hosted recovery template. Local templates do not update hosted Auth. Cookies remain domain-scoped: preserving a domain does not create cross-domain SSO. Native associations must also be configured on each supported native-link host. No database migration is needed for request-domain routing.
+
+## Social profile initialisation
+
+The OAuth callback calls `initialise_social_profile_by_current_user` before onboarding and uses `complete_social_avatar_by_current_user` after private image processing. Both are one-time mutations, not read requests. See their embedded documentation for preservation, failure and ownership rules. Existing profile reads and avatar-edit requests retain their signatures.
+
+Username-enabled applications then call `initialise_account_username_by_current_user` to persist an email-derived, collision-safe default. Email sign-ins and direct setup use the same allocation. See the request for removal preservation and configuration behaviour.

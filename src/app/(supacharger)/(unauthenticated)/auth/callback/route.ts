@@ -10,6 +10,8 @@ import {
 } from '@/supacharger.adapters/auth-callback';
 import { EMAIL_CHANGE_PENDING_MESSAGE, emailChangeResultPath } from '@/supacharger/auth/email-change';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
+import { initialiseAccountUsername } from '@/supacharger/profile/initialise-account-username';
+import { initialiseSocialProfile } from '@/supacharger/profile/initialise-social-profile';
 import { appURL } from '@/supacharger/utils/app-origin';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
@@ -61,6 +63,12 @@ export async function GET(request: NextRequest) {
   if (flow === 'recovery') {
     return NextResponse.redirect(appURL('/account/reset-password/new', origin));
   }
+
+  if (!user.is_anonymous && user.identities?.some((identity) => !['email', 'phone'].includes(identity.provider))) {
+    await initialiseSocialProfile(supabase, user.id);
+  }
+
+  if (!user.is_anonymous) await initialiseAccountUsername(supabase);
 
   return NextResponse.redirect(await resolveAuthCallbackSuccess(context));
 }

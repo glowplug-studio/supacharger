@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import { decideAccess } from '@/supacharger/auth/access-decision';
+import { initialiseAccountUsername } from '@/supacharger/profile/initialise-account-username';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import 'server-only';
@@ -41,6 +42,7 @@ export async function requireVerifiedUser(): Promise<VerifiedUserIdentity> {
 
 export async function readAppAccessState(): Promise<AppAccessState> {
   const identity = await requireVerifiedUser();
+  if (identity.claims.is_anonymous !== true) await initialiseAccountUsername(await createClient());
   const supabase = await createClient();
 
   const profileResult = SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED
@@ -69,6 +71,7 @@ export async function readAppAccessState(): Promise<AppAccessState> {
 
 export async function requireOnboardedUser(): Promise<OnboardedUserIdentity> {
   const identity = await requireVerifiedUser();
+  if (identity.claims.is_anonymous !== true) await initialiseAccountUsername(await createClient());
 
   if (!SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED) {
     return { ...identity, isProfileComplete: true };

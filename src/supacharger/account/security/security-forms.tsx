@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'react-toastify';
 
+import { AuthProviderIcon } from '@/supacharger/components/buttons/auth-provider-icon';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -100,7 +101,12 @@ export function SecurityForms({ currentMethod, email, hasPasswordIdentity, pendi
         <p className='sc-account-section-description'>{t('providers.signedInWith', { method: currentMethod })}</p>
         <p className='sc-account-section-description'>{t('providers.description')}</p>
         <ul className='sc-account-provider-list' aria-label={t('providers.linkedLabel')}>
-          {providers.map((provider) => <li className='sc-account-provider' key={provider}>{provider}</li>)}
+          {providers.map((provider) => (
+            <li className='sc-account-provider' key={provider}>
+              <AuthProviderIcon provider={provider} className='sc-account-provider-icon' />
+              <span>{provider}</span>
+            </li>
+          ))}
         </ul>
       </section>
 

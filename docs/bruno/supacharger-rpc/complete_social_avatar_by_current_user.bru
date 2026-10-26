@@ -1,0 +1,30 @@
+meta {
+  name: complete social avatar by current user
+  type: http
+  seq: 19
+}
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/complete_social_avatar_by_current_user
+  body: json
+  auth: none
+}
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+body:json {
+  {}
+}
+docs {
+  Completes one pending social picture import for the authenticated, non-anonymous current user.
+  Empty body (or input_avatar_path: null) records a failed/skipped attempt and returns false.
+  To attach a processed image, supply {"input_avatar_path":"<current-user-uuid>/avatar-<generated-name>.jpg"}.
+  The object must exist in private user-avatars Storage and be owned by the current user. Foreign/malformed/missing object paths raise 22023 (HTTP 400).
+  HTTP 200 true means attached. False means no pending import, expiry after five minutes, an existing avatar, a profile edited since initialisation, or an omitted path.
+  Repeated completion returns false. The normal editable avatar RPC remains separate and can replace/remove the imported picture.
+  Anonymous/unauthenticated requests are rejected (42501; HTTP 403 for an authenticated anonymous session, 401 without authentication).
+  A confirmed false result lets the application remove its unused upload. An uncertain network result must not delete a potentially attached image.
+}

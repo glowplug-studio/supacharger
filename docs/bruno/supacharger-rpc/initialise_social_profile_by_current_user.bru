@@ -1,0 +1,32 @@
+meta {
+  name: initialise social profile by current user
+  type: http
+  seq: 18
+}
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/initialise_social_profile_by_current_user
+  body: json
+  auth: none
+}
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+body:json {
+  {}
+}
+docs {
+  One-time mutation, normally called by the verified OAuth callback before onboarding.
+  Uses the current user's most recently used non-email/phone Auth identity; accepts no identity or metadata arguments.
+  Seeds blank names on an untouched profile, without inventing a surname for a single-word name.
+  Existing edited profiles are preserved. Username, privacy and product fields are unchanged.
+  HTTP 200 returns null when no image import is needed, or {"provider":"google","avatar_url":"https://lh3.googleusercontent.com/example"} for one pending image attempt.
+  Repeated calls return null. The private import marker survives avatar removal and subsequent logins.
+  The application validates provider image hosts, downloads a bounded image, invokes process-image-upload with target profile_avatar, then calls complete_social_avatar_by_current_user.
+  Missing images, unsupported hosts and download/processing failures do not prevent sign-in. No provider credentials are required.
+  Anonymous/unauthenticated requests are rejected (42501; HTTP 403 for an authenticated anonymous session, 401 without authentication).
+  Profile reads, completion configuration, billing and MFA contracts remain unchanged. REQUIRED controls completeness, not mandatory form visitation.
+}

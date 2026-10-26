@@ -15,6 +15,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      initialise_account_username_by_current_user: {
+        Args: never
+        Returns: string
+      }
+      initialise_social_profile_by_current_user: { Args: never; Returns: Json }
+      complete_social_avatar_by_current_user: {
+        Args: { input_avatar_path?: string }
+        Returns: boolean
+      }
       check_account_username_available: {
         Args: { input_username: string }
         Returns: boolean
@@ -277,6 +286,42 @@ export type Database = {
   }
   app: {
     Tables: {
+      profile_username_initialisations: {
+        Row: {
+          created_at: string
+          profile_username_initialisation_id: string
+        }
+        Insert: {
+          created_at?: string
+          profile_username_initialisation_id: string
+        }
+        Update: {
+          created_at?: string
+          profile_username_initialisation_id?: string
+        }
+        Relationships: []
+      }
+      social_profile_imports: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          profile_updated_at: string | null
+          social_profile_import_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          profile_updated_at?: string | null
+          social_profile_import_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          profile_updated_at?: string | null
+          social_profile_import_id?: string
+        }
+        Relationships: []
+      }
       auth_session_transfers: {
         Row: {
           auth_session_transfer_id: string

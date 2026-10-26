@@ -259,6 +259,8 @@ test('legacy recovery callback accepts the exchanged session and verified user w
       exchangeCodeForSession: async (code) => { calls.push(['exchange', code]); return { error: null }; },
       getUser: async () => { calls.push('getUser'); return { data: { user: { id: 'test-user' } } }; },
     } }) },
+    '@/supacharger/profile/initialise-account-username': { initialiseAccountUsername: async () => { calls.push('username'); } },
+    '@/supacharger/profile/initialise-social-profile': { initialiseSocialProfile: async () => { calls.push('import'); } },
     '@/supacharger/utils/request-url': { getAppRequestOrigin: () => 'https://app.example' },
     '@/supacharger.adapters/auth-callback': {
       resolveAuthCallbackFailure: () => 'https://app.example/auth/error',
@@ -281,5 +283,27 @@ test('new-password page accepts a verified user without a recovery AMR and rejec
     });
     if (user?.id && !user.is_anonymous) assert.ok(await Page());
     else await assert.rejects(Page(), /Redirect: \/account\/login/);
+  }
+});
+
+test('social callback imports before onboarding while email callbacks skip import', async () => {
+  for (const provider of ['google', 'email']) {
+    const calls = [];
+    const { GET } = load('src/app/(supacharger)/(unauthenticated)/auth/callback/route.ts', {
+      '@/lib/supabase/server': { createClient: async () => ({ auth: {
+        exchangeCodeForSession: async () => ({ error: null }),
+        getUser: async () => ({ data: { user: { id: 'test-user', identities: [{ provider }] } } }),
+      } }) },
+      '@/supacharger/profile/initialise-account-username': { initialiseAccountUsername: async () => { calls.push('username'); } },
+    '@/supacharger/profile/initialise-social-profile': { initialiseSocialProfile: async () => { calls.push('import'); } },
+      '@/supacharger/utils/request-url': { getAppRequestOrigin: () => 'https://app.example' },
+      '@/supacharger.adapters/auth-callback': {
+        resolveAuthCallbackFailure: () => 'https://app.example/auth/error',
+        resolveAuthCallbackSuccess: () => { calls.push('onboarding'); return 'https://app.example/account'; },
+      },
+    });
+    const response = await GET(new NextRequest('https://app.example/auth/callback?code=test-code'));
+    assert.equal(response.headers.get('location'), 'https://app.example/account');
+    assert.deepEqual(calls, provider === 'google' ? ['import', 'username', 'onboarding'] : ['username', 'onboarding']);
   }
 });
