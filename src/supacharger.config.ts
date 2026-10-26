@@ -201,7 +201,7 @@ export const SC_CONFIG: SupachargerConfig = {
   // Organisation tables are always installed. Disabled applications do not expose
   // organisation fields or invoke organisation onboarding adapters.
   ORGANISATIONS: {
-    ENABLED: false,
+    ENABLED: true,
     AUTHENTICATION_HANDLE: 'disabled',
     CHOOSER_PATH: '/organisation/choose',
     ROUTE_MODE: 'organisation-handle',

@@ -2,6 +2,8 @@
 
 ## Routes and feature policy
 
+The Core demo enables organisations. Consumer applications retain their own `ORGANISATIONS.ENABLED` value; enabling the demo does not require enabling every consumer. Organisation fields during authentication and organisation billing remain separate optional policies.
+
 The managed chooser is `/organisation/choose`. Organisation-handle mode exposes `/organisation/{org-handle}/settings`, `/organisation/{org-handle}/settings/team`, and, when organisation billing is enabled, `/organisation/{org-handle}/settings/billing`. Route helpers validate and encode handles. If `ORGANISATIONS.ENABLED` is false, the chooser and settings layout return a controlled not-found response and the account navigation omits the chooser.
 
 Specdrive is a semantic consumer: Core owns its `/organisation/choose` and `/organisation/{org-handle}/settings` route identities and reusable structure, while developer-owned adapters preserve its authorised product chooser, application chrome, usage, and agent-licence behaviour. `/organisation` returns a 301 redirect to `/organisation/choose`, preserving safe query parameters. The chooser is a standalone page outside the account settings frame. Previous chooser and root-handle settings routes are removed without compatibility redirects. Its licensed presentation remains confined to Specdrive's developer CSS and product components and must not be copied into Core.

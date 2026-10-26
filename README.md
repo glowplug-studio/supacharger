@@ -147,7 +147,7 @@ POST_SIGN_IN_ONBOARDING: {
   REDIRECT_PATH: '/account/setup-profile',
 },
 ORGANISATIONS: {
-  ENABLED: false,
+  ENABLED: true,
   AUTHENTICATION_HANDLE: 'disabled', // 'disabled' | 'optional' | 'required'
   CHOOSER_PATH: '/organisation/choose',
   ROUTE_MODE: 'organisation-handle',

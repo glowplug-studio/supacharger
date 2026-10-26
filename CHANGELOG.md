@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-26T07:17:51Z; base_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; main_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; scope=organisation-routes-and-prior-widget-changes; excluded=uncommitted-sidebar-demo-edit-and-separate-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-26T07:56:38Z; base_commit=f92e49e63c48f66ec9bbcd4625b6bdb6f6b8a49d; main_commit=f92e49e63c48f66ec9bbcd4625b6bdb6f6b8a49d; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; scope=core-demo-organisation-enablement; excluded=uncommitted-sidebar-demo-edit-and-separate-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -27,6 +27,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- The Core demo enables organisation creation, switching, invitations and settings. Consumer feature flags, registration organisation fields and organisation billing remain independently configured.
 
 - **Breaking:** organisation selection moves to the standalone `/organisation/choose` page and settings move to `/organisation/{org-handle}/settings`. `/organisation` redirects with HTTP 301; previous chooser and root-handle settings routes are removed without redirects. Update developer-owned links and return destinations, and use `CHOOSER_PATH: "/organisation/choose"` with `ROUTE_MODE: "organisation-handle"`.
 
