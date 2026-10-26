@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-26T07:56:38Z; base_commit=f92e49e63c48f66ec9bbcd4625b6bdb6f6b8a49d; main_commit=f92e49e63c48f66ec9bbcd4625b6bdb6f6b8a49d; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=fc98e364ba2d2681b38c653942dde739f1391ffa; scope=core-demo-organisation-enablement; excluded=uncommitted-sidebar-demo-edit-and-separate-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-26T08:03:40Z; base_commit=d8745c6bef9fd12ea00e42d3ffa68df01c3f6edf; main_commit=d8745c6bef9fd12ea00e42d3ffa68df01c3f6edf; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=d8745c6bef9fd12ea00e42d3ffa68df01c3f6edf; scope=browser-client-server-rendering; excluded=uncommitted-sidebar-demo-edit-and-separate-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -53,6 +53,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Client Components can initialise the shared Supabase browser client during server rendering without cookie configuration errors; browser sessions retain token-only cookies and separate user storage.
 
 - Passwordless sign-in validates the current email input, including browser autofill, shows accessible invalid-email feedback and clears pending state when sending fails.
 

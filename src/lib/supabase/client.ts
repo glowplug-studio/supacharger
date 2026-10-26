@@ -1,10 +1,11 @@
 import { getSupabasePublishableKey, getSupabaseUrl } from '@/supacharger/utils/helpers';
-import { createBrowserClient } from '@supabase/ssr';
+import { createBrowserClient, isBrowser } from '@supabase/ssr';
 
 export function createClient() {
-  return createBrowserClient(getSupabaseUrl(), getSupabasePublishableKey(), {
-    cookies: {
-      encode: 'tokens-only',
-    },
-  });
+  return createBrowserClient(
+    getSupabaseUrl(),
+    getSupabasePublishableKey(),
+    // Client Components also render on the server, where browser cookies and localStorage are unavailable.
+    isBrowser() ? { cookies: { encode: 'tokens-only' } } : undefined,
+  );
 }
