@@ -63,3 +63,4 @@ tools/supacharger-skills/node_modules/
 
 # Private extension update review sources
 .supacharger/extension-comparisons/
+docs/reports
