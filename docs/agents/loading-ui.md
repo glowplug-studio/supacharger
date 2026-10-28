@@ -14,9 +14,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 Both supplied assets expose their artwork colour through the root SVG `fill` attribute: the primary file defaults to white and the dark clone defaults to black. SVGR callers can override either colour with `fill`, and the shared wrapper passes its `fill` prop to the primary asset. A replacement is allowed to hard-code `fill` or `stroke`, so callers must not depend on an override taking effect after application customisation; the passed prop remains harmless when a replacement ignores it.
 
-Store every UI SVG under the developer-owned `src/` path belonging to its feature or surface, with demo-only artwork under `src/components/sc_demo/`, and render it as an SVGR component. Keep an SVG in `public` only when metadata, a manifest, a third-party callback, or another URL-based contract requires it. Do not use `<img>`, `next/image`, CSS public URLs, or public path strings for component-owned SVG artwork unless that URL delivery is explicitly requested.
-
-Responsive sources must keep a correct `viewBox` and omit root `width` and `height` when CSS controls sizing. Size the component at the call site with `size-*`, `w-*`, `h-*`, or `size-[1em]`; usually add `shrink-0` beside text and preserve the source aspect ratio. Use `currentColor` only when inheritance is intentional. Verify this source contract directly and inspect the rendered SVG at every affected viewport rather than hiding clipping with arbitrary dimensions.
+Follow [SVG guidance](svg-guidance.md) for general asset placement, imports, responsive sizing and verification.
 
 When sourcing a replacement from [SVG Backgrounds animated SVG preloaders](https://www.svgbackgrounds.com/elements/animated-svg-preloaders/), verify and satisfy the asset's current licence and attribution terms before shipping it.
 

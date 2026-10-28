@@ -125,7 +125,7 @@ export function ImageRepositionDialog({
       </DialogTrigger>
       <DialogContent
         className={cn(
-          'max-h-[90dvh] overflow-y-auto duration-150',
+          'flex max-h-[90dvh] flex-col overflow-y-auto duration-150 [&>*]:shrink-0',
           shape === 'circle' ? 'sm:max-w-lg' : 'sm:max-w-3xl',
         )}
         motion='fade'
@@ -142,10 +142,16 @@ export function ImageRepositionDialog({
         </DialogHeader>
         <div
           className={cn(
-            'relative mx-auto w-full overflow-hidden rounded-md bg-muted',
+            'relative isolate mx-auto w-full overflow-hidden rounded-md bg-muted',
             shape === 'circle' ? 'max-w-[50dvh]' : 'max-w-3xl',
           )}
-          style={{ aspectRatio }}
+          // Keep the preview square/rectangular even when the dialog must scroll.
+          // Grid track compression previously let the drag surface overlap the zoom control.
+          style={{
+            aspectRatio,
+            maxWidth: `min(100%, ${aspectRatio * 50}dvh)`,
+            clipPath: 'inset(0 round 0.375rem)',
+          }}
         >
           {src ? (
             <FullSizeImageWithLoader
@@ -253,12 +259,13 @@ export function ImageRepositionDialog({
           </p>
         ) : null}
         {allowZoom ? (
-          <div className='flex items-center gap-4'>
+          <div className='relative flex min-h-12 items-center gap-4 py-2'>
             <Label className='shrink-0' htmlFor={zoomId}>
               {copy.zoom}
             </Label>
             <Slider
               aria-label={copy.zoom}
+              className='min-h-8 [&_[role=slider]]:border-foreground/50 [&_[role=slider]]:bg-foreground [&_[role=slider]]:ring-1 [&_[role=slider]]:ring-foreground/30'
               disabled={!image || failed}
               id={zoomId}
               max={4}
