@@ -10,7 +10,7 @@
 
 - Start with `project-overview.md` and `ownership.md` for architecture and file ownership.
 - Read `cli-upgrades.md` for installed Core updates and `extensions.md` for optional application modules.
-- Read `authentication-and-claims.md`, `account-settings.md` and `organisation-settings.md` for identity and account work.
+- Read `authentication-and-claims.md`, `account-settings.md`, `profile-extensions.md` and `organisation-settings.md` for identity and account work.
 - Read `input-validation.md`, `database-foundation.md` and `billing.md` for request, database and billing contracts.
 - Read `localisation.md` for English source messages and translation policy.
 - Read `project-widgets.md`, `loading-ui.md` and `image-transformation.md` for reusable media and UI conventions.

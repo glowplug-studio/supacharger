@@ -13,3 +13,5 @@ Existing `.agents/instructions/` and `.agents/skills/` remain in place. Read tas
 [Previous directives](.agents/legacy/original-agents.md) are an inactive historical archive. Do not apply them automatically or reinstate them without a human request.
 
 This routing structure deliberately permits a blank project instruction file. The archived requirement to duplicate the translation policy in every AGENTS.md does not apply to this structure.
+
+For profile identity, product fields and profile media changes, read `docs/agents/profile-extensions.md` before implementation.

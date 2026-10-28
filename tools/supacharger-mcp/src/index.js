@@ -29,6 +29,7 @@ const guidanceTopics = [
   'image_transforms',
   'loading_ui',
   'profile',
+  'profile_extensions',
   'account_settings',
   'organisations',
   'billing',

@@ -15,6 +15,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_account_profile: {
+        Args: { identifier: string }
+        Returns: Json
+      }
+      get_profile_media_url: { Args: { object_path: string }; Returns: string }
       initialise_account_username_by_current_user: {
         Args: never
         Returns: string
@@ -34,11 +39,13 @@ export type Database = {
           avatar_path: string
           created_at: string
           email: string
+          extension: Json
           first_name: string
           header_image_path: string
           id: string
           language_code: string
           last_name: string
+          profile_is_public: boolean
           updated_at: string
           username: string
         }[]
@@ -91,11 +98,7 @@ export type Database = {
         Returns: undefined
       }
       update_account_profile_by_current_user: {
-        Args: {
-          input_first_name: string
-          input_last_name: string
-          input_username?: string
-        }
+        Args: { request: Json }
         Returns: undefined
       }
     }

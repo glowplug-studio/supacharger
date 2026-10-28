@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { authoriseImageUpload } from '@/supacharger/media/authorise-image-upload';
 
-export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   // Cookie-authenticated browser requests must originate from this application.

@@ -1,0 +1,29 @@
+meta {
+  name: get_profile_media_url
+  type: http
+  seq: 71
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/get_profile_media_url
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "object_path": "{{PROFILE_MEDIA_PATH}}"
+  }
+}
+
+docs {
+  Constructs an absolute Supabase profile-media URL for a valid canonical object path. Returns null for invalid paths or an unconfigured origin. Does not authorise image access: the Edge Function checks Storage RLS on each download. The privileged deployment must configure internal.profile_media_settings.supabase_url for this environment. No credentials are stored in that table.
+}

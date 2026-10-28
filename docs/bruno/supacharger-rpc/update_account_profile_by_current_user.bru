@@ -1,5 +1,5 @@
 meta {
-  name: update account profile by current user
+  name: update_account_profile_by_current_user
   type: http
   seq: 4
 }
@@ -20,12 +20,18 @@ headers {
 
 body:json {
   {
-    "input_first_name": "Sam",
-    "input_last_name": "Example",
-    "input_username": null
+    "request": {
+      "profile": {
+        "first_name": "Sam",
+        "last_name": "Example",
+        "username": null
+      },
+      "extension": {}
+    }
   }
 }
 
 docs {
-  Updates the signed-in user's canonical name and nullable username fields. Supply a valid username only when the configured policy enables it.
+  Updates the authenticated non-anonymous caller using one request object: profile and extension are optional patches. Omitted keys preserve values. Shared keys: first_name, last_name, username, avatar_path, header_image_path, language_code, profile_is_public. Names require 1–100 characters; username is nullable and otherwise 3–40 letters, digits, underscores or hyphens; language is two lower-case letters. Media paths must belong to the caller. Visibility must be boolean. Unknown keys fail.
+  The product's private SQL hook validates extension fields. Shared and extension writes roll back together. Returns void. SQLSTATE 22023 means invalid input, 23505 username conflict, 42501 denied account access. Email and the account ID cannot be set. The old three-argument signature is removed.
 }

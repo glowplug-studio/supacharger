@@ -23,6 +23,7 @@ const guidanceFiles = {
   loading_ui: 'docs/agents/loading-ui.md',
   project_widgets: 'docs/agents/project-widgets.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
+  profile_extensions: 'docs/agents/profile-extensions.md',
   account_settings: 'docs/agents/account-settings.md',
   organisations: 'docs/agents/organisation-settings.md',
   billing: 'docs/agents/billing.md',
@@ -123,6 +124,8 @@ export function classifyPath(inputPath) {
     relativePath === 'tailwind.config.ts' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
+    relativePath === 'supabase/functions/profile-media' ||
+    relativePath.startsWith('supabase/functions/profile-media/') ||
     relativePath === 'supabase/functions/process-image-upload-v2' ||
     relativePath.startsWith('supabase/functions/process-image-upload-v2/') ||
     relativePath === 'components.json' ||
