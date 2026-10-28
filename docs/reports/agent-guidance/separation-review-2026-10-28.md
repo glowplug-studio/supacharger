@@ -1,7 +1,18 @@
 # Agent guidance separation review
 
 Created: 2026-10-28; time unknown (Asia/Bangkok)
-Last edited: 2026-10-28T20:30:37+07:00 (Asia/Bangkok)
+Last edited: 2026-10-29T03:18:44+07:00 (Asia/Bangkok)
+
+## Final disposition
+
+**Review closed; selected consolidation delivered.** The human replaced the proposed rules directory with docs/agents/project/. That approved arrangement, shared-policy deduplication and application-specific guidance extraction were delivered by the consolidation release. Earlier suggestions about additional procedural extraction or Specdrive icon choices are review recommendations, not authorised implementation requirements; no icon choice is silently standardised. The actual supported guidance layout is documented in docs/agents/agent-guidance.md and the published human agent guide.
+
+Verification: published release records, shared-file comparisons, 16 existing repository-knowledge MCP checks and Docusaurus build/type checking. No runtime or public contract changes in this report-only reconciliation; no further Docusaurus or Bruno edit is required.
+
+## Archived inspection
+
+<details>
+<summary>Read the original inspection and recommendations</summary>
 
 28 October 2026. Review only; no instruction files moved or rewritten. Scope: all 21 Markdown files (1,138 lines) in Core docs/agents, compared with the same 21 paths in Wakekeeper, SnapScreen and Specdrive. Reviewed unique consumer additions and differences, existing instruction routing, ownership manifest, MCP topic routing and the recently added project UI/icon structure. This assesses document responsibility, not runtime correctness, hosted configuration or external provider documentation.
 
@@ -98,3 +109,5 @@ Protected shared guidance changes require the Core gate. This review does not ap
 ## Subsequent decision
 
 The human subsequently chose a single docs/agents home. Recommendations to move durable guidance into a rules tree are superseded by 2026-10-28-guidance-consolidation.md.
+
+</details>
