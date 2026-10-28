@@ -40,9 +40,7 @@ Stripe libraries under `src/lib/stripe/`, billing controllers under `src/feature
 
 ### Consumer configuration approval boundary
 
-Do not treat a human-requested change to an ordinary application value as a Supacharger Core contract change merely because it lives in `src/supacharger.config.ts`. The consumer may change branding, presentation, ordinary destinations, feature choices, and other product policy without either protected-contract gate when it preserves the complete canonical property set, names, types, nesting, and shared meanings.
-
-Keep security-sensitive values behind the project core gate. This includes authentication and session policy, authorisation, public or protected route exposure, privileged access, native association identifiers, and billing-access enforcement. The approval report must state that Supacharger Core and other consumers are unaffected when the change is confined to that consumer. Changing a canonical property's presence, name, type, nesting, or shared meaning requires the Supacharger Core gate and must be designed in Supacharger Core, documented, migrated through the CLI, and synchronised across consumers.
+Follow `.agents/supacharger/guidance.md` for the authoritative project/Core approval gates. Ownership descriptions here do not grant permission to change protected contracts.
 
 `src/app/layout.tsx` is installed as the starter root-layout template and is then developer-owned. The CLI manifest must preserve it during `coreupdate`; developers may change fonts, body classes, concrete provider implementations, and product-specific head content. Reusable document behaviour belongs in the CLI-managed `src/supacharger/root-document.tsx` helper. That helper owns the metadata factory, page-metadata factory, viewport defaults, optional standard favicon declaration, production-aware robots metadata, and analytics integrations.
 
@@ -68,11 +66,7 @@ Scope every shared `sc-control-*` rule in those unlayered stylesheets to the acc
 
 ### UI SVG ownership and responsive sizing
 
-Keep a UI SVG under the developer-owned `src/` path belonging to its feature or surface. Demo-only artwork belongs under `src/components/sc_demo/`; use `public/` only when the asset genuinely needs a URL. Import component-owned SVGs through SVGR.
-
-Every responsive SVG source must retain a correct `viewBox` and omit root-level `width` and `height` when CSS controls its size. Size the React component at the call site with `size-*`, `w-*`, `h-*`, or `size-[1em]`, usually with `shrink-0` beside text. Preserve the source aspect ratio rather than forcing mismatched dimensions, and never conceal clipping with arbitrary component props. Use `fill='currentColor'` or `stroke='currentColor'` only when the artwork is designed to inherit text colour.
-
-Before changing sizing classes, inspect the rendered `<svg>` to confirm that SVGR/SVGO preserved the `viewBox`, then check the complete artwork at every intended viewport size and visually verify every affected page.
+See [SVG guidance](svg-guidance.md) for placement, SVGR imports, sizing and verification. Assets retain the developer ownership described above.
 
 `src/components/sc_demo/` contains example application presentation that developers may replace. Keep demo-only assets beneath this directory so removing the demo also removes its assets. Import its UI SVGs as SVGR components; do not place them in `public/` unless they require a stable public URL independently of the demo.
 
@@ -118,7 +112,7 @@ Protected code imports `src/supacharger/supacharger-config.ts`. That module cont
 
 ## Image loading placeholders
 
-Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.
+See [loading UI](loading-ui.md) for the image loader lifecycle and [project widgets](project-widgets.md) for its wrapper. The assets and editable widgets remain developer-owned.
 
 ## Agent guidance and changelog ownership
 

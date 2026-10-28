@@ -9,11 +9,14 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-28T16:10:34Z; base_commit=5647545; main_commit=5647545; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=bc846111c3e44ba0176a7aa10bc8009a4e18102f; scope=profile-consolidation-staged-change; excluded=uncommitted-guidance-extension-restructure-and-separate-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-28T19:52:25.707713Z; base_commit=89796b7542941f1cbbb8d35de41cabcffa59a0ed; main_commit=89796b7542941f1cbbb8d35de41cabcffa59a0ed; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=89796b7542941f1cbbb8d35de41cabcffa59a0ed; scope=extensions-and-agent-guidance-release; excluded=unrelated-working-tree-changes; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- Optional extensions install as project-owned source, with verified SHA-256 payloads, registry releases and selected-provider dependency checks. Updates compare the original release with installed files and offer an agent merge prompt when local changes need review; versioned ZIP fetching remains deferred.
+- A generic build helper selects installed extension code or an application-owned unavailable implementation, including namespaced next-intl UI messages. Database changes remain explicit administrative operations.
 
 - A developer-owned login/signup modal widget using the configured authentication flow, with a feature-gating demonstration.
 
@@ -27,6 +30,9 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- Extension source belongs under `src/app/(project)/(extensions)/(sc_extensions)/`; Supabase workers and forward migrations install into their normal project directories. Commercial implementations remain in their own repositories rather than Core.
+- Agent guidance is consolidated under `docs/agents/`, with project UI/icon rules and timestamped reports. Optional extension-development instructions are separate from the instructions installed for application developers.
 
 - **Breaking:** account updates accept one validated profile/extension patch and commit identity, language and product fields together. Move product persistence to private SQL hooks and update callers; the old argument signature is removed.
 - Public profile identity has an explicit safe projection. Deploy the Core `profile-media` Supabase function and configure its per-environment origin; public image requests are authorised by Storage on every fetch.

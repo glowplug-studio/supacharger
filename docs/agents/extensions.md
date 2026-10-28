@@ -1,47 +1,159 @@
-# Extensions: local source bundles
+# Working with extensions
 
-The experimental source catalogue is retained under `extensions/`. Start with `extensions/brevo-email/extension.json` and `extensions/brevo-email/payload/INSTALL.md`. Its ownership-aware installer source remains under `tools/supacharger-extensions/` for future distribution work and maintainer tests.
+An extension is a separately installed capability. Application extension files live under `src/app/(project)/(extensions)/`. Supacharger-distributed extensions use `(sc_extensions)/` beneath that directory; project extensions may use sibling groups.
 
-## Distribution status
+## Application files
 
-The published `@glowplug/supacharger-cli` package deliberately excludes extension and plugin installation commands, installer code and installer tests. Do not instruct users or agents to run `supacharger extension ...`; that command does not exist. The npm CLI currently supports Core installation and updates, doctor checks, public skills and explicit Core contributor setup only.
+For an extension with registry name `supacharger-ext-invitations` and bundle ID `invitations`, use:
 
-The retained Core source is a design and testing reference, not a supported customer installation path. Private authenticated delivery, entitlement checks and immutable downloads must be completed before extension commands return to the npm CLI. MCP provides this status and ownership guidance only; it neither installs bundles nor accepts credentials.
+```text
+src/app/(project)/(extensions)/(sc_extensions)/(invitations)/
+├── supacharger-ext-invitations.config.ts
+├── messages/en.json
+├── _components/
+└── _lib/
+```
 
-## Bundle contracts v1 and v2
+This is a layout example, not an installed invitations feature. Parenthesised groups do not contribute URL segments. They do not prevent `page.tsx` or `route.ts` from exposing a route. Keep import-only code in private `_components` and `_lib` directories, and review intentional routes for URL collisions and authorisation.
 
-`extension.json` declares `schemaVersion: 1` or `2`, lowercase slug `id`, immutable numeric `major.minor.patch` version, `coreOwnershipVersion: 2`, and `files` containing source, target and SHA-256 digest. Include `docs/extensions/<id>/INSTALL.md`. Allowed destination namespaces:
+The application developer owns the config file; the installer creates it only when missing and preserves it during updates. Other manifest-listed files are extension-managed. Their location under `(project)` does not make them safe to overwrite during a Core update or edit without an extension-upgrade plan.
 
-- `src/supacharger.extensions/<id>/`;
-- `supabase/functions/_shared/extensions/<id>/`;
-- `docs/extensions/<id>/`.
+UI notification text belongs in the extension's `messages/en.json` using a namespace unique to the extension. Integrate it with the application's next-intl catalogue explicitly; copying a catalogue does not load it. Follow the English catalogue policy and do not generate secondary translations unless requested. Transactional email content stays in the email provider's templates, separate from UI localisation.
 
-V2 additionally permits `supabase/functions/ext-<id>/` and files marked `kind: "migration"` targeting `supabase/migrations/<14-digit-version>_ext_<underscore-id>_<name>.sql`. Installed migration bytes are immutable across upgrades; timestamp collisions are rejected. No arbitrary worker or migration namespace is allowed.
+## Extension repository structure
 
-All files are validated before writing. The installer refuses exact/merge-managed overlap, non-declared migration destinations, traversal, symlinks and checksum failures. Trust the bundle's source: hashes detect changed bytes, not publisher identity. Only reviewed local bundles are supported.
+New bundles use schema version 3. Keep distributable files under `payload/` and describe each source, destination, SHA-256 digest and ownership in `extension.json`.
 
-Installed source is extension-managed, separately from Core. `.supacharger/extensions/<id>.json` records its manifest/hashes without advancing the Core lock. Reinstallation is idempotent. Upgrades refuse locally edited/missing files, same-version republishing, downgrades and removed destinations. Resolve these manually; there is no force flag. Recovery files are under `.supacharger/extension-transactions/`, outside compilable source; keep them locally, not in Git. Caught write failures restore changed files. OS interruption may require manual recovery using that directory and Git.
+```text
+supacharger-ext-<id>/
+├── AGENTS.md                         Consumer integration instructions
+├── README.md                         Purpose, setup, configuration and API
+├── LICENSE.md                        Extension licence
+├── extension.json                    Bundle manifest
+└── payload/
+    ├── app/
+    │   ├── supacharger-ext-<id>.config.ts
+    │   ├── messages/en.json
+    │   ├── _components/
+    │   └── _lib/
+    ├── supabase/
+    │   ├── shared/
+    │   ├── functions/ext-<id>/
+    │   └── migrations/
+    └── docs/
+        ├── INSTALL.md
+        └── bruno/
+```
 
-Neither version installs dependencies, mutates package/config files, seeds databases, executes scripts, applies migrations, deploys endpoints, sets secrets or automatically removes extensions. V2 copies reviewed forward migrations; applying them remains explicit. Brevo pins its Edge Zod/Supabase imports.
+Only include directories the extension needs. `payload/docs/INSTALL.md` is required. Maintainer-only instructions belong in the separate extension contributor repository, not the installed payload. Repository-level files are not installed unless included through a supported payload mapping.
 
-The Core-managed `tailwind.config.ts` always imports developer-owned `tailwind.project.config.ts` as a preset. An extension that needs a Tailwind plugin or additive Tailwind configuration must declare that manual integration in its installation guide and modify only the project preset after review. It must never patch the Core-managed root configuration. The current extension installer does not mutate the preset automatically.
+| Repository source | Application destination |
+| --- | --- |
+| `payload/app/<file>` | `src/app/(project)/(extensions)/(sc_extensions)/(<id>)/<file>` |
+| `payload/supabase/shared/<file>` | `supabase/functions/_shared/extensions/sc_ext-<id>/<file>` |
+| `payload/supabase/functions/ext-<id>/<file>` | `supabase/functions/ext-<id>/<file>` |
+| `payload/supabase/functions/ext-<id>-<suffix>/<file>` | `supabase/functions/ext-<id>-<suffix>/<file>` |
+| `payload/supabase/migrations/<timestamp>_ext_<underscore-id>_<name>.sql` | `supabase/migrations/<same filename>` |
+| `payload/docs/<file>` | `docs/extensions/<id>/<file>` |
 
-## Runtime and integration
+Migrations go directly into the application's migration directory, not a nested extension directory. Use the Supabase CLI to generate migration timestamps. Mark migrations `kind: "migration"`; never rewrite installed history. Mark exactly `payload/app/supacharger-ext-<id>.config.ts` as `kind: "config"`. Other files omit `kind` and are verified byte-for-byte. Secrets must not appear in config defaults or committed payloads.
 
-Core's signup form has no runtime extension registry or enabled checks. An uninstalled extension contributes no application imports, dependencies or network calls. Statically import installed modules only from developer-owned adapters. Do not customise module source with product names, queries or action mappings.
+Schema 3 uses `id: "<id>"`, `name: "supacharger-ext-<id>"`, a three-integer version string, `coreOwnershipVersion: 2` and `files`. Each file declares `source`, `target` and `sha256`. Targets must exactly match the mapping above. The installer rejects arbitrary destinations, path traversal, symlinks, conflicting ownership, migration timestamp collisions and digest mismatches.
 
-The Brevo factory accepts an environment reader, server-defined template environment name, optional API-key environment name and injected fetch. Its sender accepts authorised recipients, JSON parameters, stable idempotency key and optional reply-to/tags. Template content, subject and sender belong in Brevo. The module is private imported code, not a public HTTP relay; preserve independent action authorisation and database permissions.
+## Install and verify
 
-Brevo 2.0.0 owns private delivery storage, immediate post-commit pg_net dispatch, a secret-authenticated worker and a minute pg_cron recovery job. Trusted callers pass props through `sendBrevoEmails(apiEdgeClient, notifications)` or call `brevo_email.ext_brevo_transactional_enqueue(jsonb)` inside an authorised product transaction. The worker uses service-only `api_edge.ext_brevo_transactional_enqueue`, `ext_brevo_transactional_claim` and `ext_brevo_transactional_finish` contracts; these exist only when the extension migration is installed. No default Core database or uninstalled app is changed.
+The updated CLI source supports reviewed local bundles:
 
-Wakekeeper supplies only its archive adapter and an optional bulk SQL resolver for current account email and retry-time host privacy. The extension owns its queue and retries. Immediate dispatch covers every inserted batch without waiting for cron; cron recovers due failed or interrupted attempts. Read the installed guide for limits, Vault configuration, deployment and migration from existing queues.
+```sh
+supacharger extension install <id> --source /path/to/extension --plan
+supacharger extension install <id> --source /path/to/extension
+supacharger extension doctor <id>
+```
 
-Agents must read the installed guide, identify project-owned integration files, configure secrets without revealing values, mock failure paths, and separately report installation, integration, configuration, deployment and delivery verification. Source installation does not imply operational email delivery.
+Check your installed CLI help: releases predating this change do not expose these commands. This source change does not publish an npm release. The Core maintainer entry point is `node tools/supacharger-extensions/cli.cjs` with the same install/doctor arguments.
 
-## Deferred work and rollout
+The installer copies manifest-listed files; it does not move/delete the source repository. It validates all source hashes before writes and checks installed managed bytes before recording success. `.supacharger/extensions/<id>.json` records the bundle separately from the Core lock. Developer-owned config contents are preserved and excluded from byte equality; doctor still reports a missing config. Backups for interrupted work are under `.supacharger/extension-transactions/`; preserve them until recovery is resolved.
 
-Commercial purchases and tokens will be managed through Specdrive. Token verification, private repositories, signed downloads and purchase flows are not implemented. Do not give customers GitHub repository credentials or advertise a working token login. Future verified downloads should feed the same installer. Marketing contact synchronisation and automation enrolment are separate consent-aware features, not transactional-send side effects.
+Installation does not apply migrations, run seed scripts, execute downloaded code, set secrets, deploy functions, load next-intl catalogues or implement an enabled/disabled lifecycle. Registry checks are available for supplied local Git sources with --registry; see Local release comparison below. Do not advertise those planned capabilities as operational. Private download/entitlement systems are also not implemented; use only explicitly reviewed local sources.
 
-Only Core and Wakekeeper receive this release. SnapScreen and Specdrive remain deferred, including their newsletter stubs. Do not advance a consumer Core lock to imply a full update during this partial rollout. Removed registry/checkbox source remains recoverable from Git history.
+## Project integration
 
-Transactional Brevo SQL functions use the `ext_brevo_transactional_` prefix, including consumer-owned adapters. Service RPCs are `api_edge.ext_brevo_transactional_enqueue`, `api_edge.ext_brevo_transactional_claim` and `api_edge.ext_brevo_transactional_finish`. Old aliases are removed; every caller must use the prefixed names.
+Commit installed extension source, developer configuration and `.supacharger/extensions/<id>.json` with the application. Extension updates verify managed files before replacing them and preserve developer-owned configuration. Database migrations remain forward-only.
+
+Follow the installed `docs/extensions/<id>/INSTALL.md` for setup. Apply database migrations, configure secrets and deploy backend services as explicit project operations; file installation does not perform those actions.
+
+## Instructions for development and application use
+
+Instructions for agents developing extensions live in the separate optional `supacharger-ext-development-agents.md` Git repository, checked out inside Core at `.agents/supacharger/extension-development/`. Its master AGENTS.md links shared guidance and `extensions/<registry-name>/AGENTS.md`. Applications do not require this private checkout.
+
+Application-use instructions are authored in each extension’s `payload/agents/AGENTS.md`. The agreed destination is `docs/agents/extensions/<registry-name>/AGENTS.md`, only for installed extensions. The local installer supports this mapping for manifest-listed files; use a CLI build containing that support. Read the relevant guide only for that extension’s task and verify enablement separately.
+
+## Local release comparison
+
+Versioned ZIP fetching is **coming soon**. Use reviewed local source folders with a CLI build containing these commands:
+
+```sh
+supacharger extension install supacharger-ext-brevo --source /path/to/release --plan
+supacharger extension update supacharger-ext-brevo --source /path/to/new-release --baseline-source /path/to/original-release --plan
+```
+
+Remove `--plan` to apply a clean update. The original manifest must match the installed record. The CLI compares actual installed managed files with the original payload; local differences stop replacement. In an interactive terminal it offers to retain the two payloads and an AI comparison prompt. Only Yes creates review files; No changes neither the installation nor its record. Non-interactive runs stop rather than prompt. Developer config is preserved; migrations and removed destinations retain their existing safeguards.
+
+Retained review files go under `.supacharger/extension-comparisons/<registry-name>/<version>-<unique-id>/`, with `original/`, `incoming/` and `agent-prompt.md`. Copies contain the manifest and installable payload. Keep this directory excluded from Git, deployment uploads and Next.js tracing. The CLI requires explicit `.gitignore` and `.vercelignore` entries before retention. Review does not apply a merge or advance the installed version.
+
+Optional `--registry /path/to/registry.json` verifies an incoming release against schema-1 registry metadata and checks fixed and configured-provider dependencies. Registry verification currently requires a local Git checkout containing the exact source commit; extracted archives are supported only in explicitly reviewed local-source mode until archive verification/fetching is implemented. `--baseline-registry` may additionally verify the original release. Without `--registry`, the result reports `registryVerified: false`: payload hashes are checked, but no registry authenticity claim is made.
+
+Dependency inspection uses the installed manifest as a file inventory and checks the actual files. A missing record means the CLI cannot verify a manually installed dependency; it does not prove the source is absent. Modified dependencies require review. Configured-provider dependencies read the extension's literal config (preserving the installed config on update) and require only the selected provider's registered extensions. Unsupported providers, missing source, modified dependencies and disabled provider configs stop installation. Local-source mode checks the bundle's dependency declarations; registry mode also requires them to match the published release. No service is contacted, SQL applied, function deployed or email sent by these operations.
+
+
+## Build-time extension selection
+
+Core provides `src/supacharger/extensions/prepare.cjs`. Call it from the application's
+`next.config.js` before exporting Next configuration:
+
+```js
+const { prepareExtensions } = require('./src/supacharger/extensions/prepare.cjs');
+prepareExtensions({
+  root: __dirname,
+  extensions: [{
+    id: 'invitations',
+    fallback: 'src/supacharger.adapters/invitations/unavailable.ts',
+    providers: { brevo: 'brevo' },
+  }],
+});
+```
+
+The example requires an application-owned unavailable adapter exporting the same
+public interface as the extension's `payload/app/index.ts`. Add only integrations
+used by that application. The provider map lists implemented provider keys and their
+installed extension IDs; it does not install Brevo or make it a permanent dependency.
+
+Preparation reads the installed `supacharger-ext-<id>.config.ts` as literal data,
+including an optional `as const` assertion. Imports, function calls, spreads and
+computed configuration are rejected rather than executed. A missing extension
+selects the fallback; an installed extension missing its config fails. With
+`enabled: false`, the generated entry imports only the fallback and exports an empty
+catalogue. With `enabled: true`, it imports the installed `index.ts` and exports its
+optional `messages/en.json` as `extensionMessages`. Configured email providers must
+be in the application's map and have an installation record plus actual source files.
+
+Import from `src/supacharger.adapters/generated/extensions/<id>.ts`; never edit that
+generated file. It exports `extensionEnabled`, the selected entry's exports and
+`extensionMessages`. Application controls must use that interface and hide themselves
+when unavailable. Merge the namespaced messages into next-intl's request catalogue;
+exporting a catalogue does not automatically load it. Product-specific copy stays
+with the application. Restart dev/build after config changes, and regenerate before
+standalone type checks if installed files or config changed.
+
+Inactive generated entries contain no payload import, so the runtime dependency
+graph does not include the extension through that entry. Direct payload imports
+bypass the boundary and are unsupported. TypeScript may still check files present
+in the repository; type checking is distinct from runtime bundling.
+
+Preparation writes local modules only. It performs no SQL, network request, migration
+or deployment. Database administration is an explicit SQL operation, independent
+of frontend configuration and file removal. These build checks do not replace CLI update/drift verification.
+
+### Database administration is explicit
+
+Build preparation only selects application code. It never generates SQL, changes Supabase, or disables a hosted extension. Removing extension files leaves its database tables and data in place. When asked to disable a hosted module, an agent may use the Supabase MCP to execute its documented administrative SQL against the verified project, then read the setting back. Do not infer a request to disable the database from a frontend build or file removal. Follow the installed extension guide for its SQL and any provider-specific queued-delivery handling.

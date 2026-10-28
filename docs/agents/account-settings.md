@@ -37,6 +37,5 @@ Specdrive consumes the non-visual contracts but retains its licensed presentatio
 
 Developer-owned `privacy.ts` and `notifications.ts` adapters must return honest availability. The default starters are disabled and their update functions throw; they never simulate a save. Product adapters must validate again against their own domain identifiers, authorise through their server boundary and database policies, and persist real state. Descriptions are rendered as text, not injected HTML.
 
-Wakekeeper's privacy adapter maps its RLS-protected vessel RPC to this shared renderer and validates UUID keys before calling `upsert_vessels` with `scope: "privacy"`. Its vessel/trip-log tables remain product-owned. No consumer currently supplies a notification persistence service, so notifications render an explicit unavailable state.
-
+Application-specific adoption notes are recorded in [project integration guidance](project/consumer-integration.md). Preserve this topic’s shared contract when adapting product behaviour.
 See [Profile extensions and media](profile-extensions.md) for the atomic hooks, public projection and Supabase media endpoint.

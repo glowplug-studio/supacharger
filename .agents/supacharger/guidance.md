@@ -1,6 +1,6 @@
 # Working with Supacharger guidance
 
-The root `AGENTS.md` explicitly loads this guidance and `.agents/project/AGENTS.md`. The project directory is a Supacharger convention, not an assumption about automatic agent discovery.
+The root `AGENTS.md` explicitly loads this guidance and `docs/agents/project.md`. `.agents/project/AGENTS.md` remains a routing pointer for older entry points; it contains no duplicate project policy.
 
 ## Protected-contract change approval gates
 
@@ -24,9 +24,9 @@ Ordinary product code, UI and documentation that do not define a protected contr
 
 ## Where to record instructions
 
-When a human says "put this in AGENTS.md" without naming a file, place repository-specific working rules in `.agents/project/AGENTS.md`. Rewrite rough notes clearly without broadening their scope. Honour an explicitly named destination.
+When a human says "put this in AGENTS.md" without naming a file, place repository-specific working rules in `docs/agents/project.md` or a linked topic under `docs/agents/project/`. Keep AGENTS.md as the shared entry point. Rewrite rough notes clearly without broadening their scope. Honour an explicitly named destination.
 
-Keep reusable Supacharger development conventions and technical explanations in `docs/agents/`, starting with `docs/agents/agent-guidance.md`. Keep optional Core contributor policies in `.agents/supacharger/core-development/`. Put reusable task procedures in skills, each with its own `SKILL.md`. Do not duplicate technical references across these locations.
+Keep durable agent guidance, project UI/icon conventions and technical explanations together in `docs/agents/`, starting with `docs/agents/agent-guidance.md`. Shared topic files describe Core contracts; `project.md` and `project/` hold this application’s decisions. Do not create a parallel `.agents/project/rules/` tree. Keep optional Core contributor policies in `.agents/supacharger/core-development/`. Put reusable task procedures in skills, each with its own `SKILL.md`. Do not duplicate technical references across these locations.
 
 Project instructions may override this shared guidance for the application, subject to the human's instructions and applicable higher-priority rules. Prefer recording overrides in the project file. Editing this shared file creates upstream drift; the Core updater must report the conflict rather than silently replace it.
 
@@ -63,3 +63,7 @@ Skills installed in `.agents/skills/` are preserved during Core updates. Use `su
 ## Existing technical references
 
 `docs/agents/` is developer-owned in applications. Core updates install missing references and preserve existing files; review changed upstream conventions and merge them deliberately, keeping product details accurate. A reference to a newer Core feature does not establish that the installed application implements it.
+
+## Report metadata
+
+Before creating or editing any report, including reports under `.agents/`, read and apply `docs/agents/reporting.md`. Include creation and last-edit date/time with timezone; update Last edited on every edit. New report filenames include the creation date.

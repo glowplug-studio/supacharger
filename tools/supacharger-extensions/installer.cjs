@@ -28,28 +28,66 @@ async function safePath(root, file) {
 async function readOptional(file) {
   return fs.readFile(file).catch(error => { if (error.code !== 'ENOENT') throw error; return null; });
 }
+// The current bundle format maps repository payload paths to fixed project namespaces. Never execute payload code.
+function payloadTarget(id, source) {
+  relative(source);
+  const app = `src/app/(project)/(extensions)/(sc_extensions)/(${id})/`;
+  if (source.startsWith('payload/app/')) return app + source.slice('payload/app/'.length);
+  if (source.startsWith('payload/supabase/shared/')) return `supabase/functions/_shared/extensions/sc_ext-${id}/` + source.slice('payload/supabase/shared/'.length);
+  if (source.startsWith('payload/supabase/functions/')) {
+    const rest = source.slice('payload/supabase/functions/'.length);
+    const name = rest.split('/')[0];
+    if (name !== `ext-${id}` && !name.startsWith(`ext-${id}-`)) throw new Error('Edge Function must use its extension namespace');
+    if (!rest.includes('/')) throw new Error('Edge Function payload needs a file');
+    return `supabase/functions/${rest}`;
+  }
+  if (source.startsWith('payload/supabase/migrations/')) return 'supabase/migrations/' + source.slice('payload/supabase/migrations/'.length);
+  if (source.startsWith('payload/agents/')) return `docs/agents/extensions/supacharger-ext-${id}/` + source.slice('payload/agents/'.length);
+  if (source.startsWith('payload/docs/')) return `docs/extensions/${id}/` + source.slice('payload/docs/'.length);
+  throw new Error('Unsupported extension payload source');
+}
 function validateManifest(manifest, id) {
-  if (!validId(id) || ![1, 2].includes(manifest.schemaVersion) || manifest.id !== id ||
+  if (!validId(id) || manifest.schemaVersion !== 3 || manifest.id !== id ||
       !/^\d+\.\d+\.\d+$/.test(manifest.version) || manifest.coreOwnershipVersion !== 2 ||
       !Array.isArray(manifest.files) || !manifest.files.length || manifest.files.length > 1000) throw new Error('Invalid extension manifest');
+  if (manifest.name !== `supacharger-ext-${id}`) throw new Error('Registry name must match the extension ID');
+  if (manifest.dependencies !== undefined && (!Array.isArray(manifest.dependencies) || new Set(manifest.dependencies).size !== manifest.dependencies.length || manifest.dependencies.some(name => !/^supacharger-ext-[a-z][a-z0-9-]{0,63}$/.test(name) || name === manifest.name))) throw new Error('Invalid extension dependencies');
+  if (manifest.provider_dependencies !== undefined) {
+    const rules = manifest.provider_dependencies;
+    if (!rules || typeof rules !== 'object' || Array.isArray(rules)) throw new Error('Invalid provider dependencies');
+    for (const [slot, rule] of Object.entries(rules)) {
+      if (!/^[a-z][a-zA-Z0-9_]*$/.test(slot) || !rule || !/^[a-z][a-zA-Z0-9_]*$/.test(rule.config_key) || !rule.providers || typeof rule.providers !== 'object' || Array.isArray(rule.providers) || !Object.hasOwn(rule.providers,rule.default)) throw new Error('Invalid provider dependency rule');
+      for (const [provider,names] of Object.entries(rule.providers)) if (!/^[a-z][a-z0-9_-]*$/.test(provider) || !Array.isArray(names) || !names.length || new Set(names).size !== names.length || names.some(name => !/^supacharger-ext-[a-z][a-z0-9-]{0,63}$/.test(name) || name===manifest.name)) throw new Error('Invalid provider mapping');
+    }
+  }
   const destinations = new Set();
   const migrationVersions = new Set();
   for (const file of manifest.files) {
     relative(file.source); relative(file.target);
-    const allowed = [`src/supacharger.extensions/${id}`, `supabase/functions/_shared/extensions/${id}`, `docs/extensions/${id}`];
-    if (manifest.schemaVersion === 2) allowed.push(`supabase/functions/ext-${id}`);
-    const migration = manifest.schemaVersion === 2 && file.kind === 'migration' &&
+    if (payloadTarget(id, file.source) !== file.target) throw new Error('Payload target does not match the source mapping');
+    const allowed = [
+      `src/app/(project)/(extensions)/(sc_extensions)/(${id})`,
+      `supabase/functions/_shared/extensions/sc_ext-${id}`,
+      `docs/extensions/${id}`, `docs/agents/extensions/supacharger-ext-${id}`, `supabase/functions/ext-${id}`,
+    ];
+    const functionName = file.target.split('/')[2];
+    if (file.target.startsWith('supabase/functions/') && functionName?.startsWith(`ext-${id}-`)) allowed.push(`supabase/functions/${functionName}`);
+    const migration = file.kind === 'migration' &&
       new RegExp(`^supabase/migrations/[0-9]{14}_ext_${id.replaceAll('-', '_')}_[a-z0-9_]+\\.sql$`).test(file.target);
     if (migration) {
       const version = path.basename(file.target).slice(0, 14);
       if (migrationVersions.has(version)) throw new Error(`Migration version collision: ${version}`);
       migrationVersions.add(version);
     }
+    const config = file.source === `payload/app/supacharger-ext-${id}.config.ts`;
+    if (config !== (file.kind === 'config')) throw new Error('Extension config must be marked developer-owned with kind config');
     if ((!migration && !allowed.some(prefix => file.target.startsWith(`${prefix}/`))) ||
-        (file.kind !== undefined && !migration) ||
+        (file.kind !== undefined && !migration && !config) ||
         !/^[a-f0-9]{64}$/.test(file.sha256) || destinations.has(file.target.toLowerCase())) throw new Error('Invalid extension destination or digest');
     destinations.add(file.target.toLowerCase());
   }
+  const guides = manifest.files.filter(file => file.source.startsWith('payload/agents/'));
+  if (guides.length && (!guides.some(file => file.source === 'payload/agents/AGENTS.md') || guides.some(file => !file.source.endsWith('.md')))) throw new Error('Agent payload requires AGENTS.md and Markdown files only');
   if (!manifest.files.some(file => file.target === `docs/extensions/${id}/INSTALL.md`)) throw new Error('Extension needs an installation guide');
 }
 async function ownership(root, files) {
@@ -78,6 +116,7 @@ async function install(id, options = {}) {
   if (old && old.manifest.version === manifest.version && old.manifestSha256 !== digest(manifestBytes)) throw new Error('Published extension versions are immutable; increment the version');
   if (old && old.manifest.version.split('.').map(Number).some((v, i, a) => a.slice(0, i).every((n, j) => n === Number(manifest.version.split('.')[j])) && v > Number(manifest.version.split('.')[i]))) throw new Error('Extension downgrades require manual review');
   const prior = new Map((old?.manifest.files ?? []).map(file => [file.target, file.sha256]));
+  const priorKinds = new Map((old?.manifest.files ?? []).map(file => [file.target, file.kind]));
   if ([...prior.keys()].some(target => !manifest.files.some(file => file.target === target))) throw new Error('Removed destinations require manual migration; nothing changed');
   const changes = [];
   for (const file of manifest.files) {
@@ -90,6 +129,11 @@ async function install(id, options = {}) {
       const version = path.basename(file.target).slice(0, 14);
       const siblings = await fs.readdir(path.join(root, 'supabase/migrations')).catch(error => { if (error.code !== 'ENOENT') throw error; return []; });
       if (siblings.some(name => name.startsWith(`${version}_`) && name !== path.basename(file.target))) throw new Error(`Migration version collision: ${version}`);
+    }
+    if (prior.has(file.target) && priorKinds.get(file.target) !== file.kind) throw new Error('Changing file ownership requires manual review');
+    if (file.kind === 'config') {
+      changes.push({ ...file, targetPath: target, bytes, existing, write: !existing });
+      continue;
     }
     if (prior.has(file.target) && (!existing || digest(existing) !== prior.get(file.target))) throw new Error(`Locally modified or missing extension file: ${file.target}`);
     if (!prior.has(file.target) && existing && digest(existing) !== file.sha256) throw new Error(`Existing project file: ${file.target}`);
@@ -114,6 +158,11 @@ async function install(id, options = {}) {
       await fs.writeFile(staged, change.bytes, { flag: 'wx' });
       await fs.rename(staged, change.targetPath);
       completed.push(change);
+    }
+    for (const change of changes) {
+      if (change.kind === 'config') continue;
+      const installed = await readOptional(change.targetPath);
+      if (!installed || digest(installed) !== change.sha256) throw new Error(`Installed checksum mismatch: ${change.target}`);
     }
     await safePath(root, `.supacharger/extensions/${id}.json`);
     if ((await readOptional(lockPath))?.toString() !== oldBytes?.toString()) throw new Error('Extension lock changed during installation');
@@ -143,8 +192,8 @@ async function doctor(id, options = {}) {
   const conflicts = [];
   for (const file of lock.manifest.files) {
     const bytes = await readOptional(await safePath(root, file.target));
-    if (!bytes || digest(bytes) !== file.sha256) conflicts.push(file.target);
+    if (!bytes || (file.kind !== 'config' && digest(bytes) !== file.sha256)) conflicts.push(file.target);
   }
   return { id, version: lock.manifest.version, healthy: conflicts.length === 0, conflicts, configuration: 'not checked', deployment: 'not checked' };
 }
-module.exports = { install, doctor };
+module.exports = { install, doctor, payloadTarget, validateManifest, safePath, readOptional, digest, ownership };

@@ -4,3 +4,6 @@ resources/sc-email-templates/
 
 # Internal installation checklists and reports; retained in Git.
 docs/reports/
+
+# Private extension update review sources
+.supacharger/extension-comparisons/

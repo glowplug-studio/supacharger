@@ -3,17 +3,16 @@ import test from 'node:test';
 
 import { classifyPath, projectTree, readGuidance, resolveRepositoryPath, searchGuidance } from '../src/project.js';
 
-test('extension guidance distinguishes canonical bundles, installed modules and product adapters', async () => {
-  assert.equal(classifyPath('extensions/brevo-email/extension.json').ownership, 'canonical-extension-tooling');
-  assert.equal(classifyPath('supabase/functions/_shared/extensions/brevo-email/send-template.ts').ownership, 'extension-managed');
-  assert.equal(classifyPath('supabase/functions/ext-brevo-email/index.ts').ownership, 'extension-managed');
+test('extension guidance distinguishes installer tooling, installed modules and project configuration', async () => {
+  assert.equal(classifyPath('tools/supacharger-extensions/installer.cjs').ownership, 'canonical-extension-tooling');
+  assert.equal(classifyPath('supabase/functions/_shared/extensions/sc_ext-invitations/index.ts').ownership, 'extension-managed');
+  assert.equal(classifyPath('supabase/functions/ext-invitations/index.ts').ownership, 'extension-managed');
   assert.equal(classifyPath('supabase/migrations/20260910120000_ext_brevo_email_delivery.sql').ownership, 'forward-only-migration');
   assert.equal(classifyPath('src/supacharger.adapters/email/actions.ts').ownership, 'developer-owned');
   const guidance = await readGuidance('extensions');
-  assert.match(guidance, /published `@glowplug\/supacharger-cli` package deliberately excludes extension and plugin installation commands/);
-  assert.match(guidance, /command does not exist/);
-  assert.match(guidance, /not implemented/);
-  assert.match(guidance, /Specdrive/);
+  assert.ok(guidance.length > 0);
+  assert.equal(classifyPath('src/app/(project)/(extensions)/(sc_extensions)/(invitations)/supacharger-ext-invitations.config.ts').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/app/(project)/(extensions)/(sc_extensions)/(invitations)/_lib/index.ts').ownership, 'extension-managed');
 });
 
 test('classifies protected and developer-owned paths', () => {

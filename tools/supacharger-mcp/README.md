@@ -96,4 +96,10 @@ Use `supacharger_get_email_template` with `supabase_reset_password` or `brevo` f
 
 Email sources live in `resources/sc-email-templates/`. The catalogue covers the generic Brevo example and all thirteen Supabase Auth/security email types. Read `email_templates` guidance before an explicitly requested upload. Verify the Supabase MCP target and capabilities; use the Management API or dashboard when Auth editing is unavailable, and read back the hosted result. Agents must corroborate provider and Auth intent in `src/supacharger.config.ts` against hosted provider settings, email templates, redirect callers and verification handlers before selecting tokens. Report contradictions with their effect on the flow and a proposed correction; distinguish intentional differences and unverified settings, and do not silently change Auth policy. This repository MCP supplies read-only sources and guidance; the agent performs authorised hosted inspection and updates through the available Supabase tools or Management API.
 
-Use `profile_extensions` for atomic account extensions, public profiles and Supabase media.
+## Project UI and icon guidance
+
+Use `supacharger_get_guidance` with `ui_implementation` or `icon_usage`, or read `supacharger://project/ui_implementation` and `supacharger://project/icon_usage`. These expose `docs/agents/project/ui-implementation.md` and `icon-usage.md` from this server's checkout. Consumers must read their own project files for local conventions; Core starter examples are not approved application mappings. Keep main project instructions as pointers to these developer-owned files.
+
+Use `project_rules` for this checkout’s application policy and `reporting` for report timestamps, filenames and storage. Shared topic names do not make project-specific choices apply across consumers.
+
+Use the `profile_extensions` guidance topic for atomic account extensions, public profile projections and Supabase profile media.
