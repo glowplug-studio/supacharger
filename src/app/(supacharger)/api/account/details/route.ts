@@ -7,7 +7,6 @@ import { LOCALE_COOKIE_NAME } from '@/i18n/config';
 import { createClient } from '@/lib/supabase/server';
 import {
   accountProfileExtensionSchema,
-  updateAccountProfileExtension,
 } from '@/supacharger.adapters/account/profile-extension';
 import { loadAccountSummary } from '@/supacharger/account/account-summary';
 import { createAccountDetailsSchema } from '@/supacharger/account/settings/account-details-schema';
@@ -63,9 +62,15 @@ export async function POST(request: NextRequest) {
 
   const username = SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'disabled' ? '' : parsed.data.username;
   const { error: profileError } = await supabase.schema('api').rpc('update_account_profile_by_current_user', {
-    input_first_name: parsed.data.firstName,
-    input_last_name: parsed.data.lastName,
-    ...(username ? { input_username: username } : {}),
+    request: {
+      profile: {
+        first_name: parsed.data.firstName,
+        last_name: parsed.data.lastName,
+        username: username || null,
+        ...(SC_CONFIG.ACCOUNT_SETTINGS.LANGUAGE ? { language_code: parsed.data.language } : {}),
+      },
+      extension: extension.data,
+    },
   });
   if (profileError) {
     const usernameConflict = profileError.code === '23505';
@@ -77,22 +82,6 @@ export async function POST(request: NextRequest) {
       },
       { status: usernameConflict ? 409 : 400 },
     );
-  }
-
-  if (SC_CONFIG.ACCOUNT_SETTINGS.LANGUAGE) {
-    const { error: languageError } = await supabase.schema('api').rpc('update_account_language_by_current_user', {
-      input_language_code: parsed.data.language,
-    });
-    if (languageError) {
-      return NextResponse.json({ ok: false, message: t('validation.languageUpdate') }, { status: 400 });
-    }
-  }
-
-  try {
-    await updateAccountProfileExtension(user.id, extension.data);
-  } catch (error) {
-    console.error('Account profile extension mutation failed.', error);
-    return NextResponse.json({ ok: false, message: t('validation.extensionUpdate') }, { status: 500 });
   }
 
   revalidatePath('/account');

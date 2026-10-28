@@ -9,6 +9,10 @@ export const repositoryRoot = path.resolve(sourceDirectory, '../../..');
 const ignoredTreeNames = new Set(['.git', '.next', '.turbo', '.vercel', 'build', 'coverage', 'node_modules', 'out']);
 
 const guidanceFiles = {
+  reporting: 'docs/agents/reporting.md',
+  project_rules: 'docs/agents/project.md',
+  ui_implementation: 'docs/agents/project/ui-implementation.md',
+  icon_usage: 'docs/agents/project/icon-usage.md',
   email_templates: 'docs/agents/email-templates.md',
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
@@ -23,6 +27,7 @@ const guidanceFiles = {
   loading_ui: 'docs/agents/loading-ui.md',
   project_widgets: 'docs/agents/project-widgets.md',
   profile: 'docs/agents/profile-identity-and-onboarding.md',
+  profile_extensions: 'docs/agents/profile-extensions.md',
   account_settings: 'docs/agents/account-settings.md',
   organisations: 'docs/agents/organisation-settings.md',
   billing: 'docs/agents/billing.md',
@@ -91,15 +96,18 @@ export function classifyPath(inputPath) {
     return { ownership: 'developer-owned', guidance: 'Do not create or restore application tests; Supacharger Core does not install, generate or run them.' };
   }
 
-  if (relativePath.startsWith('extensions/') || relativePath.startsWith('tools/supacharger-extensions/')) {
-    return { ownership: 'canonical-extension-tooling', guidance: 'Core owns bundles and installer. Read docs/agents/extensions.md; these are not automatically installed application runtime files.' };
+  if (relativePath.startsWith('tools/supacharger-extensions/')) {
+    return { ownership: 'canonical-extension-tooling', guidance: 'Core owns the generic installer; each extension repository owns its payload. Read docs/agents/extensions.md; these are not automatically installed application runtime files.' };
   }
   if (/^supabase\/migrations\/\d{14}_ext_[a-z0-9_]+\.sql$/.test(relativePath)) {
     return { ownership: 'forward-only-migration', guidance: 'Optional extension migration: verify the extension lock. Never rewrite installed history; apply reviewed new migrations separately from file installation.' };
   }
-  if (relativePath.startsWith('src/supacharger.extensions/') || relativePath.startsWith('supabase/functions/_shared/extensions/') || relativePath.startsWith('supabase/functions/ext-') ||
+  if (/^src\/app\/\(project\)\/\(extensions\)\/\(sc_extensions\)\/\(([a-z][a-z0-9-]*)\)\/supacharger-ext-\1\.config\.ts$/.test(relativePath)) {
+    return { ownership: 'developer-owned', guidance: 'Colocated extension configuration is installed only when missing and preserved on updates.' };
+  }
+  if (relativePath.startsWith('src/app/(project)/(extensions)/(sc_extensions)/') || relativePath.startsWith('supabase/functions/_shared/extensions/sc_ext-') || relativePath.startsWith('supabase/functions/ext-') ||
       relativePath.startsWith('docs/extensions/') || relativePath.startsWith('.supacharger/extensions/')) {
-    return { ownership: 'extension-managed', guidance: 'Read .supacharger/extensions/<id>.json and docs/extensions/<id>/INSTALL.md. Keep product adapters outside extension source. Installation does not advance the Core lock.' };
+    return { ownership: 'extension-managed', guidance: 'Read .supacharger/extensions/<id>.json and docs/extensions/<id>/INSTALL.md. The colocated configuration is developer-owned; other manifest-listed payload files are extension-managed. Installation does not advance the Core lock.' };
   }
 
   if (
@@ -123,6 +131,8 @@ export function classifyPath(inputPath) {
     relativePath === 'tailwind.config.ts' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
+    relativePath === 'supabase/functions/profile-media' ||
+    relativePath.startsWith('supabase/functions/profile-media/') ||
     relativePath === 'supabase/functions/process-image-upload-v2' ||
     relativePath.startsWith('supabase/functions/process-image-upload-v2/') ||
     relativePath === 'components.json' ||

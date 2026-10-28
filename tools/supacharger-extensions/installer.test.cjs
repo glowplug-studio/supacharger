@@ -13,17 +13,20 @@ async function fixture(t) {
   const root = path.join(temp, 'app');
   const source = path.join(temp, 'bundle');
   await fs.mkdir(path.join(root, '.supacharger'), { recursive: true });
-  await fs.mkdir(source);
+  await fs.mkdir(path.join(source, 'payload/app/_lib'), { recursive: true });
+  await fs.mkdir(path.join(source, 'payload/docs'), { recursive: true });
+  await fs.mkdir(path.join(source, 'payload/supabase/functions/ext-example'), { recursive: true });
+  await fs.mkdir(path.join(source, 'payload/supabase/migrations'), { recursive: true });
   await fs.writeFile(path.join(root, '.supacharger/managed-files.json'), JSON.stringify({
     version: 2, managedPaths: ['src/supacharger'], mergeManagedPaths: ['package.json'], forwardOnlyMigrationPaths: ['supabase/migrations'],
   }));
   await fs.writeFile(path.join(root, '.supacharger/core-lock.json'), '{"commit":"unchanged"}');
-  const manifest = { schemaVersion: 1, id: 'example', version: '1.0.0', coreOwnershipVersion: 2, files: [
-    { source: 'module.ts', target: 'src/supacharger.extensions/example/module.ts', sha256: hash('export const value = 1;') },
-    { source: 'INSTALL.md', target: 'docs/extensions/example/INSTALL.md', sha256: hash('Guide') },
+  const manifest = { schemaVersion: 3, name: 'supacharger-ext-example', id: 'example', version: '1.0.0', coreOwnershipVersion: 2, files: [
+    { source: 'payload/app/_lib/module.ts', target: 'src/app/(project)/(extensions)/(sc_extensions)/(example)/_lib/module.ts', sha256: hash('export const value = 1;') },
+    { source: 'payload/docs/INSTALL.md', target: 'docs/extensions/example/INSTALL.md', sha256: hash('Guide') },
   ] };
-  await fs.writeFile(path.join(source, 'module.ts'), 'export const value = 1;');
-  await fs.writeFile(path.join(source, 'INSTALL.md'), 'Guide');
+  await fs.writeFile(path.join(source, 'payload/app/_lib/module.ts'), 'export const value = 1;');
+  await fs.writeFile(path.join(source, 'payload/docs/INSTALL.md'), 'Guide');
   const save = () => fs.writeFile(path.join(source, 'extension.json'), JSON.stringify(manifest));
   await save();
   return { root, source, manifest, save };
@@ -42,14 +45,14 @@ test('plan is read-only, install is repeatable, doctor checks hashes, Core lock 
 });
 test('rejects tampering before writes', async t => {
   const f = await fixture(t);
-  await fs.writeFile(path.join(f.source, 'INSTALL.md'), 'tampered');
+  await fs.writeFile(path.join(f.source, 'payload/docs/INSTALL.md'), 'tampered');
   await assert.rejects(install('example', f), /checksum/);
   await assert.rejects(fs.access(path.join(f.root, 'src')));
 });
 test('rejects traversal, managed destinations, case collisions and symlinks', async t => {
   const f = await fixture(t);
   const original = f.manifest.files[0].target;
-  for (const target of ['../escape', '/tmp/escape', 'src/supacharger/file.ts', 'supabase/migrations/123.sql', 'src/supacharger.extensions/example/../escape']) {
+  for (const target of ['../escape', '/tmp/escape', 'src/supacharger/file.ts', 'supabase/migrations/123.sql', 'src/app/(project)/(extensions)/(sc_extensions)/(example)/../escape']) {
     f.manifest.files[0].target = target; await f.save();
     await assert.rejects(install('example', f));
   }
@@ -63,7 +66,7 @@ test('rejects traversal, managed destinations, case collisions and symlinks', as
 test('upgrades verified files, preserves recovery, refuses same-version changes and removals', async t => {
   const f = await fixture(t);
   await install('example', f);
-  await fs.writeFile(path.join(f.source, 'module.ts'), 'export const value = 2;');
+  await fs.writeFile(path.join(f.source, 'payload/app/_lib/module.ts'), 'export const value = 2;');
   f.manifest.files[0].sha256 = hash('export const value = 2;'); await f.save();
   await assert.rejects(install('example', f), /immutable/);
   f.manifest.version = '1.1.0'; await f.save();
@@ -81,31 +84,33 @@ test('does not run bundle install scripts or overwrite existing project files', 
   await assert.rejects(install('example', f), /Existing project file/);
   assert.equal(await fs.readFile(target, 'utf8'), 'mine');
 });
-test('v2 installs namespaced worker and immutable forward migrations', async t => {
+test('installs namespaced worker and immutable forward migrations', async t => {
   const f = await fixture(t);
-  f.manifest.schemaVersion = 2;
   f.manifest.files[0].target = 'supabase/functions/ext-example/index.ts';
-  await fs.writeFile(path.join(f.source, 'migration.sql'), 'select 1;');
-  f.manifest.files.push({ source: 'migration.sql', target: 'supabase/migrations/20260910120000_ext_example_delivery.sql', kind: 'migration', sha256: hash('select 1;') });
+  f.manifest.files[0].source = 'payload/supabase/functions/ext-example/index.ts';
+  await fs.writeFile(path.join(f.source, f.manifest.files[0].source), 'export const value = 1;');
+  await fs.writeFile(path.join(f.source, 'payload/supabase/migrations/20260910120000_ext_example_delivery.sql'), 'select 1;');
+  f.manifest.files.push({ source: 'payload/supabase/migrations/20260910120000_ext_example_delivery.sql', target: 'supabase/migrations/20260910120000_ext_example_delivery.sql', kind: 'migration', sha256: hash('select 1;') });
   await f.save();
   await install('example', f);
   assert.equal((await doctor('example', f)).healthy, true);
   f.manifest.version = '2.0.0';
-  await fs.writeFile(path.join(f.source, 'migration.sql'), 'select 2;');
+  await fs.writeFile(path.join(f.source, 'payload/supabase/migrations/20260910120000_ext_example_delivery.sql'), 'select 2;');
   f.manifest.files[2].sha256 = hash('select 2;'); await f.save();
   await assert.rejects(install('example', f), /Migration history is immutable/);
 });
-test('v2 rejects migration version collisions and other extension namespaces', async t => {
+test('rejects migration version collisions and other extension namespaces', async t => {
   const f = await fixture(t);
-  f.manifest.schemaVersion = 2;
   f.manifest.files[0].target = 'supabase/functions/ext-other/index.ts'; await f.save();
-  await assert.rejects(install('example', f), /Invalid extension destination/);
+  await assert.rejects(install('example', f), /Payload target/);
   f.manifest.files[0].target = 'supabase/migrations/20260910120000_ext_example_delivery.sql';
+  f.manifest.files[0].source = 'payload/supabase/migrations/20260910120000_ext_example_delivery.sql';
+  await fs.writeFile(path.join(f.source, f.manifest.files[0].source), 'export const value = 1;');
   f.manifest.files[0].kind = 'migration'; await f.save();
   await fs.mkdir(path.join(f.root, 'supabase/migrations'), { recursive: true });
   await fs.writeFile(path.join(f.root, 'supabase/migrations/20260910120000_product.sql'), 'select 1;');
   await assert.rejects(install('example', f), /Migration version collision/);
-  f.manifest.files.push({ ...f.manifest.files[0], target: 'supabase/migrations/20260910120000_ext_example_another.sql' });
+  f.manifest.files.push({ ...f.manifest.files[0], source: 'payload/supabase/migrations/20260910120000_ext_example_another.sql', target: 'supabase/migrations/20260910120000_ext_example_another.sql' });
   await f.save();
   await assert.rejects(install('example', f), /Migration version collision/);
 });

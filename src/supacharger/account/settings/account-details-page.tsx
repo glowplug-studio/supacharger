@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import { AccountDetailsPageOverride } from '@/supacharger.adapters/account/details-page';
-import { loadAccountProfileExtension } from '@/supacharger.adapters/account/profile-extension';
+import { accountProfileExtensionSchema } from '@/supacharger.adapters/account/profile-extension';
 import { resolveSignedMediaUrls } from '@/supacharger/media/signed-media';
 
 import { AccountDetailsForm } from './account-details-form';
@@ -10,6 +10,7 @@ import { AccountDetailsForm } from './account-details-form';
 import 'server-only';
 
 type ProfileRow = {
+  extension?: unknown;
   avatar_path: string | null;
   email: string | null;
   first_name: string | null;
@@ -30,7 +31,7 @@ export async function AccountDetailsPage() {
   if (error) throw error;
   const profile = (data?.[0] ?? {}) as ProfileRow;
   const [extension, media] = await Promise.all([
-    loadAccountProfileExtension(user.id),
+    Promise.resolve(accountProfileExtensionSchema.parse(profile.extension ?? {})),
     resolveSignedMediaUrls(supabase, [
       { key: 'avatar', bucket: 'user-avatars', path: profile.avatar_path },
       { key: 'header', bucket: 'user-avatars', path: profile.header_image_path },

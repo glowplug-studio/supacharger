@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
   allowedDevOrigins: ['127.0.0.1'],
   cacheComponents: true,
-  outputFileTracingExcludes: { '*': ['./resources/sc-email-templates/**/*', './docs/reports/**/*'] },
+  outputFileTracingExcludes: { '*': ['./resources/sc-email-templates/**/*', './docs/reports/**/*', './.supacharger/extension-comparisons/**/*'] },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },

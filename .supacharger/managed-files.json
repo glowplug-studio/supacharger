@@ -16,6 +16,7 @@
     "supabase/functions/_shared/image-target-contract.ts",
     "supabase/functions/_shared/image-transform.ts",
     "supabase/functions/process-image-upload-v2",
+    "supabase/functions/profile-media",
     ".agents/supacharger/guidance.md",
     "docs/reports/sc-install/first-install-handhold-me-core.md",
     "CHANGELOG.md"

@@ -16,6 +16,10 @@ import {
 } from './project.js';
 
 const guidanceTopics = [
+  'reporting',
+  'project_rules',
+  'ui_implementation',
+  'icon_usage',
   'email_templates',
   'mission',
   'ownership',
@@ -29,6 +33,7 @@ const guidanceTopics = [
   'image_transforms',
   'loading_ui',
   'profile',
+  'profile_extensions',
   'account_settings',
   'organisations',
   'billing',

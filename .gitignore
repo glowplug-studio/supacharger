@@ -57,3 +57,9 @@ tools/supacharger-skills/node_modules/
 /.supacharger/skills-lock.json
 /skills-lock.json
 # END SUPACHARGER CORE-ONLY SKILLS
+
+# Local workflow marker; never distribute in starters or payloads
+/sccoreteam.flag
+
+# Private extension update review sources
+.supacharger/extension-comparisons/

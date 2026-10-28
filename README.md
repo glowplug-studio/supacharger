@@ -32,17 +32,15 @@ The managed custom access-token hook owns the canonical `user_role` and active-o
 - Stripe fixture to bootstrap product data
 - Supabase migrations to bootstrap and manage your db schema
 - Responsive, performant, and accessible prebuilt pages
-- Optional Brevo delivery infrastructure: props-based enqueue, immediate dispatch and durable Supabase retries
+- Integration with separately installed extensions, including Brevo transactional email
 
 Shared runtime and tooling dependencies are exact-pinned in `package.json`. Consuming applications should use the same pinned version for every dependency they inherit from the Supacharger core; application-only packages remain independently managed.
 
 ### Optional extensions
 
-The first experimental bundle source is retained under `extensions/brevo-email/`, with its ownership-aware installer under `tools/supacharger-extensions/`. Neither is included in the published npm CLI. Read [extension guidance](docs/agents/extensions.md) and the bundle's `payload/INSTALL.md` when reviewing the future delivery work. Source hashes are tracked separately from Core, and project adapters use static imports. No extension means no extension runtime checks or network calls. Token downloads and marketing automation remain deferred.
+Core contains the generic ownership-aware installer under `tools/supacharger-extensions/`, not the Brevo extension payload. Brevo is maintained in its separate extension repository and developed/integrated in Wakekeeper. Installed extension files are committed with the consuming application; published payloads and installed migration history remain immutable. Read [extension guidance](docs/agents/extensions.md) for file ownership, local installation and verification.
 
-Run `node --experimental-strip-types --test tools/supacharger-extensions/installer.test.cjs extensions/brevo-email/send-template.test.mjs` for installer and mocked provider tests.
-
-Brevo 2.0.1 includes namespaced forward migrations and `ext-brevo-email`. The application passes authorised recipient/template props; the extension records and dispatches immediately after commit, with Supabase Cron for recovery only. Install files first, then explicitly apply migrations, deploy and configure Vault/Edge secrets. Run `node extensions/brevo-email/test-delivery.mjs` for mocked installed-runtime tests; `delivery.test.sql` verifies the database contract in a disposable migrated database. Optional Deno payloads use `.ts.txt` source templates so Core's Next.js compiler never loads an uninstalled extension.
+Run `node --test tools/supacharger-extensions/installer.test.cjs` for the generic installer checks. Brevo provider and delivery checks belong in the separate extension repository. Installing files does not apply migrations, deploy functions or configure provider secrets.
 
 ### Application configuration contract
 

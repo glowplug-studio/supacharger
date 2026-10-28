@@ -44,4 +44,4 @@ Authentication Proxy, global roles, JWT custom claims, and resource-membership b
 
 ## Agent orientation
 
-Start at root `AGENTS.md`, which loads shared working rules, project instructions and optional contributor policies. Read `agent-guidance.md` for the routing map. Technical conventions remain in this `docs/agents/` directory and are exposed by the repository-knowledge MCP; repository-specific rules live in `.agents/project/AGENTS.md`.
+Start at root `AGENTS.md`, which loads shared working rules, project instructions and optional contributor policies. Read `agent-guidance.md` for the routing map. Technical conventions remain in this `docs/agents/` directory and are exposed by the repository-knowledge MCP; repository-specific rules live in `docs/agents/project.md`.

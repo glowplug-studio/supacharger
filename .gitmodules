@@ -1,3 +1,6 @@
 [submodule ".agents/supacharger/core-development"]
 	path = .agents/supacharger/core-development
 	url = git@github.com:glowplug-studio/supacharger-development-agents.md.git
+[submodule ".agents/supacharger/extension-development"]
+	path = .agents/supacharger/extension-development
+	url = git@github.com:glowplug-studio/supacharger-ext-development-agents.md.git

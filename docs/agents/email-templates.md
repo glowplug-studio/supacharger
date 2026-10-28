@@ -1,6 +1,6 @@
-# Email template resources
+# HTML email template resources
 
-# Optional email resources
+## Optional email resources
 
 These Git-tracked Kuronet-styled examples are copied on initial installation. They are developer-owned, excluded from Supacharger CLI updates, Vercel uploads and Next.js deployment traces. Git pulls can still update committed files. They are not connected to local Supabase configuration and are never uploaded automatically.
 

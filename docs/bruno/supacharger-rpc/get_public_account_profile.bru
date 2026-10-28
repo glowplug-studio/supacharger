@@ -1,0 +1,29 @@
+meta {
+  name: get_public_account_profile
+  type: http
+  seq: 70
+}
+
+post {
+  url: {{SUPABASE_URL}}/rest/v1/rpc/get_public_account_profile
+  body: json
+  auth: none
+}
+
+headers {
+  apikey: {{SUPABASE_PUBLISHABLE_KEY}}
+  Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
+  Content-Type: application/json
+  Accept-Profile: api
+  Content-Profile: api
+}
+
+body:json {
+  {
+    "identifier": "{{PROFILE_IDENTIFIER}}"
+  }
+}
+
+docs {
+  Returns the public account selected by UUID or case-insensitive handle, or null when missing/private. Only user_id, first_name, last_name, username, avatar_path and header_image_path are returned. Email and private product extensions are excluded. Callable with the project API key anonymously (omit Authorization) or with an authenticated JWT. Product member-page endpoints compose this allow-list with their separately approved public fields.
+}
