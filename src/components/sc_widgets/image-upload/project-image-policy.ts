@@ -2,7 +2,7 @@
  * Project-owned upload presentation and destination policy.
  *
  * Server-side output size, compression, format and bucket policy live in
- * `supabase/functions/_shared/image-targets.ts`. Keep these target and
+ * `src/supacharger.adapters/media/image-targets.ts`. Keep these target and
  * destination names aligned with that file.
  */
 export const profileImageWidgetPolicy = {

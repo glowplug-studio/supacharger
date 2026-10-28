@@ -18,11 +18,11 @@ The public Core Widget Demos page uses local simulated uploads to expose progres
 
 ## Image policy boundary
 
-`supabase/functions/_shared/image-targets.ts` is the authoritative, developer-owned server policy for every named image target. Each target defines its Storage bucket, default path prefix, filename prefix, input limits, pixel limit, output dimensions, resize fit, format, quality or compression, cache control, visibility and signed URL duration.
+`src/supacharger.adapters/media/image-targets.ts` is the authoritative, developer-owned server policy for every named image target. Each target defines its Storage bucket, default path prefix, filename prefix, input limits, pixel limit, output dimensions, resize fit, format, quality or compression, cache control, visibility and signed URL duration.
 
-`src/components/sc_widgets/image-upload/project-image-policy.ts` is the matching project-owned presentation map. It defines the target selected by each widget, crop aspect ratio, shape, browser-side input limit, Storage bucket used for cleanup and optional relative upload destination. Keep both files aligned. The Edge Function validates the selected target and destination, adds the authenticated user ID, performs the crop before resizing and never accepts caller-supplied compression settings or buckets.
+`src/components/sc_widgets/image-upload/project-image-policy.ts` is the matching project-owned presentation map. It defines the target selected by each widget, crop aspect ratio, shape, browser-side input limit, Storage bucket used for cleanup and optional relative upload destination. Keep both files aligned. The app server signs the selected policy, validated destination and crop. The browser uploads the file directly to the generic Edge processor, which verifies the permit and adds the authenticated user ID before storage.
 
-Crop coordinates are an integer rectangle in oriented source pixels. Send them as JSON in the multipart `crop` field to `process-image-upload`; no profile database column stores the crop. The returned object path is committed through the profile media RPC only after the image upload succeeds.
+Crop coordinates are an integer rectangle in oriented source pixels. Send them in the metadata request to `/api/images/authorise`; the signed permit carries them to `process-image-upload-v2`; no profile database column stores the crop. The returned object path is committed through the profile media RPC only after the image upload succeeds.
 
 ## Generated image loading
 

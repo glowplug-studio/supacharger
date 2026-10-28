@@ -28,6 +28,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Breaking:** image uploads use server-signed, user/file-bound permits and the generic `process-image-upload-v2` endpoint. Move product image policies to `src/supacharger.adapters/media/image-targets.ts`, configure matching `IMAGE_UPLOAD_SIGNING_SECRET` values in Next.js and Edge, and update consumers before retiring the old endpoint. Files upload directly to Edge; new target sizes no longer require processor redeployment.
+
 - The Core demo enables organisation creation, switching, invitations and settings. Consumer feature flags, registration organisation fields and organisation billing remain independently configured.
 
 - **Breaking:** organisation selection moves to the standalone `/organisation/choose` page and settings move to `/organisation/{org-handle}/settings`. `/organisation` redirects with HTTP 301; previous chooser and root-handle settings routes are removed without redirects. Update developer-owned links and return destinations, and use `CHOOSER_PATH: "/organisation/choose"` with `ROUTE_MODE: "organisation-handle"`.

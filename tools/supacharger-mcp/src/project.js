@@ -123,8 +123,8 @@ export function classifyPath(inputPath) {
     relativePath === 'tailwind.config.ts' ||
     relativePath === 'supabase/functions/_shared/image-target-contract.ts' ||
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
-    relativePath === 'supabase/functions/process-image-upload' ||
-    relativePath.startsWith('supabase/functions/process-image-upload/') ||
+    relativePath === 'supabase/functions/process-image-upload-v2' ||
+    relativePath.startsWith('supabase/functions/process-image-upload-v2/') ||
     relativePath === 'components.json' ||
     relativePath === 'tsconfig.json'
   ) {
@@ -209,7 +209,7 @@ export function classifyPath(inputPath) {
     };
   }
 
-  if (relativePath === 'supabase/functions/_shared/image-targets.ts') {
+  if (relativePath === 'src/supacharger.adapters/media/image-targets.ts') {
     return {
       ownership: 'developer-owned',
       guidance:

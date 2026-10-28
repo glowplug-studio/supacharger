@@ -38,7 +38,7 @@ The `loading_ui` resource defines the developer-owned primary and dark inline-lo
 
 The `ownership` resource and path classifier define demo presentation and its colocated assets under `src/components/sc_demo/` as developer-owned examples. UI SVGs stay with their owning source and are imported through SVGR; `public/` is reserved for assets that genuinely require a URL.
 
-The `project_widgets` resource documents Supacharger-provided, project-owned widgets under `src/components/sc_widgets/`. The path classifier reports them as `developer-owned-widget`: initialisation supplies the current starter set while updates preserve local code, styling, crop ratios, browser limits and upload destination choices. A widget introduced by a later Core release requires an explicit reviewed copy into an existing project. Server image size, compression, format, bucket and fallback destination remain in developer-owned `supabase/functions/_shared/image-targets.ts`.
+The `project_widgets` resource documents Supacharger-provided, project-owned widgets under `src/components/sc_widgets/`. The path classifier reports them as `developer-owned-widget`: initialisation supplies the current starter set while updates preserve local code, styling, crop ratios, browser limits and upload destination choices. A widget introduced by a later Core release requires an explicit reviewed copy into an existing project. Server image size, compression, format, bucket and fallback destination remain in developer-owned `src/supacharger.adapters/media/image-targets.ts`.
 
 The MCP is descriptive and read-only. It does not supersede `AGENTS.md`, edit files, run migrations, or access sibling applications.
 
@@ -54,7 +54,7 @@ The CLI-upgrades resource records the version 2 ownership flow, direct three-way
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 
-The image-transformation resource records the authenticated `process-image-upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and the rule that request data never supplies buckets, ownership IDs or output transform settings. Requests may supply a validated source `crop` rectangle in integer pixels after orientation and before the target resize; malformed crops return 400 and out-of-bounds crops return 422.
+The image-transformation resource records the authenticated `process-image-upload-v2` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and server-signed permits that bind user identity, file hash, crop and processing settings. Browsers request permission from the application server, then upload directly to Edge. The processor crops before resizing; malformed metadata returns 400 and out-of-bounds crops return 422.
 
 The ownership resource also records the build-runtime boundary: the root Next.js `tsconfig.json` excludes `supabase/functions/**/*`. Agents must preserve that separation rather than teaching the Next.js compiler to accept Deno-only globals and imports.
 

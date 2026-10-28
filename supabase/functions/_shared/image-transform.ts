@@ -19,7 +19,7 @@ const defaultMaxInputPixels = 25_000_000;
 const supportedInputFormats = new Set<string>([MagickFormat.Jpeg, MagickFormat.Png, MagickFormat.WebP]);
 const supportedInputMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
-const wasmBytes = await Deno.readFile(new URL('../process-image-upload/magick.wasm', import.meta.url));
+const wasmBytes = await Deno.readFile(new URL('../process-image-upload-v2/magick.wasm', import.meta.url));
 await initializeImageMagick(wasmBytes);
 
 export type ImageTransformErrorCode =

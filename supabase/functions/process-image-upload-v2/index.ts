@@ -2,10 +2,10 @@
 
 import { withSupabase } from 'npm:@supabase/server@1.4.1';
 
-import { imageUploadTargets } from '../_shared/image-targets.ts';
 import { ImageTransformError, supportsImageMimeType, transformAndStoreImage } from '../_shared/image-transform.ts';
 
-import { parseImageUploadRequest } from './request.ts';
+import { parseImagePermit, parseImageUploadRequest } from './request.ts';
+import { imageSha256, verifyImagePermit } from './permit-crypto.ts';
 
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
@@ -19,25 +19,48 @@ Deno.serve(
       return errorResponse('Method not allowed.', 405);
     }
 
+    const secret = Deno.env.get('IMAGE_UPLOAD_SIGNING_SECRET') ?? '';
+    if (secret.length < 32) return errorResponse('Image uploads are not configured.', 503);
     let formData: FormData;
     try {
-      formData = await request.formData();
+      // Bound multipart buffering even when Content-Length is absent or inaccurate.
+      const reader = request.body?.getReader();
+      if (!reader) return errorResponse('Expected multipart data.', 400);
+      const chunks: Uint8Array[] = [];
+      let length = 0;
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        length += value.byteLength;
+        if (length > 10 * 1024 * 1024 + 65536) {
+          await reader.cancel();
+          return errorResponse('The source image is too large.', 413);
+        }
+        chunks.push(value);
+      }
+      formData = await new Response(new Blob(chunks.map(chunk => new Uint8Array(chunk))), { headers: { 'Content-Type': request.headers.get('Content-Type') ?? '' } }).formData();
     } catch {
       return errorResponse('Expected a multipart form-data request.', 400);
     }
 
     const options = parseImageUploadRequest(formData);
-    if (!options || !Object.hasOwn(imageUploadTargets, options.target)) {
-      return errorResponse('Expected one image file, a supported target, and optional valid destination and crop fields.', 400);
+    if (!options) {
+      return errorResponse('Expected one image file and a signed upload permit.', 400);
     }
 
-    const { crop, destination, file, target: targetName } = options;
+    if (!await verifyImagePermit(options.permit, options.signature, secret)) return errorResponse('Invalid upload permit.', 403);
+    const permit = parseImagePermit(options.permit, context.userClaims!.id);
+    if (!permit) return errorResponse('Invalid or expired upload permit.', 403);
+    const { crop, target, targetName } = permit;
+    const { file } = options;
+    if (file.size !== permit.bytes || file.type !== permit.mimeType || await imageSha256(await file.arrayBuffer()) !== permit.sha256) {
+      return errorResponse('Image does not match the upload permit.', 403);
+    }
 
     if (!supportsImageMimeType(file.type)) {
       return errorResponse('Only JPEG, PNG, and WebP images are supported.', 415);
     }
 
-    const target = imageUploadTargets[targetName];
     if (file.size > (target.maxInputBytes ?? 5 * 1024 * 1024)) {
       return errorResponse('The source image is too large.', 413);
     }
@@ -45,7 +68,6 @@ Deno.serve(
     try {
       const result = await transformAndStoreImage({
         crop,
-        destination,
         file,
         supabase: context.supabase,
         target,

@@ -1,8 +1,9 @@
-import type { ImageUploadTargets } from './image-target-contract.ts';
-import { defineImageUploadTargets } from './image-target-contract.ts';
+import type { ImageUploadTargets } from '../../../supabase/functions/_shared/image-target-contract';
+import { defineImageUploadTargets } from '../../../supabase/functions/_shared/image-target-contract';
 
-// Developer-owned target policy. The HTTP request may select one of these names,
-// but every destination and transform setting remains defined inside the app.
+import 'server-only';
+
+// Server-owned image policies. Only signed settings are accepted by the Edge processor.
 export const imageUploadTargets: ImageUploadTargets = defineImageUploadTargets({
   profile_avatar: {
     bucket: 'user-avatars',

@@ -1,76 +1,44 @@
-# Authenticated image transformation
+# Server-authorised image uploads
 
-## Trust boundary
+## Flow and ownership
 
-`process-image-upload` is a globally deployable Supabase Edge Function for signed-in users. Keep `verify_jwt = true` and authenticate again in the handler with `withSupabase({ auth: 'user' })`. Upload through `context.supabase`, which carries the user's bearer token and remains subject to Storage RLS. Do not use `context.supabaseAdmin`, `SUPABASE_SECRET_KEYS`, `SUPABASE_SERVICE_ROLE_KEY`, or another privileged client for this flow.
+The browser requests an upload permit from `POST /api/images/authorise` using the current application session. The small JSON request contains `target`, optional `destination` and `crop`, and the source file's `bytes`, `mimeType` and SHA-256 `sha256`. The handler verifies the user, rejects anonymous Auth identities and checks the request Origin. Unknown fields, unsupported targets, invalid metadata and unsafe relative destinations are rejected before signing.
 
-The multipart request contains exactly:
+Application settings live in developer-owned `src/supacharger.adapters/media/image-targets.ts`. The Next.js server selects the target's dimensions, fit, encoding, compression, bucket, path prefix, filename prefix, visibility and limits. The browser cannot supply these settings. Keep the project widget policy aligned with these server settings.
 
-- `file`: a JPEG, PNG, or WebP source image; and
-- `target`: a key from the checked-in target map; and
-- optionally `destination`: a relative directory below the authenticated user's ID; and
-- optionally `crop`: a JSON text rectangle in oriented source pixels.
+The server signs a five-minute permit with HMAC-SHA256. It binds the exact settings, crop, source hash, source size/MIME and authenticated user ID. The browser sends the original image directly to `process-image-upload-v2`, avoiding Vercel's 4.5MB request-body limit. Use `uploadImage` from `src/supacharger/media/upload-image.ts`; existing project widget helpers delegate to it. The browser receives a signature, never the signing secret.
 
-Reject absolute destinations, leading or trailing slashes, `.` or `..` segments, unsafe characters and values over 256 characters. Never accept bucket names, filenames, output formats, output dimensions, quality, compression, visibility, cache policy, or ownership IDs from the request. Assume any authenticated user can invoke every configured target and destination directly; Storage RLS must remain authoritative.
+The generic Edge Function accepts exactly three multipart fields: `file`, `permit` and `signature`. It verifies the user's JWT, signature, permit expiry, account binding, supported parameter ranges and source hash before transforming the image. It contains no product target map. Adding a target or changing its sizes requires updating the app server, not redeploying the processor or WASM.
 
-The selected target always resolves the bucket and fallback path. A valid destination replaces only that fallback path beneath `<auth-user-id>/`.
+Storage operations still use the user's authenticated Supabase client and RLS. No service-role storage client is used. Paths always start with the authenticated user's ID. A permit is reusable for the same file/user until expiry; it is not a single-use token. Uploads use generated filenames and `upsert: false`. Domain-specific resource ownership checks belong in a narrow app server handler before signing; a client-supplied resource ID is never ownership evidence.
 
+## Processing
 
-## Selecting a source crop
+JPEG, PNG and WebP inputs are supported. Byte and decoded-pixel limits apply before cropping. The processor auto-orients, validates the crop, resizes without upscaling, strips metadata and encodes JPEG or PNG. Crop coordinates are oriented source pixels (integers after EXIF orientation), with non-negative x/y and positive width/height. The rectangle must fit entirely inside the source.
 
-Send an optional `crop` multipart **text** field containing JSON with exactly `x`, `y`, `width` and `height`. Values are safe integers in original-image pixels **after EXIF orientation**, measured from the top-left before resizing. `x` and `y` are non-negative; width and height must be positive. The rectangle must fit entirely inside the oriented source. Do not send CSS/display pixels, percentages, a focal point alone, or output dimensions.
+Targets support `inside` and `cover`, output dimensions up to 4096px, JPEG quality 1–100 and PNG compression 0–100. `cover` requires both dimensions. Minimum input dimensions apply to the oriented image or selected crop. Default input limits are 5MiB and 25 megapixels; policy limits cannot exceed 10MiB or 40 megapixels. An explicit null pixel cap retains the existing opt-out, but runtime resource limits still apply. Public/private visibility and optional signed URL lifetime remain server-owned.
 
-```ts
-body.set('crop', JSON.stringify({ x: 0, y: 250, width: 1000, height: 375 }));
+## Configuration and rollout
+
+Generate a separate random `IMAGE_UPLOAD_SIGNING_SECRET` of at least 32 bytes per Supabase project. Configure the identical value in the app's server environment and Supabase Edge secrets. Never prefix it with NEXT_PUBLIC_, commit it, include it in a browser bundle or reuse a service-role key for signing. Configure matching secrets for local development as well. Rotating it invalidates outstanding permits.
+
+The old policy file was `supabase/functions/_shared/image-targets.ts`. Move its complete customised contents into the new server adapter and update imports to the shared target contract. The CLI upgrade preserves an existing new adapter; when absent, it migrates the old policy without discarding product settings. Review project-owned upload wrappers and update them to the managed upload helper. Existing widget files are preserved by Core updates.
+
+Deploy `process-image-upload-v2` with Docker so the existing `magick.wasm` static asset is included:
+
+```sh
+npx supabase secrets set --env-file <private-secret-file> --project-ref <project-ref>
+npx supabase functions deploy process-image-upload-v2 --project-ref <project-ref>
 ```
 
-This selects a 1000×375 horizontal strip starting 250 pixels down a 1000×1000 source. A frontend cropper must map its preview selection back to oriented source pixels. Crop selection and zoom UI remain application-owned.
+Deploy the updated app after the new function and matching secret are ready. The previous hosted `process-image-upload` endpoint may remain during this transition for already-deployed clients; remove it only after verifying all clients have migrated. The new source does not implement an unsigned legacy fallback. Do not replace the old hosted endpoint early and break current clients. No database migration is required for signed permits.
 
-The processor checks the complete source byte/pixel limits, auto-orients, validates and extracts the rectangle, then applies the target's existing resize/encoding policy without upscaling. `inside` preserves the selected aspect ratio; `cover` may centre-crop it again to match the configured target ratio. For an exact header selection, use the target ratio in the cropper or an application-owned `inside` target. Omitting `crop` preserves previous behaviour.
+## Responses and verification
 
-Malformed JSON, extra crop properties, non-integer values, duplicate fields, file-valued crop fields and crop text over 256 characters return `400`. An otherwise valid rectangle outside the oriented source returns `422` before any Storage operation. Responses and Storage authorisation are unchanged. Deploy the updated Edge Function before enabling crop submission in a consumer.
+Success retains target, bucket, path, width, height, bytes, content_type and configured public/signed URLs. Persist the returned location using the existing domain save flow.
 
-## Ownership
+The authorisation route returns 400 for invalid inputs, 401 for missing/anonymous sessions, 403 for an invalid Origin, 413 for metadata bodies over 4096 bytes and 503 when signing is unconfigured. Success is marked no-store.
 
-These files are CLI-managed:
+Edge returns 400 for malformed/unknown/duplicate multipart fields; 401 for invalid authentication; 403 for invalid, expired, wrong-account or mismatched-file permits; 405 for unsupported methods; 413 for oversized input; 415 for unsupported image formats; 422 for invalid images/crops/dimensions/pixel limits; 500 for processing/storage failures; and 503 when signing is unconfigured. Multipart buffering is capped at 10MiB plus 64KiB overhead even without Content-Length.
 
-- `supabase/functions/_shared/image-target-contract.ts` validates target policy;
-- `supabase/functions/_shared/image-transform.ts` decodes, orients, resizes, strips metadata, re-encodes, and stores the image; and
-- `supabase/functions/process-image-upload/index.ts` owns the authenticated HTTP contract, with Zod multipart parsing in `request.ts`.
-
-`supabase/functions/_shared/image-targets.ts` is developer-owned. The CLI installs starter profile targets when the file is absent and preserves the complete file during updates. Applications may add product targets without forking the transformer.
-
-## Target contract
-
-Every target fixes its Storage bucket, fallback path prefix below `<auth-user-id>/`, filename prefix, output format (`jpeg` or `png`), fit (`inside` or centred `cover`), dimensions, visibility, and relevant encoding settings. It may also lower the default 5 MiB input limit or 25-megapixel decoded limit. Maximum accepted policy values are 10 MiB, 40 megapixels, and 4096 pixels per output dimension.
-
-JPEG uses `qualityPercent` from 1–100 and composites transparency onto white. PNG remains lossless and uses `pngCompressionPercent` from 0–100 to select compression effort. The transformer auto-orients, strips embedded metadata, never upscales, generates a UUID filename, and uploads with `upsert: false`.
-
-Private targets may request a short-lived signed URL for up to 24 hours. Public targets may return a public URL only when the configured bucket is intentionally public. The canonical profile targets remain in the private `user-avatars` bucket.
-
-## Adding a target
-
-Add the complete target to `image-targets.ts`, then confirm:
-
-1. the bucket exists with a matching MIME/size policy;
-2. authenticated Storage RLS allows the caller to insert only beneath their own user-ID folder;
-3. every configured target is safe for any authenticated caller, even when the normal UI does not expose it;
-4. any destination sent by the calling system is relative, user-scoped and permitted by Storage RLS; and
-5. README, human documentation, MCP guidance, and API/Bruno documentation describe the new target.
-
-For resource-owned destinations that cannot be safely represented below the current user's folder, create a narrow domain wrapper that verifies current database ownership or membership before calling the shared transformer. Never trust a resource or user ID from form data as proof of ownership.
-
-## Verification
-
-Run:
-
-```bash
-npx supabase functions serve process-image-upload
-npx supabase functions deploy process-image-upload
-```
-
-Exercise unauthenticated, unsupported-target, unsafe-destination, malformed-crop, out-of-bounds-crop, rotated-source, invalid-image, byte-limit, pixel-limit, JPEG, PNG, private signed-URL, and Storage-policy failure cases before deployment. The checked-in `magick.wasm` is declared through `static_files`; deploy with Docker because API-only deployment cannot bundle static files. Large image processing is bounded by hosted Edge Function memory and CPU limits; keep source files at or below 5 MiB unless a reviewed product target has a stricter reason to increase it.
-
-## Source dimension policy
-
-Targets may set `minInputWidth` and `minInputHeight` (positive integers up to 4096). The processor checks these after EXIF orientation and optional cropping, before resizing; undersized sources return 422. Omitted minimums preserve existing behaviour. `maxInputPixels` defaults to 25 million; an explicit `null` disables the configured pixel cap for that target. Byte, format and decode checks still apply, and very large sources can exceed runtime resources. This policy is server-owned and cannot be overridden by multipart fields. Deploy the updated processor before enabling these target options.
+Verify signatures, altered settings/files, expiry, wrong-account attempts, unsigned calls, malformed metadata, unsafe paths, byte/pixel limits, crop behaviour, source orientation and Storage RLS. Next.js type checking excludes the Deno handler; check its runtime separately. Test existing image fields as well as a newly configured target.

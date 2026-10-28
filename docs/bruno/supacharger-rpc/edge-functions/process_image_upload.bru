@@ -1,63 +1,47 @@
 meta {
-  name: process image upload
+  name: process image upload v2
   type: http
   seq: 1
 }
-
 post {
-  url: {{SUPABASE_URL}}/functions/v1/process-image-upload
+  url: {{SUPABASE_URL}}/functions/v1/process-image-upload-v2
   body: multipartForm
   auth: none
 }
-
 headers {
   apikey: {{SUPABASE_PUBLISHABLE_KEY}}
   Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
 }
-
 body:multipart-form {
   file: @file({{IMAGE_FILE_PATH}})
-  target: profile_header
-  ~crop: {"x":0,"y":250,"width":1000,"height":375}
-  ~destination: headers
+  permit: {{IMAGE_UPLOAD_PERMIT}}
+  signature: {{IMAGE_UPLOAD_SIGNATURE}}
 }
-
 docs {
-  Send a JPEG, PNG or WebP source using IMAGE_FILE_PATH and an authenticated user token.
-  Optional crop and destination rows are disabled by default; enable crop after choosing
-  coordinates that fit your source. Do not set Content-Type manually: Bruno supplies
-  the multipart boundary. This is an Edge Function, so PostgREST schema headers do not apply.
+  First obtain permit and signature from the application's POST /api/images/authorise
+  using the same signed-in user. Its JSON metadata includes target, bytes, mimeType,
+  sha256 (lowercase SHA-256 of the exact file), optional destination and optional crop.
+  Browser metadata authorisation requires the app session cookie and matching Origin.
+  The Next.js server selects all dimensions, encoding, bucket and visibility settings
+  from src/supacharger.adapters/media/image-targets.ts. Never place the signing secret here.
 
-  crop is one JSON text field with exactly x, y, width and height as safe integers.
-  Coordinates use the original image AFTER EXIF orientation, from its top-left before
-  resizing. x/y must be non-negative; width/height positive; the rectangle must be wholly
-  inside the source. The example selects a 1000x375 strip from a 1000x1000 source.
-  Use source pixels, not CSS preview pixels. The field is limited to 256 characters.
+  Send exactly file, permit and signature to this Edge endpoint. Do not re-serialise
+  permit or change the file; the signature and hash must match. No target, crop or
+  destination multipart fields are accepted. Do not manually set multipart Content-Type.
+  The permit expires after five minutes and is bound to the signed-in user. It may be
+  reused with the same file before expiry; it is not single-use. The JWT remains required.
 
-  Processing auto-orients and crops first, then applies the configured target without
-  upscaling. inside retains the selected ratio; cover may centre-crop again to its
-  configured ratio. Omitting crop preserves previous behaviour. The target remains
-  authoritative for output dimensions, format, quality, bucket, filename and visibility.
-  destination optionally selects a safe relative directory beneath the authenticated
-  user's ID. It cannot contain absolute paths, unsafe segments, leading/trailing slashes,
-  or more than 256 characters. Storage uses the caller's RLS, never a service-role client.
+  Edge validates the permit then auto-orients, crops, resizes without upscaling, strips
+  metadata and stores using user-scoped Storage RLS. No service-role storage client is used.
+  JPEG/PNG/WebP inputs; JPEG/PNG outputs. Policy limits are at most 10MiB, 4096px per
+  output dimension and 40 megapixels (null retains the configured pixel-cap opt-out).
+  Starter profile policies remain private JPEG avatar/header images with one-hour URLs.
 
-  Core starter targets: profile_avatar (300x300 maximum) and profile_header (1600x600
-  maximum), JPEG quality 80, private user-avatars bucket, one-hour signed URL. Consumers
-  retain their own target maps and document product targets separately. Source limits
-  apply before cropping: starter limits are 5 MiB and 25 megapixels.
-
-  Target policy may set minInputWidth/minInputHeight (1–4096); undersized oriented
-  sources or selected crops return 422 before resize/storage. Omitted minimums keep
-  existing behaviour. maxInputPixels defaults to 25 million; explicit null disables
-  the configured cap. Byte and decode checks still apply; runtime resources remain
-  finite. These settings are server-owned, never accepted as multipart options.
-
-  200: target, bucket, path, content_type, width, height, bytes, plus configured signed_url
-  and signed_url_expires_in or public_url. No crop is echoed. Persist path for profile images.
-  400: malformed/unknown/duplicate/missing multipart fields, unsupported target, unsafe
-  destination, malformed crop JSON or invalid crop shape/types. 401: missing/invalid user
-  JWT. 405: unsupported method. 413: source byte limit. 415: unsupported declared/decoded
-  image type. 422: decode/pixel-limit failure or crop outside the oriented source.
-  500: Storage or signed-URL failure. Deploy the updated function before sending crop.
+  200: target, bucket, path, content_type, width, height, bytes, and configured public_url
+  or signed_url/signed_url_expires_in. Persist the returned path through the owning form.
+  400: invalid, missing, duplicate or unknown multipart fields. 401: invalid user JWT.
+  403: invalid signature, expired/wrong-user permit, altered policy or mismatched file.
+  405: wrong method. 413: input byte limit. 415: unsupported format. 422: invalid image,
+  crop, dimensions or pixel limit. 500: processing/Storage failure. 503: signing unconfigured.
+  See docs/agents/image-transformation.md for secret configuration and staged rollout.
 }
