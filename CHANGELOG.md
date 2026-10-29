@@ -9,11 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T15:16:43Z; base_commit=c57960d53d5ea82ed1b3e08aa1cd091bfd404b33; main_commit=c57960d53d5ea82ed1b3e08aa1cd091bfd404b33; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=c57960d53d5ea82ed1b3e08aa1cd091bfd404b33; scope=generic-core-services-and-extension-bindings; excluded=other-repositories-and-local-reports; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T15:20:07.166356+00:00; base_commit=3cbde1eab24ff490b3b971170b098a78c605593b; main_commit=3cbde1eab24ff490b3b971170b098a78c605593b; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=3cbde1eab24ff490b3b971170b098a78c605593b; scope=release-registry-automation-and-prior-checkpoint-review; excluded=other-repositories-and-local-reports; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- Release publication can attach a versioned source ZIP and notify the Core registry to verify its SHA-256 hash and retain superseded release records. Cross-repository Actions credentials are required.
 
 - Applications can select installed extensions as Core service implementations through validated, versioned descriptors and generated server-only bindings. Transactional email exposes a provider-neutral message contract while delivery queues and transports remain extension-owned.
 
