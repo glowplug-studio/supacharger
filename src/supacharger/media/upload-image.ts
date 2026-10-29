@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/client';
 
 import type { ImageCrop } from '../../../supabase/functions/_shared/image-target-contract';
-import { imageSha256 } from '../../../supabase/functions/process-image-upload-v2/permit-crypto';
+import { imageSha256 } from '../../../supabase/functions/process_image_upload/permit-crypto';
 
 export type ProjectImageUploadResult = {
   bucket: string; bytes: number; content_type: string; height: number; path: string;
@@ -19,7 +19,7 @@ export async function uploadImage({ file, ...settings }: { file: File; target: s
   body.set('file', file);
   body.set('permit', permit);
   body.set('signature', signature);
-  const { data, error } = await createClient().functions.invoke<ProjectImageUploadResult & { error?: string }>('process-image-upload-v2', { body });
+  const { data, error } = await createClient().functions.invoke<ProjectImageUploadResult & { error?: string }>('process_image_upload', { body });
   if (error || data?.error || !data?.path) throw new Error(data?.error || 'The image upload failed.');
   return data;
 }

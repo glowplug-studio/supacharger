@@ -6,7 +6,7 @@ The browser requests an upload permit from `POST /api/images/authorise` using th
 
 Application settings live in developer-owned `src/supacharger.adapters/media/image-targets.ts`. The Next.js server selects the target's dimensions, fit, encoding, compression, bucket, path prefix, filename prefix, visibility and limits. The browser cannot supply these settings. Keep the project widget policy aligned with these server settings.
 
-The server signs a five-minute permit with HMAC-SHA256. It binds the exact settings, crop, source hash, source size/MIME and authenticated user ID. The browser sends the original image directly to `process-image-upload-v2`, avoiding Vercel's 4.5MB request-body limit. Use `uploadImage` from `src/supacharger/media/upload-image.ts`; existing project widget helpers delegate to it. The browser receives a signature, never the signing secret.
+The server signs a five-minute permit with HMAC-SHA256. It binds the exact settings, crop, source hash, source size/MIME and authenticated user ID. The browser sends the original image directly to `process_image_upload`, avoiding Vercel's 4.5MB request-body limit. Use `uploadImage` from `src/supacharger/media/upload-image.ts`; existing project widget helpers delegate to it. The browser receives a signature, never the signing secret.
 
 The generic Edge Function accepts exactly three multipart fields: `file`, `permit` and `signature`. It verifies the user's JWT, signature, permit expiry, account binding, supported parameter ranges and source hash before transforming the image. It contains no product target map. Adding a target or changing its sizes requires updating the app server, not redeploying the processor or WASM.
 
@@ -24,14 +24,14 @@ Generate a separate random `IMAGE_UPLOAD_SIGNING_SECRET` of at least 32 bytes pe
 
 The old policy file was `supabase/functions/_shared/image-targets.ts`. Move its complete customised contents into the new server adapter and update imports to the shared target contract. The CLI upgrade preserves an existing new adapter; when absent, it migrates the old policy without discarding product settings. Review project-owned upload wrappers and update them to the managed upload helper. Existing widget files are preserved by Core updates.
 
-Deploy `process-image-upload-v2` with Docker so the existing `magick.wasm` static asset is included:
+Deploy `process_image_upload` with Docker so the existing `magick.wasm` static asset is included:
 
 ```sh
 npx supabase secrets set --env-file <private-secret-file> --project-ref <project-ref>
-npx supabase functions deploy process-image-upload-v2 --project-ref <project-ref>
+npx supabase functions deploy process_image_upload --project-ref <project-ref>
 ```
 
-Deploy the updated app after the new function and matching secret are ready. The previous hosted `process-image-upload` endpoint may remain during this transition for already-deployed clients; remove it only after verifying all clients have migrated. The new source does not implement an unsigned legacy fallback. Do not replace the old hosted endpoint early and break current clients. No database migration is required for signed permits.
+Deploy the updated app after `process_image_upload` and the matching secret are ready. This is the only supported image-upload endpoint; remove previously deployed image-upload functions after the client rollout. Unsigned legacy requests are not supported. No database migration is required.
 
 ## Responses and verification
 

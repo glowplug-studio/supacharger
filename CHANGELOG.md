@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T09:45:35.034052Z; base_commit=ad46834dae3a0a3a530dae88db8442672ede35d3; main_commit=ad46834dae3a0a3a530dae88db8442672ede35d3; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=ad46834dae3a0a3a530dae88db8442672ede35d3; scope=banner-replacement-and-prior-checkpoint-review; excluded=unrelated-local-core-working-tree-changes; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T11:08:16.050794Z; base_commit=ef77dd002306a99e8bd370d685365599e2f72884; main_commit=ef77dd002306a99e8bd370d685365599e2f72884; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=ef77dd002306a99e8bd370d685365599e2f72884; scope=image-endpoint-rename-and-canonical-checkout-policy; excluded=other-repositories-and-local-reports; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -31,13 +31,15 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Breaking:** the signed image-upload function is named `process_image_upload`. Deploy it with its bundled WASM before releasing updated upload and social-avatar callers; retire previous endpoints only after client rollout. No database migration is required.
+
 - Extension source belongs under `src/app/(project)/(extensions)/(sc_extensions)/`; Supabase workers and forward migrations install into their normal project directories. Commercial implementations remain in their own repositories rather than Core.
 - Agent guidance is consolidated under `docs/agents/`, with project UI/icon rules and timestamped reports. Optional extension-development instructions are separate from the instructions installed for application developers.
 
 - **Breaking:** account updates accept one validated profile/extension patch and commit identity, language and product fields together. Move product persistence to private SQL hooks and update callers; the old argument signature is removed.
 - Public profile identity has an explicit safe projection. Deploy the Core `profile-media` Supabase function and configure its per-environment origin; public image requests are authorised by Storage on every fetch.
 
-- **Breaking:** image uploads use server-signed, user/file-bound permits and the generic `process-image-upload-v2` endpoint. Move product image policies to `src/supacharger.adapters/media/image-targets.ts`, configure matching `IMAGE_UPLOAD_SIGNING_SECRET` values in Next.js and Edge, and update consumers before retiring the old endpoint. Files upload directly to Edge; new target sizes no longer require processor redeployment.
+- **Breaking:** image uploads use server-signed, user/file-bound permits and the generic `process_image_upload` endpoint. Move product image policies to `src/supacharger.adapters/media/image-targets.ts`, configure matching `IMAGE_UPLOAD_SIGNING_SECRET` values in Next.js and Edge, and update consumers before retiring the old endpoint. Files upload directly to Edge; new target sizes no longer require processor redeployment.
 
 - The Core demo enables organisation creation, switching, invitations and settings. Consumer feature flags, registration organisation fields and organisation billing remain independently configured.
 

@@ -56,7 +56,7 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('test/project-billing-schema-contract.test.mjs').ownership, 'developer-owned');
   assert.match(classifyPath('test/project-billing-schema-contract.test.mjs').guidance, /Do not create or restore/);
   assert.equal(classifyPath('postcss.config.mjs').ownership, 'cli-managed-core');
-  assert.equal(classifyPath('supabase/functions/process-image-upload-v2/index.ts').ownership, 'cli-managed-core');
+  assert.equal(classifyPath('supabase/functions/process_image_upload/index.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('supabase/functions/_shared/image-transform.ts').ownership, 'cli-managed-core');
   assert.equal(classifyPath('src/supacharger.adapters/media/image-targets.ts').ownership, 'developer-owned');
   assert.equal(classifyPath('src/app/(project)/account/page.tsx').ownership, 'developer-owned');

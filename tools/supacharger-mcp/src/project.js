@@ -133,8 +133,8 @@ export function classifyPath(inputPath) {
     relativePath === 'supabase/functions/_shared/image-transform.ts' ||
     relativePath === 'supabase/functions/profile-media' ||
     relativePath.startsWith('supabase/functions/profile-media/') ||
-    relativePath === 'supabase/functions/process-image-upload-v2' ||
-    relativePath.startsWith('supabase/functions/process-image-upload-v2/') ||
+    relativePath === 'supabase/functions/process_image_upload' ||
+    relativePath.startsWith('supabase/functions/process_image_upload/') ||
     relativePath === 'components.json' ||
     relativePath === 'tsconfig.json'
   ) {

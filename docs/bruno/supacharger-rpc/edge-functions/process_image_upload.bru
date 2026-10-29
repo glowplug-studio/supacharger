@@ -1,10 +1,10 @@
 meta {
-  name: process image upload v2
+  name: process image upload
   type: http
   seq: 1
 }
 post {
-  url: {{SUPABASE_URL}}/functions/v1/process-image-upload-v2
+  url: {{SUPABASE_URL}}/functions/v1/process_image_upload
   body: multipartForm
   auth: none
 }

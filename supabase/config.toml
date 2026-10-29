@@ -256,9 +256,9 @@ inspector_port = 8083
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/MY_FUNCTION_NAME/*.html" ]
 
-[functions.process-image-upload-v2]
+[functions.process_image_upload]
 verify_jwt = true
-static_files = ["./functions/process-image-upload-v2/magick.wasm"]
+static_files = ["./functions/process_image_upload/magick.wasm"]
 
 [analytics]
 enabled = true

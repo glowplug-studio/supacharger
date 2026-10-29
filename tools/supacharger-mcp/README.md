@@ -54,7 +54,7 @@ The CLI-upgrades resource records the version 2 ownership flow, direct three-way
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 
-The image-transformation resource records the authenticated `process-image-upload-v2` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and server-signed permits that bind user identity, file hash, crop and processing settings. Browsers request permission from the application server, then upload directly to Edge. The processor crops before resizing; malformed metadata returns 400 and out-of-bounds crops return 422.
+The image-transformation resource records the authenticated `process_image_upload` boundary, RLS-scoped Storage client, managed transformer, developer-owned target policy, validated user-relative destinations, safe path and format limits, PNG/JPEG encoding contract, and server-signed permits that bind user identity, file hash, crop and processing settings. Browsers request permission from the application server, then upload directly to Edge. The processor crops before resizing; malformed metadata returns 400 and out-of-bounds crops return 422.
 
 The ownership resource also records the build-runtime boundary: the root Next.js `tsconfig.json` excludes `supabase/functions/**/*`. Agents must preserve that separation rather than teaching the Next.js compiler to accept Deno-only globals and imports.
 

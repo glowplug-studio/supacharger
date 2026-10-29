@@ -38,7 +38,7 @@ test('download validates redirect destinations, MIME and streaming byte limit', 
     await assert.rejects(source.downloadSocialAvatar('google', 'https://lh3.googleusercontent.com/a'));
     globalThis.fetch = async () => new Response(new Uint8Array([1, 2]), { headers: { 'content-type': 'image/png' } });
     const file = await source.downloadSocialAvatar('google', 'https://lh3.googleusercontent.com/a');
-    assert.equal(file.size, 2); // Actual decoding belongs to process-image-upload-v2.
+    assert.equal(file.size, 2); // Actual decoding belongs to process_image_upload.
   } finally { globalThis.fetch = original; }
 });
 test('failed or conflicting picture imports do not block sign-in or overwrite profiles', async () => {
@@ -57,7 +57,7 @@ test('failed or conflicting picture imports do not block sign-in or overwrite pr
     const { initialiseSocialProfile } = load('initialise-social-profile', {
       '@/supacharger/supacharger-config': { SC_CONFIG: { PROFILE_IDENTITY: { AVATAR: 'optional' } } },
       '@/supacharger/media/authorise-image-upload': { authoriseImageUpload: async () => ({ permit: 'test-permit', signature: 'test-signature' }) },
-      '../../../supabase/functions/process-image-upload-v2/permit-crypto': { imageSha256: async () => 'a'.repeat(64) },
+      '../../../supabase/functions/process_image_upload/permit-crypto': { imageSha256: async () => 'a'.repeat(64) },
       './social-avatar-source': { ...source, downloadSocialAvatar: async () => {
         if (outcome === 'failure') throw new Error('Download failed');
         return new File(['bytes'], 'test.png', { type: 'image/png' });

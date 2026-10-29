@@ -16,7 +16,7 @@ The byte-identical CLI-managed core currently occupies the paths listed in `mana
 - `postcss.config.mjs`
 - `supabase/functions/_shared/image-target-contract.ts`
 - `supabase/functions/_shared/image-transform.ts`
-- `supabase/functions/process-image-upload/`
+- `supabase/functions/process_image_upload/`
 - `docs/bruno/supacharger-rpc/`
 - `.supacharger/managed-files.json`
 

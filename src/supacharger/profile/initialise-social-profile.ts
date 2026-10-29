@@ -4,7 +4,7 @@ import type { AuthCallbackContext } from '@/supacharger/auth/callback-adapter-co
 import { authoriseImageUpload } from '@/supacharger/media/authorise-image-upload';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-import { imageSha256 } from '../../../supabase/functions/process-image-upload-v2/permit-crypto';
+import { imageSha256 } from '../../../supabase/functions/process_image_upload/permit-crypto';
 
 import { downloadSocialAvatar, socialAvatarSourceSchema } from './social-avatar-source';
 
@@ -34,7 +34,7 @@ export async function initialiseSocialProfile(supabase: AuthCallbackContext['sup
     const { permit, signature } = await authoriseImageUpload({ target: 'profile_avatar', bytes: file.size, mimeType: file.type, sha256: await imageSha256(await file.arrayBuffer()) }, userId);
     body.set('permit', permit);
     body.set('signature', signature);
-    const result = await supabase.functions.invoke('process-image-upload-v2', { body, timeout: 15000 });
+    const result = await supabase.functions.invoke('process_image_upload', { body, timeout: 15000 });
     if (result.error) throw result.error;
     const uploaded = uploadedAvatarSchema.parse(result.data);
     if (!uploaded.path.startsWith(`${userId}/avatar-`) || uploaded.path.includes('..')) {

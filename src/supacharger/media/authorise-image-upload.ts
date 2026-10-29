@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { imageUploadTargets } from '@/supacharger.adapters/media/image-targets';
 
 import { resolveImageDestination } from '../../../supabase/functions/_shared/image-target-contract';
-import { signImagePermit } from '../../../supabase/functions/process-image-upload-v2/permit-crypto';
+import { signImagePermit } from '../../../supabase/functions/process_image_upload/permit-crypto';
 
 import 'server-only';
 
