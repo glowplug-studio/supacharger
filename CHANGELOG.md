@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T17:55:20.725381+00:00; base_commit=8cd71de4b7f73c069ac516b4665eae69f078dc60; main_commit=8cd71de4b7f73c069ac516b4665eae69f078dc60; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=8cd71de4b7f73c069ac516b4665eae69f078dc60; scope=optional-project-namespace-and-setup-guidance; excluded=oauth-cancellation-cli-docs-env-example-contributor-submodule-and-other-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T18:15:50+00:00; base_commit=ccd04d4c4130f0ed372956afc9c62316b54dc4d6; main_commit=ccd04d4c4130f0ed372956afc9c62316b54dc4d6; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=ccd04d4c4130f0ed372956afc9c62316b54dc4d6; scope=oauth-cancellation-and-cli-setup-guidance; excluded=namespace-rollout-not-implemented; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -36,6 +36,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- Installation guidance now covers registry-selected Core versions, interactive namespace and environment setup, optional skills, extension previews and the distinction between CLI and installed Core versions.
 
 - `PROJECT_NAMESPACE` now defaults to `null` and accepts an optional validated resource-name prefix. Manual setup and agent guidance identify the config as the source of the choice and distinguish it from existing deployed resource names; changing the value does not rename database objects, workers or secrets.
 
@@ -80,6 +82,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Cancelling social sign-in returns to the login page with a neutral notice, including provider errors delivered in URL fragments. Specific service errors retain their error presentation.
 
 - Image crop previews retain their aspect ratio in scrolling dialogs, with clearer zoom controls and no overlap between the drag surface and slider.
 

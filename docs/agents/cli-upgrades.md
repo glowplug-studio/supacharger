@@ -2,7 +2,19 @@
 
 ## Ownership
 
-`supacharger init` installs the canonical starter and records its Git commit in `.supacharger/core-lock.json`. Version 2 of `.supacharger/managed-files.json` separates exact managed paths, merge-managed files, forward-only migrations and developer-owned paths.
+`supacharger init` reads the public schema-2 registry and installs the exact registered Core release. It uses Git when available or the descriptor's checksum-verified ZIP otherwise. Source is prepared in a temporary sibling directory before the target is touched. The CLI writes the registered repository, semantic version and exact commit to `.supacharger/core-lock.json`; this lock is generated during installation rather than stored in Core source.
+
+Normal initialisation output presents registry lookup, workspace creation, verified download, application preparation, lock creation, installation and cleanup as seven numbered purple stages. Internal repository URLs, commits and temporary paths remain available through errors rather than cluttering successful setup.
+
+From an installed project or any nested directory, `supacharger version` walks upwards to the nearest Core lock and prints its required semantic version. `supacharger --version` remains the CLI package version.
+
+Interactive initialisation first asks for the optional Supabase resource namespace. It validates a supplied value against `^[a-z][a-z0-9_]{0,19}$` and writes the string, or `null` for an empty answer, only to `PROJECT_NAMESPACE` in developer-owned `src/supacharger.config.ts`. It does not create another prefix setting. Updates preserve the application-owned value.
+
+Initialisation then creates `.env.local` from `.env.local.example`. It groups Supabase and Stripe prompts, masks sensitive input and leaves an example value unchanged when the developer presses Enter without supplying a value. It always generates the image-upload signing secret and generates separate event-processor and reconciliation secrets when Stripe setup is selected. It then offers the public skills checkbox selector and a registry extension preview; the preview does not download or install extensions.
+
+If a target contains files, the CLI names the folder and explains that `.git` is preserved while every other entry will be replaced only after Core downloads successfully. It accepts `Y` to continue or `n` to print `Exiting.` and stop. Ctrl+C exits without an exception trace and reports whether Core was already installed.
+
+Version 2 of `.supacharger/managed-files.json` separates exact managed paths, merge-managed files, forward-only migrations and developer-owned paths.
 
 Exact managed files are owned by Core. Developer-owned paths are preserved. Package dependencies and local Supabase configuration are merged through explicit updater logic. The blank `tailwind.project.config.ts` file is the developer extension point for the exact-managed `tailwind.config.ts`.
 
@@ -14,9 +26,9 @@ Exact managed files are owned by Core. Developer-owned paths are preserved. Pack
 - files added, changed or removed by the incoming commit; and
 - property names present in incoming `src/supacharger.config.ts` but absent from the project's developer-owned configuration.
 
-The comparison reads file contents directly. It creates no file hashes or lock catalogue. The only persistent revision identifier is the Git commit already stored in `.supacharger/core-lock.json`. The temporary directories are removed after inspection.
+The comparison reads file contents directly. It creates no file hashes or lock catalogue. The persistent installation identifiers are the semantic version and exact Git commit stored in `.supacharger/core-lock.json`; file comparison uses the commit. The temporary directories are removed after inspection.
 
-Use `--ref <tag-or-commit>` to inspect a specific revision. Maintainers may use `--source <path>` with a clean local Core checkout. Remote `doctor` prints the yellow development warning because it contacts the private GitHub repository; local `--source` and public-skills operations do not.
+Use `--ref <tag-or-commit>` to inspect a specific revision. Maintainers may use `--source <path>` with a clean local Core checkout.
 
 ## Planning and updating
 

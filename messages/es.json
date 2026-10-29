@@ -29,6 +29,7 @@
     "retypeNewPassword": "Vuelva a escribir la nueva contraseña",
     "setNewPassword": "Establecer nueva contraseña",
     "forgotPassword": "Has olvidado tu contraseña",
+    "loginCancelled": "",
     "loginSuccess": "Has iniciado sesión",
     "logIn": "Iniciar sesión",
     "logOut": "Desconectar",

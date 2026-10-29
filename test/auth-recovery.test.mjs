@@ -39,7 +39,7 @@ function handler({ verifyError = null } = {}) {
     '@/lib/supabase/server': { createClient: async () => supabase },
     '@/supacharger/utils/request-url': { getAppRequestOrigin: (request) => new URL(request.url).origin },
     '@/supacharger/supacharger-config': { SC_CONFIG: {
-      ACCOUNT_CONFIRMED_PATH: '/account/confirmed',
+      AUTHENTICATION: { ACCOUNT_CONFIRMED_PATH: '/account/confirmed' },
       USER_REDIRECTS: { UNAUTHED_USER: { AUTHGUARD_REDIRECT_DESTINATION: '/account/login' } },
     } },
   });
@@ -99,7 +99,7 @@ test('Proxy propagates SDK cookie rotation and headers to downstream requests an
         return { data: { claims: { sub: 'test-user', role: 'authenticated' } }, error: null };
       } } };
     } },
-    '@/supacharger/supacharger-config': { SC_CONFIG: { AUTH_SESSION: { ALLOW_ANONYMOUS_USERS: false } } },
+    '@/supacharger/supacharger-config': { SC_CONFIG: { SUPABASE_AUTH: { SESSION: { ALLOW_ANONYMOUS_USERS: false } } } },
     '@/supacharger/utils/helpers': { getEnvVar: () => 'https://example.supabase.co' },
   });
   const request = new NextRequest('https://app.example/account');
@@ -192,7 +192,7 @@ test('callback adapter keeps onboarding and success on the callback domain', asy
     '@/supacharger/supacharger-config': { SC_CONFIG: {
       POST_SIGN_IN_ONBOARDING: { REQUIRED: true, REDIRECT_PATH: '/account/setup-profile' },
       PROFILE_IDENTITY: { USERNAME: 'disabled' }, BILLING_ACCESS: { REQUIRED: false },
-      AUTHENTICATION: { MFA_TOTP: { REQUIRED_FOR_SIGN_IN: false } },
+      SUPABASE_AUTH: { METHODS: { MFA_TOTP: { REQUIRED_FOR_SIGN_IN: false } } },
       USER_REDIRECTS: { AUTHED_USER: { LOGIN_REDIRECT_DESTINATION: '/account' } },
     } },
   });

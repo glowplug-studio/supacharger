@@ -29,6 +29,7 @@
     "retypeNewPassword": "Retype New Password",
     "setNewPassword": "Set new password",
     "forgotPassword": "Forgot Password",
+    "loginCancelled": "Sign-in cancelled",
     "loginSuccess": "You have been logged in",
     "logIn": "Sign In",
     "logOut": "Sign Out",

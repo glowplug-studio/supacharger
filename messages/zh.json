@@ -29,6 +29,7 @@
     "retypeNewPassword": "重新输入新密码",
     "setNewPassword": "设置新密码",
     "forgotPassword": "忘记密码",
+    "loginCancelled": "",
     "loginSuccess": "您已登录",
     "logIn": "登入",
     "logOut": "登出",

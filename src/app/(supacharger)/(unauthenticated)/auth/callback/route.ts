@@ -9,6 +9,7 @@ import {
   resolveAuthCallbackSuccess,
 } from '@/supacharger.adapters/auth-callback';
 import { EMAIL_CHANGE_PENDING_MESSAGE, emailChangeResultPath } from '@/supacharger/auth/email-change';
+import { isOAuthCancellation, OAUTH_CANCELLED_PATH } from '@/supacharger/auth/oauth-cancellation';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
 import { initialiseAccountUsername } from '@/supacharger/profile/initialise-account-username';
 import { initialiseSocialProfile } from '@/supacharger/profile/initialise-social-profile';
@@ -21,6 +22,13 @@ export async function GET(request: NextRequest) {
   const code = requestUrl.searchParams.get('code');
   const flow = requestUrl.searchParams.get('flow');
   const nextPath = getSafeNextPath(requestUrl.searchParams.get('next'));
+  if (!flow && isOAuthCancellation(requestUrl.searchParams)) {
+    const destination = new URL(appURL(OAUTH_CANCELLED_PATH, origin));
+    // Explicitly discard any inherited provider fragment on the HTTP redirect.
+    destination.hash = '_';
+    return NextResponse.redirect(destination, { headers: { 'Cache-Control': 'private, no-store' } });
+  }
+
   const supabase = await createClient();
   const context = { code, nextPath, requestUrl, supabase };
 

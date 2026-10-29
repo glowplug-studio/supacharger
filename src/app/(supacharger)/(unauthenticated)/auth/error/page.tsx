@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 
 import { SupachargerAuthShell } from '@/supacharger/components/auth/auth-shell';
+import { OAuthErrorRecovery } from '@/supacharger/components/auth/oauth-error-recovery';
 
 import englishMessages from '../../../../../../messages/en.json';
 
@@ -23,7 +24,7 @@ export default async function AuthErrorPage({ searchParams }: {
   const emailText = (key: keyof typeof englishMessages.EmailChangeResult) =>
     tEmailChange.has(key) && tEmailChange(key) ? tEmailChange(key) : englishMessages.EmailChangeResult[key];
 
-  return (
+  const content = (
     <SupachargerAuthShell>
       <main id='sc_auth-error-page' className='sc-auth-page sc-auth-error-page' data-sc-auth-page='error'>
         {!isEmailChange ? <p className='sc-auth-error-status'>{tError('unexpected.status')}</p> : null}
@@ -35,4 +36,6 @@ export default async function AuthErrorPage({ searchParams }: {
       </main>
     </SupachargerAuthShell>
   );
+
+  return isRecovery || isEmailChange ? content : <OAuthErrorRecovery>{content}</OAuthErrorRecovery>;
 }
