@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Supacharger Demo</h1>
   <p align="center">
-    <a href="https://supacharger.dev"><img src="/docs/gh-banner.jpg"/></a>
+    <a href="https://supacharger.dev"><img src="/docs/gh-banner.webp"/></a>
   </p>
 </p>
 
