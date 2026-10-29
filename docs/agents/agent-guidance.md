@@ -8,7 +8,14 @@
 
 Read `docs/agents/project/ui-implementation.md` for the application's UI conventions and `docs/agents/project/icon-usage.md` for its approved concept-to-icon mappings. These are developer-owned files, linked from `docs/agents/project.md`; Core updates must preserve local choices. Keep mapping examples explicitly non-binding. The repository MCP exposes `ui_implementation` and `icon_usage` for its own checkout; when working on a consumer, read that consumer's local files rather than treating Core's starter as its visual policy.
 
+## Guidance placement
+
+Root `AGENTS.md` contains entry-point links only. Follow [Where to record instructions](../../.agents/supacharger/guidance.md#where-to-record-instructions) before adding agent guidance; edit the owning topic rather than expanding the root file. `.agents/project/AGENTS.md` is a compatibility routing pointer. Existing task procedures and skills remain under `.agents/instructions/` and `.agents/skills/`; read them when relevant.
+
 ## Read by task
+
+- Before developing extension database operations, read [Database service registrations](core-services.md#developing-extensions-with-database-operations).
+- Before changing Next.js code, read the framework guidance in [project.md](project.md#framework-guidance).
 
 - Read [Database and resource namespaces](database-namespaces.md) before creating tables, schemas, buckets, workers or secrets.
 
