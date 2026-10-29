@@ -10,7 +10,7 @@ enabled = true
 port = 54321
 # Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
 # endpoints. `public` and `graphql_public` schemas are included by default.
-schemas = ["graphql_public", "api", "api_edge"]
+schemas = ["graphql_public", "sc_api", "sc_api_edge"]
 # Extra schemas to add to the search_path of every request.
 extra_search_path = ["extensions"]
 # The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
@@ -170,7 +170,7 @@ max_frequency = "5s"
 # This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.
 [auth.hook.custom_access_token]
 enabled = true
-uri = "pg-functions://postgres/app/custom_access_token_hook"
+uri = "pg-functions://postgres/sc_app/custom_access_token_hook"
 
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
 [auth.sms.twilio]
@@ -256,7 +256,8 @@ inspector_port = 8083
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/MY_FUNCTION_NAME/*.html" ]
 
-[functions.process_image_upload]
+[functions.sc_process_image_upload]
+entrypoint = "./functions/process_image_upload/index.ts"
 verify_jwt = true
 static_files = ["./functions/process_image_upload/magick.wasm"]
 
@@ -279,5 +280,6 @@ s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
 
-[functions.profile-media]
+[functions.sc_profile-media]
+entrypoint = "./functions/profile-media/index.ts"
 verify_jwt = false

@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T20:28:00+00:00; base_commit=be48d8bc50ea0e4bd6101c62dda5fb9ab758dd87; main_commit=be48d8bc50ea0e4bd6101c62dda5fb9ab758dd87; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=be48d8bc50ea0e4bd6101c62dda5fb9ab758dd87; scope=resource-namespace-rollout-and-repository-cleanup; excluded=none; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T22:17:10+00:00; base_commit=b5f14f0a01e9f99146d188e97a1daa104fdf368e; main_commit=b5f14f0a01e9f99146d188e97a1daa104fdf368e; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=65800d8e16f2540debb858a226fd1e38fa1775cf; scope=default-core-namespace-cutover; excluded=staged-agent-service-guidance; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -36,6 +36,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- The default installation now includes a forward migration to `sc_` database schemas and matching Auth, Data API and Edge configuration. Existing installations must coordinate this migration with namespaced Storage and signing secrets; historical migrations remain unchanged.
 
 - Installation guidance now covers registry-selected Core versions, interactive namespace and environment setup, optional skills, extension previews and the distinction between CLI and installed Core versions.
 
