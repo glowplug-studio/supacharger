@@ -74,8 +74,8 @@ export type SupachargerConfig = {
   };
 
   /** Providers selected for shared application services. */
-  /** Stable deployment namespace: 1–20 lowercase letters, digits or underscores. */
-  PROJECT_NAMESPACE: string;
+  /** Optional resource-name prefix; null requests none. A string starts with a letter and uses 1–20 lowercase letters, digits or underscores. */
+  PROJECT_NAMESPACE: string | null;
   CORE_SERVICES: {
     /** Authentication backend; social login choices are configured separately. */
     auth: { provider: 'supabase' };

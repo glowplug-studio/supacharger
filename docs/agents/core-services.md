@@ -3,14 +3,18 @@
 A Core service names a shared capability; the application selects an installed implementation. Core owns the contract and dispatch, while extensions own their implementation, storage and workers.
 
 ```ts
-PROJECT_NAMESPACE: 'my_application',
+PROJECT_NAMESPACE: null,
 CORE_SERVICES: {
   auth: { provider: 'supabase' },
   transactional_email: { provider: null },
 },
 ```
 
-`PROJECT_NAMESPACE` is a stable deployment identifier: 1–20 lowercase letters, digits or underscores, starting with a letter. It is not a display name or Supabase project reference. Review generated SQL, worker and secret names before deployment; changing an installed namespace requires an explicit migration.
+`PROJECT_NAMESPACE` in developer-owned `src/supacharger.config.ts` is the optional application prefix intended for generated resource names (for example extension tables, RPCs, workers and secrets). The Core default is `null`: no application prefix has been requested. A supplied value must match `^[a-z][a-z0-9_]{0,19}$`. It is not a Supabase project reference, schema selector, tenant identifier, authentication setting or access-control boundary.
+
+Current Core preparation validates and returns this value, but does not use it to generate or rename database or worker resources. Installed extension SQL and source already contain their deployed names. Do not claim that changing this setting prefixes all Supabase objects. Generators must explicitly consume it and document their resource coverage and `null` behaviour; broad schema namespacing remains separate implementation work.
+
+Before naming new resources, agents and extension authors must read this property and inspect existing migrations and deployed naming conventions. Do not invent a second namespace setting or assume a non-null default. Preserve existing configured values on upgrades. Changing an installed prefix requires an explicit migration and coordinated caller, worker and secret updates; never rewrite applied migrations.
 
 Supabase is the supported authentication implementation. Social providers remain under `SUPABASE_AUTH.OAUTH_PROVIDERS`; password and OTP settings live under `SUPABASE_AUTH.METHODS`. Application transactional email does not alter Supabase Auth email delivery.
 

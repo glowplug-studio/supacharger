@@ -50,9 +50,9 @@ function readServiceConfig(root) {
     providers[name] = value.kind === ts.SyntaxKind.NullKeyword ? null : value.text;
   }
   const namespace = rootProperties.PROJECT_NAMESPACE && unwrap(rootProperties.PROJECT_NAMESPACE);
-  if (!namespace || !ts.isStringLiteral(namespace) || !/^[a-z][a-z0-9_]{0,19}$/.test(namespace.text)) throw new Error('PROJECT_NAMESPACE must be 1–20 lowercase letters, digits or underscores, starting with a letter');
+  if (!namespace || (namespace.kind !== ts.SyntaxKind.NullKeyword && (!ts.isStringLiteral(namespace) || !/^[a-z][a-z0-9_]{0,19}$/.test(namespace.text)))) throw new Error('PROJECT_NAMESPACE must be null or 1–20 lowercase letters, digits or underscores, starting with a letter');
   if (providers.auth !== 'supabase') throw new Error('Supabase is the supported auth implementation');
-  return { namespace: namespace.text, providers };
+  return { namespace: namespace.kind === ts.SyntaxKind.NullKeyword ? null : namespace.text, providers };
 }
 
 /** Resolve configured implementations from their installed source. Never execute payloads. */

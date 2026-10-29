@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T17:20:49.488147+00:00; base_commit=50ed4044a1a65d90a83c551328e43f75eb99356f; main_commit=50ed4044a1a65d90a83c551328e43f75eb99356f; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=50ed4044a1a65d90a83c551328e43f75eb99356f; scope=config-localisation-signup-consent-and-extension-receipt-removal; excluded=oauth-cancellation-work-cli-documentation-env-example-contributor-submodule-and-other-repositories; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T17:55:20.725381+00:00; base_commit=8cd71de4b7f73c069ac516b4665eae69f078dc60; main_commit=8cd71de4b7f73c069ac516b4665eae69f078dc60; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=8cd71de4b7f73c069ac516b4665eae69f078dc60; scope=optional-project-namespace-and-setup-guidance; excluded=oauth-cancellation-cli-docs-env-example-contributor-submodule-and-other-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -36,6 +36,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- `PROJECT_NAMESPACE` now defaults to `null` and accepts an optional validated resource-name prefix. Manual setup and agent guidance identify the config as the source of the choice and distinguish it from existing deployed resource names; changing the value does not rename database objects, workers or secrets.
 
 - **Breaking:** Supabase-specific session, method, provider, email and password settings move into `SUPABASE_AUTH`; provider-independent signup consent and the confirmed-account destination remain under `AUTHENTICATION`. Migrate developer-owned config and callers together, retaining application values; older CLI releases must not be assumed to migrate this contract automatically.
 - Site titles and descriptions resolve from the active language catalogue with English fallbacks. `METADATA.DEFAULT_OG_IMAGE` replaces `SOCIAL_IMAGE` with default and locale-specific previews; pages can override or suppress them. The title template follows translated branding. Unused logo and Stripe portal-return configuration is removed; standard logo assets remain developer-owned.

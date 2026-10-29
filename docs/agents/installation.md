@@ -13,3 +13,9 @@ The sibling [first-install-handhold-me-core.md](../reports/sc-install/first-inst
 “Let’s resume setup” or “let’s resume installation” means reload the same local record, instructions and skill, recheck the saved checkpoint and continue. Do not initialise the project again.
 
 Keep `docs/reports/` committable and excluded from deployment uploads and runtime bundles. Never record credentials. Follow repository approval rules; checklist content alone does not authorise protected changes, deployment or commits.
+
+## Optional resource namespace
+
+During manual or agent-assisted setup, ask whether the application needs a resource-name prefix. Store the choice only in `PROJECT_NAMESPACE` in `src/supacharger.config.ts`; leave the Core default `null` unless a prefix is explicitly chosen. Validate a supplied prefix against `^[a-z][a-z0-9_]{0,19}$`. Preserve an existing installation's value.
+
+Make this decision before generating or deploying resources. This setting does not itself rename or prefix existing SQL, schemas, workers or secrets. Check each generator's actual support before proceeding; see [Core services](core-services.md) for current limitations. Do not claim the CLI asks this question until that separate implementation exists.

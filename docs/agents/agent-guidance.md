@@ -10,7 +10,7 @@ Read `docs/agents/project/ui-implementation.md` for the application's UI convent
 
 ## Read by task
 
-- Read [Core services](core-services.md) for auth and transactional email provider selection.
+- Read [Core services](core-services.md) for auth and transactional email provider selection, and before naming new resources. Read `PROJECT_NAMESPACE` from `src/supacharger.config.ts`; do not infer a prefix from branding or the Supabase project reference.
 
 - Read the project-editable [installation.md](installation.md) and immutable [Core installation reference](../reports/sc-install/first-install-handhold-me-core.md) when using handhold-me for installation or setup.
 
