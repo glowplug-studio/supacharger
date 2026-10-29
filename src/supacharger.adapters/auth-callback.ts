@@ -1,6 +1,7 @@
 import type { AuthCallbackContext, AuthCallbackFailureContext } from '@/supacharger/auth/callback-adapter-contract';
 import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
 import { withNextPath } from '@/supacharger/auth/safe-next-path';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { appURL } from '@/supacharger/utils/app-origin';
 
@@ -19,7 +20,7 @@ export async function resolveAuthCallbackSuccess({
 
   if (SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED) {
     const { data: profileComplete, error: profileError } = await supabase
-      .schema('api')
+      .schema(schemaName('api'))
       .rpc('is_profile_complete_by_current_user', {
         input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
       });
@@ -33,7 +34,7 @@ export async function resolveAuthCallbackSuccess({
 
   if (!destination && SC_CONFIG.BILLING_ACCESS.REQUIRED) {
     const { data: hasAccess, error: billingError } = await supabase
-      .schema('api')
+      .schema(schemaName('api'))
       .rpc('has_billing_access_by_current_user', {
         input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
       });

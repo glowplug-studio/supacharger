@@ -55,7 +55,6 @@
     ".agents/project",
     ".agents/instructions",
     ".agents/skills",
-    ".agents/legacy",
     ".agents/supacharger/core-development",
     ".gitmodules",
     "CHANGELOG.project.md",

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { AccountDetailsPageOverride } from '@/supacharger.adapters/account/details-page';
 import { accountProfileExtensionSchema } from '@/supacharger.adapters/account/profile-extension';
 import { resolveSignedMediaUrls } from '@/supacharger/media/signed-media';
+import { schemaName, supabaseResourceName } from '@/supacharger/namespace';
 
 import { AccountDetailsForm } from './account-details-form';
 
@@ -27,14 +28,14 @@ export async function AccountDetailsPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.email || user.is_anonymous) redirect('/account/login');
 
-  const { data, error } = await supabase.schema('api').rpc('get_account_profile_by_current_user');
+  const { data, error } = await supabase.schema(schemaName('api')).rpc('get_account_profile_by_current_user');
   if (error) throw error;
   const profile = (data?.[0] ?? {}) as ProfileRow;
   const [extension, media] = await Promise.all([
     Promise.resolve(accountProfileExtensionSchema.parse(profile.extension ?? {})),
     resolveSignedMediaUrls(supabase, [
-      { key: 'avatar', bucket: 'user-avatars', path: profile.avatar_path },
-      { key: 'header', bucket: 'user-avatars', path: profile.header_image_path },
+      { key: 'avatar', bucket: supabaseResourceName('user-avatars', 'bucket'), path: profile.avatar_path },
+      { key: 'header', bucket: supabaseResourceName('user-avatars', 'bucket'), path: profile.header_image_path },
     ]),
   ]);
 

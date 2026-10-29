@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { authoriseImageUpload } from '@/supacharger/media/authorise-image-upload';
+import { supabaseResourceName } from '@/supacharger/namespace';
 
 
 export async function POST(request: Request) {
@@ -10,7 +11,8 @@ export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user || user.is_anonymous) return Response.json({ error: 'Sign in to upload images.' }, { status: 401 });
-  if (!process.env.IMAGE_UPLOAD_SIGNING_SECRET || process.env.IMAGE_UPLOAD_SIGNING_SECRET.length < 32) {
+  const signingSecret = process.env[supabaseResourceName('image_upload_signing_secret', 'secret')];
+  if (!signingSecret || signingSecret.length < 32) {
     return Response.json({ error: 'Image uploads are not configured.' }, { status: 503 });
   }
   try {

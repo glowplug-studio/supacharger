@@ -8,7 +8,7 @@ Normal initialisation output presents registry lookup, workspace creation, verif
 
 From an installed project or any nested directory, `supacharger version` walks upwards to the nearest Core lock and prints its required semantic version. `supacharger --version` remains the CLI package version.
 
-Interactive initialisation first asks for the optional Supabase resource namespace. It validates a supplied value against `^[a-z][a-z0-9_]{0,19}$` and writes the string, or `null` for an empty answer, only to `PROJECT_NAMESPACE` in developer-owned `src/supacharger.config.ts`. It does not create another prefix setting. Updates preserve the application-owned value.
+Interactive initialisation first asks for the optional Supabase project code. It validates a supplied value against `^[a-z][a-z0-9_]{0,5}$` and writes the string, or `''` for an empty answer, only to `PROJECT_NAMESPACE` in developer-owned `src/supacharger.config.ts`. An empty code selects `sc_`; `wake` selects `sc_wake_`. It does not create another prefix setting. Updates preserve the application-owned value.
 
 Initialisation then creates `.env.local` from `.env.local.example`. It groups Supabase and Stripe prompts, masks sensitive input and leaves an example value unchanged when the developer presses Enter without supplying a value. It always generates the image-upload signing secret and generates separate event-processor and reconciliation secrets when Stripe setup is selected. It then offers the public skills checkbox selector and a registry extension preview; the preview does not download or install extensions.
 

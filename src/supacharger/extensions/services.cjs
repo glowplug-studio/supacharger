@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const { namespacePrefix } = require('../namespace.cjs');
 
 function safeFile(root, relative) {
   if (typeof relative !== 'string' || !relative || path.isAbsolute(relative) || relative.includes('\\') || relative.split('/').some(p => !p || p === '.' || p === '..')) throw new Error('Invalid service binding path');
@@ -50,9 +51,10 @@ function readServiceConfig(root) {
     providers[name] = value.kind === ts.SyntaxKind.NullKeyword ? null : value.text;
   }
   const namespace = rootProperties.PROJECT_NAMESPACE && unwrap(rootProperties.PROJECT_NAMESPACE);
-  if (!namespace || (namespace.kind !== ts.SyntaxKind.NullKeyword && (!ts.isStringLiteral(namespace) || !/^[a-z][a-z0-9_]{0,19}$/.test(namespace.text)))) throw new Error('PROJECT_NAMESPACE must be null or 1–20 lowercase letters, digits or underscores, starting with a letter');
+  if (!namespace || !ts.isStringLiteral(namespace)) throw new Error('PROJECT_NAMESPACE must be a literal string');
+  namespacePrefix(namespace.text);
   if (providers.auth !== 'supabase') throw new Error('Supabase is the supported auth implementation');
-  return { namespace: namespace.kind === ts.SyntaxKind.NullKeyword ? null : namespace.text, providers };
+  return { namespace: namespace.text, providers };
 }
 
 /** Resolve configured implementations from their installed source. Never execute payloads. */

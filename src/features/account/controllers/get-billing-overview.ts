@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import type { Json } from '@/lib/supabase/types';
+import { schemaName } from '@/supacharger/namespace';
 
 export type BillingItemOverview = {
   id: string;
@@ -34,7 +35,7 @@ export type BillingAccountOverview = {
 
 export async function getBillingOverview(): Promise<BillingAccountOverview[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase.schema('api').rpc('get_billing_overview_by_current_user');
+  const { data, error } = await supabase.schema(schemaName('api')).rpc('get_billing_overview_by_current_user');
   if (error) throw error;
   return (data ?? []) as unknown as BillingAccountOverview[];
 }

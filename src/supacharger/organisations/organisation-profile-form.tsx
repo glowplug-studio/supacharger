@@ -12,6 +12,7 @@ import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
 import { Textarea } from '@/supacharger/components/primitives/textarea';
+import { supabaseResourceName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import type { OrganisationDetails, OrganisationMutationResponse } from './organisation-contract';
@@ -247,7 +248,7 @@ function OrganisationMediaField({
     const path = `${organisationId}/${folder}/${crypto.randomUUID()}.${extension}`;
     const supabase = createClient();
     const { error: uploadError } = await supabase.storage
-      .from('organisation-logos')
+      .from(supabaseResourceName('organisation-logos', 'bucket'))
       .upload(path, file, { upsert: false });
     if (uploadError) {
       const message = t('profile.mediaUploadFailed');
@@ -256,7 +257,7 @@ function OrganisationMediaField({
       setUploading(false);
       return;
     }
-    const { data } = await supabase.storage.from('organisation-logos').createSignedUrl(path, 600);
+    const { data } = await supabase.storage.from(supabaseResourceName('organisation-logos', 'bucket')).createSignedUrl(path, 600);
     methods.setValue(field, path, { shouldDirty: true });
     setPreview(data?.signedUrl ?? URL.createObjectURL(file));
     setUploading(false);

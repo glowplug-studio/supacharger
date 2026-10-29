@@ -19,7 +19,7 @@ import { getSiteUrl } from '@/supacharger/utils/site-url';
  */
 export const SC_CONFIG: SupachargerConfig = {
   // Identity and shared service selection.
-  PROJECT_NAMESPACE: null,
+  PROJECT_NAMESPACE: '',
   CORE_SERVICES: {
     auth: { provider: 'supabase' },
     transactional_email: { provider: null },

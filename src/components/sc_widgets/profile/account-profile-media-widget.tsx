@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
 import type { AccountProfileMediaProps } from '@/supacharger/account/settings/account-settings-contract';
 import { showActionToast } from '@/supacharger/components/notifications/action-toast';
+import { schemaName } from '@/supacharger/namespace';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
 import { ImageUploadWidget } from '../image-upload/image-upload-widget';
@@ -60,9 +61,9 @@ export function AccountProfileMediaWidget(props: AccountProfileMediaWidgetProps)
 
       const supabase = createClient();
       const mutation = isAvatar
-        ? supabase.schema('api').rpc('update_account_avatar_by_current_user', { input_avatar_path: nextPath })
+        ? supabase.schema(schemaName('api')).rpc('update_account_avatar_by_current_user', { input_avatar_path: nextPath })
         : supabase
-            .schema('api')
+            .schema(schemaName('api'))
             .rpc('update_account_header_image_by_current_user', { input_header_image_path: nextPath });
       const { error: mutationError } = await mutation;
 

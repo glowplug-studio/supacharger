@@ -2,6 +2,7 @@ import { syncStripeEntitlements } from '@/features/account/controllers/sync-enti
 import { upsertUserSubscription } from '@/features/account/controllers/upsert-user-subscription';
 import { getStripeAdmin, getStripeLivemode } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
+import { schemaName } from '@/supacharger/namespace';
 
 import 'server-only';
 
@@ -13,7 +14,7 @@ export type BillingReconciliationResult = {
 
 export async function reconcileStripeBilling(): Promise<BillingReconciliationResult> {
   const { data: mappings, error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_list_customer_mappings');
   if (error) throw error;
 

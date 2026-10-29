@@ -1,6 +1,9 @@
 /// <reference lib="deno.ns" />
 import { createClient } from 'npm:@supabase/supabase-js@2.99.2';
 import { z } from 'npm:zod@4.4.3';
+
+import { resources } from '../_shared/supacharger-resources.ts';
+
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
 const querySchema = z.object({
@@ -29,7 +32,7 @@ Deno.serve(async (request) => {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: authorization ? { Authorization: authorization } : {} },
   });
-  const { data, error } = await client.storage.from('user-avatars').download(query.data.path);
+  const { data, error } = await client.storage.from(resources.buckets.profile).download(query.data.path);
   if (error || !data) return new Response(null, { status: 404, headers });
   if (!['image/webp', 'image/png', 'image/jpeg', 'image/avif'].includes(data.type)) {
     return new Response(null, { status: 404, headers });

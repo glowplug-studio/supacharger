@@ -116,7 +116,7 @@ See [loading UI](loading-ui.md) for the image loader lifecycle and [project widg
 
 ## Agent guidance and changelog ownership
 
-The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-managed. Root `AGENTS.md`, `.agents/project/`, `.agents/instructions/`, `.agents/skills/`, `.agents/legacy/`, the optional `.agents/supacharger/core-development/` checkout, `.gitmodules`, `CHANGELOG.project.md` and `.supacharger/skills-lock.json` are preserved during Core updates. The dedicated `supacharger coredev install` and `supacharger coredev update` commands are the only CLI operations that touch the contributor submodule. They use Git directly and remain separate from `init`, `coreupdate`, `doctor`, and `skills`.
+The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-managed. Root `AGENTS.md`, `.agents/project/`, `.agents/instructions/`, `.agents/skills/`, the optional `.agents/supacharger/core-development/` checkout, `.gitmodules`, `CHANGELOG.project.md` and `.supacharger/skills-lock.json` are preserved during Core updates. The dedicated `supacharger coredev install` and `supacharger coredev update` commands are the only CLI operations that touch the contributor submodule. They use Git directly and remain separate from `init`, `coreupdate`, `doctor`, and `skills`.
 
 `docs/agents/` is canonical technical reference, currently preserved rather than exact-managed by the Core updater. A project override belongs in `.agents/project/AGENTS.md`; editing exact shared guidance creates a detectable upgrade conflict. See `agent-guidance.md` for routing and `cli-upgrades.md` for starter installation.
 

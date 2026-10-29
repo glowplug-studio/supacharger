@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { AccountProfileMedia } from '@/supacharger.adapters/account/profile-media';
 import { resolveSignedMediaUrls } from '@/supacharger/media/signed-media';
+import { schemaName, supabaseResourceName } from '@/supacharger/namespace';
 import { initialiseAccountUsername } from '@/supacharger/profile/initialise-account-username';
 import { ProfileOnboardingForm } from '@/supacharger/profile/profile-onboarding-form';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -27,11 +28,11 @@ export default async function SetupProfilePage() {
 
   await initialiseAccountUsername(supabase);
 
-  const { data: profiles } = await supabase.schema('api').rpc('get_account_profile_by_current_user');
+  const { data: profiles } = await supabase.schema(schemaName('api')).rpc('get_account_profile_by_current_user');
 
   const profile = profiles?.[0];
   const media = await resolveSignedMediaUrls(supabase, [
-    { key: 'avatar', bucket: 'user-avatars', path: profile?.avatar_path },
+    { key: 'avatar', bucket: supabaseResourceName('user-avatars', 'bucket'), path: profile?.avatar_path },
   ]);
 
   return (

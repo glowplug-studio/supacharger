@@ -1,5 +1,6 @@
 import { getStripeLivemode } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
+import { schemaName } from '@/supacharger/namespace';
 
 import { assertUserCanManageBillingAccount, getOrCreateUserBillingAccount } from './billing-account';
 
@@ -7,7 +8,7 @@ export async function getCustomerId({ userId, billingAccountId }: { userId: stri
   const accountId = billingAccountId ?? (await getOrCreateUserBillingAccount(userId));
   await assertUserCanManageBillingAccount({ billingAccountId: accountId, userId });
   const { data, error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_get_customer_for_account', {
       input_billing_account_id: accountId,
       input_livemode: getStripeLivemode(),

@@ -101,6 +101,7 @@ function prepareExtensions({ root, extensions = [] }) {
     results.push({ id, enabled, config, filename: localPath(root, `${outputRelative}/${id}.ts`), content });
   }
   const services = resolveCoreServices(root, [...requiredServices]);
+  require('../prepare-namespace.cjs').prepareNamespace({ root });
   const serviceOutput = localPath(root, 'src/supacharger.adapters/generated/services');
   fs.mkdirSync(serviceOutput, { recursive: true });
   for (const [name, binding] of Object.entries(services.bindings)) {

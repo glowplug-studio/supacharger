@@ -3,9 +3,10 @@
 import { withSupabase } from 'npm:@supabase/server@1.4.1';
 
 import { ImageTransformError, supportsImageMimeType, transformAndStoreImage } from '../_shared/image-transform.ts';
+import { resources } from '../_shared/supacharger-resources.ts';
 
-import { parseImagePermit, parseImageUploadRequest } from './request.ts';
 import { imageSha256, verifyImagePermit } from './permit-crypto.ts';
+import { parseImagePermit, parseImageUploadRequest } from './request.ts';
 
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts';
 
@@ -19,7 +20,7 @@ Deno.serve(
       return errorResponse('Method not allowed.', 405);
     }
 
-    const secret = Deno.env.get('IMAGE_UPLOAD_SIGNING_SECRET') ?? '';
+    const secret = Deno.env.get(resources.secrets.imageUploadSigning) ?? '';
     if (secret.length < 32) return errorResponse('Image uploads are not configured.', 503);
     let formData: FormData;
     try {

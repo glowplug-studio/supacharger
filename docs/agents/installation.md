@@ -16,6 +16,8 @@ Keep `docs/reports/` committable and excluded from deployment uploads and runtim
 
 ## Optional resource namespace
 
-During manual or agent-assisted setup, ask whether the application needs a resource-name prefix. Store the choice only in `PROJECT_NAMESPACE` in `src/supacharger.config.ts`; leave the Core default `null` unless a prefix is explicitly chosen. Validate a supplied prefix against `^[a-z][a-z0-9_]{0,19}$`. Preserve an existing installation's value.
+During manual or agent-assisted setup, ask whether to use the default `sc_` prefix or add an optional project code before preparing the database. Store the code only in `PROJECT_NAMESPACE` in `src/supacharger.config.ts`: `''` selects `sc_`, while `'wake'` selects `sc_wake_`. A non-empty code must contain 1–6 characters matching `^[a-z][a-z0-9_]{0,5}$`. Preserve an existing installation's value.
 
-Make this decision before generating or deploying resources. This setting does not itself rename or prefix existing SQL, schemas, workers or secrets. Check each generator's actual support before proceeding; see [Core services](core-services.md) for current limitations. Do not claim the CLI asks this question until that separate implementation exists.
+Interactive CLI initialisation captures the same choice in that configuration property. Manual installation edits the property directly; an installation agent records the user's choice there before preparing SQL or extensions. Do not introduce another configuration file or environment variable. See [database and resource namespaces](database-namespaces.md) for resource naming and preparation.
+
+This setting does not rename an existing database. Changing it after installation is unsupported. Review generated SQL and hosted settings before deployment; never replay or rewrite installed migration history. Declarative schema adoption remains a separate step after the production namespace cutovers.

@@ -12,6 +12,7 @@ import {
   sessionTransferRedeemSchema,
   sessionTransferResponseHeaders,
 } from '@/supacharger/auth/session-transfer';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
 
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
 
   const admin = getSupabaseAdminClient();
   const { data: claim, error: claimError } = await admin
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('claim_auth_session_transfer', {
       token_hash: hashSessionTransferGrant(parsed.data.token),
     })

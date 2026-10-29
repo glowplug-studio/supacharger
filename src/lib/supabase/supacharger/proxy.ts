@@ -1,7 +1,7 @@
 // Ref: https://supabase.com/docs/guides/auth/server-side/nextjs
 import { type NextRequest, NextResponse } from 'next/server';
 
-import type { Database } from '@/lib/supabase/types';
+import type { Database } from '@/supacharger/database-types';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 import { createServerClient } from '@supabase/ssr';

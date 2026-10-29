@@ -23,6 +23,7 @@ const guidanceFiles = {
   authentication: 'docs/agents/authentication-and-claims.md',
   mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
   database: 'docs/agents/database-foundation.md',
+  database_namespaces: 'docs/agents/database-namespaces.md',
   input_validation: 'docs/agents/input-validation.md',
   image_transforms: 'docs/agents/image-transformation.md',
   loading_ui: 'docs/agents/loading-ui.md',

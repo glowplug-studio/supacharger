@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 import type { Database } from '@/lib/supabase/types';
+import { schemaName } from '@/supacharger/namespace';
 
 type Product = Database['app']['Tables']['products']['Row'];
 
@@ -16,7 +17,7 @@ export async function upsertProduct(product: Stripe.Product) {
   };
 
   const { error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_upsert_product', { input_product: productData });
 
   if (error) {

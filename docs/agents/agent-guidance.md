@@ -1,6 +1,6 @@
 # Agent guidance and technical references
 
-`AGENTS.md` is the entry point. It explicitly loads shared `.agents/supacharger/guidance.md`, developer-owned `docs/agents/project.md`, and the optional `.agents/supacharger/core-development/AGENTS.md` when installed. Normal CLI use ignores the optional contributor path; Core contributors explicitly run `supacharger coredev install` or `supacharger coredev update`. The project file routes UI work to project-owned rules and can be extended with repository-specific instructions. `.agents/legacy/original-agents.md` is inactive historical material, not an additional source of active rules.
+`AGENTS.md` is the entry point. It explicitly loads shared `.agents/supacharger/guidance.md`, developer-owned `docs/agents/project.md`, and the optional `.agents/supacharger/core-development/AGENTS.md` when installed. Normal CLI use ignores the optional contributor path; Core contributors explicitly run `supacharger coredev install` or `supacharger coredev update`. The project file routes UI work to project-owned rules and can be extended with repository-specific instructions.
 
 `docs/agents/` explains how to develop with Supacharger. Keep development conventions and architecture here; keep project working rules in `project.md` and linked `project/` topics. The repository-knowledge MCP exposes these same files, not a separately maintained copy. Its `agent_guidance` and `working_rules` topics explain orientation and instruction ownership.
 
@@ -9,6 +9,8 @@
 Read `docs/agents/project/ui-implementation.md` for the application's UI conventions and `docs/agents/project/icon-usage.md` for its approved concept-to-icon mappings. These are developer-owned files, linked from `docs/agents/project.md`; Core updates must preserve local choices. Keep mapping examples explicitly non-binding. The repository MCP exposes `ui_implementation` and `icon_usage` for its own checkout; when working on a consumer, read that consumer's local files rather than treating Core's starter as its visual policy.
 
 ## Read by task
+
+- Read [Database and resource namespaces](database-namespaces.md) before creating tables, schemas, buckets, workers or secrets.
 
 - Read [Core services](core-services.md) for auth and transactional email provider selection, and before naming new resources. Read `PROJECT_NAMESPACE` from `src/supacharger.config.ts`; do not infer a prefix from branding or the Supabase project reference.
 

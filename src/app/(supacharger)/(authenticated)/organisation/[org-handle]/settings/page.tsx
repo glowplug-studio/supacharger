@@ -1,3 +1,4 @@
+import { supabaseResourceName } from '@/supacharger/namespace';
 export const instant = false;
 
 import { notFound } from 'next/navigation';
@@ -13,8 +14,8 @@ export default async function OrganisationProfilePage({ params }: { params: Prom
   if (!parsed.success) notFound();
   const [{ details, extension }, supabase] = await Promise.all([loadOrganisationProfile(parsed.data), createClient()]);
   const media = await resolveSignedMediaUrls(supabase, [
-    { bucket: 'organisation-logos', key: 'avatar', path: details.avatar_path },
-    { bucket: 'organisation-logos', key: 'header', path: details.header_image_path },
+    { bucket: supabaseResourceName('organisation-logos', 'bucket'), key: 'avatar', path: details.avatar_path },
+    { bucket: supabaseResourceName('organisation-logos', 'bucket'), key: 'header', path: details.header_image_path },
   ]);
   return <OrganisationProfileForm avatarUrl={media.avatar} extension={extension} headerImageUrl={media.header} organisation={details} />;
 }

@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 const organisationContextSchema = z.discriminatedUnion('action', [
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
   }
 
-  const { data, error } = await supabase.schema('api').rpc('organisations', {
+  const { data, error } = await supabase.schema(schemaName('api')).rpc('organisations', {
     input_payload: parsed.data,
   });
   if (error) {

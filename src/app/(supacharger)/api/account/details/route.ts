@@ -11,6 +11,7 @@ import {
 import { loadAccountSummary } from '@/supacharger/account/account-summary';
 import { createAccountDetailsSchema } from '@/supacharger/account/settings/account-details-schema';
 import type { AccountDetailsFieldErrors } from '@/supacharger/account/settings/account-settings-contract';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export const instant = false;
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
   }
 
   const username = SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'disabled' ? '' : parsed.data.username;
-  const { error: profileError } = await supabase.schema('api').rpc('update_account_profile_by_current_user', {
+  const { error: profileError } = await supabase.schema(schemaName('api')).rpc('update_account_profile_by_current_user', {
     request: {
       profile: {
         first_name: parsed.data.firstName,

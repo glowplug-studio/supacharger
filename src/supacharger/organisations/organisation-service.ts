@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { Json } from '@/lib/supabase/types';
 import { loadOrganisationProfileExtension } from '@/supacharger.adapters/organisations/profile-extension';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import {
@@ -26,7 +27,7 @@ export async function runOrganisationAction(actionInput: OrganisationAction) {
   const rpcPayload = action.action === 'update'
     ? Object.fromEntries(Object.entries(action).filter(([key]) => key !== 'extension'))
     : action;
-  const { data, error } = await supabase.schema('api').rpc('organisations', { input_payload: rpcPayload as Json });
+  const { data, error } = await supabase.schema(schemaName('api')).rpc('organisations', { input_payload: rpcPayload as Json });
   if (error) throw error;
 
   const result = (data ?? {}) as Record<string, unknown>;

@@ -1,6 +1,8 @@
 # Supacharger RPC Bruno collection
 
-This collection documents and exercises the canonical client-callable RPCs in Supacharger's `api` schema. Set `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and a signed-in user's `SUPABASE_ACCESS_TOKEN` in a local Bruno environment before running authenticated requests.
+This collection documents and exercises the canonical client-callable RPCs in the installation’s resolved API schema. Set `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and a signed-in user's `SUPABASE_ACCESS_TOKEN` in a local Bruno environment before running authenticated requests.
+
+Set `SUPABASE_API_SCHEMA` and `SUPABASE_IMAGE_FUNCTION` in your Bruno request environment to the names derived from the application’s `PROJECT_NAMESPACE`: `sc_api` / `sc_process_image_upload` by default, or `sc_wake_api` / `sc_wake_process_image_upload` for `wake`. These are request targets, not application namespace settings.
 
 The collection is exact CLI-managed Core documentation. Managed consumers receive a byte-identical copy. Do not add Specdrive, SnapScreen, Wakekeeper, or other consumer-specific RPCs here. Promote a reusable database contract into Supacharger before documenting it in this collection. Server-only `api_edge` functions are excluded because they require privileged credentials and mutate internal Stripe projections; their contracts remain documented in migrations and server code without placing secret-key workflows in the client RPC collection.
 

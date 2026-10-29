@@ -1,4 +1,4 @@
-import type { Database } from '@/lib/supabase/types';
+import type { Database } from '@/supacharger/database-types';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export type SignedMediaRequest = {

@@ -7,6 +7,7 @@ import {
   userCanManageBillingAccount,
 } from '@/supacharger.adapters/billing/database';
 import { resolveOrganisationBillingAccount } from '@/supacharger.adapters/billing/organisation';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getRequestURL } from '@/supacharger/utils/request-url';
 
@@ -74,7 +75,7 @@ export async function getBillingOverviewForSubject(subjectInput: BillingSubject)
   const subject = billingSubjectSchema.parse(subjectInput);
   assertSubjectEnabled(subject);
   const actor = await authenticatedActor();
-  const overview = await actor.supabase.schema('api').rpc('get_billing_overview_by_current_user');
+  const overview = await actor.supabase.schema(schemaName('api')).rpc('get_billing_overview_by_current_user');
   if (overview.error) throw overview.error;
   const parsed = billingOverviewSchema.parse(overview.data ?? []);
   return parsed.filter((account) => billingAccountMatchesSubject(account, actor.id, subject));

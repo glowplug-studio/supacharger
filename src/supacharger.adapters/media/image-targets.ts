@@ -1,3 +1,5 @@
+import { supabaseResourceName } from '@/supacharger/namespace';
+
 import type { ImageUploadTargets } from '../../../supabase/functions/_shared/image-target-contract';
 import { defineImageUploadTargets } from '../../../supabase/functions/_shared/image-target-contract';
 
@@ -6,7 +8,7 @@ import 'server-only';
 // Server-owned image policies. Only signed settings are accepted by the Edge processor.
 export const imageUploadTargets: ImageUploadTargets = defineImageUploadTargets({
   profile_avatar: {
-    bucket: 'user-avatars',
+    bucket: supabaseResourceName('user-avatars', 'bucket'),
     cacheControl: '31536000',
     filenamePrefix: 'avatar',
     fit: 'cover',
@@ -21,7 +23,7 @@ export const imageUploadTargets: ImageUploadTargets = defineImageUploadTargets({
     visibility: 'private',
   },
   profile_header: {
-    bucket: 'user-avatars',
+    bucket: supabaseResourceName('user-avatars', 'bucket'),
     cacheControl: '31536000',
     filenamePrefix: 'header',
     fit: 'cover',

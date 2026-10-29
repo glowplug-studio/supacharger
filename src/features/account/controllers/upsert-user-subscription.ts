@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { upsertPrice } from '@/features/pricing/controllers/upsert-price';
 import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
+import { schemaName } from '@/supacharger/namespace';
 import { toDateTime } from '@/supacharger/utils/helpers';
 
 const supportedSubscriptionStatuses = [
@@ -33,7 +34,7 @@ export async function upsertUserSubscription({
   isCreateAction?: boolean;
 }) {
   const { data: billingAccountId, error: noCustomerError } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_get_account_by_customer', { input_stripe_customer_id: customerId });
   if (noCustomerError) throw noCustomerError;
   if (!billingAccountId) throw new Error(`No Supacharger billing-account mapping exists for ${customerId}.`);
@@ -91,7 +92,7 @@ export async function upsertUserSubscription({
   }));
 
   const { error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_upsert_subscription_v2', { input_subscription: subscriptionData, input_items: itemData });
   if (error) {
     throw error;
@@ -132,7 +133,7 @@ const copyBillingDetailsToCustomer = async (billingAccountId: string, paymentMet
   });
 
   const { error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_update_payment_method_for_account', {
       input_billing_account_id: billingAccountId,
       input_billing_address: { ...address },

@@ -6,10 +6,10 @@ import { serveStdio } from '@modelcontextprotocol/server/stdio';
 
 import {
   classifyPath,
-  projectTree,
-  readGuidance,
-  readEmailTemplate,
   emailTemplateFiles,
+  projectTree,
+  readEmailTemplate,
+  readGuidance,
   repositoryRoot,
   resolveRepositoryPath,
   searchGuidance,

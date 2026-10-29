@@ -9,7 +9,7 @@ Read these files in order before working in this repository:
 
 Durable guidance lives in `docs/agents/`. Before UI work read `docs/agents/project/ui-implementation.md` and `docs/agents/project/icon-usage.md`; before creating or editing a report read `docs/agents/reporting.md`. The repository MCP exposes guidance from its own checkout, not another application's policies.
 
-`.agents/project/AGENTS.md` is a compatibility routing pointer. Existing task procedures and skills remain under `.agents/instructions/` and `.agents/skills/`. Read them when relevant. `.agents/legacy/original-agents.md` is inactive historical material, not active instructions.
+`.agents/project/AGENTS.md` is a compatibility routing pointer. Existing task procedures and skills remain under `.agents/instructions/` and `.agents/skills/`. Read them when relevant.
 
 
 For profile identity, product fields and profile media changes, read `docs/agents/profile-extensions.md` before implementation.

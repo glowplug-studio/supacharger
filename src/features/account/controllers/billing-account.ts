@@ -1,8 +1,9 @@
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
+import { schemaName } from '@/supacharger/namespace';
 
 export async function getOrCreateUserBillingAccount(userId: string): Promise<string> {
   const { data, error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_get_or_create_user_account', { input_user_id: userId });
 
   if (error) throw error;
@@ -18,7 +19,7 @@ export async function assertUserCanManageBillingAccount({
   userId: string;
 }) {
   const { data, error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_user_can_manage', {
       input_billing_account_id: billingAccountId,
       input_user_id: userId,

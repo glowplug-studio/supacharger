@@ -20,6 +20,11 @@
 .DS_Store
 *.pem
 
+# maintainer-local agent configuration and inactive archives
+/.codex/
+/.agents/legacy/
+/.vscode/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

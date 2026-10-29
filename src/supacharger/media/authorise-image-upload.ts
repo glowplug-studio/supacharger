@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { imageUploadTargets } from '@/supacharger.adapters/media/image-targets';
+import { supabaseResourceName } from '@/supacharger/namespace';
 
 import { resolveImageDestination } from '../../../supabase/functions/_shared/image-target-contract';
 import { signImagePermit } from '../../../supabase/functions/process_image_upload/permit-crypto';
@@ -33,6 +34,6 @@ export async function authoriseImageUpload(input: unknown, userId: string) {
     targetName: request.target, target: { ...target, pathPrefix },
     crop: request.crop, sha256: request.sha256, bytes: request.bytes, mimeType: request.mimeType,
   });
-  const signature = await signImagePermit(permit, process.env.IMAGE_UPLOAD_SIGNING_SECRET ?? '');
+  const signature = await signImagePermit(permit, process.env[supabaseResourceName('image_upload_signing_secret', 'secret')] ?? '');
   return { permit, signature };
 }

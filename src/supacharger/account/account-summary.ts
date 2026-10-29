@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
+import { schemaName, supabaseResourceName } from '@/supacharger/namespace';
 import { projectProfileIdentity } from '@/supacharger/profile/profile-identity';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { User } from '@supabase/supabase-js';
@@ -35,7 +36,7 @@ export async function loadAccountSummary(verifiedUser?: User | null): Promise<Ac
   const user = verifiedUser ?? (await supabase.auth.getUser()).data.user;
   if (!user || user.is_anonymous) return null;
 
-  const { data, error } = await supabase.schema('api').rpc('get_account_summary_by_current_user');
+  const { data, error } = await supabase.schema(schemaName('api')).rpc('get_account_summary_by_current_user');
   if (error) throw error;
 
   const row = accountSummaryRowSchema.parse(data);
@@ -43,10 +44,10 @@ export async function loadAccountSummary(verifiedUser?: User | null): Promise<Ac
 
   const identity = projectProfileIdentity(row, SC_CONFIG.PROFILE_IDENTITY.USERNAME, { ownerView: true });
   const signedMedia = await resolveSignedMediaUrls(supabase, [
-    { key: 'avatar', bucket: 'user-avatars', path: row.avatar_path },
+    { key: 'avatar', bucket: supabaseResourceName('user-avatars', 'bucket'), path: row.avatar_path },
     ...(SC_CONFIG.ORGANISATIONS.ENABLED ? [{
       key: 'activeOrganisationAvatar',
-      bucket: 'organisation-avatars',
+      bucket: supabaseResourceName('organisation-avatars', 'bucket'),
       path: row.active_organisation?.avatar_path,
     }] : []),
   ]);

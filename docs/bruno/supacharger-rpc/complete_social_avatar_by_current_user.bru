@@ -12,8 +12,8 @@ headers {
   apikey: {{SUPABASE_PUBLISHABLE_KEY}}
   Authorization: Bearer {{SUPABASE_ACCESS_TOKEN}}
   Content-Type: application/json
-  Accept-Profile: api
-  Content-Profile: api
+  Accept-Profile: {{SUPABASE_API_SCHEMA}}
+  Content-Profile: {{SUPABASE_API_SCHEMA}}
 }
 body:json {
   {}

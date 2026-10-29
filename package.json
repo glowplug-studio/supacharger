@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "stripe:listen": "stripe listen --forward-to=localhost:3000/api/webhooks --project-name=default",
-    "generate-types": "supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres --schema public,api,api_edge,app > src/lib/supabase/types.ts",
+    "generate-types": "node src/supacharger/generate-database-types.cjs --local",
     "supabase:link": "supabase link",
     "migration:new": "supabase migration new",
     "db:reset": "supabase db reset",

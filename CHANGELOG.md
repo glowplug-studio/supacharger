@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T18:15:50+00:00; base_commit=ccd04d4c4130f0ed372956afc9c62316b54dc4d6; main_commit=ccd04d4c4130f0ed372956afc9c62316b54dc4d6; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=ccd04d4c4130f0ed372956afc9c62316b54dc4d6; scope=oauth-cancellation-and-cli-setup-guidance; excluded=namespace-rollout-not-implemented; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T20:28:00+00:00; base_commit=be48d8bc50ea0e4bd6101c62dda5fb9ab758dd87; main_commit=be48d8bc50ea0e4bd6101c62dda5fb9ab758dd87; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=be48d8bc50ea0e4bd6101c62dda5fb9ab758dd87; scope=resource-namespace-rollout-and-repository-cleanup; excluded=none; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -39,7 +39,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Installation guidance now covers registry-selected Core versions, interactive namespace and environment setup, optional skills, extension previews and the distinction between CLI and installed Core versions.
 
-- `PROJECT_NAMESPACE` now defaults to `null` and accepts an optional validated resource-name prefix. Manual setup and agent guidance identify the config as the source of the choice and distinguish it from existing deployed resource names; changing the value does not rename database objects, workers or secrets.
+- **Breaking:** `PROJECT_NAMESPACE` is now an installation code used to resolve application-owned Supabase schemas, buckets, Edge Functions, jobs, roles and custom secrets. An empty value selects the mandatory `sc_` prefix; a code such as `wake` selects `sc_wake_`. Choose it before installation and preserve it thereafter. Existing installations require explicit forward migrations, caller updates and hosted configuration changes; changing the value does not migrate deployed resources.
+- Application database clients, Edge Functions, extension preparation, generated TypeScript contracts, Bruno requests and repository MCP guidance now resolve names through the shared namespace contract. Regenerate the Edge resource projection and database types after choosing the installation code.
 
 - **Breaking:** Supabase-specific session, method, provider, email and password settings move into `SUPABASE_AUTH`; provider-independent signup consent and the confirmed-account destination remain under `AUTHENTICATION`. Migrate developer-owned config and callers together, retaining application values; older CLI releases must not be assumed to migrate this contract automatically.
 - Site titles and descriptions resolve from the active language catalogue with English fallbacks. `METADATA.DEFAULT_OG_IMAGE` replaces `SOCIAL_IMAGE` with default and locale-specific previews; pages can override or suppress them. The title template follows translated branding. Unused logo and Stripe portal-return configuration is removed; standard logo assets remain developer-owned.
@@ -110,6 +111,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 
+- Inactive agent archives, obsolete implementation reports and repository-local editor/Codex settings. Maintainer-local tooling directories are ignored rather than distributed as Core-managed content.
 - Bundled local Supabase email overrides and the old `supabase/templates` examples. Email resources are now selected and installed deliberately in hosted Auth; they are excluded from Vercel uploads and Next.js deployment traces.
 - Bundled application contract, image-runtime and SQL tests, their package scripts, and the Bruno RPC parity checker. The Core ownership manifest no longer declares these assets or post-update checks; integrations invoking the removed scripts must be updated. The canonical Bruno request collection remains available.
 

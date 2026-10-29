@@ -1,8 +1,8 @@
+import { createElement, useMemo } from 'react';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { test } from 'node:test';
-import { createElement, useMemo } from 'react';
 import { renderToString } from 'react-dom/server';
 import ts from 'typescript';
 
@@ -11,15 +11,15 @@ const { outputText } = ts.transpileModule(
   readFileSync(new URL('../src/lib/supabase/client.ts', import.meta.url), 'utf8'),
   { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } },
 );
-const module = { exports: {} };
+const loadedModule = { exports: {} };
 new Function('require', 'module', 'exports', outputText)((name) => {
   if (name === '@/supacharger/utils/helpers') return {
     getSupabaseUrl: () => typeof window === 'undefined' ? 'https://render.supabase.co' : 'https://test.supabase.co',
     getSupabasePublishableKey: () => 'test-key',
   };
   return require(name);
-}, module, module.exports);
-const { createClient } = module.exports;
+}, loadedModule, loadedModule.exports);
+const { createClient } = loadedModule.exports;
 
 test('Client Components can initialise Supabase during server rendering without sharing sessions', async () => {
   const clients = [];

@@ -15,6 +15,7 @@ import {
   sessionTransferIssueSchema,
   sessionTransferResponseHeaders,
 } from '@/supacharger/auth/session-transfer';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { appURL } from '@/supacharger/utils/app-origin';
 import { getAppRequestOrigin } from '@/supacharger/utils/request-url';
@@ -90,7 +91,7 @@ export async function POST(request: NextRequest) {
   const requestedExpiry = new Date(Date.now() + policy.TOKEN_TTL_SECONDS * 1000).toISOString();
   const admin = getSupabaseAdminClient();
   const { data, error } = await admin
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('create_auth_session_transfer', {
       user_id: user.id,
       source_session_id: sourceSessionId,

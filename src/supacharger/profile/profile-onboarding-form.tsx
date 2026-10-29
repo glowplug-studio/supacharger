@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { Label } from '@/supacharger/components/primitives/label';
+import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 type ProfileOnboardingFormProps = {
@@ -49,7 +50,7 @@ export function ProfileOnboardingForm({ initialProfile }: ProfileOnboardingFormP
     setIsSaving(true);
     const supabase = createClient();
     const { error: updateError } = await supabase
-      .schema('api')
+      .schema(schemaName('api'))
       .rpc('update_account_profile_by_current_user', {
         request: { profile: {
           first_name: normalisedFirstName,

@@ -1,3 +1,4 @@
+import { supabaseResourceName } from '@/supacharger/namespace';
 /**
  * Project-owned upload presentation and destination policy.
  *
@@ -8,7 +9,7 @@
 export const profileImageWidgetPolicy = {
   avatar: {
     aspectRatio: 1,
-    bucket: 'user-avatars',
+    bucket: supabaseResourceName('user-avatars', 'bucket'),
     destination: '',
     maxInputBytes: 5 * 1024 * 1024,
     shape: 'circle' as const,
@@ -16,7 +17,7 @@ export const profileImageWidgetPolicy = {
   },
   banner: {
     aspectRatio: 8 / 3,
-    bucket: 'user-avatars',
+    bucket: supabaseResourceName('user-avatars', 'bucket'),
     destination: 'headers',
     maxInputBytes: 5 * 1024 * 1024,
     shape: 'rectangle' as const,

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import { decideAccess } from '@/supacharger/auth/access-decision';
+import { schemaName } from '@/supacharger/namespace';
 import { initialiseAccountUsername } from '@/supacharger/profile/initialise-account-username';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
@@ -46,7 +47,7 @@ export async function readAppAccessState(): Promise<AppAccessState> {
   const supabase = await createClient();
 
   const profileResult = SC_CONFIG.POST_SIGN_IN_ONBOARDING.REQUIRED
-    ? await supabase.schema('api').rpc('is_profile_complete_by_current_user', {
+    ? await supabase.schema(schemaName('api')).rpc('is_profile_complete_by_current_user', {
         input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
       })
     : { data: true, error: null };
@@ -55,7 +56,7 @@ export async function readAppAccessState(): Promise<AppAccessState> {
 
   const isProfileComplete = profileResult.data === true;
   const billingResult = SC_CONFIG.BILLING_ACCESS.REQUIRED
-    ? await supabase.schema('api').rpc('has_billing_access_by_current_user', {
+    ? await supabase.schema(schemaName('api')).rpc('has_billing_access_by_current_user', {
         input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
       })
     : { data: true, error: null };
@@ -78,7 +79,7 @@ export async function requireOnboardedUser(): Promise<OnboardedUserIdentity> {
   }
 
   const supabase = await createClient();
-  const profileResult = await supabase.schema('api').rpc('is_profile_complete_by_current_user', {
+  const profileResult = await supabase.schema(schemaName('api')).rpc('is_profile_complete_by_current_user', {
     input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
   });
 
@@ -104,7 +105,7 @@ export async function requireAppAccess(): Promise<AppAccessState> {
   const identity = await requireOnboardedUser();
   const supabase = await createClient();
   const billingResult = SC_CONFIG.BILLING_ACCESS.REQUIRED
-    ? await supabase.schema('api').rpc('has_billing_access_by_current_user', {
+    ? await supabase.schema(schemaName('api')).rpc('has_billing_access_by_current_user', {
         input_feature_lookup_key: SC_CONFIG.BILLING_ACCESS.FEATURE_LOOKUP_KEY ?? undefined,
       })
     : { data: true, error: null };

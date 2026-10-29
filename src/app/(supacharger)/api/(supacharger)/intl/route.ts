@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { isSupportedLocale, LOCALE_COOKIE_NAME, SUPPORTED_LOCALES } from '@/i18n/config';
 import { createClient } from '@/lib/supabase/server';
+import { schemaName } from '@/supacharger/namespace';
 
 const localeCookieOptions = {
   httpOnly: true,
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest) {
 
   let languageSyncSucceeded = false;
   if (user) {
-    const { error } = await supabase.schema('api').rpc('update_account_language_by_current_user', {
+    const { error } = await supabase.schema(schemaName('api')).rpc('update_account_language_by_current_user', {
       input_language_code: locale,
     });
     languageSyncSucceeded = !error;

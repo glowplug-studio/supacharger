@@ -4,7 +4,7 @@ meta {
   seq: 1
 }
 post {
-  url: {{SUPABASE_URL}}/functions/v1/process_image_upload
+  url: {{SUPABASE_URL}}/functions/v1/{{SUPABASE_IMAGE_FUNCTION}}
   body: multipartForm
   auth: none
 }

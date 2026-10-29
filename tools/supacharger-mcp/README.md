@@ -13,7 +13,7 @@ npm install
 npm start
 ```
 
-The server uses stdio and is registered for Codex by the repository's `.codex/config.toml`.
+The server uses stdio. Register it locally with the agent client that will use it; maintainer-specific agent configuration is not committed to Core.
 
 ## Capabilities
 

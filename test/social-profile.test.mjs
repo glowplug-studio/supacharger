@@ -9,13 +9,17 @@ function load(file, mocks = {}) {
   const { outputText } = ts.transpileModule(readFileSync(new URL(`../src/supacharger/profile/${file}.ts`, import.meta.url), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   });
-  const module = { exports: {} };
+  const loadedModule = { exports: {} };
   new Function('require', 'module', 'exports', outputText)((name) => {
     if (name in mocks) return mocks[name];
+    if (name === '@/supacharger/namespace') {
+      const { resourceName } = require('../src/supacharger/namespace.cjs');
+      return { schemaName: name => resourceName('', name), supabaseResourceName: (name, kind) => resourceName('', name, kind) };
+    }
     if (name === 'server-only') return {};
     return require(name);
-  }, module, module.exports);
-  return module.exports;
+  }, loadedModule, loadedModule.exports);
+  return loadedModule.exports;
 }
 const source = load('social-avatar-source');
 test('provider host boundary rejects arbitrary URLs, credentials and lookalikes', () => {
@@ -51,7 +55,7 @@ test('failed or conflicting picture imports do not block sign-in or overwrite pr
           ? { data: outcome === 'already-imported' ? null : { provider: 'google', avatar_url: 'https://lh3.googleusercontent.com/a' } }
           : { data: outcome === 'success', error: outcome === 'uncertain' ? new Error('Response lost') : null };
       } }),
-      functions: { invoke: async () => { calls.push(['upload']); return { data: { bucket: 'user-avatars', path: 'user/avatar-test.jpg' } }; } },
+      functions: { invoke: async () => { calls.push(['upload']); return { data: { bucket: 'sc_user-avatars', path: 'user/avatar-test.jpg' } }; } },
       storage: { from: () => ({ remove: async (paths) => calls.push(['remove', paths]) }) },
     };
     const { initialiseSocialProfile } = load('initialise-social-profile', {

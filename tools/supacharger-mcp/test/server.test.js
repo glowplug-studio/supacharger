@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import path from 'node:path';
 import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { emailTemplateFiles } from '../src/project.js';
-
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
+
+import { emailTemplateFiles } from '../src/project.js';
 
 const testDirectory = path.dirname(fileURLToPath(import.meta.url));
 const serverEntry = path.resolve(testDirectory, '../src/index.js');

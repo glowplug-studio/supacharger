@@ -4,6 +4,7 @@ import {
 } from '@/features/account/controllers/billing-account';
 import { getStripeAdmin, getStripeLivemode } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
+import { schemaName } from '@/supacharger/namespace';
 
 export async function getOrCreateCustomer({
   userId,
@@ -18,7 +19,7 @@ export async function getOrCreateCustomer({
   await assertUserCanManageBillingAccount({ billingAccountId: accountId, userId });
 
   const { data, error } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_get_customer_for_account', {
       input_billing_account_id: accountId,
       input_livemode: getStripeLivemode(),
@@ -32,7 +33,7 @@ export async function getOrCreateCustomer({
     { idempotencyKey: `supacharger-customer-${accountId}-${getStripeLivemode() ? 'live' : 'test'}` },
   );
   const { data: mapping, error: insertError } = await supabaseAdminClient
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('billing_put_customer_for_account', {
       input_billing_account_id: accountId,
       input_stripe_customer_id: customer.id,

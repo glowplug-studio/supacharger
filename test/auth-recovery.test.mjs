@@ -1,9 +1,9 @@
+import { NextRequest } from 'next/server.js';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { test } from 'node:test';
 import ts from 'typescript';
-import { NextRequest } from 'next/server.js';
 
 const require = createRequire(import.meta.url);
 function load(relative, mocks = {}) {
@@ -12,7 +12,7 @@ function load(relative, mocks = {}) {
   const { outputText } = ts.transpileModule(readFileSync(file, 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
   });
-  const module = { exports: {} };
+  const loadedModule = { exports: {} };
   new Function('require', 'module', 'exports', outputText)(
     (name) => {
       if (name in mocks) return mocks[name];
@@ -22,9 +22,9 @@ function load(relative, mocks = {}) {
         return load(target.pathname.split('/supacharger/').slice(1).join('/supacharger/'), mocks);
       }
       return require(name === 'next/server' ? 'next/server.js' : name);
-    }, module, module.exports,
+    }, loadedModule, loadedModule.exports,
   );
-  return module.exports;
+  return loadedModule.exports;
 }
 
 const route = 'src/app/(supacharger)/(unauthenticated)/auth/confirm/route.ts';
@@ -190,6 +190,7 @@ test('callback adapter keeps onboarding and success on the callback domain', asy
   const { resolveAuthCallbackFailure, resolveAuthCallbackSuccess } = load('src/supacharger.adapters/auth-callback.ts', {
     'server-only': {},
     '@/supacharger/supacharger-config': { SC_CONFIG: {
+      PROJECT_NAMESPACE: '',
       POST_SIGN_IN_ONBOARDING: { REQUIRED: true, REDIRECT_PATH: '/account/setup-profile' },
       PROFILE_IDENTITY: { USERNAME: 'disabled' }, BILLING_ACCESS: { REQUIRED: false },
       SUPABASE_AUTH: { METHODS: { MFA_TOTP: { REQUIRED_FOR_SIGN_IN: false } } },

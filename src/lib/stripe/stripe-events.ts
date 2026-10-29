@@ -6,6 +6,7 @@ import { upsertPrice } from '@/features/pricing/controllers/upsert-price';
 import { upsertProduct } from '@/features/pricing/controllers/upsert-product';
 import { getSupabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 import type { Json } from '@/lib/supabase/types';
+import { schemaName } from '@/supacharger/namespace';
 
 import 'server-only';
 
@@ -36,7 +37,7 @@ export async function acceptStripeEvent(event: Stripe.Event): Promise<boolean> {
   if (!relevantEvents.has(event.type)) return false;
 
   const { data, error } = await getSupabaseAdminClient()
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('accept_stripe_event', {
       input_event_id: event.id,
       input_event_type: event.type,
@@ -51,7 +52,7 @@ export async function acceptStripeEvent(event: Stripe.Event): Promise<boolean> {
 
 async function markProcessed(eventId: string) {
   const { error } = await getSupabaseAdminClient()
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('complete_stripe_event', { input_event_id: eventId });
 
   if (error) throw error;
@@ -60,7 +61,7 @@ async function markProcessed(eventId: string) {
 async function markFailed(eventId: string, error: unknown) {
   const message = error instanceof Error ? error.message : 'Unknown Stripe event processing error';
   const { error: updateError } = await getSupabaseAdminClient()
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('complete_stripe_event', {
       input_event_id: eventId,
       input_error: message.slice(0, 1_000),
@@ -79,7 +80,7 @@ async function processEvent(event: Stripe.Event) {
     case 'product.deleted': {
       const product = event.data.object as Stripe.Product;
       const { error } = await getSupabaseAdminClient()
-        .schema('api_edge')
+        .schema(schemaName('api_edge'))
         .rpc('billing_set_catalogue_item_inactive', { input_kind: 'product', input_id: product.id });
       if (error) throw error;
       return;
@@ -91,7 +92,7 @@ async function processEvent(event: Stripe.Event) {
     case 'price.deleted': {
       const price = event.data.object as Stripe.Price;
       const { error } = await getSupabaseAdminClient()
-        .schema('api_edge')
+        .schema(schemaName('api_edge'))
         .rpc('billing_set_catalogue_item_inactive', { input_kind: 'price', input_id: price.id });
       if (error) throw error;
       return;
@@ -134,7 +135,7 @@ async function processEvent(event: Stripe.Event) {
 
 export async function processStripeEvent(eventId: string): Promise<boolean> {
   const { data: claimed, error: claimError } = await getSupabaseAdminClient()
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('claim_stripe_event', { input_event_id: eventId });
   if (claimError) throw claimError;
   if (!claimed) return false;
@@ -152,7 +153,7 @@ export async function processStripeEvent(eventId: string): Promise<boolean> {
 
 export async function processPendingStripeEvents(limit = 20): Promise<number> {
   const { data, error } = await getSupabaseAdminClient()
-    .schema('api_edge')
+    .schema(schemaName('api_edge'))
     .rpc('list_claimable_stripe_events', { result_limit: limit });
   if (error) throw error;
 
