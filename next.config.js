@@ -1,3 +1,6 @@
+const { prepareExtensions } = require('./src/supacharger/extensions/prepare.cjs');
+prepareExtensions({ root: __dirname });
+
 const createNextIntlPlugin = require('next-intl/plugin');
 const withNextIntl = createNextIntlPlugin();
 

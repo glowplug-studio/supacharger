@@ -18,7 +18,7 @@ This is a layout example, not an installed invitations feature. Parenthesised gr
 
 The application developer owns the config file; the installer creates it only when missing and preserves it during updates. Other manifest-listed files are extension-managed. Their location under `(project)` does not make them safe to overwrite during a Core update or edit without an extension-upgrade plan.
 
-UI notification text belongs in the extension's `messages/en.json` using a namespace unique to the extension. Integrate it with the application's next-intl catalogue explicitly; copying a catalogue does not load it. Follow the English catalogue policy and do not generate secondary translations unless requested. Transactional email content stays in the email provider's templates, separate from UI localisation.
+UI notification text belongs in the extension's `messages/en.json` using a namespace unique to the extension. Integrate it with the application's next-intl catalogue explicitly; copying a catalogue does not load it. Follow the English catalogue policy and do not generate secondary translations unless requested. Transactional email uses provider-hosted templates or application-rendered content according to the selected transport; keep it separate from UI localisation.
 
 ## Extension repository structure
 
@@ -118,15 +118,13 @@ prepareExtensions({
   extensions: [{
     id: 'invitations',
     fallback: 'src/supacharger.adapters/invitations/unavailable.ts',
-    providers: { brevo: 'brevo' },
   }],
 });
 ```
 
 The example requires an application-owned unavailable adapter exporting the same
 public interface as the extension's `payload/app/index.ts`. Add only integrations
-used by that application. The provider map lists implemented provider keys and their
-installed extension IDs; it does not install Brevo or make it a permanent dependency.
+used by that application. Enabled extensions declare their required `core_services` in the installed manifest. Core resolves each capability from `SC_CONFIG.CORE_SERVICES`; see [Core services](core-services.md).
 
 Preparation reads the installed `supacharger-ext-<id>.config.ts` as literal data,
 including an optional `as const` assertion. Imports, function calls, spreads and
@@ -134,8 +132,7 @@ computed configuration are rejected rather than executed. A missing extension
 selects the fallback; an installed extension missing its config fails. With
 `enabled: false`, the generated entry imports only the fallback and exports an empty
 catalogue. With `enabled: true`, it imports the installed `index.ts` and exports its
-optional `messages/en.json` as `extensionMessages`. Configured email providers must
-be in the application's map and have an installation record plus actual source files.
+optional `messages/en.json` as `extensionMessages`. Required Core services must resolve to compatible, hash-verified installed implementation descriptors.
 
 Import from `src/supacharger.adapters/generated/extensions/<id>.ts`; never edit that
 generated file. It exports `extensionEnabled`, the selected entry's exports and

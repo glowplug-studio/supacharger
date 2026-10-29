@@ -9,11 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T11:08:16.050794Z; base_commit=ef77dd002306a99e8bd370d685365599e2f72884; main_commit=ef77dd002306a99e8bd370d685365599e2f72884; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=ef77dd002306a99e8bd370d685365599e2f72884; scope=image-endpoint-rename-and-canonical-checkout-policy; excluded=other-repositories-and-local-reports; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T15:16:43Z; base_commit=c57960d53d5ea82ed1b3e08aa1cd091bfd404b33; main_commit=c57960d53d5ea82ed1b3e08aa1cd091bfd404b33; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=c57960d53d5ea82ed1b3e08aa1cd091bfd404b33; scope=generic-core-services-and-extension-bindings; excluded=other-repositories-and-local-reports; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- Applications can select installed extensions as Core service implementations through validated, versioned descriptors and generated server-only bindings. Transactional email exposes a provider-neutral message contract while delivery queues and transports remain extension-owned.
 
 - Optional extensions install as project-owned source, with verified SHA-256 payloads, registry releases and selected-provider dependency checks. Updates compare the original release with installed files and offer an agent merge prompt when local changes need review; versioned ZIP fetching remains deferred.
 - A generic build helper selects installed extension code or an application-owned unavailable implementation, including namespaced next-intl UI messages. Database changes remain explicit administrative operations.
@@ -30,6 +32,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- **Breaking:** applications must declare `PROJECT_NAMESPACE` and `CORE_SERVICES`; transactional email may be disabled with a null implementation. Apply the private Core service-binding migration before installing database-backed services. Enabled extensions declare required Core services instead of selecting delivery providers themselves.
 
 - **Breaking:** the signed image-upload function is named `process_image_upload`. Deploy it with its bundled WASM before releasing updated upload and social-avatar callers; retire previous endpoints only after client rollout. No database migration is required.
 

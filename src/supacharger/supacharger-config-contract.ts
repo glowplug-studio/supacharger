@@ -11,6 +11,15 @@ export type SupachargerToastTransition = 'bounce' | 'flip' | 'slide' | 'zoom';
 
 /** Canonical developer-owned Supacharger application configuration. */
 export type SupachargerConfig = {
+  /** Providers selected for shared application services. */
+  /** Stable deployment namespace: 1–20 lowercase letters, digits or underscores. */
+  PROJECT_NAMESPACE: string;
+  CORE_SERVICES: {
+    /** Authentication backend; social login choices are configured separately. */
+    auth: { provider: 'supabase' };
+    /** Transactional email extension registry name; configuration does not install it. */
+    transactional_email: { provider: `supacharger-ext-${string}` | null };
+  };
   /** Product name used by shared metadata and fallback presentation. */
   SITE_TITLE: string;
   /** Default product description used by shared metadata. */

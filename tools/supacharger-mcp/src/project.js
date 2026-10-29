@@ -14,6 +14,7 @@ const guidanceFiles = {
   ui_implementation: 'docs/agents/project/ui-implementation.md',
   icon_usage: 'docs/agents/project/icon-usage.md',
   email_templates: 'docs/agents/email-templates.md',
+  core_services: 'docs/agents/core-services.md',
   mission: 'docs/agents/project-overview.md',
   ownership: 'docs/agents/ownership.md',
   cli_upgrades: 'docs/agents/cli-upgrades.md',

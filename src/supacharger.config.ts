@@ -17,6 +17,11 @@ import { getSiteUrl } from '@/supacharger/utils/site-url';
  * ==========
  */
 export const SC_CONFIG: SupachargerConfig = {
+  PROJECT_NAMESPACE: 'supacharger',
+  CORE_SERVICES: {
+    auth: { provider: 'supabase' },
+    transactional_email: { provider: null },
+  },
   /**
    * ==========
    * STRINGS

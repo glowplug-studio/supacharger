@@ -21,6 +21,7 @@ const guidanceTopics = [
   'ui_implementation',
   'icon_usage',
   'email_templates',
+  'core_services',
   'mission',
   'ownership',
   'cli_upgrades',
