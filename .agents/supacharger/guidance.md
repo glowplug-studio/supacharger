@@ -24,7 +24,11 @@ Ordinary product code, UI and documentation that do not define a protected contr
 
 ## Where to record instructions
 
-When a human says "put this in AGENTS.md" without naming a file, place repository-specific working rules in `docs/agents/project.md` or a linked topic under `docs/agents/project/`. Keep AGENTS.md as the shared entry point. Rewrite rough notes clearly without broadening their scope. Honour an explicitly named destination.
+The repository-root `AGENTS.md` is an entry point only: keep it limited to the ordered links needed to load this guidance, project instructions and the task index. Do not add feature rules, implementation details, examples or task-specific instructions there. Do not edit it during ordinary feature or documentation work; change its routing only when explicitly requested or required by an authorised guidance reorganisation.
+
+When a human says "put this in AGENTS.md", place the substantive instructions in `docs/agents/project.md` or the appropriate linked topic under `docs/agents/`. Interpret a request naming the root file as a request to make the guidance discoverable through its existing entry points, unless the human explicitly requests changing the routing itself. Keep each rule in one owning document and link to it from the task index.
+
+Use `docs/agents/project.md` and `docs/agents/project/` for application-specific policy; shared `docs/agents/` topics for reusable technical contracts; `.agents/instructions/` for task execution procedures; and `.agents/skills/` for reusable skills. Use `docs/reports/` for evidence and reports, following `docs/agents/reporting.md`. Keep optional contributor rules in their existing `.agents/supacharger/` directories. Do not create a second root instruction file or duplicate topic content to enforce this layout.
 
 Keep durable agent guidance, project UI/icon conventions and technical explanations together in `docs/agents/`, starting with `docs/agents/agent-guidance.md`. Shared topic files describe Core contracts; `project.md` and `project/` hold this application’s decisions. Do not create a parallel `.agents/project/rules/` tree. Keep optional Core contributor policies in `.agents/supacharger/core-development/`. Put reusable task procedures in skills, each with its own `SKILL.md`. Do not duplicate technical references across these locations.
 
