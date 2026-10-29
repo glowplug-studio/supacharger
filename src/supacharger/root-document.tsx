@@ -15,10 +15,9 @@ export type SupachargerRootDocumentConfig = {
   SITE_DESCRIPTION: string;
   METADATA: {
     SITE_URL: string;
-    TITLE_TEMPLATE: string;
     INDEXING_ENABLED: boolean;
     FAVICON_SET_ENABLED: boolean;
-    SOCIAL_IMAGE: SocialImage | null;
+    DEFAULT_OG_IMAGE: { DEFAULT: SocialImage | null; LOCALES: Readonly<Record<string, SocialImage>> };
     COLOR_SCHEME: 'normal' | 'light' | 'dark' | 'light dark';
     THEME_COLOR:
       | string
@@ -54,7 +53,7 @@ const faviconMetadata: Pick<Metadata, 'icons' | 'manifest'> = {
 };
 
 function createSocialImages(image: SocialImage | null) {
-  if (!image) return undefined;
+  if (!image) return [];
 
   return [
     {
@@ -70,15 +69,17 @@ function formatPageTitle(title: string, template: string) {
   return template.includes('%s') ? template.replace('%s', title) : title;
 }
 
-export function createSupachargerMetadata(config: SupachargerRootDocumentConfig): Metadata {
-  const socialImages = createSocialImages(config.METADATA.SOCIAL_IMAGE);
+export function createSupachargerMetadata(config: SupachargerRootDocumentConfig, locale = 'en'): Metadata {
+  const socialImages = createSocialImages(
+    config.METADATA.DEFAULT_OG_IMAGE.LOCALES[locale] ?? config.METADATA.DEFAULT_OG_IMAGE.DEFAULT,
+  );
 
   return {
     metadataBase: new URL(config.METADATA.SITE_URL),
     applicationName: config.SITE_TITLE,
     title: {
       default: config.SITE_TITLE,
-      template: config.METADATA.TITLE_TEMPLATE,
+      template: `%s | ${config.SITE_TITLE}`,
     },
     description: config.SITE_DESCRIPTION,
     openGraph: {
@@ -89,7 +90,7 @@ export function createSupachargerMetadata(config: SupachargerRootDocumentConfig)
       images: socialImages,
     },
     twitter: {
-      card: socialImages ? 'summary_large_image' : 'summary',
+      card: socialImages.length ? 'summary_large_image' : 'summary',
       title: config.SITE_TITLE,
       description: config.SITE_DESCRIPTION,
       images: socialImages,
@@ -117,12 +118,15 @@ export function createSupachargerMetadata(config: SupachargerRootDocumentConfig)
 export function createSupachargerPageMetadata(
   config: SupachargerRootDocumentConfig,
   page: SupachargerPageMetadata,
+  locale = 'en',
 ): Metadata {
   const description = page.description ?? config.SITE_DESCRIPTION;
   const socialImage =
-    page.socialImage === undefined ? config.METADATA.SOCIAL_IMAGE : page.socialImage;
+    page.socialImage === undefined
+      ? (config.METADATA.DEFAULT_OG_IMAGE.LOCALES[locale] ?? config.METADATA.DEFAULT_OG_IMAGE.DEFAULT)
+      : page.socialImage;
   const socialImages = createSocialImages(socialImage);
-  const socialTitle = formatPageTitle(page.title, config.METADATA.TITLE_TEMPLATE);
+  const socialTitle = formatPageTitle(page.title, `%s | ${config.SITE_TITLE}`);
 
   return {
     title: page.title,
@@ -141,7 +145,7 @@ export function createSupachargerPageMetadata(
       images: socialImages,
     },
     twitter: {
-      card: socialImages ? 'summary_large_image' : 'summary',
+      card: socialImages.length ? 'summary_large_image' : 'summary',
       title: socialTitle,
       description,
       images: socialImages,
@@ -157,7 +161,7 @@ export function createSupachargerViewport(config: SupachargerRootDocumentConfig)
           { media: '(prefers-color-scheme: light)', color: configuredThemeColor.LIGHT },
           { media: '(prefers-color-scheme: dark)', color: configuredThemeColor.DARK },
         ]
-      : configuredThemeColor ?? undefined;
+      : (configuredThemeColor ?? undefined);
 
   return {
     colorScheme: config.METADATA.COLOR_SCHEME,

@@ -6,7 +6,7 @@
   },
   "Global": {
     "siteTitle": "Korunet",
-    "siteDescription": "Start your next project without reinventing the wheel",
+    "siteDescription": "Start your next project without reinventing the wheel.",
     "or": "or"
   },
   "GlobalUI": {
@@ -19,7 +19,6 @@
     "accountAccountSecuritySettingsSectionTitle": "Account Config",
     "accountAccountSecuritySettingsPageTitle": "Account & Security Settings"
   },
-
   "AuthTerms": {
     "name": "Name",
     "username": "Username",
@@ -96,7 +95,8 @@
     "otpExpired": "The One Time Passcode has expired or is invalid",
     "samePassword": "Your new password must be different from your current password.",
     "tokenAuthApiError": "Token has expired or is invalid",
-    "signupApiAuthError": "Email address and password do not meet security requirements"
+    "signupApiAuthError": "Email address and password do not meet security requirements",
+    "termsRequired": "Please agree to the Terms of Service and Privacy Policy."
   },
   "Toasts": {
     "logoutFailed": "There was a problem logging you out",
@@ -106,11 +106,6 @@
     "title": "Billing"
   },
   "AuthJourney": {
-    "signUpTerms": "By clicking Sign up, I agree to the <terms>terms and conditions</terms>.",
-    "signUpTermsSocial": "By clicking Sign up or continuing with a social account, I agree to the <terms>terms and conditions</terms>.",
-    "signUpTermsSocialOnly": "By continuing with a social account, I agree to the <terms>terms and conditions</terms>.",
-    "signUpTermsPasswordless": "By signing up with email, I agree to the <terms>terms and conditions</terms>.",
-    "signUpTermsPasswordlessSocial": "By signing up with email or continuing with a social account, I agree to the <terms>terms and conditions</terms>.",
     "mfaStatusFailed": "Two-factor authentication status could not be checked.",
     "heroTitle": "Join the Community",
     "welcomeBack": "Welcome back",
@@ -167,7 +162,9 @@
     "sendAnother": "Send again",
     "loginHere": "Login Here",
     "getVerificationLink": "Get verification link",
-    "recoveryResendSuccess": "A new password reset link has been sent."
+    "recoveryResendSuccess": "A new password reset link has been sent.",
+    "signUpAgreement": "By creating an account, you agree to our <terms>Terms of Service and Privacy Policy</terms>.",
+    "termsRequired": "Please agree to the Terms of Service and Privacy Policy to create an account."
   },
   "LoginPage": {
     "title": "Sign In",
@@ -493,9 +490,15 @@
       "stackTitle": "The installed stack",
       "stackDescription": "The page reads exact dependency versions from package.json. Shared runtime packages are pinned for reproducible CLI updates.",
       "stackGroups": [
-        { "title": "Application runtime" },
-        { "title": "Data and billing" },
-        { "title": "Interface tooling" }
+        {
+          "title": "Application runtime"
+        },
+        {
+          "title": "Data and billing"
+        },
+        {
+          "title": "Interface tooling"
+        }
       ],
       "packageTitle": "The package.json you receive",
       "packageDescription": "This is the repository's current file, rendered directly from source so every script, dependency, development tool, and override is visible.",
@@ -761,7 +764,8 @@
     "allRightsReserved": "All rights reserved.",
     "firstBuiltIn": "First commits made in",
     "newZealand": "New Zealand",
-    "by": "by"
+    "by": "by",
+    "privacyPolicy": "Privacy"
   },
   "LicensePage": {
     "eyebrow": "Supacharger licensing",
@@ -1102,69 +1106,15 @@
     }
   },
   "LegalPage": {
-    "eyebrow": "Policies",
-    "title": "Legal information",
-    "description": "The terms and policies that govern use of Korunet and explain how personal information and cookies are handled.",
-    "lastUpdated": "Last updated: 4 June 2025",
-    "tabs": { "terms": "Terms of use", "privacy": "Privacy policy", "cookies": "Third-party cookies" },
+    "title": "Demo terms and privacy",
+    "description": "Example content for this Supacharger demo. Replace this page with terms and a privacy policy appropriate to your application before launch.",
     "terms": {
-      "title": "Korunet terms of use",
-      "sections": [
-        {
-          "title": "Using the service",
-          "body": "Use Korunet only for lawful purposes. Keep account credentials confidential, provide accurate account information, and do not interfere with the operation or security of the service."
-        },
-        {
-          "title": "Your content",
-          "body": "You retain ownership of content you submit. You grant Korunet the permissions needed to host, display, and process that content to operate the service."
-        },
-        {
-          "title": "Availability and warranties",
-          "body": "The service is provided as available. Features may change, be suspended, or be discontinued, and no uninterrupted or error-free operation is promised."
-        },
-        {
-          "title": "Ending access",
-          "body": "Access may be suspended or terminated when these terms are breached, the service is misused, or continued access creates legal or security risk."
-        }
-      ]
+      "title": "Terms of Service",
+      "body": "This demo is provided for evaluation, without guarantees of availability or suitability. Features and test data may change or be removed.\n\nUse the demo lawfully. Do not abuse the service, attempt unauthorised access, or upload sensitive or confidential information. Keep your account credentials secure.\n\nYou may stop using the demo at any time. Access may be suspended to protect the service and its users."
     },
     "privacy": {
-      "title": "Korunet privacy policy",
-      "sections": [
-        {
-          "title": "Information collected",
-          "body": "Korunet may collect account details, profile information, usage data, device information, and information supplied when you contact support."
-        },
-        {
-          "title": "How information is used",
-          "body": "Information is used to provide and secure the service, personalise the experience, communicate with users, understand product usage, and meet legal obligations."
-        },
-        {
-          "title": "Sharing and retention",
-          "body": "Personal information is not sold. It may be shared with service providers, legal authorities when required, or other parties at your direction. Information is retained only as long as needed for these purposes."
-        },
-        {
-          "title": "Your choices",
-          "body": "Depending on applicable law, you may request access, correction, export, or deletion of personal information and may opt out of marketing communications."
-        }
-      ]
-    },
-    "cookies": {
-      "title": "Third-party cookie policy",
-      "sections": [
-        {
-          "title": "Why cookies are used",
-          "body": "Cookies and similar storage can keep sessions secure, remember preferences, measure performance, and help understand how the service is used."
-        },
-        {
-          "title": "Third-party services",
-          "body": "Providers used for authentication, payments, analytics, or embedded content may set their own cookies under their policies."
-        },
-        {
-          "title": "Managing cookies",
-          "body": "Browser controls can block or remove cookies. Disabling essential cookies may prevent sign-in or other parts of the service from working correctly."
-        }
-      ]
+      "title": "Privacy Policy",
+      "body": "The demo processes the account details you provide, authentication information and data needed to run the features you use. Session cookies keep you signed in and remember preferences.\n\nConfigured hosting and authentication providers process information to operate the demo. Test accounts and their data may be deleted during maintenance. Do not submit sensitive personal information.\n\nUse the available account settings to manage your profile or delete your account. A production application must publish its own contact details, retention periods and privacy information."
     }
   },
   "AccountPages": {
@@ -1427,7 +1377,13 @@
           "progress": "72%",
           "owner": "Luca Moretti"
         },
-        { "item": "Mobile onboarding", "type": "Design", "status": "Review", "progress": "88%", "owner": "Sora Kim" },
+        {
+          "item": "Mobile onboarding",
+          "type": "Design",
+          "status": "Review",
+          "progress": "88%",
+          "owner": "Sora Kim"
+        },
         {
           "item": "Analytics baseline",
           "type": "Research",
@@ -1505,7 +1461,9 @@
     "title": "Account settings",
     "description": "Manage account security, profile details, notifications, privacy, and billing."
   },
-  "AuthenticatedMetadata": { "description": "Your Korunet account and community workspace." },
+  "AuthenticatedMetadata": {
+    "description": "Your Korunet account and community workspace."
+  },
   "Organisations": {
     "common": {
       "save": "Save changes",

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 
 import { createSupachargerPageMetadata } from '@/supacharger/root-document';
-import { SC_CONFIG } from '@/supacharger/supacharger-config';
+import { localisedSiteConfig } from '@/supacharger/site-identity';
 
-type MarketingPageName = 'coreWidgetDemos' | 'home' | 'legal' | 'license' | 'paywallDemos' | 'pricing' | 'whatsIncluded';
+type MarketingPageName =
+  'coreWidgetDemos' | 'home' | 'legal' | 'license' | 'paywallDemos' | 'pricing' | 'whatsIncluded';
 
 const canonicalPaths: Record<MarketingPageName, string> = {
   coreWidgetDemos: '/features/core-widget-demos',
@@ -19,11 +20,15 @@ const canonicalPaths: Record<MarketingPageName, string> = {
 export async function createMarketingPageMetadata(pageName: MarketingPageName): Promise<Metadata> {
   const t = await getTranslations(`MarketingMetadata.${pageName}`);
   const page = { description: t('description'), title: t('title') };
-  const metadata = createSupachargerPageMetadata(SC_CONFIG, {
-    title: page.title,
-    description: page.description,
-    canonicalPath: canonicalPaths[pageName],
-  });
+  const metadata = createSupachargerPageMetadata(
+    localisedSiteConfig(await getMessages()),
+    {
+      title: page.title,
+      description: page.description,
+      canonicalPath: canonicalPaths[pageName],
+    },
+    await getLocale(),
+  );
 
   if (pageName !== 'home') return metadata;
 

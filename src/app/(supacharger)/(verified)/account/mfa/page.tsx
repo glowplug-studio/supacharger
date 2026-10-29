@@ -9,7 +9,7 @@ export const instant = false;
 
 export default async function AccountMfaPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
   await requireVerifiedUser();
-  if (!SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
+  if (!SC_CONFIG.SUPABASE_AUTH.METHODS.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
     redirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION);
   }
   const query = await searchParams;

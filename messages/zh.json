@@ -95,7 +95,8 @@
     "otpExpired": "一次性密码已过期或无效",
     "samePassword": "新密码应与旧密码不同",
     "tokenAuthApiError": "令牌已过期或无效",
-    "signupApiAuthError": "电子邮件地址和密码不符合安全要求"
+    "signupApiAuthError": "电子邮件地址和密码不符合安全要求",
+    "termsRequired": ""
   },
   "Toasts": {
     "logoutFailed": "您退出时出现问题",
@@ -105,11 +106,6 @@
     "title": "计费"
   },
   "AuthJourney": {
-    "signUpTerms": "",
-    "signUpTermsSocial": "",
-    "signUpTermsSocialOnly": "",
-    "signUpTermsPasswordless": "",
-    "signUpTermsPasswordlessSocial": "",
     "mfaStatusFailed": "",
     "heroTitle": "发展您自己的社区",
     "welcomeBack": "欢迎回来",
@@ -166,7 +162,9 @@
     "sendAnother": "再次发送",
     "loginHere": "在此登录",
     "getVerificationLink": "获取验证链接",
-    "recoveryResendSuccess": ""
+    "recoveryResendSuccess": "",
+    "signUpAgreement": "",
+    "termsRequired": ""
   },
   "LoginPage": {
     "title": "登入",
@@ -219,13 +217,77 @@
   "AccountSettings": {
     "title": "",
     "description": "",
-    "navigation": {"label": "", "details": "", "security": "", "privacy": "", "notifications": "", "billing": "", "organisations": "", "productProfile": ""},
-    "details": {"title": "", "description": "", "firstName": "", "lastName": "", "email": "", "emailHelp": "", "username": "", "usernameHelp": "", "language": "", "save": "", "saving": "", "saved": ""},
-    "languages": {"en": "", "fr": "", "es": "", "zh": ""},
-    "media": {"avatar": "", "header": "", "avatarHelp": "", "headerHelp": "", "invalidFile": "", "uploadFailed": "", "saveFailed": "", "saving": "", "save": "", "saved": "", "choose": "", "preview": ""},
-    "productProfile": {"title": "", "description": "", "open": ""},
-    "cancellation": {"title": "", "description": "", "planned": "", "action": ""},
-    "validation": {"invalidJson": "", "checkFields": "", "firstName": "", "lastName": "", "username": "", "language": "", "extension": "", "authentication": "", "verifyEmail": "", "usernameTaken": "", "profileUpdate": "", "languageUpdate": "", "extensionUpdate": "", "summaryLoad": ""}
+    "navigation": {
+      "label": "",
+      "details": "",
+      "security": "",
+      "privacy": "",
+      "notifications": "",
+      "billing": "",
+      "organisations": "",
+      "productProfile": ""
+    },
+    "details": {
+      "title": "",
+      "description": "",
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "emailHelp": "",
+      "username": "",
+      "usernameHelp": "",
+      "language": "",
+      "save": "",
+      "saving": "",
+      "saved": ""
+    },
+    "languages": {
+      "en": "",
+      "fr": "",
+      "es": "",
+      "zh": ""
+    },
+    "media": {
+      "avatar": "",
+      "header": "",
+      "avatarHelp": "",
+      "headerHelp": "",
+      "invalidFile": "",
+      "uploadFailed": "",
+      "saveFailed": "",
+      "saving": "",
+      "save": "",
+      "saved": "",
+      "choose": "",
+      "preview": ""
+    },
+    "productProfile": {
+      "title": "",
+      "description": "",
+      "open": ""
+    },
+    "cancellation": {
+      "title": "",
+      "description": "",
+      "planned": "",
+      "action": ""
+    },
+    "validation": {
+      "invalidJson": "",
+      "checkFields": "",
+      "firstName": "",
+      "lastName": "",
+      "username": "",
+      "language": "",
+      "extension": "",
+      "authentication": "",
+      "verifyEmail": "",
+      "usernameTaken": "",
+      "profileUpdate": "",
+      "languageUpdate": "",
+      "extensionUpdate": "",
+      "summaryLoad": ""
+    }
   },
   "AccountPreferences": {
     "save": "",
@@ -233,16 +295,55 @@
     "saved": "",
     "unavailable": "",
     "empty": "",
-    "errors": {"invalidRequest": "", "unauthenticated": "", "notFound": "", "adapterInvalid": "", "unavailable": "", "invalidOptions": "", "saveFailed": ""},
-    "privacy": {"title": "", "description": "", "disabled": ""},
-    "notifications": {"title": "", "description": "", "disabled": ""}
+    "errors": {
+      "invalidRequest": "",
+      "unauthenticated": "",
+      "notFound": "",
+      "adapterInvalid": "",
+      "unavailable": "",
+      "invalidOptions": "",
+      "saveFailed": ""
+    },
+    "privacy": {
+      "title": "",
+      "description": "",
+      "disabled": ""
+    },
+    "notifications": {
+      "title": "",
+      "description": "",
+      "disabled": ""
+    }
   },
   "AccountSecurity": {
-    "providers": { "title": "", "description": "", "signedInWith": "", "linkedLabel": "" },
+    "providers": {
+      "title": "",
+      "description": "",
+      "signedInWith": "",
+      "linkedLabel": ""
+    },
     "currentPassword": "",
     "saving": "",
-    "email": { "title": "", "description": "", "passwordUnavailable": "", "new": "", "save": "", "sent": "", "pending": "" },
-    "password": { "title": "", "description": "", "unavailable": "", "new": "", "repeat": "", "save": "", "saved": "", "show": "", "hide": "" },
+    "email": {
+      "title": "",
+      "description": "",
+      "passwordUnavailable": "",
+      "new": "",
+      "save": "",
+      "sent": "",
+      "pending": ""
+    },
+    "password": {
+      "title": "",
+      "description": "",
+      "unavailable": "",
+      "new": "",
+      "repeat": "",
+      "save": "",
+      "saved": "",
+      "show": "",
+      "hide": ""
+    },
     "errors": {
       "invalidRequest": "",
       "unauthenticated": "",
@@ -255,12 +356,44 @@
       "passwordUpdateFailed": ""
     },
     "mfa": {
-      "title": "", "description": "", "setup": "", "authenticator": "", "qrAlt": "", "manualKey": "", "code": "", "enable": "", "cancel": "", "loading": "", "empty": "", "added": "", "removeCode": "", "remove": "", "enabled": "", "cancelled": "", "removed": "",
-      "errors": { "load": "", "enroll": "", "cancel": "", "code": "", "verify": "", "remove": "" }
+      "title": "",
+      "description": "",
+      "setup": "",
+      "authenticator": "",
+      "qrAlt": "",
+      "manualKey": "",
+      "code": "",
+      "enable": "",
+      "cancel": "",
+      "loading": "",
+      "empty": "",
+      "added": "",
+      "removeCode": "",
+      "remove": "",
+      "enabled": "",
+      "cancelled": "",
+      "removed": "",
+      "errors": {
+        "load": "",
+        "enroll": "",
+        "cancel": "",
+        "code": "",
+        "verify": "",
+        "remove": ""
+      }
     },
     "mfaChallenge": {
-      "title": "", "description": "", "code": "", "checking": "", "verify": "",
-      "errors": { "load": "", "missing": "", "code": "", "verify": "" }
+      "title": "",
+      "description": "",
+      "code": "",
+      "checking": "",
+      "verify": "",
+      "errors": {
+        "load": "",
+        "missing": "",
+        "code": "",
+        "verify": ""
+      }
     }
   },
   "ThemeChangerMenu": {
@@ -307,7 +440,39 @@
   },
   "MarketingFeaturePages": {
     "coreWidgetDemos": {
-      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":"","simulateUpload":"","simulateAgain":"","uploading":"","uploadComplete":"","loadersTitle":"","loadersDescription":"","inlineLoaderLabel":"","inverseLoaderLabel":"","imageLoaderLabel":"","modalTitle":"","modalDescription":"","openModal":"","closeModal":"","modalDialogTitle":"","modalBody":"","toastLabel":"","toastDescription":"","toastButtonLabel": "", "gatingTitle": "", "gatingDescription": "", "gatingButtonLabel": "", "toastMessage":""
+      "eyebrow": "",
+      "title": "",
+      "description": "",
+      "genericTitle": "",
+      "genericDescription": "",
+      "bannerTitle": "",
+      "bannerDescription": "",
+      "bannerLabel": "",
+      "avatarTitle": "",
+      "avatarDescription": "",
+      "avatarLabel": "",
+      "simulateUpload": "",
+      "simulateAgain": "",
+      "uploading": "",
+      "uploadComplete": "",
+      "loadersTitle": "",
+      "loadersDescription": "",
+      "inlineLoaderLabel": "",
+      "inverseLoaderLabel": "",
+      "imageLoaderLabel": "",
+      "modalTitle": "",
+      "modalDescription": "",
+      "openModal": "",
+      "closeModal": "",
+      "modalDialogTitle": "",
+      "modalBody": "",
+      "toastLabel": "",
+      "toastDescription": "",
+      "toastButtonLabel": "",
+      "gatingTitle": "",
+      "gatingDescription": "",
+      "gatingButtonLabel": "",
+      "toastMessage": ""
     },
     "whatsIncluded": {
       "title": "Supacharger 实际包含什么",
@@ -359,7 +524,17 @@
       ],
       "stackTitle": "已安装的技术栈",
       "stackDescription": "页面直接从 package.json 读取准确的依赖版本。共享运行时软件包采用固定版本，确保 CLI 更新可复现。",
-      "stackGroups": [{ "title": "应用运行时" }, { "title": "数据与计费" }, { "title": "界面工具" }],
+      "stackGroups": [
+        {
+          "title": "应用运行时"
+        },
+        {
+          "title": "数据与计费"
+        },
+        {
+          "title": "界面工具"
+        }
+      ],
       "packageTitle": "您将获得的 package.json",
       "packageDescription": "这是代码库当前使用的文件，直接从源文件渲染，完整展示所有脚本、依赖项、开发工具和覆盖配置。",
       "packageFile": "package.json",
@@ -549,7 +724,8 @@
     "allRightsReserved": "版权所有。",
     "firstBuiltIn": "首先内置",
     "newZealand": "新西兰",
-    "by": "经过"
+    "by": "经过",
+    "privacyPolicy": ""
   },
   "LicensePage": {
     "readThirdPartyLicense": "",
@@ -566,7 +742,10 @@
     "dependenciesTitle": "直接依赖许可证快照",
     "dependenciesIntro": "安装的直接运行时和开发依赖项大多是经过许可的。这些组基于当前锁定文件中的包元数据和捆绑许可证文件，而不是法律意见或完整的传递依赖通知。",
     "groups": {
-      "unlicense": { "title": "", "description": "" },
+      "unlicense": {
+        "title": "",
+        "description": ""
+      },
       "mit": {
         "title": "麻省理工学院",
         "description": "许可通常要求在重新分发的副本中保留版权和许可声明。"
@@ -894,73 +1073,15 @@
     }
   },
   "LegalPage": {
-    "eyebrow": "政策",
-    "title": "法律信息",
-    "description": "管理 Korunet 使用并解释如何处理个人信息和 cookie 的条款和政策。",
-    "lastUpdated": "最后更新日期：2025 年 6 月 4 日",
-    "tabs": {
-      "terms": "使用条款",
-      "privacy": "隐私政策",
-      "cookies": "第三方 cookie"
-    },
+    "title": "",
+    "description": "",
     "terms": {
-      "title": "科鲁网使用条款",
-      "sections": [
-        {
-          "title": "使用服务",
-          "body": "仅将 Korunet 用于合法目的。对帐户凭据保密，提供准确的帐户信息，并且不干扰服务的运行或安全。"
-        },
-        {
-          "title": "你的内容",
-          "body": "您保留对您提交的内容的所有权。您授予 Korunet 托管、显示和处理该内容所需的权限以运营该服务。"
-        },
-        {
-          "title": "可用性和保修",
-          "body": "该服务按可用情况提供。功能可能会更改、暂停或终止，并且不承诺不间断或无错误的操作。"
-        },
-        {
-          "title": "结束访问",
-          "body": "当违反这些条款、服务被滥用或继续访问会产生法律或安全风险时，访问可能会被暂停或终止。"
-        }
-      ]
+      "title": "",
+      "body": ""
     },
     "privacy": {
-      "title": "科鲁网隐私政策",
-      "sections": [
-        {
-          "title": "收集的信息",
-          "body": "Korunet 可能会收集帐户详细信息、个人资料信息、使用数据、设备信息以及您联系支持人员时提供的信息。"
-        },
-        {
-          "title": "如何使用信息",
-          "body": "信息用于提供和保护服务、个性化体验、与用户沟通、了解产品使用情况以及履行法律义务。"
-        },
-        {
-          "title": "分享和保留",
-          "body": "个人信息不会被出售。它可能会在需要时与服务提供商、法律机构或您指示的其他方共享。仅在实现这些目的所需的时间内保留信息。"
-        },
-        {
-          "title": "您的选择",
-          "body": "根据适用法律，您可以请求访问、更正、导出或删除个人信息，并可以选择退出营销传播。"
-        }
-      ]
-    },
-    "cookies": {
-      "title": "第三方 cookie 政策",
-      "sections": [
-        {
-          "title": "为什么使用cookie",
-          "body": "Cookie 和类似存储可以保证会话安全、记住偏好、衡量性能并帮助了解服务的使用方式。"
-        },
-        {
-          "title": "第三方服务",
-          "body": "用于身份验证、支付、分析或嵌入内容的提供商可以根据其政策设置自己的 cookie。"
-        },
-        {
-          "title": "管理cookies",
-          "body": "浏览器控件可以阻止或删除 cookie。禁用必要的 cookie 可能会导致登录或服务的其他部分无法正常工作。"
-        }
-      ]
+      "title": "",
+      "body": ""
     }
   },
   "AccountPages": {
@@ -1155,33 +1276,118 @@
     "overview": "",
     "metricsLabel": "",
     "metrics": [
-      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
-      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
-      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
-      { "label": "", "value": "", "trend": "", "direction": "down", "detail": "" }
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "up",
+        "detail": ""
+      },
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "up",
+        "detail": ""
+      },
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "up",
+        "detail": ""
+      },
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "down",
+        "detail": ""
+      }
     ],
-    "chart": { "title": "", "description": "", "desktop": "", "mobile": "" },
-    "ranges": { "days90": "", "days30": "", "days7": "" },
+    "chart": {
+      "title": "",
+      "description": "",
+      "desktop": "",
+      "mobile": ""
+    },
+    "ranges": {
+      "days90": "",
+      "days30": "",
+      "days7": ""
+    },
     "table": {
       "title": "",
       "description": "",
       "searchLabel": "",
       "searchPlaceholder": "",
-      "columns": { "item": "", "type": "", "status": "", "progress": "", "owner": "", "actions": "" },
+      "columns": {
+        "item": "",
+        "type": "",
+        "status": "",
+        "progress": "",
+        "owner": "",
+        "actions": ""
+      },
       "rows": [
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" }
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        }
       ],
       "rowActions": "",
       "summary": "",
       "viewAll": ""
     },
-    "documents": { "title": "", "dataLibrary": "", "reports": "", "assistant": "" },
-    "secondary": { "settings": "", "help": "", "search": "" }
+    "documents": {
+      "title": "",
+      "dataLibrary": "",
+      "reports": "",
+      "assistant": ""
+    },
+    "secondary": {
+      "settings": "",
+      "help": "",
+      "search": ""
+    }
   },
   "ProfileOnboardingForm": {
     "nameError": "输入您的名字和姓氏。",
@@ -1226,35 +1432,127 @@
     "description": "您的 Korunet 帐户和社区工作区。"
   },
   "Organisations": {
-    "common": {"save":"","saving":"","working":""},
-    "roles": {"owner":"","admin":"","member":""},
-    "navigation": {"label":"","back":"","profile":"","team":"","billing":""},
+    "common": {
+      "save": "",
+      "saving": "",
+      "working": ""
+    },
+    "roles": {
+      "owner": "",
+      "admin": "",
+      "member": ""
+    },
+    "navigation": {
+      "label": "",
+      "back": "",
+      "profile": "",
+      "team": "",
+      "billing": ""
+    },
     "chooser": {
-      "title":"","description":"","membershipsTitle":"","membershipsDescription":"","emptyTitle":"","emptyDescription":"",
-      "memberCount":"","active":"","select":"","openSettings":"","createTitle":"","createDescription":"","create":"",
-      "requestTitle":"","requestDescription":"","request":"","accessRequested":"","invitationTitle":"",
-      "invitationDescription":"","acceptInvitation":"","invitationAccepted":""
+      "title": "",
+      "description": "",
+      "membershipsTitle": "",
+      "membershipsDescription": "",
+      "emptyTitle": "",
+      "emptyDescription": "",
+      "memberCount": "",
+      "active": "",
+      "select": "",
+      "openSettings": "",
+      "createTitle": "",
+      "createDescription": "",
+      "create": "",
+      "requestTitle": "",
+      "requestDescription": "",
+      "request": "",
+      "accessRequested": "",
+      "invitationTitle": "",
+      "invitationDescription": "",
+      "acceptInvitation": "",
+      "invitationAccepted": ""
     },
     "profile": {
-      "title":"","description":"","memberReadOnly":"","name":"","handle":"","handleHelp":"","handleAvailable":"",
-      "handleUnavailable":"","bio":"","bioHelp":"","noBio":"","colour":"","accessPolicy":"","accessClosed":"",
-      "accessRequest":"","avatarTitle":"","headerTitle":"","avatarUpload":"","headerUpload":"","mediaHelp":"",
-      "mediaInvalid":"","mediaUploadFailed":"","removeMedia":"","saved":""
+      "title": "",
+      "description": "",
+      "memberReadOnly": "",
+      "name": "",
+      "handle": "",
+      "handleHelp": "",
+      "handleAvailable": "",
+      "handleUnavailable": "",
+      "bio": "",
+      "bioHelp": "",
+      "noBio": "",
+      "colour": "",
+      "accessPolicy": "",
+      "accessClosed": "",
+      "accessRequest": "",
+      "avatarTitle": "",
+      "headerTitle": "",
+      "avatarUpload": "",
+      "headerUpload": "",
+      "mediaHelp": "",
+      "mediaInvalid": "",
+      "mediaUploadFailed": "",
+      "removeMedia": "",
+      "saved": ""
     },
     "team": {
-      "title":"","descriptionManager":"","descriptionMember":"","membersTitle":"","unnamedMember":"","roleFor":"",
-      "remove":"","memberRemoved":"","roleUpdated":"","inviteTitle":"","inviteDescription":"","email":"","inviteRole":"",
-      "invite":"","invitationCreated":"","copyInviteOnce":"","inviteLink":"","copy":"","expires":"","revoke":"",
-      "invitationRevoked":"","noInvitations":"","requestsTitle":"","requestsDescription":"","noRequests":"",
-      "requestedOn":"","approve":"","reject":"","requestApproved":"","requestRejected":""
+      "title": "",
+      "descriptionManager": "",
+      "descriptionMember": "",
+      "membersTitle": "",
+      "unnamedMember": "",
+      "roleFor": "",
+      "remove": "",
+      "memberRemoved": "",
+      "roleUpdated": "",
+      "inviteTitle": "",
+      "inviteDescription": "",
+      "email": "",
+      "inviteRole": "",
+      "invite": "",
+      "invitationCreated": "",
+      "copyInviteOnce": "",
+      "inviteLink": "",
+      "copy": "",
+      "expires": "",
+      "revoke": "",
+      "invitationRevoked": "",
+      "noInvitations": "",
+      "requestsTitle": "",
+      "requestsDescription": "",
+      "noRequests": "",
+      "requestedOn": "",
+      "approve": "",
+      "reject": "",
+      "requestApproved": "",
+      "requestRejected": ""
     },
     "billing": {
-      "title":"","description":"","portalError":"","noAccount":"","noAccountHelp":"","noSubscriptions":"",
-      "status":"","unknown":"","manage":"","managerOnly":""
+      "title": "",
+      "description": "",
+      "portalError": "",
+      "noAccount": "",
+      "noAccountHelp": "",
+      "noSubscriptions": "",
+      "status": "",
+      "unknown": "",
+      "manage": "",
+      "managerOnly": ""
     },
     "errors": {
-      "disabled":"","invalidRequest":"","invalidField":"","checkFields":"","extension":"","handleUnavailable":"",
-      "lastOwner":"","invitationInvalid":"","forbidden":"","actionFailed":""
+      "disabled": "",
+      "invalidRequest": "",
+      "invalidField": "",
+      "checkFields": "",
+      "extension": "",
+      "handleUnavailable": "",
+      "lastOwner": "",
+      "invitationInvalid": "",
+      "forbidden": "",
+      "actionFailed": ""
     }
   },
   "SessionTransfer": {
@@ -1265,11 +1563,49 @@
     "retry": ""
   },
   "SCWidgets": {
-    "fileUpload": {"label":"","description":"","limitations":"","add":"","drop":"","emptyFile":"","invalidType":"","remove":"","tooLarge":""},
-    "imageCrop": {"cancel":"","circleDescription":"","done":"","dragLabel":"","failed":"","rectangleDescription":"","reposition":"","title":"","verticalDescription":"","verticalDragLabel":"","zoom":""},
-    "profileMedia": {"title":"","description":"","avatar":"","banner":"","unnamed":"","avatarPreviewAlt":"","bannerPreviewAlt":"","saving":"","save":"","saved":"","uploadFailed":"","saveFailed":""}
+    "fileUpload": {
+      "label": "",
+      "description": "",
+      "limitations": "",
+      "add": "",
+      "drop": "",
+      "emptyFile": "",
+      "invalidType": "",
+      "remove": "",
+      "tooLarge": ""
+    },
+    "imageCrop": {
+      "cancel": "",
+      "circleDescription": "",
+      "done": "",
+      "dragLabel": "",
+      "failed": "",
+      "rectangleDescription": "",
+      "reposition": "",
+      "title": "",
+      "verticalDescription": "",
+      "verticalDragLabel": "",
+      "zoom": ""
+    },
+    "profileMedia": {
+      "title": "",
+      "description": "",
+      "avatar": "",
+      "banner": "",
+      "unnamed": "",
+      "avatarPreviewAlt": "",
+      "bannerPreviewAlt": "",
+      "saving": "",
+      "save": "",
+      "saved": "",
+      "uploadFailed": "",
+      "saveFailed": ""
+    }
   },
-  "ImageUploadErrors": {"invalidRequest":"","invalidCrop":""},
+  "ImageUploadErrors": {
+    "invalidRequest": "",
+    "invalidCrop": ""
+  },
   "ErrorPage": {
     "notFound": {
       "status": "404错误",

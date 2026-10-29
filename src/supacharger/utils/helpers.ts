@@ -22,10 +22,7 @@ export function getSupabaseUrl(): string {
 }
 
 export function getSupabasePublishableKey(): string {
-  return getEnvVar(
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-    'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
-  );
+  return getEnvVar(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
 }
 
 /**
@@ -33,7 +30,7 @@ export function getSupabasePublishableKey(): string {
  * */
 export function isValidEmail(email: string): boolean {
   if (!EmailValidator.validate(email)) return false;
-  if (!SC_CONFIG.EMAIL_ALLOW_PLUSADDRESSING && email.includes('+')) return false;
+  if (!SC_CONFIG.SUPABASE_AUTH.EMAIL.ALLOW_PLUS_ADDRESSING && email.includes('+')) return false;
   return true;
 }
 
@@ -73,15 +70,15 @@ export {
   validateLettersDigits,
   validateLowerUpperLettersDigits,
   validateLowerUpperLettersDigitsSymbols,
-  validateNoRequired
+  validateNoRequired,
 };
 
 // --- Main Pass Eval Function ---
 
 export function evaluatePasswordStrength(password: string): PasswordValidationResult {
-  const requirements = SC_CONFIG.PASSWORD_REQUIREMENTS;
-  const minLength = SC_CONFIG.PASSWORD_MINIMUM_LENGTH;
-  const customRegex = SC_CONFIG.PASSWORD_CUSTOM_REGEX;
+  const requirements = SC_CONFIG.SUPABASE_AUTH.PASSWORD.REQUIREMENTS;
+  const minLength = SC_CONFIG.SUPABASE_AUTH.PASSWORD.MINIMUM_LENGTH;
+  const customRegex = SC_CONFIG.SUPABASE_AUTH.PASSWORD.CUSTOM_REGEX;
 
   // Custom regex takes precedence
   if (customRegex) {
@@ -135,6 +132,7 @@ export function supabaseErrorCodeLocalisation(response: string, status: number |
     signup_disabled: 'signupDisabled',
     weak_password: 'weakPassword',
     validation_failed: 'validationFailed',
+    terms_required: 'termsRequired',
     user_not_found: 'userNotFound',
     over_email_send_rate_limit: 'overEmailSendRateLimit',
     over_request_rate_limit: 'overLimit',

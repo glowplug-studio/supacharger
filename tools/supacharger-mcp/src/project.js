@@ -107,8 +107,8 @@ export function classifyPath(inputPath) {
     return { ownership: 'developer-owned', guidance: 'Colocated extension configuration is installed only when missing and preserved on updates.' };
   }
   if (relativePath.startsWith('src/app/(project)/(extensions)/(sc_extensions)/') || relativePath.startsWith('supabase/functions/_shared/extensions/sc_ext-') || relativePath.startsWith('supabase/functions/ext-') ||
-      relativePath.startsWith('docs/extensions/') || relativePath.startsWith('.supacharger/extensions/')) {
-    return { ownership: 'extension-managed', guidance: 'Read .supacharger/extensions/<id>.json and docs/extensions/<id>/INSTALL.md. The colocated configuration is developer-owned; other manifest-listed payload files are extension-managed. Installation does not advance the Core lock.' };
+      relativePath.startsWith('docs/extensions/')) {
+    return { ownership: 'extension-managed', guidance: 'Read docs/extensions/<id>/INSTALL.md and compare installed files with the incoming extension payload. The colocated configuration is developer-owned; other manifest-listed payload files are extension-managed. Installation does not advance the Core lock.' };
   }
 
   if (

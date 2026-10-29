@@ -9,17 +9,19 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T15:20:07.166356+00:00; base_commit=3cbde1eab24ff490b3b971170b098a78c605593b; main_commit=3cbde1eab24ff490b3b971170b098a78c605593b; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=3cbde1eab24ff490b3b971170b098a78c605593b; scope=release-registry-automation-and-prior-checkpoint-review; excluded=other-repositories-and-local-reports; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-29T17:20:49.488147+00:00; base_commit=50ed4044a1a65d90a83c551328e43f75eb99356f; main_commit=50ed4044a1a65d90a83c551328e43f75eb99356f; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=50ed4044a1a65d90a83c551328e43f75eb99356f; scope=config-localisation-signup-consent-and-extension-receipt-removal; excluded=oauth-cancellation-work-cli-documentation-env-example-contributor-submodule-and-other-repositories; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
 
+- Required, localised signup agreements cover password, passwordless and OAuth account creation, with server-action validation and a configurable legal destination. The disposable Core legal demo provides Terms and Privacy anchors.
+
 - Release publication can attach a versioned source ZIP and notify the Core registry to verify its SHA-256 hash and retain superseded release records. Cross-repository Actions credentials are required.
 
-- Applications can select installed extensions as Core service implementations through validated, versioned descriptors and generated server-only bindings. Transactional email exposes a provider-neutral message contract while delivery queues and transports remain extension-owned.
+- Applications can select installed extensions as Core service implementations through installed entry points, validated configuration and generated server-only bindings. Transactional email exposes a provider-neutral message contract while delivery queues and transports remain extension-owned.
 
-- Optional extensions install as project-owned source, with verified SHA-256 payloads, registry releases and selected-provider dependency checks. Updates compare the original release with installed files and offer an agent merge prompt when local changes need review; versioned ZIP fetching remains deferred.
+- Optional extensions install as project-owned source with registry releases and selected-provider dependency checks. Updates compare installed files directly with the incoming source, preserve developer configuration and installed migration history, and offer an agent merge prompt for differing files; versioned ZIP fetching remains deferred.
 - A generic build helper selects installed extension code or an application-owned unavailable implementation, including namespaced next-intl UI messages. Database changes remain explicit administrative operations.
 
 - A developer-owned login/signup modal widget using the configured authentication flow, with a feature-gating demonstration.
@@ -35,7 +37,11 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- **Breaking:** applications must declare `PROJECT_NAMESPACE` and `CORE_SERVICES`; transactional email may be disabled with a null implementation. Apply the private Core service-binding migration before installing database-backed services. Enabled extensions declare required Core services instead of selecting delivery providers themselves.
+- **Breaking:** Supabase-specific session, method, provider, email and password settings move into `SUPABASE_AUTH`; provider-independent signup consent and the confirmed-account destination remain under `AUTHENTICATION`. Migrate developer-owned config and callers together, retaining application values; older CLI releases must not be assumed to migrate this contract automatically.
+- Site titles and descriptions resolve from the active language catalogue with English fallbacks. `METADATA.DEFAULT_OG_IMAGE` replaces `SOCIAL_IMAGE` with default and locale-specific previews; pages can override or suppress them. The title template follows translated branding. Unused logo and Stripe portal-return configuration is removed; standard logo assets remain developer-owned.
+- Extension installation and runtime selection no longer require installation receipts, per-file hashes or copied manifests. Required services are declared in build registrations and resolved from installed entry points and configuration; updates compare file contents directly.
+
+- **Breaking:** applications must declare `PROJECT_NAMESPACE` and `CORE_SERVICES`; transactional email may be disabled with a null implementation. Apply the private Core service-binding migration before installing database-backed services. Build registrations declare required Core services instead of selecting delivery providers themselves.
 
 - **Breaking:** the signed image-upload function is named `process_image_upload`. Deploy it with its bundled WASM before releasing updated upload and social-avatar callers; retire previous endpoints only after client rollout. No database migration is required.
 

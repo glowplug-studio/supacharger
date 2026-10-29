@@ -2,13 +2,14 @@ import type { SupachargerConfig } from '@/supacharger/supacharger-config-contrac
 import { getSiteUrl } from '@/supacharger/utils/site-url';
 /**
  * ==========
- *    ___
- *   /  _|__ _ _ __ __ _ __| |_ __ _ _ _ __ _ ___ _ ___
- *  \__ \ || | '_ \/ _` / _| ' \/ _` | '_/ _` / -_ ) '_/
- *  |___/\_,_| .__/\__,_\__|_||_\__,_|_| \__, \___|_|
- *           |_|                         |___/
  *
- * Super, Supacharger Project Configuration
+ *   ▗▄▄▖▗▖ ▗▖▗▄▄▖  ▗▄▖  ▗▄▄▖▗▖ ▗▖ ▗▄▖ ▗▄▄▖  ▗▄▄▖▗▄▄▄▖▗▄▄▖
+ *  ▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▐▌   ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▐▌   ▐▌   ▐▌ ▐▌
+ *   ▝▀▚▖▐▌ ▐▌▐▛▀▘ ▐▛▀▜▌▐▌   ▐▛▀▜▌▐▛▀▜▌▐▛▀▚▖▐▌▝▜▌▐▛▀▀▘▐▛▀▚▖
+ *  ▗▄▄▞▘▝▚▄▞▘▐▌   ▐▌ ▐▌▝▚▄▄▖▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▝▚▄▞▘▐▙▄▄▖▐▌ ▐▌
+ *
+ *  Supacharger Project Configuration
+ *
  * ========== */
 
 /**
@@ -17,96 +18,87 @@ import { getSiteUrl } from '@/supacharger/utils/site-url';
  * ==========
  */
 export const SC_CONFIG: SupachargerConfig = {
+  // Identity and shared service selection.
   PROJECT_NAMESPACE: 'supacharger',
   CORE_SERVICES: {
     auth: { provider: 'supabase' },
     transactional_email: { provider: null },
   },
-  /**
-   * ==========
-   * STRINGS
-   * ==========
-   */
-
-  //@toto this should be translatable! this has been done using en.json Global and in  src/app/(supacharger)/(unauthenticated)/account/login/page.tsx
+  // English fallbacks; translate Global.siteTitle and Global.siteDescription in messages/.
   SITE_TITLE: 'Korunet',
   SITE_DESCRIPTION: 'Start your next project without reinventing the wheel.',
-  SITE_LOGO: null,
   MARKETING_SITE_URL: null,
+  // Site-wide metadata defaults. Pages may override their OG image.
   METADATA: {
     SITE_URL: getSiteUrl(),
-    TITLE_TEMPLATE: '%s | Korunet',
     INDEXING_ENABLED: process.env.VERCEL_ENV
       ? process.env.VERCEL_ENV === 'production'
       : process.env.NODE_ENV === 'production',
     FAVICON_SET_ENABLED: false,
-    SOCIAL_IMAGE: null,
+    DEFAULT_OG_IMAGE: { DEFAULT: null, LOCALES: {} },
     COLOR_SCHEME: 'light dark',
     THEME_COLOR: null,
   },
-  ROOT_PROVIDERS: {
-    INTERNATIONALISATION: true,
-    THEME: true,
-    TOASTS: true,
-  },
-  ANALYTICS: {
-    GOOGLE_ANALYTICS_ID: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || null,
-    VERCEL_ANALYTICS_ENABLED: true,
-  },
-
-  AUTH_SESSION: {
-    ALLOW_ANONYMOUS_USERS: false,
-  },
+  // Provider-independent signup consent and account navigation.
   AUTHENTICATION: {
-    // Absolute HTTP(S) terms URL; null hides the translated signup notice.
-    SIGN_UP_TERMS_URL: null,
-    EMAIL_PASSWORD: {
-      SIGN_IN: true,
-      SIGN_UP: true,
-    },
-    // Supabase sends links and codes through the same signInWithOtp request.
-    // Keep OTP_LENGTH aligned with auth.email.otp_length in supabase/config.toml
-    // and with the hosted project's Email OTP length.
-    PASSWORDLESS_EMAIL: {
-      SIGN_IN: 'otp',
-      SIGN_UP: 'disabled',
-      OTP_LENGTH: 6,
-    },
-    // Keep this aligned with Supabase Auth email-confirmation settings and templates.
-    SIGN_UP_EMAIL_VERIFICATION: 'otp',
-    MFA_TOTP: {
-      REQUIRED_FOR_SIGN_IN: false,
-    },
-    CROSS_DEVICE_SESSION_TRANSFER: {
-      ENABLED: false,
-      TOKEN_TTL_SECONDS: 120,
-    },
+    SIGN_UP_TERMS: { REQUIRED: true, URL: { DEFAULT: '/legal', LOCALES: {} } },
+    ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
   },
-  // Enable this only after the production HTTPS domain and native identifiers
-  // are ready. The shared routes then publish both platform association files.
-  MOBILE_DEEP_LINKING: {
-    ENABLED: false,
-    ASSOCIATED_PATHS: ['/auth/callback', '/auth/confirm'],
-    IOS: {
-      // Each value is <Apple App ID prefix>.<bundle identifier>.
-      APP_IDS: [],
+  // Settings used specifically by the Supabase Auth implementation.
+  SUPABASE_AUTH: {
+    SESSION: {
+      ALLOW_ANONYMOUS_USERS: false,
     },
-    ANDROID: {
-      APPS: [],
+    METHODS: {
+      EMAIL_PASSWORD: {
+        SIGN_IN: true,
+        SIGN_UP: true,
+      },
+      // Supabase sends links and codes through the same signInWithOtp request.
+      // Keep OTP_LENGTH aligned with auth.email.otp_length in supabase/config.toml
+      // and with the hosted project's Email OTP length.
+      PASSWORDLESS_EMAIL: {
+        SIGN_IN: 'otp',
+        SIGN_UP: 'disabled',
+        OTP_LENGTH: 6,
+      },
+      // Keep this aligned with Supabase Auth email-confirmation settings and templates.
+      SIGN_UP_EMAIL_VERIFICATION: 'otp',
+      MFA_TOTP: {
+        REQUIRED_FOR_SIGN_IN: false,
+      },
+      CROSS_DEVICE_SESSION_TRANSFER: {
+        ENABLED: false,
+        TOKEN_TTL_SECONDS: 120,
+      },
     },
+    OAUTH_PROVIDERS: {
+      apple: false,
+      azure: false,
+      bitbucket: false,
+      discord: false,
+      facebook: true,
+      figma: false,
+      github: false,
+      gitlab: false,
+      google: true,
+      kakao: false,
+      keycloak: false,
+      linkedin_oidc: false,
+      notion: false,
+      twitch: false,
+      x: false,
+      twitter: false,
+      slack_oidc: false,
+      slack: false,
+      spotify: false,
+      workos: false,
+      zoom: false,
+    },
+    EMAIL: { ALLOW_PLUS_ADDRESSING: true, RESEND_COOLDOWN_SECONDS: 60 },
+    PASSWORD: { REQUIREMENTS: 'lower_upper_letters_digits', MINIMUM_LENGTH: 8, CUSTOM_REGEX: null },
   },
-
-  /**
-   * ==========
-   * PATHS
-   * ==========
-   *
-   * Always include the leading slash!
-   * for wildcard routes add /:path*
-   */
-  // protect all routes except the exceptions in NO_SESSION_USER_ALLOWED_PATHS
   AUTH_ONLY_APP: true,
-
   PATH_AUTH_GUARD: {
     UNAUTHED_USER: {
       // Users without auth sessions can acess
@@ -146,12 +138,7 @@ export const SC_CONFIG: SupachargerConfig = {
     },
     AUTHED_USER: {
       // Paths authenticated users can not access
-      DISALLOWED: [
-        '/account/login',
-        '/account/create',
-        '/account/login-magic',
-        '/account/reset-password',
-      ],
+      DISALLOWED: ['/account/login', '/account/create', '/account/login-magic', '/account/reset-password'],
     },
   },
   USER_REDIRECTS: {
@@ -171,40 +158,31 @@ export const SC_CONFIG: SupachargerConfig = {
       LOGIN_REDIRECT_DESTINATION: '/',
     },
   },
-
-  /**
-   * ==========
-   * Registration Settings
-   * ==========
-   *
-   */
-  // where to redirect the user when their account is confirmed via OTP or link - keep the parameter ?account_confirmed=1
-  // an example handler is in src/components/sc_demo/sc_user-dash.tsx
-  ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
-
-  // Username storage remains installed and nullable in every project. This policy
-  // controls whether the application requests, displays, or requires the value.
+  MOBILE_DEEP_LINKING: {
+    ENABLED: false,
+    ASSOCIATED_PATHS: ['/auth/callback', '/auth/confirm'],
+    IOS: {
+      // Each value is <Apple App ID prefix>.<bundle identifier>.
+      APP_IDS: [],
+    },
+    ANDROID: {
+      APPS: [],
+    },
+  },
   PROFILE_IDENTITY: {
     USERNAME: 'disabled',
     AVATAR: 'optional',
     HEADER_IMAGE: 'optional',
   },
-
+  POST_SIGN_IN_ONBOARDING: {
+    REQUIRED: false,
+    REDIRECT_PATH: '/account/setup-profile',
+  },
   ACCOUNT_SETTINGS: {
     LANGUAGE: true,
     CANCEL_ACCOUNT: 'disabled',
     PRODUCT_PROFILE_PATH: null,
   },
-
-  // The route belongs to the application. Supacharger only decides whether an
-  // authenticated account must visit it before entering protected product routes.
-  POST_SIGN_IN_ONBOARDING: {
-    REQUIRED: false,
-    REDIRECT_PATH: '/account/setup-profile',
-  },
-
-  // Organisation tables are always installed. Disabled applications do not expose
-  // organisation fields or invoke organisation onboarding adapters.
   ORGANISATIONS: {
     ENABLED: true,
     AUTHENTICATION_HANDLE: 'disabled',
@@ -219,74 +197,6 @@ export const SC_CONFIG: SupachargerConfig = {
     FEATURE_LOOKUP_KEY: null as string | null,
     REDIRECT_PATH: '/account/billing/subscribe?full=1',
   },
-  // Is there a required terms checkbox? null if not needed
-  ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH: null,
-
-  /**
-   * ==========
-   * Secuirty
-   * ==========
-   */
-
-  // Allow emails with a + in them eg test+1@gmail.com
-  EMAIL_ALLOW_PLUSADDRESSING: true,
-  // Must match Supabase `auth.email.max_frequency`.
-  EMAIL_RESEND_COOLDOWN_SECONDS: 60,
-  /**
-   *
-   * Password Strength Settings
-   *
-    Used for front end, server side password validation on signup and password change
-
-    Options:
-    no_reuqired: no required chars
-    letters_digits: letters and digits
-    lower_upper_letters_digits
-    lower_upper_letters_digits_symbols
-  */
-  PASSWORD_REQUIREMENTS: 'lower_upper_letters_digits' as SupachargerConfig['PASSWORD_REQUIREMENTS'],
-  // minimum length
-  PASSWORD_MINIMUM_LENGTH: 8,
-  // if set the above two will be ignored. A generic failed message will be returned without reason if criteria not met.
-  // eg string '^999' checks that the password must start with 999 and no further evaluation
-  PASSWORD_CUSTOM_REGEX: null,
-  /**
-   * ==========
-   * AUTHENTICATION Providers
-   * ==========
-   * Enable the matching provider and callback URL in Supabase before exposing it here.
-   */
-  AUTH_PROVDERS_ENABLED: {
-    apple: false,
-    azure: false,
-    bitbucket: false,
-    discord: false,
-    facebook: true,
-    figma: false,
-    github: false,
-    gitlab: false,
-    google: true,
-    kakao: false,
-    keycloak: false,
-    linkedin_oidc: false,
-    notion: false,
-    twitch: false,
-    x: false,
-    twitter: false,
-    slack_oidc: false,
-    slack: false,
-    spotify: false,
-    workos: false,
-    zoom: false,
-  },
-
-  /**
-   * ==========
-   * Payments
-   * ==========
-   */
-  // where does the
-  STRIPE_PORTAL_LOGO_RETURN_PATH: 'account/billing',
   BILLING: {
     // Stripe chooses eligible local methods dynamically from Dashboard settings.
     AUTOMATIC_TAX: false,
@@ -297,13 +207,15 @@ export const SC_CONFIG: SupachargerConfig = {
       ORGANISATION: false,
     },
   },
-
-  /**
-   * ==========
-   * UI
-   * ==========
-   */
-
+  ROOT_PROVIDERS: {
+    INTERNATIONALISATION: true,
+    THEME: true,
+    TOASTS: true,
+  },
+  ANALYTICS: {
+    GOOGLE_ANALYTICS_ID: process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || null,
+    VERCEL_ANALYTICS_ENABLED: true,
+  },
   TOAST_CONFIG: {
     position: 'bottom-center',
     autoClose: 3000,

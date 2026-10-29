@@ -1,16 +1,22 @@
-/** Accept only absolute web URLs; null disables the notice. */
-export function signUpTermsUrl(value: string | null | undefined): string | null {
-  if (!value || !/^https?:\/\//i.test(value.trim())) return null;
+import { z } from 'zod';
+
+import { SC_CONFIG } from '@/supacharger/supacharger-config';
+
+/** Locale-specific legal destination, falling back to the configured default. */
+export function signUpTermsUrl(locale: string): string | null {
+  const urls = SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.URL;
+  const value = (urls.LOCALES[locale] || urls.DEFAULT)?.trim();
+  if (!value || /[\\\u0000-\u0020]/.test(value)) return null;
+  if (value.startsWith('/') && !value.startsWith('//')) return value;
   try {
-    const url = new URL(value.trim());
-    return (url.protocol === 'https:' || url.protocol === 'http:') && !url.username && !url.password ? url.href : null;
+    const url = new URL(value);
+    return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password ? url.href : null;
   } catch {
     return null;
   }
 }
 
-export function signUpTermsMessage(password: boolean, passwordless: boolean, social: boolean) {
-  if (social && !password && !passwordless) return 'signUpTermsSocialOnly';
-  if (social) return password ? 'signUpTermsSocial' : 'signUpTermsPasswordlessSocial';
-  return password ? 'signUpTerms' : 'signUpTermsPasswordless';
+/** Validate the explicit boolean at the action boundary; never coerce truthy input. */
+export function hasSignUpConsent(value: unknown): boolean {
+  return !SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.REQUIRED || z.literal(true).safeParse(value).success;
 }

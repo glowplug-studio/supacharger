@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
   const isAuthenticated =
     !verificationError &&
     hasAuthenticatedIdentity &&
-    (SC_CONFIG.AUTH_SESSION.ALLOW_ANONYMOUS_USERS || !isAnonymous);
+    (SC_CONFIG.SUPABASE_AUTH.SESSION.ALLOW_ANONYMOUS_USERS || !isAnonymous);
 
   return {
     claims,
@@ -60,10 +60,11 @@ export async function updateSession(request: NextRequest) {
     response,
     verificationError,
     // The SDK owns refresh, retries and cookie state. Only classify its final error.
-    temporarilyUnavailable: Boolean(verificationError && (
-      isAuthRetryableFetchError(verificationError) ||
-      verificationError.status === 429 ||
-      (verificationError.status ?? 0) >= 500
-    )),
+    temporarilyUnavailable: Boolean(
+      verificationError &&
+      (isAuthRetryableFetchError(verificationError) ||
+        verificationError.status === 429 ||
+        (verificationError.status ?? 0) >= 500),
+    ),
   };
 }

@@ -56,7 +56,7 @@ const providers = [
 ] satisfies readonly AuthProviderDefinition[];
 
 function getEnabledProviders() {
-  return providers.filter((provider) => SC_CONFIG.AUTH_PROVDERS_ENABLED[provider.key]);
+  return providers.filter((provider) => SC_CONFIG.SUPABASE_AUTH.OAUTH_PROVIDERS[provider.key]);
 }
 
 export function EnabledAuthProviderIcons({ limit = 3 }: { limit?: number }) {
@@ -67,10 +67,7 @@ export function EnabledAuthProviderIcons({ limit = 3 }: { limit?: number }) {
   return (
     <span className='sc-auth-provider-stack' aria-hidden='true'>
       {enabledProviders.map(({ key, Logo }) => (
-        <span
-          className='sc-auth-provider-avatar'
-          key={key}
-        >
+        <span className='sc-auth-provider-avatar' key={key}>
           <Logo className='sc-auth-provider-logo' focusable='false' />
         </span>
       ))}
@@ -78,7 +75,13 @@ export function EnabledAuthProviderIcons({ limit = 3 }: { limit?: number }) {
   );
 }
 
-export default function AuthProviderButtons() {
+export default function AuthProviderButtons({
+  termsAccepted = false,
+  disabled = false,
+}: {
+  termsAccepted?: boolean;
+  disabled?: boolean;
+}) {
   const enabledProviders = getEnabledProviders();
 
   if (enabledProviders.length === 0) return null;
@@ -91,7 +94,8 @@ export default function AuthProviderButtons() {
           variant='ghost'
           className='sc-auth-surface-button sc-auth-provider-button'
           key={key}
-          onClick={() => void signInWithOAuth(key)}
+          disabled={disabled}
+          onClick={() => void signInWithOAuth(key, termsAccepted)}
         >
           <span className='sc-auth-provider-avatar'>
             <Logo className='sc-auth-provider-logo' aria-hidden='true' focusable='false' />

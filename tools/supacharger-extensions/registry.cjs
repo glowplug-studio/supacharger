@@ -1,6 +1,5 @@
 const fs = require('node:fs/promises');
 const { execFileSync } = require('node:child_process');
-const { digest } = require('./installer.cjs');
 const REGISTRY_REPOSITORY = 'git@github.com:glowplug-studio/supacharger-cli-extension-register.git';
 const namePattern = /^supacharger-ext-[a-z][a-z0-9-]{0,63}$/;
 const versionPattern = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/;
@@ -11,8 +10,7 @@ function parseRegistry(bytes) {
   for (const item of data.modules) {
     if (!namePattern.test(item.name) || entries.has(item.name) || !versionPattern.test(item.version) ||
         typeof item.github_repo_url !== 'string' || !/^(?:[a-f0-9]{40}|[a-f0-9]{64})$/.test(item.source_commit) ||
-        item.checksum?.algorithm !== 'sha256' || item.checksum?.format !== 'sc-source-tree-v1' ||
-        !/^[a-f0-9]{64}$/.test(item.checksum?.value) || !Array.isArray(item.dependencies) ||
+        !Array.isArray(item.dependencies) ||
         new Set(item.dependencies).size !== item.dependencies.length ||
         item.dependencies.some(n => !namePattern.test(n) || n === item.name)) throw new Error('Invalid registry release');
     if (item.provider_dependencies !== undefined) {
@@ -50,10 +48,10 @@ function sourceInventory(source, commit) {
     seen.add(file.toLowerCase());
     const bytes = git(['cat-file', 'blob', oid]);
     if (bytes.toString('utf8', 0, 100).startsWith('version https://git-lfs.github.com/spec/v1')) throw new Error('LFS source unsupported');
-    records.push([file, mode, digest(bytes)]);
+    records.push([file, mode, bytes]);
   }
   records.sort((a,b) => Buffer.compare(Buffer.from(a[0]), Buffer.from(b[0])));
-  return { records, checksum: digest(Buffer.from('sc-source-tree-v1\n' + JSON.stringify(records) + '\n')) };
+  return { records };
 }
 async function verifyRelease(source, bundle, registryFile) {
   if (!registryFile) return { verified: false, reason: 'Local source; registry verification not requested' };
@@ -62,12 +60,11 @@ async function verifyRelease(source, bundle, registryFile) {
   if (!entry || entry.version !== bundle.version) throw new Error('Registry version does not match bundle');
   if (JSON.stringify(entry.dependencies) !== JSON.stringify(bundle.dependencies || []) || JSON.stringify(entry.provider_dependencies || {}) !== JSON.stringify(bundle.provider_dependencies || {})) throw new Error('Registry dependencies do not match bundle');
   const inventory = sourceInventory(source, entry.source_commit);
-  if (inventory.checksum !== entry.checksum.value) throw new Error('Registry source checksum mismatch');
   const { safePath } = require('./installer.cjs');
-  for (const [file, mode, hash] of inventory.records) {
+  for (const [file, mode, bytes] of inventory.records) {
     const stat = await fs.stat(await safePath(source, file));
     if ((mode === '100755') !== Boolean(stat.mode & 0o111)) throw new Error(`Source mode differs from registered commit: ${file}`);
-    if (digest(await fs.readFile(await safePath(source, file))) !== hash) throw new Error(`Source differs from registered commit: ${file}`);
+    if (!(await fs.readFile(await safePath(source, file))).equals(bytes)) throw new Error(`Source differs from registered commit: ${file}`);
   }
   const tracked = new Set(inventory.records.map(row => row[0]));
   if (!tracked.has('extension.json') || bundle.files.some(f => !tracked.has(f.source))) throw new Error('Payload is not in the registered source');

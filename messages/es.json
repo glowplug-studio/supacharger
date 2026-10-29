@@ -95,7 +95,8 @@
     "otpExpired": "El código de acceso único ha caducado o no es válido",
     "samePassword": "La nueva contraseña debe ser diferente de la antigua",
     "tokenAuthApiError": "El token ha caducado o no es válido",
-    "signupApiAuthError": "La dirección de correo electrónico y la contraseña no cumplen con los requisitos de seguridad"
+    "signupApiAuthError": "La dirección de correo electrónico y la contraseña no cumplen con los requisitos de seguridad",
+    "termsRequired": ""
   },
   "Toasts": {
     "logoutFailed": "Hubo un problema al cerrar sesión",
@@ -105,11 +106,6 @@
     "title": "Facturación"
   },
   "AuthJourney": {
-    "signUpTerms": "",
-    "signUpTermsSocial": "",
-    "signUpTermsSocialOnly": "",
-    "signUpTermsPasswordless": "",
-    "signUpTermsPasswordlessSocial": "",
     "mfaStatusFailed": "",
     "heroTitle": "Haz crecer tu propia comunidad",
     "welcomeBack": "Bienvenido de nuevo",
@@ -166,7 +162,9 @@
     "sendAnother": "Enviar de nuevo",
     "loginHere": "Inicia sesión aquí",
     "getVerificationLink": "Obtener enlace de verificación",
-    "recoveryResendSuccess": ""
+    "recoveryResendSuccess": "",
+    "signUpAgreement": "",
+    "termsRequired": ""
   },
   "LoginPage": {
     "title": "Iniciar sesión",
@@ -219,13 +217,77 @@
   "AccountSettings": {
     "title": "",
     "description": "",
-    "navigation": {"label": "", "details": "", "security": "", "privacy": "", "notifications": "", "billing": "", "organisations": "", "productProfile": ""},
-    "details": {"title": "", "description": "", "firstName": "", "lastName": "", "email": "", "emailHelp": "", "username": "", "usernameHelp": "", "language": "", "save": "", "saving": "", "saved": ""},
-    "languages": {"en": "", "fr": "", "es": "", "zh": ""},
-    "media": {"avatar": "", "header": "", "avatarHelp": "", "headerHelp": "", "invalidFile": "", "uploadFailed": "", "saveFailed": "", "saving": "", "save": "", "saved": "", "choose": "", "preview": ""},
-    "productProfile": {"title": "", "description": "", "open": ""},
-    "cancellation": {"title": "", "description": "", "planned": "", "action": ""},
-    "validation": {"invalidJson": "", "checkFields": "", "firstName": "", "lastName": "", "username": "", "language": "", "extension": "", "authentication": "", "verifyEmail": "", "usernameTaken": "", "profileUpdate": "", "languageUpdate": "", "extensionUpdate": "", "summaryLoad": ""}
+    "navigation": {
+      "label": "",
+      "details": "",
+      "security": "",
+      "privacy": "",
+      "notifications": "",
+      "billing": "",
+      "organisations": "",
+      "productProfile": ""
+    },
+    "details": {
+      "title": "",
+      "description": "",
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "emailHelp": "",
+      "username": "",
+      "usernameHelp": "",
+      "language": "",
+      "save": "",
+      "saving": "",
+      "saved": ""
+    },
+    "languages": {
+      "en": "",
+      "fr": "",
+      "es": "",
+      "zh": ""
+    },
+    "media": {
+      "avatar": "",
+      "header": "",
+      "avatarHelp": "",
+      "headerHelp": "",
+      "invalidFile": "",
+      "uploadFailed": "",
+      "saveFailed": "",
+      "saving": "",
+      "save": "",
+      "saved": "",
+      "choose": "",
+      "preview": ""
+    },
+    "productProfile": {
+      "title": "",
+      "description": "",
+      "open": ""
+    },
+    "cancellation": {
+      "title": "",
+      "description": "",
+      "planned": "",
+      "action": ""
+    },
+    "validation": {
+      "invalidJson": "",
+      "checkFields": "",
+      "firstName": "",
+      "lastName": "",
+      "username": "",
+      "language": "",
+      "extension": "",
+      "authentication": "",
+      "verifyEmail": "",
+      "usernameTaken": "",
+      "profileUpdate": "",
+      "languageUpdate": "",
+      "extensionUpdate": "",
+      "summaryLoad": ""
+    }
   },
   "AccountPreferences": {
     "save": "",
@@ -233,16 +295,55 @@
     "saved": "",
     "unavailable": "",
     "empty": "",
-    "errors": {"invalidRequest": "", "unauthenticated": "", "notFound": "", "adapterInvalid": "", "unavailable": "", "invalidOptions": "", "saveFailed": ""},
-    "privacy": {"title": "", "description": "", "disabled": ""},
-    "notifications": {"title": "", "description": "", "disabled": ""}
+    "errors": {
+      "invalidRequest": "",
+      "unauthenticated": "",
+      "notFound": "",
+      "adapterInvalid": "",
+      "unavailable": "",
+      "invalidOptions": "",
+      "saveFailed": ""
+    },
+    "privacy": {
+      "title": "",
+      "description": "",
+      "disabled": ""
+    },
+    "notifications": {
+      "title": "",
+      "description": "",
+      "disabled": ""
+    }
   },
   "AccountSecurity": {
-    "providers": { "title": "", "description": "", "signedInWith": "", "linkedLabel": "" },
+    "providers": {
+      "title": "",
+      "description": "",
+      "signedInWith": "",
+      "linkedLabel": ""
+    },
     "currentPassword": "",
     "saving": "",
-    "email": { "title": "", "description": "", "passwordUnavailable": "", "new": "", "save": "", "sent": "", "pending": "" },
-    "password": { "title": "", "description": "", "unavailable": "", "new": "", "repeat": "", "save": "", "saved": "", "show": "", "hide": "" },
+    "email": {
+      "title": "",
+      "description": "",
+      "passwordUnavailable": "",
+      "new": "",
+      "save": "",
+      "sent": "",
+      "pending": ""
+    },
+    "password": {
+      "title": "",
+      "description": "",
+      "unavailable": "",
+      "new": "",
+      "repeat": "",
+      "save": "",
+      "saved": "",
+      "show": "",
+      "hide": ""
+    },
     "errors": {
       "invalidRequest": "",
       "unauthenticated": "",
@@ -255,12 +356,44 @@
       "passwordUpdateFailed": ""
     },
     "mfa": {
-      "title": "", "description": "", "setup": "", "authenticator": "", "qrAlt": "", "manualKey": "", "code": "", "enable": "", "cancel": "", "loading": "", "empty": "", "added": "", "removeCode": "", "remove": "", "enabled": "", "cancelled": "", "removed": "",
-      "errors": { "load": "", "enroll": "", "cancel": "", "code": "", "verify": "", "remove": "" }
+      "title": "",
+      "description": "",
+      "setup": "",
+      "authenticator": "",
+      "qrAlt": "",
+      "manualKey": "",
+      "code": "",
+      "enable": "",
+      "cancel": "",
+      "loading": "",
+      "empty": "",
+      "added": "",
+      "removeCode": "",
+      "remove": "",
+      "enabled": "",
+      "cancelled": "",
+      "removed": "",
+      "errors": {
+        "load": "",
+        "enroll": "",
+        "cancel": "",
+        "code": "",
+        "verify": "",
+        "remove": ""
+      }
     },
     "mfaChallenge": {
-      "title": "", "description": "", "code": "", "checking": "", "verify": "",
-      "errors": { "load": "", "missing": "", "code": "", "verify": "" }
+      "title": "",
+      "description": "",
+      "code": "",
+      "checking": "",
+      "verify": "",
+      "errors": {
+        "load": "",
+        "missing": "",
+        "code": "",
+        "verify": ""
+      }
     }
   },
   "ThemeChangerMenu": {
@@ -307,7 +440,39 @@
   },
   "MarketingFeaturePages": {
     "coreWidgetDemos": {
-      "eyebrow":"","title":"","description":"","genericTitle":"","genericDescription":"","bannerTitle":"","bannerDescription":"","bannerLabel":"","avatarTitle":"","avatarDescription":"","avatarLabel":"","simulateUpload":"","simulateAgain":"","uploading":"","uploadComplete":"","loadersTitle":"","loadersDescription":"","inlineLoaderLabel":"","inverseLoaderLabel":"","imageLoaderLabel":"","modalTitle":"","modalDescription":"","openModal":"","closeModal":"","modalDialogTitle":"","modalBody":"","toastLabel":"","toastDescription":"","toastButtonLabel": "", "gatingTitle": "", "gatingDescription": "", "gatingButtonLabel": "", "toastMessage":""
+      "eyebrow": "",
+      "title": "",
+      "description": "",
+      "genericTitle": "",
+      "genericDescription": "",
+      "bannerTitle": "",
+      "bannerDescription": "",
+      "bannerLabel": "",
+      "avatarTitle": "",
+      "avatarDescription": "",
+      "avatarLabel": "",
+      "simulateUpload": "",
+      "simulateAgain": "",
+      "uploading": "",
+      "uploadComplete": "",
+      "loadersTitle": "",
+      "loadersDescription": "",
+      "inlineLoaderLabel": "",
+      "inverseLoaderLabel": "",
+      "imageLoaderLabel": "",
+      "modalTitle": "",
+      "modalDescription": "",
+      "openModal": "",
+      "closeModal": "",
+      "modalDialogTitle": "",
+      "modalBody": "",
+      "toastLabel": "",
+      "toastDescription": "",
+      "toastButtonLabel": "",
+      "gatingTitle": "",
+      "gatingDescription": "",
+      "gatingButtonLabel": "",
+      "toastMessage": ""
     },
     "whatsIncluded": {
       "title": "Qué incluye realmente Supacharger",
@@ -360,9 +525,15 @@
       "stackTitle": "La tecnología instalada",
       "stackDescription": "La página lee las versiones exactas de las dependencias desde package.json. Los paquetes compartidos de ejecución están fijados para que las actualizaciones de la CLI sean reproducibles.",
       "stackGroups": [
-        { "title": "Entorno de la aplicación" },
-        { "title": "Datos y facturación" },
-        { "title": "Herramientas de interfaz" }
+        {
+          "title": "Entorno de la aplicación"
+        },
+        {
+          "title": "Datos y facturación"
+        },
+        {
+          "title": "Herramientas de interfaz"
+        }
       ],
       "packageTitle": "El package.json que recibe",
       "packageDescription": "Este es el archivo actual del repositorio, renderizado directamente desde el código fuente para mostrar cada script, dependencia, herramienta de desarrollo y sobrescritura.",
@@ -553,7 +724,8 @@
     "allRightsReserved": "Reservados todos los derechos.",
     "firstBuiltIn": "Primero construido",
     "newZealand": "Nueva Zelanda",
-    "by": "por"
+    "by": "por",
+    "privacyPolicy": ""
   },
   "LicensePage": {
     "readThirdPartyLicense": "",
@@ -570,7 +742,10 @@
     "dependenciesTitle": "Instantánea de licencia de dependencia directa",
     "dependenciesIntro": "El tiempo de ejecución directo instalado y las dependencias de desarrollo tienen en su mayoría licencias permisivas. Estos grupos se basan en metadatos de paquetes y archivos de licencia incluidos en el archivo de bloqueo actual, no en una opinión legal ni en un aviso completo de dependencia transitiva.",
     "groups": {
-      "unlicense": { "title": "", "description": "" },
+      "unlicense": {
+        "title": "",
+        "description": ""
+      },
       "mit": {
         "title": "MIT",
         "description": "Licencias permisivas que generalmente requieren la preservación de los derechos de autor y avisos de licencia en copias redistribuidas."
@@ -898,73 +1073,15 @@
     }
   },
   "LegalPage": {
-    "eyebrow": "Políticas",
-    "title": "Información legal",
-    "description": "Los términos y políticas que rigen el uso de Korunet y explican cómo se maneja la información personal y las cookies.",
-    "lastUpdated": "Última actualización: 4 de junio de 2025",
-    "tabs": {
-      "terms": "Condiciones de uso",
-      "privacy": "Política de privacidad",
-      "cookies": "Cookies de terceros"
-    },
+    "title": "",
+    "description": "",
     "terms": {
-      "title": "Condiciones de uso de Korunet",
-      "sections": [
-        {
-          "title": "Usando el servicio",
-          "body": "Utilice Korunet sólo para fines legales. Mantenga la confidencialidad de las credenciales de la cuenta, proporcione información precisa de la cuenta y no interfiera con el funcionamiento o la seguridad del servicio."
-        },
-        {
-          "title": "Tu contenido",
-          "body": "Usted conserva la propiedad del contenido que envía. Usted otorga a Korunet los permisos necesarios para alojar, mostrar y procesar ese contenido para operar el servicio."
-        },
-        {
-          "title": "Disponibilidad y garantías",
-          "body": "El servicio se proporciona según disponibilidad. Las funciones pueden cambiar, suspenderse o descontinuarse, y no se promete ningún funcionamiento ininterrumpido o libre de errores."
-        },
-        {
-          "title": "Finalizar el acceso",
-          "body": "El acceso puede suspenderse o cancelarse cuando se incumplen estos términos, se hace un mal uso del servicio o el acceso continuo crea un riesgo legal o de seguridad."
-        }
-      ]
+      "title": "",
+      "body": ""
     },
     "privacy": {
-      "title": "Política de privacidad de Korunet",
-      "sections": [
-        {
-          "title": "Información recopilada",
-          "body": "Korunet puede recopilar detalles de la cuenta, información del perfil, datos de uso, información del dispositivo e información proporcionada cuando se comunica con el soporte."
-        },
-        {
-          "title": "Cómo se utiliza la información",
-          "body": "La información se utiliza para proporcionar y asegurar el servicio, personalizar la experiencia, comunicarse con los usuarios, comprender el uso del producto y cumplir obligaciones legales."
-        },
-        {
-          "title": "Compartir y retener",
-          "body": "La información personal no se vende. Puede compartirse con proveedores de servicios, autoridades legales cuando sea necesario u otras partes según sus instrucciones. La información se conserva sólo durante el tiempo necesario para estos fines."
-        },
-        {
-          "title": "Tus elecciones",
-          "body": "Dependiendo de la ley aplicable, puede solicitar acceso, corrección, exportación o eliminación de información personal y puede optar por no recibir comunicaciones de marketing."
-        }
-      ]
-    },
-    "cookies": {
-      "title": "Política de cookies de terceros",
-      "sections": [
-        {
-          "title": "Por qué se utilizan cookies",
-          "body": "Las cookies y almacenamiento similar pueden mantener las sesiones seguras, recordar preferencias, medir el rendimiento y ayudar a comprender cómo se utiliza el servicio."
-        },
-        {
-          "title": "Servicios de terceros",
-          "body": "Los proveedores utilizados para autenticación, pagos, análisis o contenido integrado pueden establecer sus propias cookies según sus políticas."
-        },
-        {
-          "title": "Gestionar cookies",
-          "body": "Los controles del navegador pueden bloquear o eliminar cookies. Deshabilitar las cookies esenciales puede impedir que el inicio de sesión u otras partes del servicio funcionen correctamente."
-        }
-      ]
+      "title": "",
+      "body": ""
     }
   },
   "AccountPages": {
@@ -1159,33 +1276,118 @@
     "overview": "",
     "metricsLabel": "",
     "metrics": [
-      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
-      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
-      { "label": "", "value": "", "trend": "", "direction": "up", "detail": "" },
-      { "label": "", "value": "", "trend": "", "direction": "down", "detail": "" }
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "up",
+        "detail": ""
+      },
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "up",
+        "detail": ""
+      },
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "up",
+        "detail": ""
+      },
+      {
+        "label": "",
+        "value": "",
+        "trend": "",
+        "direction": "down",
+        "detail": ""
+      }
     ],
-    "chart": { "title": "", "description": "", "desktop": "", "mobile": "" },
-    "ranges": { "days90": "", "days30": "", "days7": "" },
+    "chart": {
+      "title": "",
+      "description": "",
+      "desktop": "",
+      "mobile": ""
+    },
+    "ranges": {
+      "days90": "",
+      "days30": "",
+      "days7": ""
+    },
     "table": {
       "title": "",
       "description": "",
       "searchLabel": "",
       "searchPlaceholder": "",
-      "columns": { "item": "", "type": "", "status": "", "progress": "", "owner": "", "actions": "" },
+      "columns": {
+        "item": "",
+        "type": "",
+        "status": "",
+        "progress": "",
+        "owner": "",
+        "actions": ""
+      },
       "rows": [
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" },
-        { "item": "", "type": "", "status": "", "progress": "", "owner": "" }
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        },
+        {
+          "item": "",
+          "type": "",
+          "status": "",
+          "progress": "",
+          "owner": ""
+        }
       ],
       "rowActions": "",
       "summary": "",
       "viewAll": ""
     },
-    "documents": { "title": "", "dataLibrary": "", "reports": "", "assistant": "" },
-    "secondary": { "settings": "", "help": "", "search": "" }
+    "documents": {
+      "title": "",
+      "dataLibrary": "",
+      "reports": "",
+      "assistant": ""
+    },
+    "secondary": {
+      "settings": "",
+      "help": "",
+      "search": ""
+    }
   },
   "ProfileOnboardingForm": {
     "nameError": "Ingrese su nombre y apellido.",
@@ -1230,35 +1432,127 @@
     "description": "Tu cuenta de Korunet y espacio de trabajo comunitario."
   },
   "Organisations": {
-    "common": {"save":"","saving":"","working":""},
-    "roles": {"owner":"","admin":"","member":""},
-    "navigation": {"label":"","back":"","profile":"","team":"","billing":""},
+    "common": {
+      "save": "",
+      "saving": "",
+      "working": ""
+    },
+    "roles": {
+      "owner": "",
+      "admin": "",
+      "member": ""
+    },
+    "navigation": {
+      "label": "",
+      "back": "",
+      "profile": "",
+      "team": "",
+      "billing": ""
+    },
     "chooser": {
-      "title":"","description":"","membershipsTitle":"","membershipsDescription":"","emptyTitle":"","emptyDescription":"",
-      "memberCount":"","active":"","select":"","openSettings":"","createTitle":"","createDescription":"","create":"",
-      "requestTitle":"","requestDescription":"","request":"","accessRequested":"","invitationTitle":"",
-      "invitationDescription":"","acceptInvitation":"","invitationAccepted":""
+      "title": "",
+      "description": "",
+      "membershipsTitle": "",
+      "membershipsDescription": "",
+      "emptyTitle": "",
+      "emptyDescription": "",
+      "memberCount": "",
+      "active": "",
+      "select": "",
+      "openSettings": "",
+      "createTitle": "",
+      "createDescription": "",
+      "create": "",
+      "requestTitle": "",
+      "requestDescription": "",
+      "request": "",
+      "accessRequested": "",
+      "invitationTitle": "",
+      "invitationDescription": "",
+      "acceptInvitation": "",
+      "invitationAccepted": ""
     },
     "profile": {
-      "title":"","description":"","memberReadOnly":"","name":"","handle":"","handleHelp":"","handleAvailable":"",
-      "handleUnavailable":"","bio":"","bioHelp":"","noBio":"","colour":"","accessPolicy":"","accessClosed":"",
-      "accessRequest":"","avatarTitle":"","headerTitle":"","avatarUpload":"","headerUpload":"","mediaHelp":"",
-      "mediaInvalid":"","mediaUploadFailed":"","removeMedia":"","saved":""
+      "title": "",
+      "description": "",
+      "memberReadOnly": "",
+      "name": "",
+      "handle": "",
+      "handleHelp": "",
+      "handleAvailable": "",
+      "handleUnavailable": "",
+      "bio": "",
+      "bioHelp": "",
+      "noBio": "",
+      "colour": "",
+      "accessPolicy": "",
+      "accessClosed": "",
+      "accessRequest": "",
+      "avatarTitle": "",
+      "headerTitle": "",
+      "avatarUpload": "",
+      "headerUpload": "",
+      "mediaHelp": "",
+      "mediaInvalid": "",
+      "mediaUploadFailed": "",
+      "removeMedia": "",
+      "saved": ""
     },
     "team": {
-      "title":"","descriptionManager":"","descriptionMember":"","membersTitle":"","unnamedMember":"","roleFor":"",
-      "remove":"","memberRemoved":"","roleUpdated":"","inviteTitle":"","inviteDescription":"","email":"","inviteRole":"",
-      "invite":"","invitationCreated":"","copyInviteOnce":"","inviteLink":"","copy":"","expires":"","revoke":"",
-      "invitationRevoked":"","noInvitations":"","requestsTitle":"","requestsDescription":"","noRequests":"",
-      "requestedOn":"","approve":"","reject":"","requestApproved":"","requestRejected":""
+      "title": "",
+      "descriptionManager": "",
+      "descriptionMember": "",
+      "membersTitle": "",
+      "unnamedMember": "",
+      "roleFor": "",
+      "remove": "",
+      "memberRemoved": "",
+      "roleUpdated": "",
+      "inviteTitle": "",
+      "inviteDescription": "",
+      "email": "",
+      "inviteRole": "",
+      "invite": "",
+      "invitationCreated": "",
+      "copyInviteOnce": "",
+      "inviteLink": "",
+      "copy": "",
+      "expires": "",
+      "revoke": "",
+      "invitationRevoked": "",
+      "noInvitations": "",
+      "requestsTitle": "",
+      "requestsDescription": "",
+      "noRequests": "",
+      "requestedOn": "",
+      "approve": "",
+      "reject": "",
+      "requestApproved": "",
+      "requestRejected": ""
     },
     "billing": {
-      "title":"","description":"","portalError":"","noAccount":"","noAccountHelp":"","noSubscriptions":"",
-      "status":"","unknown":"","manage":"","managerOnly":""
+      "title": "",
+      "description": "",
+      "portalError": "",
+      "noAccount": "",
+      "noAccountHelp": "",
+      "noSubscriptions": "",
+      "status": "",
+      "unknown": "",
+      "manage": "",
+      "managerOnly": ""
     },
     "errors": {
-      "disabled":"","invalidRequest":"","invalidField":"","checkFields":"","extension":"","handleUnavailable":"",
-      "lastOwner":"","invitationInvalid":"","forbidden":"","actionFailed":""
+      "disabled": "",
+      "invalidRequest": "",
+      "invalidField": "",
+      "checkFields": "",
+      "extension": "",
+      "handleUnavailable": "",
+      "lastOwner": "",
+      "invitationInvalid": "",
+      "forbidden": "",
+      "actionFailed": ""
     }
   },
   "SessionTransfer": {
@@ -1269,11 +1563,49 @@
     "retry": ""
   },
   "SCWidgets": {
-    "fileUpload": {"label":"","description":"","limitations":"","add":"","drop":"","emptyFile":"","invalidType":"","remove":"","tooLarge":""},
-    "imageCrop": {"cancel":"","circleDescription":"","done":"","dragLabel":"","failed":"","rectangleDescription":"","reposition":"","title":"","verticalDescription":"","verticalDragLabel":"","zoom":""},
-    "profileMedia": {"title":"","description":"","avatar":"","banner":"","unnamed":"","avatarPreviewAlt":"","bannerPreviewAlt":"","saving":"","save":"","saved":"","uploadFailed":"","saveFailed":""}
+    "fileUpload": {
+      "label": "",
+      "description": "",
+      "limitations": "",
+      "add": "",
+      "drop": "",
+      "emptyFile": "",
+      "invalidType": "",
+      "remove": "",
+      "tooLarge": ""
+    },
+    "imageCrop": {
+      "cancel": "",
+      "circleDescription": "",
+      "done": "",
+      "dragLabel": "",
+      "failed": "",
+      "rectangleDescription": "",
+      "reposition": "",
+      "title": "",
+      "verticalDescription": "",
+      "verticalDragLabel": "",
+      "zoom": ""
+    },
+    "profileMedia": {
+      "title": "",
+      "description": "",
+      "avatar": "",
+      "banner": "",
+      "unnamed": "",
+      "avatarPreviewAlt": "",
+      "bannerPreviewAlt": "",
+      "saving": "",
+      "save": "",
+      "saved": "",
+      "uploadFailed": "",
+      "saveFailed": ""
+    }
   },
-  "ImageUploadErrors": {"invalidRequest":"","invalidCrop":""},
+  "ImageUploadErrors": {
+    "invalidRequest": "",
+    "invalidCrop": ""
+  },
   "ErrorPage": {
     "notFound": {
       "status": "error 404",

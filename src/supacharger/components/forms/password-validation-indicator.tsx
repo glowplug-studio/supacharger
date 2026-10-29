@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { useEffect,useState } from "react";
-import { useTranslations } from "next-intl";
-import { Check, SquareDashed } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Check, SquareDashed } from 'lucide-react';
 
-import { Input } from "@/supacharger/components/primitives/input";
-import { SC_CONFIG } from "@/supacharger/supacharger-config";
+import { Input } from '@/supacharger/components/primitives/input';
+import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import {
   evaluatePasswordStrength,
   hasDigit,
@@ -13,7 +13,7 @@ import {
   hasLowercase,
   hasSpecial,
   hasUppercase,
-} from "@/supacharger/utils/helpers";
+} from '@/supacharger/utils/helpers';
 
 interface ValidationItem {
   key: string;
@@ -34,13 +34,13 @@ interface PasswordValidationIndicatorProps {
 export default function PasswordValidationIndicator({
   value,
   onChange,
-  name = "newPassword",
-  id = "newPassword",
-  type = "password",
+  name = 'newPassword',
+  id = 'newPassword',
+  type = 'password',
   placeholder,
   onValidationChange,
 }: PasswordValidationIndicatorProps) {
-  const tStrengthComponent = useTranslations("evaluatePasswordStrengthComponent");
+  const tStrengthComponent = useTranslations('evaluatePasswordStrengthComponent');
 
   const [showTooltip, setShowTooltip] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -50,15 +50,15 @@ export default function PasswordValidationIndicator({
 
   // Dynamically build validation items based on config (for the checklist UI only)
   const getValidationItems = (): ValidationItem[] => {
-    const minLength = SC_CONFIG.PASSWORD_MINIMUM_LENGTH;
-    const requirements = SC_CONFIG.PASSWORD_REQUIREMENTS;
-    const customRegex = SC_CONFIG.PASSWORD_CUSTOM_REGEX;
+    const minLength = SC_CONFIG.SUPABASE_AUTH.PASSWORD.MINIMUM_LENGTH;
+    const requirements = SC_CONFIG.SUPABASE_AUTH.PASSWORD.REQUIREMENTS;
+    const customRegex = SC_CONFIG.SUPABASE_AUTH.PASSWORD.CUSTOM_REGEX;
 
     if (customRegex) {
       return [
         {
-          key: "custom",
-          label: tStrengthComponent("passwordCustomRegexDescription"),
+          key: 'custom',
+          label: tStrengthComponent('passwordCustomRegexDescription'),
           test: (newPassword: string) => {
             try {
               return new RegExp(customRegex).test(newPassword);
@@ -72,61 +72,61 @@ export default function PasswordValidationIndicator({
 
     const items: ValidationItem[] = [
       {
-        key: "length",
-        label: minLength + " " + tStrengthComponent("passwordMinLength"),
+        key: 'length',
+        label: minLength + ' ' + tStrengthComponent('passwordMinLength'),
         test: (newPassword: string) => newPassword.length >= minLength,
       },
     ];
 
     switch (requirements) {
-      case "letters_digits":
+      case 'letters_digits':
         items.push({
-          key: "letter",
-          label: tStrengthComponent("passwordLetter"),
+          key: 'letter',
+          label: tStrengthComponent('passwordLetter'),
           test: hasLetter,
         });
         items.push({
-          key: "digit",
-          label: tStrengthComponent("passwordDigit"),
+          key: 'digit',
+          label: tStrengthComponent('passwordDigit'),
           test: hasDigit,
         });
         break;
-      case "lower_upper_letters_digits":
+      case 'lower_upper_letters_digits':
         items.push({
-          key: "lowercase",
-          label: tStrengthComponent("passwordLowercase"),
+          key: 'lowercase',
+          label: tStrengthComponent('passwordLowercase'),
           test: hasLowercase,
         });
         items.push({
-          key: "uppercase",
-          label: tStrengthComponent("passwordUppercase"),
+          key: 'uppercase',
+          label: tStrengthComponent('passwordUppercase'),
           test: hasUppercase,
         });
         items.push({
-          key: "digit",
-          label: tStrengthComponent("passwordDigit"),
+          key: 'digit',
+          label: tStrengthComponent('passwordDigit'),
           test: hasDigit,
         });
         break;
-      case "lower_upper_letters_digits_symbols":
+      case 'lower_upper_letters_digits_symbols':
         items.push({
-          key: "lowercase",
-          label: tStrengthComponent("passwordLowercase"),
+          key: 'lowercase',
+          label: tStrengthComponent('passwordLowercase'),
           test: hasLowercase,
         });
         items.push({
-          key: "uppercase",
-          label: tStrengthComponent("passwordUppercase"),
+          key: 'uppercase',
+          label: tStrengthComponent('passwordUppercase'),
           test: hasUppercase,
         });
         items.push({
-          key: "digit",
-          label: tStrengthComponent("passwordDigit"),
+          key: 'digit',
+          label: tStrengthComponent('passwordDigit'),
           test: hasDigit,
         });
         items.push({
-          key: "special",
-          label: tStrengthComponent("passwordSymbol"),
+          key: 'special',
+          label: tStrengthComponent('passwordSymbol'),
           test: hasSpecial,
         });
         break;
@@ -190,7 +190,7 @@ export default function PasswordValidationIndicator({
           data-visible={showCriteria ? 'true' : 'false'}
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
-          aria-label={tStrengthComponent("passwordRequirementsLabel")}
+          aria-label={tStrengthComponent('passwordRequirementsLabel')}
           aria-hidden={!showCriteria}
         >
           {validations.map((isValid, idx) => (
@@ -209,15 +209,8 @@ export default function PasswordValidationIndicator({
           <ul className='sc-auth-password-requirements'>
             {validationItems.map((item, idx) => (
               <li key={item.key} className='sc-auth-password-requirement'>
-                <span
-                  className='sc-auth-password-requirement-icon'
-                  data-valid={validations[idx] ? 'true' : 'false'}
-                >
-                  {validations[idx] ? (
-                    <Check size={15} />
-                  ) : (
-                    <SquareDashed size={15} />
-                  )}
+                <span className='sc-auth-password-requirement-icon' data-valid={validations[idx] ? 'true' : 'false'}>
+                  {validations[idx] ? <Check size={15} /> : <SquareDashed size={15} />}
                 </span>
                 {item.label}
               </li>

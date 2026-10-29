@@ -3,13 +3,13 @@ import { getTranslations } from 'next-intl/server';
 
 import { SupachargerAttribution } from '@/components/sc_widgets/attribution/supacharger-attribution';
 import ModeToggle from '@/supacharger/components/buttons/mode-toggle-button';
-import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 import LocaleSwitcher from './sc_locale-switcher';
 import SCSiteLogo from './sc_site-logo';
 
 export default async function SCFooter() {
   const t = await getTranslations('MarketingFooter');
+  const global = await getTranslations('Global');
   const footerGroups = [
     {
       label: t('navigation'),
@@ -26,7 +26,6 @@ export default async function SCFooter() {
       label: t('information'),
       links: [
         { href: '/#faq', label: t('faq') },
-        { href: '/legal', label: t('termsOfUse') },
         { href: '/license', label: t('license') },
         { href: '/account/login', label: t('login') },
         { href: '/account/create', label: t('createAccount') },
@@ -68,9 +67,19 @@ export default async function SCFooter() {
         </div>
 
         <div className='border-border text-muted-foreground mt-16 grid gap-3 border-t pt-7 text-sm sm:grid-cols-3 sm:items-center'>
-          <p>
-            © {new Date().getFullYear()} {SC_CONFIG.SITE_TITLE}. {t('allRightsReserved')}
-          </p>
+          <div>
+            <p>
+              © {new Date().getFullYear()} {global('siteTitle')}. {t('allRightsReserved')}
+            </p>
+            <div className='mt-1 flex gap-3 text-[11px]'>
+              <a href='/legal#terms' target='_blank' rel='noopener noreferrer' className='hover:underline'>
+                {t('termsOfUse')}
+              </a>
+              <a href='/legal#privacy' target='_blank' rel='noopener noreferrer' className='hover:underline'>
+                {t('privacyPolicy')}
+              </a>
+            </div>
+          </div>
           <p className='text-center'>
             {t('firstBuiltIn')}{' '}
             <a

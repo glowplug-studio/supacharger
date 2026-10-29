@@ -26,10 +26,12 @@ function json(body: unknown, status = 200) {
 }
 
 export async function POST(request: NextRequest) {
-  const policy = SC_CONFIG.AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER;
+  const policy = SC_CONFIG.SUPABASE_AUTH.METHODS.CROSS_DEVICE_SESSION_TRANSFER;
   if (!policy.ENABLED) return json({ error: 'not_found' }, 404);
   let origin: string;
-  try { origin = getAppRequestOrigin(request); } catch {
+  try {
+    origin = getAppRequestOrigin(request);
+  } catch {
     return json({ error: 'invalid_request' }, 403);
   }
   if (!isSameOriginSessionTransferRequest(request, origin)) {
@@ -75,9 +77,8 @@ export async function POST(request: NextRequest) {
     return json({ error: 'unauthenticated' }, 401);
   }
 
-  if (SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
-    const { data: assurance, error: assuranceError } =
-      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (SC_CONFIG.SUPABASE_AUTH.METHODS.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
+    const { data: assurance, error: assuranceError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
     if (assuranceError) return json({ error: 'server_error' }, 500);
     if (assurance?.nextLevel === 'aal2' && assurance.currentLevel !== 'aal2') {
       return json({ error: 'mfa_required' }, 403);

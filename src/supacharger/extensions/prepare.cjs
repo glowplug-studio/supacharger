@@ -51,14 +51,9 @@ function readConfig(filename) {
 
 function verifyProvider(root, id) {
   if (!validId(id)) throw new Error('Invalid configured provider ID');
-  const receipt = localPath(root, `.supacharger/extensions/${id}.json`);
-  if (!fs.existsSync(receipt)) throw new Error(`Configured provider ${id} is not installed`);
-  const { manifest } = JSON.parse(fs.readFileSync(receipt, 'utf8'));
-  if (manifest?.id !== id || manifest.name !== `supacharger-ext-${id}` || !Array.isArray(manifest.files) || !manifest.files.length || manifest.files.length > 1000) throw new Error('Invalid provider installation record');
-  for (const file of manifest.files) {
-    const target = localPath(root, file.target);
-    if (!fs.existsSync(target) || !fs.statSync(target).isFile()) throw new Error(`Configured provider ${id} has missing source files`);
-  }
+  const base = `src/app/(project)/(extensions)/(sc_extensions)/(${id})`;
+  const config = readConfig(localPath(root, `${base}/supacharger-ext-${id}.config.ts`));
+  if (!config.enabled || !fs.statSync(localPath(root, `${base}/index.ts`)).isFile()) throw new Error(`Configured provider ${id} is unavailable`);
 }
 
 /** Called from next.config before dev/build. Never contacts or changes a database. */
@@ -83,13 +78,11 @@ function prepareExtensions({ root, extensions = [] }) {
     const config = installed ? readConfig(configFile) : { enabled: false };
     const enabled = config.enabled;
     if (enabled) {
-      const receipt = localPath(root, `.supacharger/extensions/${id}.json`);
-      if (fs.existsSync(receipt)) {
-        const manifest = JSON.parse(fs.readFileSync(receipt, 'utf8')).manifest;
-        if (manifest.core_services !== undefined && (!Array.isArray(manifest.core_services) || manifest.core_services.some(name => typeof name !== 'string' || !/^[a-z][a-z0-9_]{0,63}$/.test(name)))) throw new Error('Invalid required core services');
-        for (const service of manifest.core_services ?? []) requiredServices.add(service);
-      }
+      const services = registration.services ?? [];
+      if (!Array.isArray(services) || services.some(name => typeof name !== 'string' || !/^[a-z][a-z0-9_]{0,63}$/.test(name))) throw new Error('Invalid required core services');
+      for (const service of services) requiredServices.add(service);
     }
+
     if (enabled && Object.hasOwn(config, 'emailProvider')) {
       if (typeof config.emailProvider !== 'string' || !Object.hasOwn(providers, config.emailProvider)) throw new Error(`Unsupported ${id} email provider`);
       verifyProvider(root, providers[config.emailProvider]);

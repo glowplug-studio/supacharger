@@ -1,7 +1,7 @@
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 import SiteLogoSVG from '@/assets/images/site-logo-light.svg';
-import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
 interface LogoProps {
@@ -11,6 +11,7 @@ interface LogoProps {
 }
 
 export default function SCSiteLogo({ showSiteTitle, darkMode, titleClassName }: LogoProps) {
+  const global = useTranslations('Global');
   return (
     //@TODO handle session state - switch this href using values from src/supacharger.config.ts.
     <Link href='/' className='flex w-fit items-center gap-1.5 hover:no-underline'>
@@ -27,7 +28,7 @@ export default function SCSiteLogo({ showSiteTitle, darkMode, titleClassName }: 
             titleClassName,
           )}
         >
-          {SC_CONFIG.SITE_TITLE}
+          {global('siteTitle')}
         </span>
       ) : null}
     </Link>

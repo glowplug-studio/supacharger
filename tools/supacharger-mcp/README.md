@@ -1,12 +1,10 @@
 # Supacharger repository MCP
 
-Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for the retained experimental source architecture, Brevo integration, ownership and deferred distribution plan. The published npm CLI has no extension or plugin installation commands. The MCP does not install bundles, execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
+Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for extension architecture, ownership and distribution status. The current CLI source can list registry entries and review local bundles; the initialisation extension selector remains a preview and does not download or install an extension. The MCP does not install bundles, execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
 
 Manifest v2 supports extension-owned worker files and immutable forward migrations. Brevo 2.0.0 owns immediate post-commit delivery and Supabase retries; apps pass authorised props and optionally provide bulk privacy resolvers. Follow the installed guide for explicit migration, deployment and Vault configuration steps; file installation does not activate sending.
 
 This read-only local MCP gives coding agents a durable understanding of the Supacharger core mission, ownership model, project structure, and promotion workflow.
-
-The CLI currently marks `init`, remote `coreupdate`, `doctor` and `coredev` with a yellow demonstration warning before they contact private development repositories on GitHub. Public-skills operations and local `--source` comparisons do not print it.
 
 ## Run
 
@@ -50,7 +48,7 @@ The account-settings resource records the managed `/account` shell and mutation 
 
 The organisations resource records the managed chooser and organisation-prefixed settings routes, disabled-route behaviour, session refresh before context navigation, owner/admin/member visibility, hashed invitation and reviewed-access UX, private media paths, organisation billing visibility, `FormProvider` extension seam with authoritative server Zod validation, the organisation chooser 301 redirect, and the exclusion of product usage and agent-licence surfaces from Core.
 
-The CLI-upgrades resource records the version 2 ownership flow, direct three-way file comparison, configuration-property comparison, developer-owned preservation, migration handling and Core-lock advancement.
+The CLI-upgrades resource records registry-based Git/ZIP installation, generated Core version locks, upward `supacharger version` lookup, interactive environment creation, skill selection, extension preview, safe target replacement and clean cancellation. It also records the version 2 ownership flow, direct three-way file comparison, configuration-property comparison, developer-owned preservation, migration handling and Core-lock advancement.
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 
@@ -70,15 +68,28 @@ The billing resource records the billing-account domain, explicit personal/organ
 
 Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and thumbnails. This developer-owned, three-bar animation sits beside the inline loader assets and must survive CLI updates. Keep the image container positioned (`relative`) with reserved dimensions or an aspect ratio. Centre the loader vertically and horizontally behind the image using `pointer-events-none absolute inset-0 flex items-center justify-center`; size the SVG at the call site (normally `size-[50px]`) and use a suitable muted `currentColor`. Keep the image above it. Hide the decorative loader (`aria-hidden="true"`) when the image loads or fails; reset the pending state when its source changes and handle already-cached images. Do not animate when reduced motion is requested; show static bars instead. Keep buttons and form actions on the existing inline loader.
 
-## Signup terms notice
+## Signup agreement
 
-Set `AUTHENTICATION.SIGN_UP_TERMS_URL` in developer-owned `src/supacharger.config.ts` to an absolute HTTP(S) URL. The default `null` hides the notice; invalid, relative and credential-bearing URLs are not rendered. The link opens a new tab with `noopener noreferrer`.
+`AUTHENTICATION.SIGN_UP_TERMS` owns provider-independent signup consent:
 
-The shared login/signup form displays the notice beneath signup actions and on the provider chooser, where a social action can create an account even from sign-in. Wording follows the configured password, passwordless and social signup methods. `AuthJourney.signUpTerms`, `signUpTermsSocial`, `signUpTermsSocialOnly`, `signUpTermsPasswordless` and `signUpTermsPasswordlessSocial` are complete rich-text messages; preserve the `<terms>...</terms>` link tag when translating. English values are supplied; secondary catalogues remain pending translation.
+```ts
+AUTHENTICATION: {
+  SIGN_UP_TERMS: {
+    REQUIRED: true,
+    URL: { DEFAULT: '/legal', LOCALES: {} },
+  },
+  ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
+},
+```
 
-This is a displayed notice, not a required checkbox or stored consent record. `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` remains separate. CLI upgrades add the missing setting as `null` and preserve an existing URL. Existing consumers receive the same property without changing their authentication methods. Configure the application's real terms URL before expecting a visible notice.
+Add locale codes to `URL.LOCALES` to select translated legal pages; otherwise `URL.DEFAULT` is used. Application-relative paths and absolute HTTP(S) URLs are supported. Links open a new tab. Add local destinations to `PATH_AUTH_GUARD.UNAUTHED_USER.ALLOWED`; URL fragments are not route paths.
 
-The authentication resource also describes the standalone branded HTTP 503 recovery document, original-destination retry, English `ServiceUnavailable` catalogue fallback, unchanged API JSON errors and session preservation during temporary Auth refresh failures.
+The shared signup form requires the checkbox before password, passwordless or social signup. The server actions validate an explicit acceptance value before calling Supabase. Social sign-in also requires acceptance because the provider can create a new account. This is an application-flow check, not a stored consent audit or a Supabase-wide restriction on direct Auth API clients.
+
+Translate `AuthJourney.signUpAgreement` with its `<terms>...</terms>` rich-text tag. English is the fallback for untranslated catalogue values. Set `REQUIRED: false` for an optional notice, and `URL.DEFAULT: null` with no locale URLs to hide that optional notice. A required agreement needs a valid legal destination.
+
+This replaces both `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` and `AUTHENTICATION.SIGN_UP_TERMS_URL`. Core's `/legal` is disposable demonstration content; replace it before launching a real product.
+
 
 ## Instruction routing and public skills
 

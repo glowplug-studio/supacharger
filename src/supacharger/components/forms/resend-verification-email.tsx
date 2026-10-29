@@ -16,7 +16,7 @@ type ResendPurpose = 'signup' | 'signin-code' | 'signin-link' | 'recovery';
 
 export function ResendVerificationEmail({
   email,
-  initialCooldownSeconds = SC_CONFIG.EMAIL_RESEND_COOLDOWN_SECONDS,
+  initialCooldownSeconds = SC_CONFIG.SUPABASE_AUTH.EMAIL.RESEND_COOLDOWN_SECONDS,
   nextPath = null,
   onResend,
   purpose = 'signup',
@@ -72,20 +72,21 @@ export function ResendVerificationEmail({
 
     setIsSending(false);
     if (succeeded) {
-      setSecondsRemaining(SC_CONFIG.EMAIL_RESEND_COOLDOWN_SECONDS);
-      setCooldownEndsAt(Date.now() + SC_CONFIG.EMAIL_RESEND_COOLDOWN_SECONDS * 1000);
+      setSecondsRemaining(SC_CONFIG.SUPABASE_AUTH.EMAIL.RESEND_COOLDOWN_SECONDS);
+      setCooldownEndsAt(Date.now() + SC_CONFIG.SUPABASE_AUTH.EMAIL.RESEND_COOLDOWN_SECONDS * 1000);
     }
     setMessage({
       kind: succeeded ? 'success' : 'error',
       text: succeeded
         ? purpose === 'recovery'
-          ? (t.has('recoveryResendSuccess') && t('recoveryResendSuccess')
-            ? t('recoveryResendSuccess') : 'A new password reset link has been sent.')
+          ? t.has('recoveryResendSuccess') && t('recoveryResendSuccess')
+            ? t('recoveryResendSuccess')
+            : 'A new password reset link has been sent.'
           : purpose === 'signin-code'
-          ? signInCodeResendSuccessLabel
-          : purpose === 'signin-link'
-            ? signInLinkResendSuccessLabel
-            : t('resendSuccess')
+            ? signInCodeResendSuccessLabel
+            : purpose === 'signin-link'
+              ? signInLinkResendSuccessLabel
+              : t('resendSuccess')
         : t('resendFailed'),
     });
   }
@@ -108,8 +109,18 @@ export function ResendVerificationEmail({
             data-state={isSending ? 'sending' : secondsRemaining > 0 ? 'sent' : 'idle'}
             onClick={resend}
           >
-            {isSending ? <Loader2 className='sc-auth-icon' aria-hidden='true' /> : secondsRemaining > 0 ? <Check className='sc-auth-icon' aria-hidden='true' /> : null}
-            <span>{isSending ? tAuthTerms('sendNewAuthEmailSendingButtonLabel') : secondsRemaining > 0 ? tAuthTerms('sendNewAuthEmailSentButtonLabel') : t('sendAnother')}</span>
+            {isSending ? (
+              <Loader2 className='sc-auth-icon' aria-hidden='true' />
+            ) : secondsRemaining > 0 ? (
+              <Check className='sc-auth-icon' aria-hidden='true' />
+            ) : null}
+            <span>
+              {isSending
+                ? tAuthTerms('sendNewAuthEmailSendingButtonLabel')
+                : secondsRemaining > 0
+                  ? tAuthTerms('sendNewAuthEmailSentButtonLabel')
+                  : t('sendAnother')}
+            </span>
             {!isSending && secondsRemaining === 0 ? <ArrowRight className='sc-auth-icon' aria-hidden='true' /> : null}
           </button>
         ) : null}

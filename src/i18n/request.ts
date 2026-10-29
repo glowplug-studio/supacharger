@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
 
+import { withEnglishFallback } from '@/supacharger/utils/message-fallback';
+
 import englishMessages from '../../messages/en.json';
 import spanishMessages from '../../messages/es.json';
 import chineseMessages from '../../messages/zh.json';
@@ -19,6 +21,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: messageCatalogues[locale],
+    messages: withEnglishFallback(englishMessages, messageCatalogues[locale]),
   };
 });

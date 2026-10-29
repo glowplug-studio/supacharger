@@ -2,7 +2,6 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { createHash } = require('node:crypto');
 const ts = require('typescript');
 
 function safeFile(root, relative) {
@@ -56,7 +55,7 @@ function readServiceConfig(root) {
   return { namespace: namespace.text, providers };
 }
 
-/** Resolve installed, hash-verified implementation descriptors. Never execute payloads. */
+/** Resolve configured implementations from their installed source. Never execute payloads. */
 function resolveCoreServices(root, required = []) {
   const config = readServiceConfig(root);
   const bindings = Object.create(null);
@@ -64,22 +63,12 @@ function resolveCoreServices(root, required = []) {
     if (service === 'auth' || provider === null) continue;
     if (!/^supacharger-ext-[a-z][a-z0-9-]{0,63}$/.test(provider)) throw new Error(`Invalid ${service} implementation`);
     const id = provider.slice('supacharger-ext-'.length);
-    const record = JSON.parse(fs.readFileSync(safeFile(root, `.supacharger/extensions/${id}.json`), 'utf8'));
-    const manifest = record.manifest;
-    if (manifest?.id !== id || manifest.name !== provider || !Array.isArray(manifest.files)) throw new Error('Invalid service installation record');
-    const descriptor = manifest.provides_services?.[service];
-    if (!descriptor || descriptor.contractVersion !== 1 || typeof descriptor.server !== 'string' || !descriptor.database || !/^[a-z][a-z0-9_]*$/.test(descriptor.database.enqueueRpc) || descriptor.database.enqueueRpc.length > 63 || descriptor.database.schema !== 'api_edge') throw new Error(`No compatible ${service} binding in ${provider}`);
-    if (!manifest.files.some(file => file.target === descriptor.server && file.kind !== 'config')) throw new Error('Service entry must be extension-managed');
-    const configFile = manifest.files.find(file => file.kind === 'config');
-    if (!configFile) throw new Error('Service implementation needs developer-owned configuration');
-    const selectedConfig = require('./prepare.cjs').readConfig(safeFile(root, configFile.target));
+    const base = `src/app/(project)/(extensions)/(sc_extensions)/(${id})`;
+    const server = `${base}/index.ts`;
+    const selectedConfig = require('./prepare.cjs').readConfig(safeFile(root, `${base}/supacharger-ext-${id}.config.ts`));
     if (!selectedConfig.enabled) throw new Error(`Selected service ${service} is disabled`);
-    if (descriptor.configFingerprint && createHash('sha256').update(JSON.stringify(selectedConfig)).digest('hex') !== descriptor.configFingerprint) throw new Error(`Prepare ${provider} again after changing its configuration`);
-    for (const file of manifest.files) {
-      const bytes = fs.readFileSync(safeFile(root, file.target));
-      if (file.kind !== 'config' && createHash('sha256').update(bytes).digest('hex') !== file.sha256) throw new Error(`Modified service implementation: ${file.target}`);
-    }
-    bindings[service] = { provider, ...descriptor };
+    safeFile(root, server);
+    bindings[service] = { provider, server };
   }
   for (const service of required) if (service !== 'auth' && !bindings[service]) throw new Error(`Required core service ${service} is unavailable`);
   return { ...config, bindings };

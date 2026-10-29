@@ -22,7 +22,7 @@ UI notification text belongs in the extension's `messages/en.json` using a names
 
 ## Extension repository structure
 
-New bundles use schema version 3. Keep distributable files under `payload/` and describe each source, destination, SHA-256 digest and ownership in `extension.json`.
+New bundles use schema version 3. Keep distributable files under `payload/` and describe each source, destination and ownership in `extension.json`.
 
 ```text
 supacharger-ext-<id>/
@@ -58,7 +58,7 @@ Only include directories the extension needs. `payload/docs/INSTALL.md` is requi
 
 Migrations go directly into the application's migration directory, not a nested extension directory. Use the Supabase CLI to generate migration timestamps. Mark migrations `kind: "migration"`; never rewrite installed history. Mark exactly `payload/app/supacharger-ext-<id>.config.ts` as `kind: "config"`. Other files omit `kind` and are verified byte-for-byte. Secrets must not appear in config defaults or committed payloads.
 
-Schema 3 uses `id: "<id>"`, `name: "supacharger-ext-<id>"`, a three-integer version string, `coreOwnershipVersion: 2` and `files`. Each file declares `source`, `target` and `sha256`. Targets must exactly match the mapping above. The installer rejects arbitrary destinations, path traversal, symlinks, conflicting ownership, migration timestamp collisions and digest mismatches.
+Schema 3 uses `id: "<id>"`, `name: "supacharger-ext-<id>"`, a three-integer version string, `coreOwnershipVersion: 2` and `files`. Each file declares `source`, `target` and, where needed, `kind`. Targets must exactly match the mapping above. The installer rejects arbitrary destinations, path traversal, symlinks, conflicting ownership, migration timestamp collisions and conflicting installed file contents.
 
 ## Install and verify
 
@@ -72,13 +72,13 @@ supacharger extension doctor <id>
 
 Check your installed CLI help: releases predating this change do not expose these commands. This source change does not publish an npm release. The Core maintainer entry point is `node tools/supacharger-extensions/cli.cjs` with the same install/doctor arguments.
 
-The installer copies manifest-listed files; it does not move/delete the source repository. It validates all source hashes before writes and checks installed managed bytes before recording success. `.supacharger/extensions/<id>.json` records the bundle separately from the Core lock. Developer-owned config contents are preserved and excluded from byte equality; doctor still reports a missing config. Backups for interrupted work are under `.supacharger/extension-transactions/`; preserve them until recovery is resolved.
+The installer copies manifest-listed files directly into their mapped destinations and checks the copied bytes. It does not write installation receipts, hashes, baseline snapshots or comparison prompts. Developer-owned configuration is preserved. No Core lock is advanced.
 
 Installation does not apply migrations, run seed scripts, execute downloaded code, set secrets, deploy functions, load next-intl catalogues or implement an enabled/disabled lifecycle. Registry checks are available for supplied local Git sources with --registry; see Local release comparison below. Do not advertise those planned capabilities as operational. Private download/entitlement systems are also not implemented; use only explicitly reviewed local sources.
 
 ## Project integration
 
-Commit installed extension source, developer configuration and `.supacharger/extensions/<id>.json` with the application. Extension updates verify managed files before replacing them and preserve developer-owned configuration. Database migrations remain forward-only.
+Commit installed extension source and developer configuration with the application. Keep database migrations forward-only.
 
 Follow the installed `docs/extensions/<id>/INSTALL.md` for setup. Apply database migrations, configure secrets and deploy backend services as explicit project operations; file installation does not perform those actions.
 
@@ -94,16 +94,15 @@ Versioned ZIP fetching is **coming soon**. Use reviewed local source folders wit
 
 ```sh
 supacharger extension install supacharger-ext-brevo --source /path/to/release --plan
-supacharger extension update supacharger-ext-brevo --source /path/to/new-release --baseline-source /path/to/original-release --plan
+supacharger extension update supacharger-ext-brevo --source /path/to/new-release --plan
 ```
 
-Remove `--plan` to apply a clean update. The original manifest must match the installed record. The CLI compares actual installed managed files with the original payload; local differences stop replacement. In an interactive terminal it offers to retain the two payloads and an AI comparison prompt. Only Yes creates review files; No changes neither the installation nor its record. Non-interactive runs stop rather than prompt. Developer config is preserved; migrations and removed destinations retain their existing safeguards.
+Remove `--plan` to apply the listed changes. The CLI compares each installed destination directly with its incoming payload file. Equal files are skipped; differing extension-owned files are replaced. Developer configuration is preserved, existing migrations must match exactly, and unlisted project files are left alone. This comparison does not infer whether a difference is a local customisation or an upstream change; inspect the plan and Git diff before applying an update.
 
-Retained review files go under `.supacharger/extension-comparisons/<registry-name>/<version>-<unique-id>/`, with `original/`, `incoming/` and `agent-prompt.md`. Copies contain the manifest and installable payload. Keep this directory excluded from Git, deployment uploads and Next.js tracing. The CLI requires explicit `.gitignore` and `.vercelignore` entries before retention. Review does not apply a merge or advance the installed version.
 
-Optional `--registry /path/to/registry.json` verifies an incoming release against schema-1 registry metadata and checks fixed and configured-provider dependencies. Registry verification currently requires a local Git checkout containing the exact source commit; extracted archives are supported only in explicitly reviewed local-source mode until archive verification/fetching is implemented. `--baseline-registry` may additionally verify the original release. Without `--registry`, the result reports `registryVerified: false`: payload hashes are checked, but no registry authenticity claim is made.
+Optional `--registry /path/to/registry.json` verifies an incoming release against schema-1 registry metadata and checks fixed and configured-provider dependencies. Registry verification currently requires a local Git checkout containing the exact source commit; extracted archives are supported only in explicitly reviewed local-source mode until archive verification/fetching is implemented. Without `--registry`, the result reports `registryVerified: false`: files are compared directly, but no registry authenticity claim is made.
 
-Dependency inspection uses the installed manifest as a file inventory and checks the actual files. A missing record means the CLI cannot verify a manually installed dependency; it does not prove the source is absent. Modified dependencies require review. Configured-provider dependencies read the extension's literal config (preserving the installed config on update) and require only the selected provider's registered extensions. Unsupported providers, missing source, modified dependencies and disabled provider configs stop installation. Local-source mode checks the bundle's dependency declarations; registry mode also requires them to match the published release. No service is contacted, SQL applied, function deployed or email sent by these operations.
+Dependency checks inspect the standard installed entry and configuration files. Missing source and disabled configuration stop installation. Required Core services resolve through the application configuration. Installation does not contact services, apply SQL, deploy workers or send email.
 
 
 ## Build-time extension selection
@@ -117,6 +116,7 @@ prepareExtensions({
   root: __dirname,
   extensions: [{
     id: 'invitations',
+    services: ['transactional_email'],
     fallback: 'src/supacharger.adapters/invitations/unavailable.ts',
   }],
 });
@@ -124,7 +124,7 @@ prepareExtensions({
 
 The example requires an application-owned unavailable adapter exporting the same
 public interface as the extension's `payload/app/index.ts`. Add only integrations
-used by that application. Enabled extensions declare their required `core_services` in the installed manifest. Core resolves each capability from `SC_CONFIG.CORE_SERVICES`; see [Core services](core-services.md).
+used by that application. Integration registrations declare their required capabilities using `services`. Core resolves each capability from `SC_CONFIG.CORE_SERVICES`; see [Core services](core-services.md).
 
 Preparation reads the installed `supacharger-ext-<id>.config.ts` as literal data,
 including an optional `as const` assertion. Imports, function calls, spreads and
@@ -132,7 +132,7 @@ computed configuration are rejected rather than executed. A missing extension
 selects the fallback; an installed extension missing its config fails. With
 `enabled: false`, the generated entry imports only the fallback and exports an empty
 catalogue. With `enabled: true`, it imports the installed `index.ts` and exports its
-optional `messages/en.json` as `extensionMessages`. Required Core services must resolve to compatible, hash-verified installed implementation descriptors.
+optional `messages/en.json` as `extensionMessages`. Required Core services must resolve to enabled installed service entry points.
 
 Import from `src/supacharger.adapters/generated/extensions/<id>.ts`; never edit that
 generated file. It exports `extensionEnabled`, the selected entry's exports and

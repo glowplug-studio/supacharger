@@ -30,7 +30,7 @@ export async function requireVerifiedUser(): Promise<VerifiedUserIdentity> {
     redirect(SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION);
   }
 
-  if (!SC_CONFIG.AUTH_SESSION.ALLOW_ANONYMOUS_USERS && claims.is_anonymous === true) {
+  if (!SC_CONFIG.SUPABASE_AUTH.SESSION.ALLOW_ANONYMOUS_USERS && claims.is_anonymous === true) {
     redirect(SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION);
   }
 

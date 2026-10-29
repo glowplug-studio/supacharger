@@ -2,13 +2,13 @@
 
 ## Authenticator assurance
 
-Managed Supabase Auth TOTP enrolment and factor management are always available at `/account/security`; there is no application visibility flag. `AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN` checks `getAuthenticatorAssuranceLevel()` after password and email-OTP sign-in and in the OAuth/PKCE callback. An enrolled AAL1 session is sent to the managed `/account/mfa` challenge with only an allowlisted relative `next` path. Challenge success raises the session to AAL2 before navigation resumes. Local projects must enable both `auth.mfa.totp.enroll_enabled` and `verify_enabled` in `supabase/config.toml` and restart the local stack. Hosted Auth capability remains a separate Dashboard setting.
+Managed Supabase Auth TOTP enrolment and factor management are always available at `/account/security`; there is no application visibility flag. `SUPABASE_AUTH.METHODS.MFA_TOTP.REQUIRED_FOR_SIGN_IN` checks `getAuthenticatorAssuranceLevel()` after password and email-OTP sign-in and in the OAuth/PKCE callback. An enrolled AAL1 session is sent to the managed `/account/mfa` challenge with only an allowlisted relative `next` path. Challenge success raises the session to AAL2 before navigation resumes. Local projects must enable both `auth.mfa.totp.enroll_enabled` and `verify_enabled` in `supabase/config.toml` and restart the local stack. Hosted Auth capability remains a separate Dashboard setting.
 
 Use Supabase Auth factors only: list, enrol, challenge/verify, and unenrol. Never create an application MFA table or persist the TOTP secret. Treat unverified factors as incomplete enrolments, allow cancellation, and require a fresh code for factor removal when the session must step up. `REQUIRED_FOR_SIGN_IN` cannot manufacture a factor; a user with no verified factor has no AAL2 challenge until enrolment.
 
 ## Cross-device session transfer
 
-`AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER` is disabled by default. Its TTL must be an integer from 60 through 300 seconds; use 120 unless a product has an approved reason to shorten it. `POST /api/auth/session-transfers` remains protected and accepts only strict JSON with an optional safe relative `next`. `/auth/session-transfer` and `POST /api/auth/session-transfers/redeem` are public protocol routes so an unauthenticated receiving browser can redeem; both return `404` while disabled.
+`SUPABASE_AUTH.METHODS.CROSS_DEVICE_SESSION_TRANSFER` is disabled by default. Its TTL must be an integer from 60 through 300 seconds; use 120 unless a product has an approved reason to shorten it. `POST /api/auth/session-transfers` remains protected and accepts only strict JSON with an optional safe relative `next`. `/auth/session-transfer` and `POST /api/auth/session-transfers/redeem` are public protocol routes so an unauthenticated receiving browser can redeem; both return `404` while disabled.
 
 Issue requires a verified, non-anonymous user, a confirmed email, a live `session_id`, same-origin mutation headers and AAL2 when the configured MFA policy requires it for an enrolled account. Store only a SHA-256 digest of the 256-bit base64url grant. The URL carries the raw grant in its fragment; the minimal bootstrap clears it before a single credentialled POST and loads no analytics or third-party resources.
 
@@ -56,9 +56,9 @@ Password recovery follows Supabase’s SSR token-hash flow. The email template s
 
 Use `src/components/ui/loading-spinner.tsx` as the canonical indeterminate loader. It renders the developer-owned `src/assets/svgr/ui/inline-loader.svg` through SVGR, so replace that single asset to change inline loading globally; callers must not import the SVG directly or add a second animation. Give standalone loaders a localised `label`, while decorative button loaders remain hidden from assistive technology. OTP verification cross-fades this loader into a green circle with a white Lucide tick before redirecting.
 
-`AUTH_PROVDERS_ENABLED` is a complete boolean map for the canonical social OAuth provider union: `apple`, `azure`, `bitbucket`, `discord`, `facebook`, `figma`, `github`, `gitlab`, `google`, `kakao`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`, `x`, `twitter`, `slack_oidc`, `slack`, `spotify`, `workos`, and `zoom`. Render only enabled providers and reject disabled values in the server action as well as hiding them in the UI. Prefer `linkedin_oidc`, `slack_oidc`, and `x` for new integrations; the unqualified Slack and Twitter keys exist for legacy Supabase providers. Provider artwork is managed under `src/supacharger/assets/svgr/auth-providers/`. Email, Phone, SAML, and Web3 artwork may be present there but does not make those method-specific flows ordinary OAuth providers.
+`SUPABASE_AUTH.OAUTH_PROVIDERS` is a complete boolean map for the canonical social OAuth provider union: `apple`, `azure`, `bitbucket`, `discord`, `facebook`, `figma`, `github`, `gitlab`, `google`, `kakao`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`, `x`, `twitter`, `slack_oidc`, `slack`, `spotify`, `workos`, and `zoom`. Render only enabled providers and reject disabled values in the server action as well as hiding them in the UI. Prefer `linkedin_oidc`, `slack_oidc`, and `x` for new integrations; the unqualified Slack and Twitter keys exist for legacy Supabase providers. Provider artwork is managed under `src/supacharger/assets/svgr/auth-providers/`. Email, Phone, SAML, and Web3 artwork may be present there but does not make those method-specific flows ordinary OAuth providers.
 
-Passwordless email uses Supabase's hosted **Magic Link or OTP** template, and its contents must match the selected exclusive mode. OTP mode contains `{{ .Token }}` and no login link; link mode contains the token-hash link and no OTP. `signInWithOtp()` uses `shouldCreateUser: false` for sign-in and nominates the safe confirmation redirect. Entered passwordless codes call `verifyOtp({ email, token, type: 'email' })`. Password-signup verification is independent: `disabled` requires confirmations off, `otp` uses the configured-length token, `link` uses a token-hash link, and `otp-and-link` may include both alternatives in the **Confirm signup** template. Signup codes call `verifyOtp({ email, token, type: 'signup' })`; when both alternatives are sent, consuming either may invalidate the other. Keep `PASSWORDLESS_EMAIL.OTP_LENGTH`, local `[auth.email] otp_length`, and the hosted OTP-length setting equal. `/auth/confirm` validates safe destinations and token hashes; `/auth/callback` exchanges OAuth PKCE codes and accepts legacy recovery callbacks during deployment; new recovery emails use `/auth/confirm`. `EMAIL_RESEND_COOLDOWN_SECONDS` must not be shorter than the hosted Auth rate limit.
+Passwordless email uses Supabase's hosted **Magic Link or OTP** template, and its contents must match the selected exclusive mode. OTP mode contains `{{ .Token }}` and no login link; link mode contains the token-hash link and no OTP. `signInWithOtp()` uses `shouldCreateUser: false` for sign-in and nominates the safe confirmation redirect. Entered passwordless codes call `verifyOtp({ email, token, type: 'email' })`. Password-signup verification is independent: `disabled` requires confirmations off, `otp` uses the configured-length token, `link` uses a token-hash link, and `otp-and-link` may include both alternatives in the **Confirm signup** template. Signup codes call `verifyOtp({ email, token, type: 'signup' })`; when both alternatives are sent, consuming either may invalidate the other. Keep `PASSWORDLESS_EMAIL.OTP_LENGTH`, local `[auth.email] otp_length`, and the hosted OTP-length setting equal. `/auth/confirm` validates safe destinations and token hashes; `/auth/callback` exchanges OAuth PKCE codes and accepts legacy recovery callbacks during deployment; new recovery emails use `/auth/confirm`. `SUPABASE_AUTH.EMAIL.RESEND_COOLDOWN_SECONDS` must not be shorter than the hosted Auth rate limit.
 
 Mobile verification uses the developer-owned `MOBILE_DEEP_LINKING` identifiers and the protected generated association routes. OTP code entry does not require deep linking; magic-link, link-confirmation, and reset callbacks do. Preserve the PKCE verifier boundary by completing the callback in the same web view or native Supabase client that initiated it. Follow `docs/agents/mobile-auth-deep-linking.md` before changing the association documents, Proxy exclusions, callback bridge, or native setup guidance.
 
@@ -122,13 +122,28 @@ OAuth still uses the PKCE `/auth/callback`. Existing recovery PKCE links remain 
 
 The CLI installs this starter only when missing and preserves custom adapters on upgrades. Canonical Proxy, session adapter and contract must be synchronised together. No configuration property or database migration is added. The session adapter exposes its existing client plus getResponse() solely to retain current cookie state across the guard.
 
-## Signup terms notice
+## Signup agreement
 
-Set `AUTHENTICATION.SIGN_UP_TERMS_URL` in developer-owned `src/supacharger.config.ts` to an absolute HTTP(S) URL. The default `null` hides the notice; invalid, relative and credential-bearing URLs are not rendered. The link opens a new tab with `noopener noreferrer`.
+`AUTHENTICATION.SIGN_UP_TERMS` owns provider-independent signup consent:
 
-The shared login/signup form displays the notice beneath signup actions and on the provider chooser, where a social action can create an account even from sign-in. Wording follows the configured password, passwordless and social signup methods. `AuthJourney.signUpTerms`, `signUpTermsSocial`, `signUpTermsSocialOnly`, `signUpTermsPasswordless` and `signUpTermsPasswordlessSocial` are complete rich-text messages; preserve the `<terms>...</terms>` link tag when translating. English values are supplied; secondary catalogues remain pending translation.
+```ts
+AUTHENTICATION: {
+  SIGN_UP_TERMS: {
+    REQUIRED: true,
+    URL: { DEFAULT: '/legal', LOCALES: {} },
+  },
+  ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
+},
+```
 
-This is a displayed notice, not a required checkbox or stored consent record. `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` remains separate. CLI upgrades add the missing setting as `null` and preserve an existing URL. Existing consumers receive the same property without changing their authentication methods. Configure the application's real terms URL before expecting a visible notice.
+Add locale codes to `URL.LOCALES` to select translated legal pages; otherwise `URL.DEFAULT` is used. Application-relative paths and absolute HTTP(S) URLs are supported. Links open a new tab. Add local destinations to `PATH_AUTH_GUARD.UNAUTHED_USER.ALLOWED`; URL fragments are not route paths.
+
+The shared signup form requires the checkbox before password, passwordless or social signup. The server actions validate an explicit acceptance value before calling Supabase. Social sign-in also requires acceptance because the provider can create a new account. This is an application-flow check, not a stored consent audit or a Supabase-wide restriction on direct Auth API clients.
+
+Translate `AuthJourney.signUpAgreement` with its `<terms>...</terms>` rich-text tag. English is the fallback for untranslated catalogue values. Set `REQUIRED: false` for an optional notice, and `URL.DEFAULT: null` with no locale URLs to hide that optional notice. A required agreement needs a valid legal destination.
+
+This replaces both `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` and `AUTHENTICATION.SIGN_UP_TERMS_URL`. Core's `/legal` is disposable demonstration content; replace it before launching a real product.
+
 
 ## Canonical URL and request domains
 
@@ -144,7 +159,7 @@ Deploy application changes before installing the new hosted recovery template. L
 
 ## Recovery feedback and email-change confirmations
 
-After a reset request succeeds, the form keeps an inbox confirmation visible and offers resend after `EMAIL_RESEND_COOLDOWN_SECONDS`. Resend uses the same password-recovery endpoint, not signup verification. Root-level legacy token-hash links are forwarded to `/auth/confirm` before the page guard; verification remains mandatory.
+After a reset request succeeds, the form keeps an inbox confirmation visible and offers resend after `SUPABASE_AUTH.EMAIL.RESEND_COOLDOWN_SECONDS`. Resend uses the same password-recovery endpoint, not signup verification. Root-level legacy token-hash links are forwarded to `/auth/confirm` before the page guard; verification remains mandatory.
 
 Email changes support both native `ConfirmationURL` templates and token-hash `type=email_change` templates. Native links return to `/auth/confirm?next=/account/security`; a PKCE code is exchanged through `/auth/callback`. With secure email change enabled, the first accepted link displays a prompt to check the other inbox. Only completed verification displays completion; failed tokens remain failures even in an authenticated browser. The fixed Supabase pending message is informational and never authorises access.
 

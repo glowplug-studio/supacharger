@@ -3,18 +3,8 @@
 import { useRef, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  LogIn,
-  Mail,
-  MailCheck,
-  UserPlus,
-  WandSparkles,
-  X,
-} from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import { ArrowLeft, ArrowRight, Check, LogIn, Mail, MailCheck, UserPlus, WandSparkles, X } from 'lucide-react';
 import AnimateHeight from 'react-animate-height';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
@@ -25,11 +15,12 @@ import {
   createUserByEmailPassword,
   loginUser,
   signInWithEmail,
+  signUpWithEmail,
   verifyOtp,
   verifySignInOtp,
 } from '@/lib/supabase/supacharger/supabase-auth';
 import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
-import { signUpTermsMessage, signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
+import { hasSignUpConsent, signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import NewPasswordFields from '@/supacharger/components/forms/new-password-fields';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
@@ -58,14 +49,14 @@ const OTP_SUCCESS_REDIRECT_DELAY_MS = 450;
 
 function isPasswordModeAvailable(mode: AuthMode) {
   return mode === 'signin'
-    ? SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN
-    : SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
+    ? SC_CONFIG.SUPABASE_AUTH.METHODS.EMAIL_PASSWORD.SIGN_IN
+    : SC_CONFIG.SUPABASE_AUTH.METHODS.EMAIL_PASSWORD.SIGN_UP;
 }
 
 function getPasswordlessEmailMode(mode: AuthMode) {
   return mode === 'signin'
-    ? SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_IN
-    : SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_UP;
+    ? SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_IN
+    : SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_UP;
 }
 
 function passwordlessModeHasOtp(mode: EmailPasswordlessMode) {
@@ -73,7 +64,7 @@ function passwordlessModeHasOtp(mode: EmailPasswordlessMode) {
 }
 
 export function shouldStartInEmailMode(initialMode: AuthMode) {
-  const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
+  const providerJourneyAvailable = Object.values(SC_CONFIG.SUPABASE_AUTH.OAUTH_PROVIDERS).some(Boolean);
   const emailJourneyAvailable =
     isPasswordModeAvailable(initialMode) || getPasswordlessEmailMode(initialMode) !== 'disabled';
 
@@ -83,6 +74,11 @@ export function shouldStartInEmailMode(initialMode: AuthMode) {
 export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormHeadingChange }: LoginUserFormProps) {
   const t = useTranslations('AuthJourney');
   const tAuthTerms = useTranslations('AuthTerms');
+  const locale = useLocale();
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const termsUrl = signUpTermsUrl(locale);
+  const consentMissing =
+    !hasSignUpConsent(termsAccepted) || (SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.REQUIRED && !termsUrl);
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const router = useRouter();
   const startsInEmailMode = shouldStartInEmailMode(initialMode);
@@ -114,10 +110,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const passwordlessEmailMode = getPasswordlessEmailMode(mode);
   const passwordlessEmailAvailable = passwordlessEmailMode !== 'disabled';
   const emailJourneyAvailable = passwordModeAvailable || passwordlessEmailAvailable;
-  const providerJourneyAvailable = Object.values(SC_CONFIG.AUTH_PROVDERS_ENABLED).some(Boolean);
+  const providerJourneyAvailable = Object.values(SC_CONFIG.SUPABASE_AUTH.OAUTH_PROVIDERS).some(Boolean);
   const passwordConfirmationRequired = mode === 'signup' && !showPassword;
-  const signUpVerificationMode = SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION;
-  const otpLength = SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.OTP_LENGTH;
+  const signUpVerificationMode = SC_CONFIG.SUPABASE_AUTH.METHODS.SIGN_UP_EMAIL_VERIFICATION;
+  const otpLength = SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.OTP_LENGTH;
   const offersOtpAndLink = verificationDeliveryMode === 'otp-and-link';
   const useSocialAuthLabel = t.has('useSocialAuth') ? t('useSocialAuth') : 'Use social auth';
   const createAccountInsteadLabel = t.has('createAccountInstead')
@@ -139,7 +135,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const postAuthPath = safeNextPath ?? SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION;
 
   async function completeAuthenticatedNavigation(destination: string) {
-    if (SC_CONFIG.AUTHENTICATION.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
+    if (SC_CONFIG.SUPABASE_AUTH.METHODS.MFA_TOTP.REQUIRED_FOR_SIGN_IN) {
       const { data: assurance, error: assuranceError } = await createClient().auth.mfa.getAuthenticatorAssuranceLevel();
       if (assuranceError) {
         setError(t('mfaStatusFailed'));
@@ -253,9 +249,14 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     }
 
     if (mode === 'signup') {
+      if (consentMissing) {
+        setError(t('termsRequired'));
+        return;
+      }
       const formData = new FormData();
       formData.set('email', normalisedEmail);
       formData.set('password', password);
+      formData.set('termsAccepted', String(termsAccepted));
       if (safeNextPath) formData.set('next', safeNextPath);
       setPendingAction('password');
       startAuthTransition(async () => {
@@ -363,6 +364,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   }
 
   function sendPasswordlessEmail() {
+    if (mode === 'signup' && consentMissing) {
+      setError(t('termsRequired'));
+      return;
+    }
     setError(null);
     setLoginFailed(false);
     const validatedEmail = validateEmail();
@@ -370,7 +375,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     setPendingAction('passwordless-email');
     startAuthTransition(async () => {
       try {
-        const result = await signInWithEmail(validatedEmail, safeNextPath);
+        const result =
+          mode === 'signup'
+            ? await signUpWithEmail(validatedEmail, safeNextPath, termsAccepted)
+            : await signInWithEmail(validatedEmail, safeNextPath);
         if (result?.error) {
           return setError(
             result.error.code === 'otp_disabled'
@@ -379,7 +387,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           );
         }
         setVerificationEmail(validatedEmail);
-        setVerificationPurpose('signin');
+        setVerificationPurpose(mode);
         setVerificationDeliveryMode(passwordlessEmailMode);
         if (passwordlessModeHasOtp(passwordlessEmailMode)) {
           setStep('verify-email');
@@ -397,7 +405,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   }
 
   async function resendPasswordlessEmail() {
-    const result = await signInWithEmail(verificationEmail, safeNextPath);
+    const result =
+      verificationPurpose === 'signup'
+        ? await signUpWithEmail(verificationEmail, safeNextPath, termsAccepted)
+        : await signInWithEmail(verificationEmail, safeNextPath);
     return !result.error;
   }
 
@@ -426,45 +437,49 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
       await completeAuthenticatedNavigation(
         verificationPurpose === 'signin'
           ? postAuthPath
-          : safeNextPath ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+          : (safeNextPath ?? SC_CONFIG.AUTHENTICATION.ACCOUNT_CONFIRMED_PATH),
       );
     });
   }
 
   const backButton = (
-    <button
-      type='button'
-      className='sc-auth-back'
-      onClick={returnToEmail}
-    >
+    <button type='button' className='sc-auth-back' onClick={returnToEmail}>
       <ArrowLeft className='sc-auth-icon' />
       {t('back')}
     </button>
   );
 
   function renderSignUpTerms(providerChoice = false) {
-    const url = signUpTermsUrl(SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS_URL);
-    const password = SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP;
-    const passwordless = SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_UP !== 'disabled';
-    // A social-provider action can create an account from the sign-in chooser too.
-    if (!url || (providerChoice ? !providerJourneyAvailable : mode !== 'signup' || !emailJourneyAvailable)) return null;
+    if (!termsUrl || (providerChoice ? !providerJourneyAvailable : mode !== 'signup' || !emailJourneyAvailable))
+      return null;
     return (
-      <p className='sc-auth-terms'>
-        {t.rich(signUpTermsMessage(password, passwordless, providerJourneyAvailable), {
-          terms: (chunks) => (
-            <a href={url} target='_blank' rel='noopener noreferrer' className='sc-auth-link sc-auth-terms-link'>
-              {chunks}
-            </a>
-          ),
-        })}
-      </p>
+      <label className='sc-auth-terms flex items-start gap-2'>
+        {SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.REQUIRED ? (
+          <input
+            type='checkbox'
+            checked={termsAccepted}
+            onChange={(event) => setTermsAccepted(event.target.checked)}
+            required
+            className='mt-1 size-4 shrink-0 accent-current'
+          />
+        ) : null}
+        <span>
+          {t.rich('signUpAgreement', {
+            terms: (chunks) => (
+              <a href={termsUrl} target='_blank' rel='noopener noreferrer' className='sc-auth-link sc-auth-terms-link'>
+                {chunks}
+              </a>
+            ),
+          })}
+        </span>
+      </label>
     );
   }
 
   function renderChooseOptions(includeEmailButton: boolean) {
     return (
       <div className='sc-auth-option-list'>
-        <AuthProviderButtons />
+        <AuthProviderButtons termsAccepted={termsAccepted} disabled={consentMissing} />
         {step === 'choose' ? renderSignUpTerms(true) : null}
         {includeEmailButton && emailJourneyAvailable ? (
           <>
@@ -500,17 +515,12 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                 ? t('codeAndLinkSent', { email: verificationEmail })
                 : t('codeSent', { email: verificationEmail, length: otpLength })}
           </p>
-          {offersOtpAndLink ? (
-            <p className='sc-auth-verification-help'>{t('openLinkInstructions')}</p>
-          ) : null}
+          {offersOtpAndLink ? <p className='sc-auth-verification-help'>{t('openLinkInstructions')}</p> : null}
         </div>
         <div className='sc-auth-surface sc-auth-code-panel'>
           <p className='sc-auth-code-title'>{t('enterCodeOption')}</p>
           <div className='sc-auth-code-stage'>
-            <div
-              className='sc-auth-code-entry'
-              data-succeeded={otpVerificationSucceeded ? 'true' : 'false'}
-            >
+            <div className='sc-auth-code-entry' data-succeeded={otpVerificationSucceeded ? 'true' : 'false'}>
               {pendingAction === 'otp' ? (
                 <LoadingSpinner className='sc-auth-code-loader' label={t('verifyingCode')} />
               ) : (
@@ -550,10 +560,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           </p>
         ) : null}
         {otpFailure && verificationPurpose === 'signup' ? (
-          <Link
-            href={withNextPath('/account/login', safeNextPath)}
-            className='sc-auth-link'
-          >
+          <Link href={withNextPath('/account/login', safeNextPath)} className='sc-auth-link'>
             <span>{loginHereLabel}</span>
             <ArrowRight className='sc-auth-icon' aria-hidden='true' />
           </Link>
@@ -632,7 +639,9 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           </div>
 
           <div className='sc-auth-field'>
-            <label className='sc-auth-label' htmlFor='email'>{t('email')}</label>
+            <label className='sc-auth-label' htmlFor='email'>
+              {t('email')}
+            </label>
             <Input
               ref={emailInputRef}
               id='email'
@@ -658,7 +667,9 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           {passwordModeAvailable && mode === 'signin' ? (
             <>
               <div className='sc-auth-field'>
-                <label className='sc-auth-label' htmlFor='password'>{t('password')}</label>
+                <label className='sc-auth-label' htmlFor='password'>
+                  {t('password')}
+                </label>
                 <Input
                   id='password'
                   className='sc-auth-input'
@@ -704,11 +715,19 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
             </>
           ) : passwordModeAvailable ? (
             <NewPasswordFields
-              id='password' name='password' label={t('password')} placeholder={t('password')}
-              confirmationId='password-confirmation' confirmationName='passwordConfirmation'
-              confirmationLabel={t('repeatPassword')} confirmationPlaceholder={t('repeatPassword')}
-              password={password} confirmation={passwordAgain} visible={showPassword}
-              onPasswordChange={setPassword} onConfirmationChange={setPasswordAgain}
+              id='password'
+              name='password'
+              label={t('password')}
+              placeholder={t('password')}
+              confirmationId='password-confirmation'
+              confirmationName='passwordConfirmation'
+              confirmationLabel={t('repeatPassword')}
+              confirmationPlaceholder={t('repeatPassword')}
+              password={password}
+              confirmation={passwordAgain}
+              visible={showPassword}
+              onPasswordChange={setPassword}
+              onConfirmationChange={setPasswordAgain}
               onValidationChange={setPasswordIsValid}
               onVisibilityChange={(visible) => {
                 setShowPassword(visible);
@@ -726,7 +745,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               <button
                 type='button'
                 className='sc-auth-link sc-auth-recovery-link'
-                disabled={pendingAction !== null}
+                disabled={pendingAction !== null || (mode === 'signup' && consentMissing)}
                 onClick={() => void requestVerificationEmail()}
               >
                 {pendingAction === 'verification-email' ? <LoadingSpinner className='sc-auth-icon' /> : null}
@@ -764,6 +783,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               type='submit'
               className='sc-auth-primary-button sc-auth-submit'
               disabled={
+                (mode === 'signup' && consentMissing) ||
                 pendingAction !== null ||
                 !parsedEmail.success ||
                 !password ||
@@ -783,21 +803,20 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
           ) : null}
 
           {passwordModeAvailable && mode === 'signin' ? (
-            <Link
-              href='/account/reset-password'
-              className='sc-auth-secondary-link'
-            >
+            <Link href='/account/reset-password' className='sc-auth-secondary-link'>
               {t('forgotPassword')}
             </Link>
           ) : null}
 
           {passwordlessEmailAvailable ? (
             <>
-              {passwordModeAvailable ? <UIDivider text='or' className='sc-auth-divider sc-auth-divider-spaced' /> : null}
+              {passwordModeAvailable ? (
+                <UIDivider text='or' className='sc-auth-divider sc-auth-divider-spaced' />
+              ) : null}
               <Button
                 type='button'
                 className='sc-auth-primary-button sc-auth-submit'
-                disabled={pendingAction !== null}
+                disabled={pendingAction !== null || (mode === 'signup' && consentMissing)}
                 onClick={sendPasswordlessEmail}
               >
                 {pendingAction === 'passwordless-email' ? (

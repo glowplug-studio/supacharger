@@ -1,13 +1,16 @@
 import { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import { SupachargerAuthShell } from '@/supacharger/components/auth/auth-shell';
-import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
-export const metadata: Metadata = {
-  title: SC_CONFIG.SITE_TITLE,
-  description: SC_CONFIG.SITE_DESCRIPTION,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const global = await getTranslations('Global');
+  return {
+    title: { absolute: global('siteTitle') },
+    description: global('siteDescription'),
+  };
+}
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return <SupachargerAuthShell>{children}</SupachargerAuthShell>;

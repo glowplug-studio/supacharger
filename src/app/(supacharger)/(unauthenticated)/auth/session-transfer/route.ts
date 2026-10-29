@@ -13,7 +13,7 @@ function escapeHtml(value: string) {
 }
 
 export async function GET(_request: NextRequest) {
-  if (!SC_CONFIG.AUTHENTICATION.CROSS_DEVICE_SESSION_TRANSFER.ENABLED) {
+  if (!SC_CONFIG.SUPABASE_AUTH.METHODS.CROSS_DEVICE_SESSION_TRANSFER.ENABLED) {
     return new NextResponse(null, { status: 404, headers: sessionTransferResponseHeaders() });
   }
 

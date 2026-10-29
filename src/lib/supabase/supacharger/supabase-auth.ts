@@ -12,6 +12,7 @@ import { authActionFailure, type AuthActionResult, authActionSuccess } from '@/s
 import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
 import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
+import { hasSignUpConsent } from '@/supacharger/auth/sign-up-terms';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 import { evaluatePasswordStrength, isValidEmail } from '@/supacharger/utils/helpers';
@@ -25,7 +26,7 @@ const signUpEmailSchema = emailSchema.refine(isValidEmail);
 const signUpPasswordSchema = passwordSchema.refine((password) => evaluatePasswordStrength(password).valid);
 
 function otpSchema() {
-  return z.string().regex(/^\d+$/).length(SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.OTP_LENGTH);
+  return z.string().regex(/^\d+$/).length(SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.OTP_LENGTH);
 }
 
 function passwordlessModeHasOtp(mode: 'disabled' | 'link' | 'otp' | 'otp-and-link') {
@@ -33,12 +34,15 @@ function passwordlessModeHasOtp(mode: 'disabled' | 'link' | 'otp' | 'otp-and-lin
 }
 
 async function getSignUpConfirmationRedirect(nextPath: unknown = null) {
-  const destination = getSafeNextPath(nextPath) ?? SC_CONFIG.ACCOUNT_CONFIRMED_PATH;
+  const destination = getSafeNextPath(nextPath) ?? SC_CONFIG.AUTHENTICATION.ACCOUNT_CONFIRMED_PATH;
   return getRequestURL(`/auth/confirm?next=${encodeURIComponent(destination)}`);
 }
 
 async function getPasswordlessConfirmationRedirect(nextPath: unknown = null) {
-  const loginDestination = getAuthLoginRedirect(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION, await getRequestOrigin());
+  const loginDestination = getAuthLoginRedirect(
+    SC_CONFIG.USER_REDIRECTS.AUTHED_USER.LOGIN_REDIRECT_DESTINATION,
+    await getRequestOrigin(),
+  );
   const next = getSafeNextPath(nextPath) ?? `${loginDestination.pathname}${loginDestination.search}`;
 
   return getRequestURL(`/auth/confirm?next=${encodeURIComponent(next)}`);
@@ -58,7 +62,7 @@ export async function logoutUser(): Promise<{ success: boolean }> {
  * Login user with email and password
  */
 export async function loginUser(formData: FormData) {
-  if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_IN) {
+  if (!SC_CONFIG.SUPABASE_AUTH.METHODS.EMAIL_PASSWORD.SIGN_IN) {
     return authActionFailure('email_password_sign_in_disabled');
   }
   const parsed = z
@@ -106,7 +110,7 @@ async function sendPasswordlessEmail(
  * Send the configured passwordless sign-in email to an existing user.
  */
 export async function signInWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
-  if (SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_IN === 'disabled') {
+  if (SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_IN === 'disabled') {
     return authActionFailure('otp_disabled');
   }
 
@@ -116,8 +120,13 @@ export async function signInWithEmail(email: string, nextPath: string | null = n
 /**
  * Send the configured passwordless signup email.
  */
-export async function signUpWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
-  if (SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_UP === 'disabled') {
+export async function signUpWithEmail(
+  email: string,
+  nextPath: string | null = null,
+  termsAccepted: unknown = false,
+): Promise<AuthActionResult> {
+  if (!hasSignUpConsent(termsAccepted)) return authActionFailure('terms_required');
+  if (SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_UP === 'disabled') {
     return authActionFailure('otp_disabled');
   }
 
@@ -130,7 +139,8 @@ export async function signUpWithEmail(email: string, nextPath: string | null = n
 export async function createUserByEmailPassword(
   formData: FormData,
 ): Promise<AuthActionResult<{ userId: string | null; identityCount: number | null }>> {
-  if (!SC_CONFIG.AUTHENTICATION.EMAIL_PASSWORD.SIGN_UP) {
+  if (!hasSignUpConsent(formData.get('termsAccepted') === 'true')) return authActionFailure('terms_required');
+  if (!SC_CONFIG.SUPABASE_AUTH.METHODS.EMAIL_PASSWORD.SIGN_UP) {
     return authActionFailure('email_password_sign_up_disabled');
   }
   const supabase = await createClient();
@@ -199,8 +209,10 @@ export async function sendPasswordReset(email: string) {
 
 export type SupabaseOAuthProvider = SupachargerOAuthProvider;
 
-export async function signInWithOAuth(provider: SupabaseOAuthProvider) {
-  if (!SC_CONFIG.AUTH_PROVDERS_ENABLED[provider]) {
+export async function signInWithOAuth(provider: SupabaseOAuthProvider, termsAccepted: unknown = false) {
+  // OAuth can create an account even when started from the sign-in chooser.
+  if (!hasSignUpConsent(termsAccepted)) return authActionFailure('terms_required');
+  if (!SC_CONFIG.SUPABASE_AUTH.OAUTH_PROVIDERS[provider]) {
     return authActionFailure('oauth_provider_disabled');
   }
 
@@ -263,8 +275,12 @@ export async function getUserSession() {
 export async function isLoggedIn() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
-  return !error && Boolean(data?.claims.sub) && data?.claims.role === 'authenticated' &&
-    (SC_CONFIG.AUTH_SESSION.ALLOW_ANONYMOUS_USERS || data.claims.is_anonymous !== true);
+  return (
+    !error &&
+    Boolean(data?.claims.sub) &&
+    data?.claims.role === 'authenticated' &&
+    (SC_CONFIG.SUPABASE_AUTH.SESSION.ALLOW_ANONYMOUS_USERS || data.claims.is_anonymous !== true)
+  );
 }
 
 /**
@@ -274,7 +290,7 @@ export async function isLoggedIn() {
  * @returns {Promise<AuthActionResult>} The safe serialisable verification response
  */
 export async function verifyOtp(email: string, token: string): Promise<AuthActionResult> {
-  if (!passwordlessModeHasOtp(SC_CONFIG.AUTHENTICATION.SIGN_UP_EMAIL_VERIFICATION)) {
+  if (!passwordlessModeHasOtp(SC_CONFIG.SUPABASE_AUTH.METHODS.SIGN_UP_EMAIL_VERIFICATION)) {
     return authActionFailure('otp_disabled');
   }
 
@@ -314,7 +330,7 @@ export async function verifyOtp(email: string, token: string): Promise<AuthActio
 
 /** Verify a passwordless email sign-in code. */
 export async function verifySignInOtp(email: string, token: string): Promise<AuthActionResult> {
-  if (!passwordlessModeHasOtp(SC_CONFIG.AUTHENTICATION.PASSWORDLESS_EMAIL.SIGN_IN)) {
+  if (!passwordlessModeHasOtp(SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_IN)) {
     return authActionFailure('otp_disabled');
   }
 

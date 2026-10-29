@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
       return redirectWithoutCaching(resolveAuthConfirmationRedirect({
         requestUrl: request.url,
         requestedNext,
-        fallbackNext: SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+        fallbackNext: SC_CONFIG.AUTHENTICATION.ACCOUNT_CONFIRMED_PATH,
         loginPath: SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION,
         outcome: 'verified',
       }), request.url);
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
   return redirectWithoutCaching(resolveAuthConfirmationRedirect({
     requestUrl: request.url,
     requestedNext,
-    fallbackNext: SC_CONFIG.ACCOUNT_CONFIRMED_PATH,
+    fallbackNext: SC_CONFIG.AUTHENTICATION.ACCOUNT_CONFIRMED_PATH,
     loginPath: SC_CONFIG.USER_REDIRECTS.UNAUTHED_USER.AUTHGUARD_REDIRECT_DESTINATION,
     outcome: user?.email_confirmed_at ? 'already-authenticated' : 'invalid',
   }), request.url);

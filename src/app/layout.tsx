@@ -13,6 +13,7 @@ import {
   createSupachargerViewport,
   SupachargerAnalytics,
 } from '@/supacharger/root-document';
+import { localisedSiteConfig } from '@/supacharger/site-identity';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
@@ -27,7 +28,10 @@ const hostGrotesk = Host_Grotesk({
   subsets: ['latin'],
 });
 
-export const metadata = createSupachargerMetadata(SC_CONFIG);
+export async function generateMetadata() {
+  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  return createSupachargerMetadata(localisedSiteConfig(messages), locale);
+}
 export const viewport = createSupachargerViewport(SC_CONFIG);
 
 export default async function RootLayout({ children }: PropsWithChildren) {
