@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-30T08:39:02+00:00; base_commit=daadad908f55d15626364b144e55bc5731486082; main_commit=daadad908f55d15626364b144e55bc5731486082; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=daadad908f55d15626364b144e55bc5731486082; scope=declarative-schema-adoption; excluded=none; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-30T08:44:25+00:00; base_commit=2fa4f0a4c26520d224a01cd6d8323d3d24f1e0a4; main_commit=2fa4f0a4c26520d224a01cd6d8323d3d24f1e0a4; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=2fa4f0a4c26520d224a01cd6d8323d3d24f1e0a4; scope=declarative-verification-record; excluded=none; earlier-history-not-audited -->
 
 ## [Unreleased]
 

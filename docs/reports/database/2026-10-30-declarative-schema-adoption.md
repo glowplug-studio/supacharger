@@ -1,7 +1,7 @@
 # Declarative database adoption: supacharger
 
 Created: 2026-10-30T15:39:02+07:00 (Asia/Bangkok)
-Last edited: 2026-10-30T15:39:02+07:00 (Asia/Bangkok)
+Last edited: 2026-10-30T15:44:25+07:00 (Asia/Bangkok)
 
 ## Source and verification
 
@@ -23,4 +23,8 @@ Existing CLI checks: 69 pass, two historical Core-lock fixture failures. Existin
 
 ## Publication
 
-Source publication and automatic deployment verification are being completed. No production database migration is pending from this task. Existing consumer registry locks are preserved; this does not claim a new npm or registry release.
+Implementation commit `2fa4f0a` is pushed and Vercel production deployment `dpl_44xbGiFV3N37JY8n1tyuPu9b5qRd` is READY. Public application landing checks returned HTTP 200 for all three applications. Docusaurus commit fe7ea86 is deployed READY as dpl_BwhXJ6uXAFmeKpM1C9qcAcdEqagn. The 230 managed Core files match both consumers. No production database migration is pending from this task; no historical migration was changed. Disposable rehearsal containers created during this task were removed.
+
+CLI source a6e9d0f is pushed to its established development branch. Invitations source e482a54 and transactional-email source 9e877d7 include their new declarative payloads; Brevo documentation 6a31896 explains its lack of a current SQL payload. npm publication could not run: npm whoami returned ENEEDAUTH; the public CLI version remains 1.0.4. Existing consumer registry locks are preserved; no new npm or registry release is claimed. The installed projects already contain their pinned Node planning tools. Native Supabase sync remains subject to the limitations above.
+
+This evidence records the deployed implementation commits; subsequent report-only commits do not change the implementation.
