@@ -62,6 +62,7 @@
     "public/images/email-template",
     "docs/reports/sc-install/first-install-handhold-me.md",
     "docs/agents",
-    "supabase/schemas"
+    "supabase/schemas",
+    ".supacharger/database-update.json"
   ]
 }

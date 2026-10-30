@@ -22,6 +22,10 @@ A requested change to an ordinary application value in `src/supacharger.config.t
 
 Ordinary product code, UI and documentation that do not define a protected contract do not trigger either gate. Preserve the application's dedicated security and privileged-boundary rules. Report the resulting behaviour and verification without describing a project-only change as a Core change.
 
+## Database contract ownership
+
+Before editing database definitions or migrations, read `docs/agents/declarative-database.md`, including its protected Core database contracts. A developer-owned combined schema file can contain protected Core objects: file ownership and the configured schema prefix do not transfer ownership of Core tables, columns, functions, policies or grants to the application. Preserve product additions, obtain the applicable approval and land approved shared changes in canonical Core first. Existing migration histories remain immutable; never copy a fresh-install baseline into an installed application.
+
 ## Where to record instructions
 
 The repository-root `AGENTS.md` is an entry point only: keep it limited to the ordered links needed to load this guidance, project instructions and the task index. Do not add feature rules, implementation details, examples or task-specific instructions there. Do not edit it during ordinary feature or documentation work; change its routing only when explicitly requested or required by an authorised guidance reorganisation.

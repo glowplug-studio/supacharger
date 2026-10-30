@@ -112,7 +112,7 @@ export function classifyPath(inputPath) {
     return { ownership: 'extension-managed', guidance: 'Rendered extension declarative definitions. Read docs/agents/declarative-database.md, preserve PROJECT_NAMESPACE and review a migration before deployment.' };
   }
   if (relativePath.startsWith('supabase/schemas/')) {
-    return { ownership: 'developer-owned', guidance: 'Complete application desired state. Merge Core updates without deleting product definitions; preserve all installed migration history. Read docs/agents/declarative-database.md.' };
+    return { ownership: 'developer-owned', guidance: 'Combined application desired state; Core-defined tables, fields, functions, policies and grants remain protected despite developer-owned files. Merge old Core, incoming Core and project definitions using PROJECT_NAMESPACE; generate a project-specific forward migration and preserve all installed history. Read docs/agents/declarative-database.md.' };
   }
 
   if (relativePath.startsWith('src/app/(project)/(extensions)/(sc_extensions)/') || relativePath.startsWith('supabase/functions/_shared/extensions/sc_ext-') || relativePath.startsWith('supabase/functions/ext-') ||

@@ -68,4 +68,7 @@ tools/supacharger-skills/node_modules/
 
 # Private extension update review sources
 .supacharger/extension-comparisons/
-docs/reports
+/docs/reports/*
+!/docs/reports/sc-install/
+/docs/reports/sc-install/*
+!/docs/reports/sc-install/first-install-handhold-me-core.md

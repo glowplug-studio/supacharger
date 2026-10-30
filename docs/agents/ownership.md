@@ -2,7 +2,7 @@
 
 ## Versioned ownership manifest
 
-`.supacharger/managed-files.json` is the authoritative versioned ownership contract. Version 2 separates exact managed paths, merge-managed contracts, forward-only migration histories and developer-owned paths. `coreupdate --plan` compares the installed baseline with latest Core without changing project files or a database. A real update replaces only exact managed paths, merges approved dependency contracts, copies only new forward migrations, backs up overwritten files and advances the Core lock after direct file comparison succeeds.
+`.supacharger/managed-files.json` is the authoritative versioned ownership contract. Version 2 separates exact managed paths, merge-managed contracts, forward-only migration histories and developer-owned paths. `coreupdate --plan` compares the installed baseline with latest Core without changing project files or a database. A real update replaces only exact managed paths, merges approved dependency contracts, merges namespaced database definitions and generates a project-specific forward migration, backs up overwritten files and advances the Core lock after direct file comparison succeeds.
 
 ## CLI-managed paths
 
@@ -131,3 +131,7 @@ The manifest makes `.agents/supacharger/guidance.md` and `CHANGELOG.md` exact-ma
 ## Installation records
 
 `docs/reports/sc-install/first-install-handhold-me.md` is developer-owned, supplied by the initial Core clone and preserved by updates. Initialise it in place and record verified progress. `docs/reports/sc-install/first-install-handhold-me-core.md` is the sibling Core CLI-managed **DO NOT EDIT** checklist reference, replaced on updates so developers can review the new installation procedure. Merge relevant changes into unfinished work deliberately; never replace completed evidence. Both files are committable and excluded from deployment.
+
+## Database object protection
+
+Developer-owned SQL files may contain protected Core objects. Read [the database ownership and upgrade rules](declarative-database.md#protected-core-database-contracts) before changing tables, fields, functions, policies or grants. Preserve project additions and all installed history. The CLI-owned `.supacharger/database-update.json` is temporary update provenance, not a second namespace setting.

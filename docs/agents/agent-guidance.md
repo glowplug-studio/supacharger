@@ -14,6 +14,8 @@ Root `AGENTS.md` contains entry-point links only. Follow [Where to record instru
 
 ## Read by task
 
+- Before changing any database definition or migration, read [Declarative database definitions](declarative-database.md), especially protected Core contracts and project-specific upgrade histories.
+
 - Before developing extension database operations, read [Database service registrations](core-services.md#developing-extensions-with-database-operations).
 - Before changing Next.js code, read the framework guidance in [project.md](project.md#framework-guidance).
 

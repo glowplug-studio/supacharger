@@ -8,10 +8,12 @@ function renderDeclarativeSql(sql, namespace) {
 }
 module.exports = { renderDeclarativeSql };
 
-function prepareStarterSchemas(root) {
+function prepareStarterSchemas(root, selectedNamespace) {
   const fs = require('node:fs');
   const path = require('node:path');
-  const { namespace } = require('./extensions/services.cjs').readServiceConfig(root);
+  const namespace = selectedNamespace === undefined
+    ? require('./extensions/services.cjs').readServiceConfig(root).namespace : selectedNamespace;
+  namespacePrefix(namespace);
   const directory = path.join(root, 'supabase/schemas');
   if (!namespace || !fs.existsSync(directory)) return;
   const files = [];
@@ -30,6 +32,8 @@ function prepareStarterSchemas(root) {
   for (const {file,target} of changes) if (file !== target && fs.existsSync(target)) throw new Error('Namespace rendering would overwrite an existing schema');
   for (const {target,contents} of changes) { fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, contents); }
   for (const {file,target} of changes) if (file !== target) fs.unlinkSync(file);
+  const config = path.join(root, 'supabase/config.toml');
+  if (fs.existsSync(config)) fs.writeFileSync(config, renderDeclarativeSql(fs.readFileSync(config, 'utf8'), namespace));
 }
 module.exports.prepareStarterSchemas = prepareStarterSchemas;
 if (require.main === module) prepareStarterSchemas(process.cwd());

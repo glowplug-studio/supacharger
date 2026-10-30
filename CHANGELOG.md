@@ -9,13 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-30T09:45:18+00:00; base_commit=c8cd078a6074efb97747060a7213da0c86a8a27e; main_commit=c8cd078a6074efb97747060a7213da0c86a8a27e; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=c8cd078a6074efb97747060a7213da0c86a8a27e; scope=declarative-guidance-formatting; excluded=npm-publication; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-30T10:56:32+00:00; base_commit=8671444894768b79ddc04ea32bfe41942efcb835; main_commit=8671444894768b79ddc04ea32bfe41942efcb835; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=8671444894768b79ddc04ea32bfe41942efcb835; scope=declarative-installation-updates-and-recovery-guidance; excluded=local-only-reports; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
 
-- Declarative database definitions compose Core, extensions and product objects while retaining permanent migration history. Namespace-aware installation and a pinned, local-only schema planner support reviewed forward changes.
+- Declarative database definitions compose Core, extensions and product objects while retaining permanent migration history. Fresh installations receive one verified initial migration rendered from PROJECT_NAMESPACE; existing projects merge namespaced Core definitions and generate their own forward migrations. Protected-object guidance and cloud-edit recovery keep source and deployment history aligned.
 
 - Required, localised signup agreements cover password, passwordless and OAuth account creation, with server-action validation and a configurable legal destination. The disposable Core legal demo provides Terms and Privacy anchors.
 

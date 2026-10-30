@@ -48,7 +48,11 @@ The updater does not distribute, generate or run application tests, fixtures, da
 
 ## Forward migrations
 
-Until the migration system is replaced, migrations remain append-only. A new canonical filename is copied only when absent. If an existing file with the same name has different contents, the update stops. A reviewed equivalent under another filename may be declared in `.supacharger/migration-aliases.json`; the replacement file must exist.
+For declarative Core releases, installation prepares one verified initial migration for the selected namespace. `--namespace <code>` selects the project code explicitly; non-interactive omission selects the default `sc_`. This runs before optional environment prompts, without requiring application dependencies to be installed.
+
+Updates merge old Core, incoming Core and application definitions using the existing `PROJECT_NAMESPACE`, preserving product additions and stopping on conflicts. Native sync generates a forward migration against the application's own history. The CLI never copies the fresh baseline or incoming Core chain into an existing declarative application. Review SQL and the complete linked dry run before approving a push. The Core lock does not advance while database work remains unfinished. See [database ownership, data-upgrade limits and recovery](declarative-database.md).
+
+Legacy releases without the declarative distribution contract retain the old append-only copying and explicit `.supacharger/migration-aliases.json` behaviour. Do not use that legacy path to bypass a declarative update failure.
 
 ## Optional developer resources
 
