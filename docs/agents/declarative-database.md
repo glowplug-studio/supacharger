@@ -53,4 +53,3 @@ For pg_cron, supply `--shadow <fresh-local-postgres-url>` on a separate disposab
 Custom cluster roles must exist in both local servers with the same definitions before loading grants. Their creation, membership and other cluster configuration remain in reviewed migrations or `supabase/roles.sql`, separate from the database-scoped schema export. Likewise, bucket rows, bindings, runtime settings and Vault values stay in their existing migration/configuration workflow.
 
 Do not use a generated plan to reconcile unrelated production drift automatically. Keep the native engine enabled in config to prevent the legacy diff engine interpreting this per-object tree. A successful fallback does not certify native historical replay or authorise changing the migration ledger.
-
