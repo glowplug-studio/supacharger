@@ -61,6 +61,7 @@
     ".supacharger/skills-lock.json",
     "public/images/email-template",
     "docs/reports/sc-install/first-install-handhold-me.md",
-    "docs/agents"
+    "docs/agents",
+    "supabase/schemas"
   ]
 }

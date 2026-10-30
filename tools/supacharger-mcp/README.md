@@ -114,3 +114,5 @@ Use `supacharger_get_guidance` with `ui_implementation` or `icon_usage`, or read
 Use `project_rules` for this checkout’s application policy and `reporting` for report timestamps, filenames and storage. Shared topic names do not make project-specific choices apply across consumers.
 
 Use the `profile_extensions` guidance topic for atomic account extensions, public profile projections and Supabase profile media.
+
+The `declarative_database` topic covers desired-state composition, namespace rendering, permanent migration history and read-only local planning. It reads `docs/agents/declarative-database.md`; the MCP does not run database changes.

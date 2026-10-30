@@ -24,6 +24,7 @@ const guidanceFiles = {
   mobile_auth: 'docs/agents/mobile-auth-deep-linking.md',
   database: 'docs/agents/database-foundation.md',
   database_namespaces: 'docs/agents/database-namespaces.md',
+  declarative_database: 'docs/agents/declarative-database.md',
   input_validation: 'docs/agents/input-validation.md',
   image_transforms: 'docs/agents/image-transformation.md',
   loading_ui: 'docs/agents/loading-ui.md',
@@ -107,6 +108,13 @@ export function classifyPath(inputPath) {
   if (/^src\/app\/\(project\)\/\(extensions\)\/\(sc_extensions\)\/\(([a-z][a-z0-9-]*)\)\/supacharger-ext-\1\.config\.ts$/.test(relativePath)) {
     return { ownership: 'developer-owned', guidance: 'Colocated extension configuration is installed only when missing and preserved on updates.' };
   }
+  if (relativePath.startsWith('supabase/schemas/extensions/')) {
+    return { ownership: 'extension-managed', guidance: 'Rendered extension declarative definitions. Read docs/agents/declarative-database.md, preserve PROJECT_NAMESPACE and review a migration before deployment.' };
+  }
+  if (relativePath.startsWith('supabase/schemas/')) {
+    return { ownership: 'developer-owned', guidance: 'Complete application desired state. Merge Core updates without deleting product definitions; preserve all installed migration history. Read docs/agents/declarative-database.md.' };
+  }
+
   if (relativePath.startsWith('src/app/(project)/(extensions)/(sc_extensions)/') || relativePath.startsWith('supabase/functions/_shared/extensions/sc_ext-') || relativePath.startsWith('supabase/functions/ext-') ||
       relativePath.startsWith('docs/extensions/')) {
     return { ownership: 'extension-managed', guidance: 'Read docs/extensions/<id>/INSTALL.md and compare installed files with the incoming extension payload. The colocated configuration is developer-owned; other manifest-listed payload files are extension-managed. Installation does not advance the Core lock.' };

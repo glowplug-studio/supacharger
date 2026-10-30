@@ -154,3 +154,7 @@ of frontend configuration and file removal. These build checks do not replace CL
 ### Database administration is explicit
 
 Build preparation only selects application code. It never generates SQL, changes Supabase, or disables a hosted extension. Removing extension files leaves its database tables and data in place. When asked to disable a hosted module, an agent may use the Supabase MCP to execute its documented administrative SQL against the verified project, then read the setting back. Do not infer a request to disable the database from a frontend build or file removal. Follow the installed extension guide for its SQL and any provider-specific queued-delivery handling.
+
+## Declarative definitions
+
+Manifest files with `kind: "schema"` map `payload/supabase/schemas/` into `supabase/schemas/extensions/<id>/`. The installer renders default `sc_` references using `PROJECT_NAMESPACE`; original migrations remain immutable. Read [declarative database guidance](declarative-database.md) before composing or deploying these definitions. Installation alone never applies SQL.

@@ -9,11 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-29T22:32:33+00:00; base_commit=6125676b259ac882a3e1a71bf93b72553f2e5536; main_commit=6125676b259ac882a3e1a71bf93b72553f2e5536; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=6125676b259ac882a3e1a71bf93b72553f2e5536; scope=service-registration-and-agent-guidance; excluded=none; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-30T08:39:02+00:00; base_commit=daadad908f55d15626364b144e55bc5731486082; main_commit=daadad908f55d15626364b144e55bc5731486082; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=daadad908f55d15626364b144e55bc5731486082; scope=declarative-schema-adoption; excluded=none; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- Declarative database definitions compose Core, extensions and product objects while retaining permanent migration history. Namespace-aware installation and a pinned, local-only schema planner support reviewed forward changes.
 
 - Required, localised signup agreements cover password, passwordless and OAuth account creation, with server-action validation and a configurable legal destination. The disposable Core legal demo provides Terms and Privacy anchors.
 

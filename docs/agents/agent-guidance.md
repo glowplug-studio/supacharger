@@ -54,3 +54,5 @@ Read [project.md](project.md) for this application’s decisions; they do not ap
 ## Installed extension instructions
 
 When a task concerns an installed extension, read `docs/agents/extensions/<registry-name>/AGENTS.md` if present. Check the actual installed version and enabled state; do not load every extension guide or require Brevo globally. The local CLI supports this mapping; older installations may not have this directory. Follow their actual installed INSTALL.md instead.
+
+For desired database state and migration generation, read [declarative database definitions](declarative-database.md).

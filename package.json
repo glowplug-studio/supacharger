@@ -19,7 +19,8 @@
     "db:reset": "supabase db reset",
     "db:lint": "supabase db lint --local",
     "db:push:dry-run": "supabase db push --linked --dry-run",
-    "db:push:linked": "supabase db push --linked"
+    "db:push:linked": "supabase db push --linked",
+    "db:schema:plan": "node src/supacharger/plan-declarative.cjs"
   },
   "dependencies": {
     "@next/third-parties": "16.3.0",
@@ -82,6 +83,8 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@supabase/pg-delta": "1.0.0-alpha.60",
+    "@supabase/pg-topo": "1.0.0-alpha.8",
     "@svgr/webpack": "8.1.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.20.1",
@@ -94,7 +97,7 @@
     "postcss": "8.5.26",
     "prettier": "3.9.6",
     "prettier-plugin-tailwindcss": "0.8.1",
-    "supabase": "2.115.0",
+    "supabase": "2.122.0",
     "tw-animate-css": "1.4.0",
     "typescript": "5.9.3"
   },

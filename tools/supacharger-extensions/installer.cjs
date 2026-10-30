@@ -5,6 +5,8 @@ const { randomUUID } = require('node:crypto');
 
 const validId = value => typeof value === 'string' && /^[a-z][a-z0-9-]{0,63}$/.test(value);
 const inside = (file, parent) => file === parent || file.startsWith(`${parent}/`);
+const extensionFunctionName = (id, name) => typeof name === 'string' && name.length <= 63 &&
+  new RegExp(`^(?:sc_(?:[a-z][a-z0-9_]{0,5}_)?|)ext-${id}(?:-[a-z0-9-]+)?$`).test(name);
 function relative(value) {
   if (typeof value !== 'string' || !value || value.includes('\\') || value.includes('\0') ||
       path.posix.isAbsolute(value) || value.split('/').some(p => !p || p === '.' || p === '..' || !/^[a-zA-Z0-9_.()-]+$/.test(p))) {
@@ -36,10 +38,11 @@ function payloadTarget(id, source) {
   if (source.startsWith('payload/supabase/functions/')) {
     const rest = source.slice('payload/supabase/functions/'.length);
     const name = rest.split('/')[0];
-    if (name !== `ext-${id}` && !name.startsWith(`ext-${id}-`)) throw new Error('Edge Function must use its extension namespace');
+    if (!extensionFunctionName(id, name)) throw new Error('Edge Function must use its extension namespace');
     if (!rest.includes('/')) throw new Error('Edge Function payload needs a file');
     return `supabase/functions/${rest}`;
   }
+  if (source.startsWith('payload/supabase/schemas/')) return `supabase/schemas/extensions/${id}/` + source.slice('payload/supabase/schemas/'.length);
   if (source.startsWith('payload/supabase/migrations/')) return 'supabase/migrations/' + source.slice('payload/supabase/migrations/'.length);
   if (source.startsWith('payload/agents/')) return `docs/agents/extensions/supacharger-ext-${id}/` + source.slice('payload/agents/'.length);
   if (source.startsWith('payload/docs/')) return `docs/extensions/${id}/` + source.slice('payload/docs/'.length);
@@ -50,6 +53,8 @@ function validateManifest(manifest, id) {
       !/^\d+\.\d+\.\d+$/.test(manifest.version) || manifest.coreOwnershipVersion !== 2 ||
       !Array.isArray(manifest.files) || !manifest.files.length || manifest.files.length > 1000) throw new Error('Invalid extension manifest');
   if (manifest.name !== `supacharger-ext-${id}`) throw new Error('Registry name must match the extension ID');
+  if (manifest.preparedNamespace !== undefined && (typeof manifest.preparedNamespace !== 'string' ||
+      (manifest.preparedNamespace !== '' && !/^[a-z][a-z0-9_]{0,5}$/.test(manifest.preparedNamespace)))) throw new Error('Invalid prepared namespace');
   if (manifest.dependencies !== undefined && (!Array.isArray(manifest.dependencies) || new Set(manifest.dependencies).size !== manifest.dependencies.length || manifest.dependencies.some(name => !/^supacharger-ext-[a-z][a-z0-9-]{0,63}$/.test(name) || name === manifest.name))) throw new Error('Invalid extension dependencies');
   if (manifest.provider_dependencies !== undefined) {
     const rules = manifest.provider_dependencies;
@@ -70,7 +75,8 @@ function validateManifest(manifest, id) {
       `docs/extensions/${id}`, `docs/agents/extensions/supacharger-ext-${id}`, `supabase/functions/ext-${id}`,
     ];
     const functionName = file.target.split('/')[2];
-    if (file.target.startsWith('supabase/functions/') && functionName?.startsWith(`ext-${id}-`)) allowed.push(`supabase/functions/${functionName}`);
+    if (file.target.startsWith('supabase/functions/') && extensionFunctionName(id, functionName)) allowed.push(`supabase/functions/${functionName}`);
+    const schema = file.kind === 'schema' && file.source.startsWith('payload/supabase/schemas/') && file.source.endsWith('.sql');
     const migration = file.kind === 'migration' &&
       new RegExp(`^supabase/migrations/[0-9]{14}_ext_${id.replaceAll('-', '_')}_[a-z0-9_]+\\.sql$`).test(file.target);
     if (migration) {
@@ -80,8 +86,8 @@ function validateManifest(manifest, id) {
     }
     const config = file.source === `payload/app/supacharger-ext-${id}.config.ts`;
     if (config !== (file.kind === 'config')) throw new Error('Extension config must be marked developer-owned with kind config');
-    if ((!migration && !allowed.some(prefix => file.target.startsWith(`${prefix}/`))) ||
-        (file.kind !== undefined && !migration && !config) ||
+    if ((!migration && !schema && !allowed.some(prefix => file.target.startsWith(`${prefix}/`))) ||
+        (file.kind !== undefined && !migration && !schema && !config) ||
         destinations.has(file.target.toLowerCase())) throw new Error('Invalid extension destination');
     destinations.add(file.target.toLowerCase());
   }
@@ -106,10 +112,25 @@ async function compare(id, options = {}) {
   const source = await fs.realpath(options.source);
   const manifest = JSON.parse(await fs.readFile(await safePath(source, 'extension.json'), 'utf8'));
   validateManifest(manifest, id);
+  if (manifest.preparedNamespace !== undefined) {
+    const { namespace } = require(path.join(root, 'src/supacharger/extensions/services.cjs')).readServiceConfig(root);
+    if (namespace !== manifest.preparedNamespace) throw new Error('Prepared extension namespace differs from PROJECT_NAMESPACE; prepare the package for this application');
+    const prefix = namespace ? `sc_${namespace}_ext-${id}` : `sc_ext-${id}`;
+    for (const file of manifest.files) {
+      if (!file.source.startsWith('payload/supabase/functions/')) continue;
+      const name = file.target.split('/')[2];
+      if (name !== prefix && !name.startsWith(`${prefix}-`)) throw new Error('Prepared worker does not match PROJECT_NAMESPACE');
+    }
+  }
   await ownership(root, manifest.files);
   const changes = [];
   for (const file of manifest.files) {
-    const bytes = await fs.readFile(await safePath(source, file.source));
+    let bytes = await fs.readFile(await safePath(source, file.source));
+    if (file.kind === 'schema') {
+      const { namespace } = require(path.join(root, 'src/supacharger/extensions/services.cjs')).readServiceConfig(root);
+      const { renderDeclarativeSql } = require(path.join(root, 'src/supacharger/declarative-namespace.cjs'));
+      bytes = Buffer.from(renderDeclarativeSql(bytes.toString('utf8'), namespace));
+    }
     const targetPath = await safePath(root, file.target);
     const existing = await readOptional(targetPath);
     if (file.kind === 'migration') {

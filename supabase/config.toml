@@ -283,3 +283,7 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 [functions.sc_profile-media]
 entrypoint = "./functions/profile-media/index.ts"
 verify_jwt = false
+
+# Declarative source; use db:schema:plan while native sync has pool/replay limitations.
+[experimental.pgdelta]
+enabled = true
