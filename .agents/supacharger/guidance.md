@@ -34,7 +34,7 @@ When a human says "put this in AGENTS.md", place the substantive instructions in
 
 Use `docs/agents/project.md` and `docs/agents/project/` for application-specific policy; shared `docs/agents/` topics for reusable technical contracts; `.agents/instructions/` for task execution procedures; and `.agents/skills/` for reusable skills. Use `docs/reports/` for evidence and reports, following `docs/agents/reporting.md`. Keep optional contributor rules in their existing `.agents/supacharger/` directories. Do not create a second root instruction file or duplicate topic content to enforce this layout.
 
-Keep durable agent guidance, project UI/icon conventions and technical explanations together in `docs/agents/`, starting with `docs/agents/agent-guidance.md`. Shared topic files describe Core contracts; `project.md` and `project/` hold this application’s decisions. Do not create a parallel `.agents/project/rules/` tree. Keep optional Core contributor policies in `.agents/supacharger/core-development/`. Put reusable task procedures in skills, each with its own `SKILL.md`. Do not duplicate technical references across these locations.
+Keep the task index in `docs/agents/agent-guidance.md` and project UI/icon conventions in linked `docs/agents/project/` topics. Do not create a parallel `.agents/project/rules/` tree. Each reusable skill has its own `SKILL.md`.
 
 Project instructions may override this shared guidance for the application, subject to the human's instructions and applicable higher-priority rules. Prefer recording overrides in the project file. Editing this shared file creates upstream drift; the Core updater must report the conflict rather than silently replace it.
 
@@ -54,7 +54,7 @@ On first setup, explain that the developer can return to the same project in thi
 
 If Core was updated after an installation checklist's last checkpoint, compare the recorded and installed versions of `docs/reports/sc-install/first-install-handhold-me-core.md`. Reconcile relevant upstream changes into the developer-owned installation guide and unfinished checklist deliberately. Preserve project decisions and completed evidence, and record any changed prerequisite, risk or approval requirement before continuing.
 
-Keep `docs/reports/` committable and excluded from deployment uploads and runtime bundles. Record decisions, progress and verification without credentials or private data. A checklist does not authorise executing its steps or committing it.
+Keep `docs/reports/` committable in distributed repositories and excluded from deployment uploads and runtime bundles. Maintainers may ignore their own reports through checkout-local `.git/info/exclude`; never distribute that preference in `.gitignore`. Local exclusions do not affect already tracked files. Record decisions, progress and verification without credentials or private data. A checklist does not authorise executing its steps or committing it.
 
 ## Technical references and MCP
 
@@ -74,4 +74,4 @@ Skills installed in `.agents/skills/` are preserved during Core updates. Use `su
 
 ## Report metadata
 
-Before creating or editing any report, including reports under `.agents/`, read and apply `docs/agents/reporting.md`. Include creation and last-edit date/time with timezone; update Last edited on every edit. New report filenames include the creation date.
+Before creating or editing any report, including reports under `.agents/`, read and apply [the report policy](../../docs/agents/reporting.md). It owns placement, filenames, timestamps and historical metadata.

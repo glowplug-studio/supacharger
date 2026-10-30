@@ -958,6 +958,7 @@
     opacity: 0.75;
   }
   .sc-auth-terms-link {
+    font-size: inherit;
     text-decoration: underline;
     text-underline-offset: 2px;
   }

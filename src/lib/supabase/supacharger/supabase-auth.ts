@@ -12,7 +12,6 @@ import { authActionFailure, type AuthActionResult, authActionSuccess } from '@/s
 import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
 import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
-import { hasSignUpConsent } from '@/supacharger/auth/sign-up-terms';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 import { evaluatePasswordStrength, isValidEmail } from '@/supacharger/utils/helpers';
@@ -120,12 +119,7 @@ export async function signInWithEmail(email: string, nextPath: string | null = n
 /**
  * Send the configured passwordless signup email.
  */
-export async function signUpWithEmail(
-  email: string,
-  nextPath: string | null = null,
-  termsAccepted: unknown = false,
-): Promise<AuthActionResult> {
-  if (!hasSignUpConsent(termsAccepted)) return authActionFailure('terms_required');
+export async function signUpWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
   if (SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_UP === 'disabled') {
     return authActionFailure('otp_disabled');
   }
@@ -139,7 +133,6 @@ export async function signUpWithEmail(
 export async function createUserByEmailPassword(
   formData: FormData,
 ): Promise<AuthActionResult<{ userId: string | null; identityCount: number | null }>> {
-  if (!hasSignUpConsent(formData.get('termsAccepted') === 'true')) return authActionFailure('terms_required');
   if (!SC_CONFIG.SUPABASE_AUTH.METHODS.EMAIL_PASSWORD.SIGN_UP) {
     return authActionFailure('email_password_sign_up_disabled');
   }
@@ -209,9 +202,8 @@ export async function sendPasswordReset(email: string) {
 
 export type SupabaseOAuthProvider = SupachargerOAuthProvider;
 
-export async function signInWithOAuth(provider: SupabaseOAuthProvider, termsAccepted: unknown = false) {
+export async function signInWithOAuth(provider: SupabaseOAuthProvider) {
   // OAuth can create an account even when started from the sign-in chooser.
-  if (!hasSignUpConsent(termsAccepted)) return authActionFailure('terms_required');
   if (!SC_CONFIG.SUPABASE_AUTH.OAUTH_PROVIDERS[provider]) {
     return authActionFailure('oauth_provider_disabled');
   }

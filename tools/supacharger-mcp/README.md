@@ -70,12 +70,12 @@ Use `src/assets/svgr/ui/image-loader.svg` through SVGR for pending images and th
 
 ## Signup agreement
 
-`AUTHENTICATION.SIGN_UP_TERMS` owns provider-independent signup consent:
+`AUTHENTICATION.SIGN_UP_TERMS` owns provider-independent signup notices:
 
 ```ts
 AUTHENTICATION: {
   SIGN_UP_TERMS: {
-    REQUIRED: true,
+    REQUIRED: false, // Deprecated compatibility setting; ignored.
     URL: { DEFAULT: '/legal', LOCALES: {} },
   },
   ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
@@ -84,9 +84,9 @@ AUTHENTICATION: {
 
 Add locale codes to `URL.LOCALES` to select translated legal pages; otherwise `URL.DEFAULT` is used. Application-relative paths and absolute HTTP(S) URLs are supported. Links open a new tab. Add local destinations to `PATH_AUTH_GUARD.UNAUTHED_USER.ALLOWED`; URL fragments are not route paths.
 
-The shared signup form requires the checkbox before password, passwordless or social signup. The server actions validate an explicit acceptance value before calling Supabase. Social sign-in also requires acceptance because the provider can create a new account. This is an application-flow check, not a stored consent audit or a Supabase-wide restriction on direct Auth API clients.
+The shared authentication UI displays a notice for password, passwordless and social account creation, including the social sign-in chooser because a provider can create an account. No checkbox or acceptance parameter is required, and authentication is never blocked by the notice. This presentation belongs to the provider-independent authentication journey, not a provider service. It does not store consent.
 
-Translate `AuthJourney.signUpAgreement` with its `<terms>...</terms>` rich-text tag. English is the fallback for untranslated catalogue values. Set `REQUIRED: false` for an optional notice, and `URL.DEFAULT: null` with no locale URLs to hide that optional notice. A required agreement needs a valid legal destination.
+Translate `AuthJourney.signUpAgreement` with its `<terms>...</terms>` rich-text tag. English is the fallback for untranslated catalogue values. Set `URL.DEFAULT: null` with no locale URLs to hide the notice. `REQUIRED` remains a deprecated compatibility field: both `true` and `false` display the same notice without a checkbox. Remove any custom acceptance arguments when updating callers of the shared auth actions.
 
 This replaces both `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` and `AUTHENTICATION.SIGN_UP_TERMS_URL`. Core's `/legal` is disposable demonstration content; replace it before launching a real product.
 

@@ -41,7 +41,7 @@ export const SC_CONFIG: SupachargerConfig = {
   },
   // Provider-independent signup consent and account navigation.
   AUTHENTICATION: {
-    SIGN_UP_TERMS: { REQUIRED: true, URL: { DEFAULT: '/legal', LOCALES: {} } },
+    SIGN_UP_TERMS: { REQUIRED: false, URL: { DEFAULT: '/legal', LOCALES: {} } },
     ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
   },
   // Settings used specifically by the Supabase Auth implementation.

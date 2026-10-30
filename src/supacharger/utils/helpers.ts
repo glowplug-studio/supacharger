@@ -132,7 +132,6 @@ export function supabaseErrorCodeLocalisation(response: string, status: number |
     signup_disabled: 'signupDisabled',
     weak_password: 'weakPassword',
     validation_failed: 'validationFailed',
-    terms_required: 'termsRequired',
     user_not_found: 'userNotFound',
     over_email_send_rate_limit: 'overEmailSendRateLimit',
     over_request_rate_limit: 'overLimit',

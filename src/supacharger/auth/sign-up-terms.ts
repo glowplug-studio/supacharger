@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 /** Locale-specific legal destination, falling back to the configured default. */
@@ -14,9 +12,4 @@ export function signUpTermsUrl(locale: string): string | null {
   } catch {
     return null;
   }
-}
-
-/** Validate the explicit boolean at the action boundary; never coerce truthy input. */
-export function hasSignUpConsent(value: unknown): boolean {
-  return !SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.REQUIRED || z.literal(true).safeParse(value).success;
 }

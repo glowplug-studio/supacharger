@@ -29,9 +29,12 @@ export type SupachargerToastTransition = 'bounce' | 'flip' | 'slide' | 'zoom';
 
 /** Canonical developer-owned Supacharger application configuration. */
 export type SupachargerConfig = {
-  /** Provider-independent signup requirements. */
+  /** Provider-independent signup notice and confirmed-account destination. */
   AUTHENTICATION: {
-    SIGN_UP_TERMS: { REQUIRED: boolean; URL: { DEFAULT: string | null; LOCALES: Readonly<Record<string, string>> } };
+    SIGN_UP_TERMS: {
+      /** @deprecated Ignored: signup uses a notice without a checkbox. */ REQUIRED: boolean;
+      URL: { DEFAULT: string | null; LOCALES: Readonly<Record<string, string>> };
+    };
     ACCOUNT_CONFIRMED_PATH: string;
   };
   /** Supabase-specific authentication settings. */

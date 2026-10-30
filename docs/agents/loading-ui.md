@@ -1,10 +1,10 @@
 # Inline loading and SVG UI assets
 
-Use `src/components/ui/loading-spinner.tsx` for every inline loading indicator unless a surface explicitly requires the black variant. The wrapper renders the primary `src/assets/svgr/ui/inline-loader.svg` through SVGR; the matching black variant is available at `src/assets/svgr/ui/inline-loader-dark.svg`. Both asset paths are developer-owned branding seams and must survive CLI installation and core updates. Customise either animation by replacing its SVG with another file of the same name; keep its `viewBox` so callers can size it with classes.
+Use the primary `src/assets/svgr/ui/inline-loader.svg` for ordinary inline loading indicators, normally through `src/components/ui/loading-spinner.tsx`; direct SVGR use is also permitted. Use the black variant only when the surface calls for it. The wrapper renders the primary `src/assets/svgr/ui/inline-loader.svg` through SVGR; the matching black variant is available at `src/assets/svgr/ui/inline-loader-dark.svg`. Both asset paths are developer-owned branding seams and must survive CLI installation and core updates. Customise either animation by replacing its SVG with another file of the same name; keep its `viewBox` so callers can size it with classes.
 
 This contract is only for inline indicators such as pending buttons, form actions, uploads, and compact content states. Do not replace an application's route-level or full-page loading design with this asset unless that separate change is explicitly requested.
 
-Render the shared wrapper rather than importing the SVG in each caller:
+Prefer the shared wrapper for consistent accessible loading labels:
 
 ```tsx
 import { LoadingSpinner } from '@/components/ui/loading-spinner';

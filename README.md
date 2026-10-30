@@ -544,11 +544,11 @@ Use `src/assets/svgr/ui/image-loader.svg` through `src/components/sc_widgets/med
 
 ## Signup terms notice
 
-Set `AUTHENTICATION.SIGN_UP_TERMS_URL` in developer-owned `src/supacharger.config.ts` to an absolute HTTP(S) URL. The default `null` hides the notice; invalid, relative and credential-bearing URLs are not rendered. The link opens a new tab with `noopener noreferrer`.
+Set `AUTHENTICATION.SIGN_UP_TERMS.URL.DEFAULT` and optional `URL.LOCALES` overrides in developer-owned `src/supacharger.config.ts`. Safe application-relative paths and absolute HTTP(S) URLs are supported. A null default with no locale overrides hides the notice. The link opens a new tab with `noopener noreferrer`. Signup never requires a checkbox; the deprecated `REQUIRED` field is ignored.
 
-The shared login/signup form displays the notice beneath signup actions and on the provider chooser, where a social action can create an account even from sign-in. Wording follows the configured password, passwordless and social signup methods. `AuthJourney.signUpTerms`, `signUpTermsSocial`, `signUpTermsSocialOnly`, `signUpTermsPasswordless` and `signUpTermsPasswordlessSocial` are complete rich-text messages; preserve the `<terms>...</terms>` link tag when translating. English values are supplied; secondary catalogues remain pending translation.
+The shared login/signup form displays the notice beneath signup actions and on the provider chooser, where a social action can create an account even from sign-in. Translate `AuthJourney.signUpAgreement` as a complete rich-text message, preserving the `<terms>...</terms>` link tag. English is the fallback for untranslated catalogue values.
 
-This is a displayed notice, not a required checkbox or stored consent record. `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` remains separate. CLI upgrades add the missing setting as `null` and preserve an existing URL. Existing consumers receive the same property without changing their authentication methods. Configure the application's real terms URL before expecting a visible notice.
+This is a displayed notice, not a stored consent record. For older configurations, migrate `AUTHENTICATION.SIGN_UP_TERMS_URL` to `AUTHENTICATION.SIGN_UP_TERMS.URL.DEFAULT` while preserving the product URL and any locale overrides. Existing `SIGN_UP_TERMS` configurations keep their shape; `REQUIRED` no longer controls authentication. Configure a real legal destination before launch; Core’s `/legal` page is disposable demonstration content.
 
 ### Authentication outage page
 

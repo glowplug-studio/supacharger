@@ -76,12 +76,10 @@ export function EnabledAuthProviderIcons({ limit = 3 }: { limit?: number }) {
 }
 
 export default function AuthProviderButtons({
-  termsAccepted = false,
   disabled = false,
 }: {
-  termsAccepted?: boolean;
   disabled?: boolean;
-}) {
+} = {}) {
   const enabledProviders = getEnabledProviders();
 
   if (enabledProviders.length === 0) return null;
@@ -95,7 +93,7 @@ export default function AuthProviderButtons({
           className='sc-auth-surface-button sc-auth-provider-button'
           key={key}
           disabled={disabled}
-          onClick={() => void signInWithOAuth(key, termsAccepted)}
+          onClick={() => void signInWithOAuth(key)}
         >
           <span className='sc-auth-provider-avatar'>
             <Logo className='sc-auth-provider-logo' aria-hidden='true' focusable='false' />

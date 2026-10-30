@@ -20,7 +20,7 @@ import {
   verifySignInOtp,
 } from '@/lib/supabase/supacharger/supabase-auth';
 import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
-import { hasSignUpConsent, signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
+import { signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import NewPasswordFields from '@/supacharger/components/forms/new-password-fields';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
@@ -75,10 +75,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const t = useTranslations('AuthJourney');
   const tAuthTerms = useTranslations('AuthTerms');
   const locale = useLocale();
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const termsUrl = signUpTermsUrl(locale);
-  const consentMissing =
-    !hasSignUpConsent(termsAccepted) || (SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.REQUIRED && !termsUrl);
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const router = useRouter();
   const startsInEmailMode = shouldStartInEmailMode(initialMode);
@@ -249,14 +246,9 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     }
 
     if (mode === 'signup') {
-      if (consentMissing) {
-        setError(t('termsRequired'));
-        return;
-      }
       const formData = new FormData();
       formData.set('email', normalisedEmail);
       formData.set('password', password);
-      formData.set('termsAccepted', String(termsAccepted));
       if (safeNextPath) formData.set('next', safeNextPath);
       setPendingAction('password');
       startAuthTransition(async () => {
@@ -364,10 +356,6 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   }
 
   function sendPasswordlessEmail() {
-    if (mode === 'signup' && consentMissing) {
-      setError(t('termsRequired'));
-      return;
-    }
     setError(null);
     setLoginFailed(false);
     const validatedEmail = validateEmail();
@@ -377,7 +365,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
       try {
         const result =
           mode === 'signup'
-            ? await signUpWithEmail(validatedEmail, safeNextPath, termsAccepted)
+            ? await signUpWithEmail(validatedEmail, safeNextPath)
             : await signInWithEmail(validatedEmail, safeNextPath);
         if (result?.error) {
           return setError(
@@ -407,7 +395,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   async function resendPasswordlessEmail() {
     const result =
       verificationPurpose === 'signup'
-        ? await signUpWithEmail(verificationEmail, safeNextPath, termsAccepted)
+        ? await signUpWithEmail(verificationEmail, safeNextPath)
         : await signInWithEmail(verificationEmail, safeNextPath);
     return !result.error;
   }
@@ -453,33 +441,22 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     if (!termsUrl || (providerChoice ? !providerJourneyAvailable : mode !== 'signup' || !emailJourneyAvailable))
       return null;
     return (
-      <label className='sc-auth-terms flex items-start gap-2'>
-        {SC_CONFIG.AUTHENTICATION.SIGN_UP_TERMS.REQUIRED ? (
-          <input
-            type='checkbox'
-            checked={termsAccepted}
-            onChange={(event) => setTermsAccepted(event.target.checked)}
-            required
-            className='mt-1 size-4 shrink-0 accent-current'
-          />
-        ) : null}
-        <span>
-          {t.rich('signUpAgreement', {
-            terms: (chunks) => (
-              <a href={termsUrl} target='_blank' rel='noopener noreferrer' className='sc-auth-link sc-auth-terms-link'>
-                {chunks}
-              </a>
-            ),
-          })}
-        </span>
-      </label>
+      <p className='sc-auth-terms'>
+        {t.rich('signUpAgreement', {
+          terms: (chunks) => (
+            <a href={termsUrl} target='_blank' rel='noopener noreferrer' className='sc-auth-link sc-auth-terms-link'>
+              {chunks}
+            </a>
+          ),
+        })}
+      </p>
     );
   }
 
   function renderChooseOptions(includeEmailButton: boolean) {
     return (
       <div className='sc-auth-option-list'>
-        <AuthProviderButtons termsAccepted={termsAccepted} disabled={consentMissing} />
+        <AuthProviderButtons />
         {step === 'choose' ? renderSignUpTerms(true) : null}
         {includeEmailButton && emailJourneyAvailable ? (
           <>
@@ -745,7 +722,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               <button
                 type='button'
                 className='sc-auth-link sc-auth-recovery-link'
-                disabled={pendingAction !== null || (mode === 'signup' && consentMissing)}
+                disabled={pendingAction !== null}
                 onClick={() => void requestVerificationEmail()}
               >
                 {pendingAction === 'verification-email' ? <LoadingSpinner className='sc-auth-icon' /> : null}
@@ -783,7 +760,6 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               type='submit'
               className='sc-auth-primary-button sc-auth-submit'
               disabled={
-                (mode === 'signup' && consentMissing) ||
                 pendingAction !== null ||
                 !parsedEmail.success ||
                 !password ||
@@ -816,7 +792,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
               <Button
                 type='button'
                 className='sc-auth-primary-button sc-auth-submit'
-                disabled={pendingAction !== null || (mode === 'signup' && consentMissing)}
+                disabled={pendingAction !== null}
                 onClick={sendPasswordlessEmail}
               >
                 {pendingAction === 'passwordless-email' ? (

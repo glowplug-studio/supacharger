@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-30T19:27:21.114595+00:00; base_commit=62f43586c910dfc7f18d130d0e18210ed54a73d1; main_commit=62f43586c910dfc7f18d130d0e18210ed54a73d1; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=62f43586c910dfc7f18d130d0e18210ed54a73d1; scope=licence-filename-and-prior-checkpoint-review; excluded=all-uncommitted-auth-guidance-and-concurrent-work; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-30T20:14:00.938374+00:00; base_commit=1d3f653a4b85895b430920c2e5618c58ab6ec0ef; main_commit=1d3f653a4b85895b430920c2e5618c58ab6ec0ef; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=1d3f653a4b85895b430920c2e5618c58ab6ec0ef; scope=signup-notices-local-report-exclusions-and-contributor-guidance; excluded=concurrent-marketing-cli-namespace-navigation-and-mcp-work; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -19,7 +19,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Declarative database definitions compose Core, extensions and product objects while retaining permanent migration history. Fresh installations receive one verified initial migration rendered from PROJECT_NAMESPACE; existing projects merge namespaced Core definitions and generate their own forward migrations. Protected-object guidance and cloud-edit recovery keep source and deployment history aligned.
 
-- Required, localised signup agreements cover password, passwordless and OAuth account creation, with server-action validation and a configurable legal destination. The disposable Core legal demo provides Terms and Privacy anchors.
+- Localised signup notices cover password, passwordless and OAuth account creation with configurable legal destinations. Signup does not require a checkbox; `SIGN_UP_TERMS.REQUIRED` is retained but ignored. Custom auth-action callers must stop passing acceptance arguments. The disposable Core legal demo provides Terms and Privacy anchors.
 
 - Release publication can attach a versioned source ZIP and notify the Core registry to verify its SHA-256 hash and retain superseded release records. Cross-repository Actions credentials are required.
 
