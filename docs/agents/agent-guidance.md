@@ -14,6 +14,8 @@ Root `AGENTS.md` contains entry-point links only. Follow [Where to record instru
 
 ## Read by task
 
+- Before editing installed extension files, read [Extension file ownership](extensions.md#file-ownership-contract) and the installed consumer guide. Private extension-development instructions are for the Supacharger Core team, not consumer developers.
+
 - Before changing any database definition or migration, read [Declarative database definitions](declarative-database.md), especially protected Core contracts and project-specific upgrade histories.
 
 - Before developing extension database operations, read [Database service registrations](core-services.md#developing-extensions-with-database-operations).

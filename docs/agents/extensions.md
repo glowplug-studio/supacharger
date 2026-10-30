@@ -22,43 +22,26 @@ UI notification text belongs in the extension's `messages/en.json` using a names
 
 ## Extension repository structure
 
-New bundles use schema version 3. Keep distributable files under `payload/` and describe each source, destination and ownership in `extension.json`.
+Transactional email is the reference package. Every installable bundle has schema-3 `extension.json`, an explicit `files` list, and four required payload files: `payload/app/index.ts`, `payload/app/supacharger-ext-<id>.config.ts`, `payload/docs/INSTALL.md` and `payload/agents/AGENTS.md`. Dependencies and required Core services are explicit arrays. Optional UI, backend, API and translation directories contain actual implementation only; disabled shells need no executable placeholders.
 
-```text
-supacharger-ext-<id>/
-├── AGENTS.md                         Consumer integration instructions
-├── README.md                         Purpose, setup, configuration and API
-├── LICENSE.md                        Extension licence
-├── extension.json                    Bundle manifest
-└── payload/
-    ├── app/
-    │   ├── supacharger-ext-<id>.config.ts
-    │   ├── messages/en.json
-    │   ├── _components/
-    │   └── _lib/
-    ├── supabase/
-    │   ├── shared/
-    │   ├── functions/ext-<id>/
-    │   └── migrations/
-    └── docs/
-        ├── INSTALL.md
-        └── bruno/
-```
+Static packages keep the manifest at their source root. Transactional email emits the complete manifest beside its rendered payload in `.prepared/<code>/` or `.prepared/default/`. Use that prepared directory for installation, not its unprepared source repository. Package preparation is explicit and can populate a CLI-created host migration; read its guide first. The installer does not execute preparation code.
 
-Only include directories the extension needs. `payload/docs/INSTALL.md` is required. Maintainer-only instructions belong in the separate extension contributor repository, not the installed payload. Repository-level files are not installed unless included through a supported payload mapping.
+## File ownership contract
 
-| Repository source | Application destination |
+The installable package's `extension.json` is the single file-ownership contract. Each `files` entry names one repository-relative `source`, one application-relative `target` and an optional `kind`. Paths are explicit: there are no ownership globs, second ownership manifests or installed receipt files.
+
+| Classification | Ownership and behaviour |
 | --- | --- |
-| `payload/app/<file>` | `src/app/(project)/(extensions)/(sc_extensions)/(<id>)/<file>` |
-| `payload/supabase/shared/<file>` | `supabase/functions/_shared/extensions/sc_ext-<id>/<file>` |
-| `payload/supabase/functions/ext-<id>/<file>` | `supabase/functions/ext-<id>/<file>` |
-| `payload/supabase/functions/ext-<id>-<suffix>/<file>` | `supabase/functions/ext-<id>-<suffix>/<file>` |
-| `payload/supabase/migrations/<timestamp>_ext_<underscore-id>_<name>.sql` | `supabase/migrations/<same filename>` |
-| `payload/docs/<file>` | `docs/extensions/<id>/<file>` |
+| No `kind` | Extension-managed source or documentation. Updates compare and replace incoming bytes. |
+| `kind: "config"` | Consumer-owned `supacharger-ext-<id>.config.ts`. Created when missing and preserved on updates. |
+| `kind: "schema"` | Extension-managed declarative SQL. Installed under `supabase/schemas/extensions/<id>/`, with namespace rendering. Deployment is a separate operation. |
+| `kind: "migration"` | Immutable SQL history. Existing bytes must match; changes require a new forward migration. |
 
-Migrations go directly into the application's migration directory, not a nested extension directory. Use the Supabase CLI to generate migration timestamps. Mark migrations `kind: "migration"`; never rewrite installed history. Mark exactly `payload/app/supacharger-ext-<id>.config.ts` as `kind: "config"`. Other files omit `kind` and are verified byte-for-byte. Secrets must not appear in config defaults or committed payloads.
+The contract covers the payload exactly and rejects duplicate destinations, symlinks, path traversal, unsupported mappings and misclassified files. Each package's `npm run check` validates this authoring standard. The CLI separately validates installation destinations against Core ownership. Package validation does not prove runtime behaviour or deployed readiness.
 
-Schema 3 uses `id: "<id>"`, `name: "supacharger-ext-<id>"`, a three-integer version string, `coreOwnershipVersion: 2` and `files`. Each file declares `source`, `target` and, where needed, `kind`. Targets must exactly match the mapping above. The installer rejects arbitrary destinations, path traversal, symlinks, conflicting ownership, migration timestamp collisions and conflicting installed file contents.
+Consumer customisations belong in the config and application-owned adapters outside manifest-listed implementation files. Inspect the update plan and Git diff: direct file comparison cannot distinguish a local customisation from an upstream change. Unlisted application files are left alone; they are not an automatic extension API. Keep the incoming package available when reviewing ownership; the installer does not retain a manifest receipt.
+
+SHA-256 `archive_checksum` in the registry describes the exact release ZIP. It is not a per-file ownership field or a Git commit ID. No per-file hashes are required in `extension.json`.
 
 ## Install and verify
 
