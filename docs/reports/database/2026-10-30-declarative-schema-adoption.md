@@ -1,7 +1,7 @@
 # Declarative database adoption: supacharger
 
 Created: 2026-10-30T15:39:02+07:00 (Asia/Bangkok)
-Last edited: 2026-10-30T15:44:25+07:00 (Asia/Bangkok)
+Last edited: 2026-10-30T16:42:29+07:00 (Asia/Bangkok)
 
 ## Source and verification
 
@@ -28,3 +28,11 @@ Implementation commit `2fa4f0a` is pushed and Vercel production deployment `dpl_
 CLI source a6e9d0f is pushed to its established development branch. Invitations source e482a54 and transactional-email source 9e877d7 include their new declarative payloads; Brevo documentation 6a31896 explains its lack of a current SQL payload. npm publication could not run: npm whoami returned ENEEDAUTH; the public CLI version remains 1.0.4. Existing consumer registry locks are preserved; no new npm or registry release is claimed. The installed projects already contain their pinned Node planning tools. Native Supabase sync remains subject to the limitations above.
 
 This evidence records the deployed implementation commits; subsequent report-only commits do not change the implementation.
+
+## Subsequent native verification
+
+Native 2.122.0 no longer reproduced the earlier stall during a fresh investigation on 30 October 2026. Core passed an uncached round trip; Specdrive passed after adding its existing custom roles to `supabase/roles.sql`. Both round trips temporarily included generated reconciliation SQL in disposable shadows; that SQL was removed from deployment history afterwards. Wakekeeper still fails historical replay at its Storage-policy comment. The earlier single-connection-pool observation does not establish the cause of the stall. No production changes were made.
+
+## Reconciliation completed
+
+Forward migration `20261030093347` is now applied and its exact SQL verified in the production ledger. Native replay and repeat application both report no changes. This supersedes the earlier baseline limitations above. See [the reconciliation record](2026-10-30-declarative-history-reconciliation.md). npm publication remains excluded.

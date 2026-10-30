@@ -26,9 +26,21 @@ Historical aliases in `.supacharger/migration-aliases.json` are Supacharger meta
 
 Keep grants, RLS, function security/search paths, triggers, indexes, comments and extension configuration in the review. No RPC or Bruno change is needed when adoption preserves the exact database contract; changes discovered during comparison require the usual caller and API documentation review.
 
-## Supported local planning command
+## Native planning and diagnostic fallback
 
-The pinned native Supabase CLI has stalled in declarative sync during shadow comparison. The project therefore also pins Supabase's Node pg-delta engine and pg-topo, and provides a read-only fallback:
+Try the project-pinned native command first:
+
+```sh
+npx --no-install supabase db schema declarative sync --experimental --no-apply -f <change_name>
+```
+
+This writes a migration but does not apply it to the application database. It creates disposable shadows and replays history. Use `--no-cache` to distinguish a cached-shadow problem from a fresh replay failure. A non-empty plan can indicate historical drift; it is not evidence of a stalled command. Never deploy that drift automatically.
+
+Define custom cluster roles idempotently in `supabase/roles.sql`, matching their existing attributes and memberships. The native CLI loads this file into both shadows; creating a role only in a historical migration leaves it absent from the declarative shadow. Keep object grants in the desired tree. Do not add privileged role memberships to bypass a replay error.
+
+Earlier native runs stalled, but Core's pinned 2.122.0 completed both cached and uncached verification on 30 October 2026. No upstream defect or cause of the earlier stall was established. Do not assume a single-connection pool is defective or that every application can replay successfully. Verify each application's history and a no-change round trip separately.
+
+For a diagnosed native failure, the project also pins Supabase's Node pg-delta engine and pg-topo and provides a read-only diagnostic fallback:
 
 ```sh
 npm run db:schema:plan -- --target postgresql://postgres:postgres@127.0.0.1:54322/postgres
@@ -40,4 +52,5 @@ For pg_cron, supply `--shadow <fresh-local-postgres-url>` on a separate disposab
 
 Custom cluster roles must exist in both local servers with the same definitions before loading grants. Their creation, membership and other cluster configuration remain in reviewed migrations or `supabase/roles.sql`, separate from the database-scoped schema export. Likewise, bucket rows, bindings, runtime settings and Vault values stay in their existing migration/configuration workflow.
 
-Do not use a generated plan to reconcile unrelated production drift automatically. The native engine remains enabled in config to prevent the legacy diff engine interpreting this per-object tree. Native `sync` can replace this fallback only after the installed version passes replay and a zero-change baseline.
+Do not use a generated plan to reconcile unrelated production drift automatically. Keep the native engine enabled in config to prevent the legacy diff engine interpreting this per-object tree. A successful fallback does not certify native historical replay or authorise changing the migration ledger.
+

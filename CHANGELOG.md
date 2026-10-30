@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-30T08:44:25+00:00; base_commit=2fa4f0a4c26520d224a01cd6d8323d3d24f1e0a4; main_commit=2fa4f0a4c26520d224a01cd6d8323d3d24f1e0a4; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=2fa4f0a4c26520d224a01cd6d8323d3d24f1e0a4; scope=declarative-verification-record; excluded=none; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-30T09:42:29+00:00; base_commit=4be887016feb8263af9c6c4253e40298e9c39a49; main_commit=4be887016feb8263af9c6c4253e40298e9c39a49; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=4be887016feb8263af9c6c4253e40298e9c39a49; scope=native-declarative-reconciliation; excluded=npm-publication; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -87,6 +87,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Native declarative planning now has a reconciled migration baseline, with repeatable forward SQL and documented shadow-bootstrap prerequisites. The Node planner remains an optional diagnostic fallback.
 
 - Cancelling social sign-in returns to the login page with a neutral notice, including provider errors delivered in URL fragments. Specific service errors retain their error presentation.
 
