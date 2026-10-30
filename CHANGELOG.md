@@ -9,11 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-30T20:14:00.938374+00:00; base_commit=1d3f653a4b85895b430920c2e5618c58ab6ec0ef; main_commit=1d3f653a4b85895b430920c2e5618c58ab6ec0ef; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=1d3f653a4b85895b430920c2e5618c58ab6ec0ef; scope=signup-notices-local-report-exclusions-and-contributor-guidance; excluded=concurrent-marketing-cli-namespace-navigation-and-mcp-work; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-30T20:34:38Z; base_commit=6d1f58f9cb8b1c96c82058f8eaa73402bad7a76b; main_commit=6d1f58f9cb8b1c96c82058f8eaa73402bad7a76b; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=6d1f58f9cb8b1c96c82058f8eaa73402bad7a76b; scope=approved-logout-session-policy; excluded=concurrent-marketing-cli-namespace-navigation-and-mcp-work; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- `SUPABASE_AUTH.SESSION.SIGN_OUT_ALL_DEVICES` selects all-device or current-session logout. The default is `true`, preserving existing security behaviour; updates add missing keys without replacing application choices. Changing the value requires rebuilding and deploying the application.
 
 - Extension ownership guidance defines one installable manifest for managed source, consumer configuration, declarative SQL and immutable migrations, with transactional email as the reference package and separate Core-team authoring guidance.
 

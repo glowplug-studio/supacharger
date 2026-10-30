@@ -52,7 +52,9 @@ async function getPasswordlessConfirmationRedirect(nextPath: unknown = null) {
  */
 export async function logoutUser(): Promise<{ success: boolean }> {
   const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
+  // Missing pre-migration values retain the existing all-device policy.
+  const scope = SC_CONFIG.SUPABASE_AUTH.SESSION.SIGN_OUT_ALL_DEVICES === false ? 'local' : 'global';
+  const { error } = await supabase.auth.signOut({ scope });
 
   return error ? { success: false } : { success: true };
 }

@@ -47,6 +47,7 @@ export const SC_CONFIG: SupachargerConfig = {
   // Settings used specifically by the Supabase Auth implementation.
   SUPABASE_AUTH: {
     SESSION: {
+      SIGN_OUT_ALL_DEVICES: true,
       ALLOW_ANONYMOUS_USERS: false,
     },
     METHODS: {

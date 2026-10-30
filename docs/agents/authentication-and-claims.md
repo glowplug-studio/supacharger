@@ -1,5 +1,11 @@
 # Authentication, Proxy, roles, and custom claims
 
+## Logout session policy
+
+`SUPABASE_AUTH.SESSION.SIGN_OUT_ALL_DEVICES` is a build-time application security policy. The canonical starter defaults to `true`: managed logout explicitly uses Supabase's `global` scope and revokes every Auth session for that user. Set it to `false` to use `local`, which revokes only the session used for logout and preserves independently signed-in browsers, phones and companion apps. `local` still revokes a server session; it does not mean clearing browser cookies alone. Already-issued access tokens can remain valid until expiry, so another affected device may discover global logout only on its next refresh.
+
+Keep the property in every developer-owned configuration and deploy the application after changing its value. CLI updates add a missing key with `true` and preserve existing booleans; an older configuration missing the key also retains global logout at runtime during migration. Selecting `false` changes security behaviour and requires the relevant approval. The policy affects the managed `logoutUser` action only; protocol cleanup such as rejected session-transfer redemption remains explicitly local. No database migration or hosted Supabase session-policy change is required. See [Supabase's sign-out scopes](https://supabase.com/docs/guides/auth/signout).
+
 ## Authenticator assurance
 
 Managed Supabase Auth TOTP enrolment and factor management are always available at `/account/security`; there is no application visibility flag. `SUPABASE_AUTH.METHODS.MFA_TOTP.REQUIRED_FOR_SIGN_IN` checks `getAuthenticatorAssuranceLevel()` after password and email-OTP sign-in and in the OAuth/PKCE callback. An enrolled AAL1 session is sent to the managed `/account/mfa` challenge with only an allowlisted relative `next` path. Challenge success raises the session to AAL2 before navigation resumes. Local projects must enable both `auth.mfa.totp.enroll_enabled` and `verify_enabled` in `supabase/config.toml` and restart the local stack. Hosted Auth capability remains a separate Dashboard setting.

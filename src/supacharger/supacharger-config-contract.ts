@@ -40,6 +40,7 @@ export type SupachargerConfig = {
   /** Supabase-specific authentication settings. */
   SUPABASE_AUTH: {
     SESSION: {
+      /** Revoke all Auth sessions on logout; false revokes only the current session. Defaults to true. */ SIGN_OUT_ALL_DEVICES: boolean;
       /** Permit Supabase anonymous identities as signed-in users. */ ALLOW_ANONYMOUS_USERS: boolean;
     };
     METHODS: {

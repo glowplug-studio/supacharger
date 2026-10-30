@@ -308,3 +308,22 @@ test('social callback imports before onboarding while email callbacks skip impor
     assert.deepEqual(calls, provider === 'google' ? ['import', 'username', 'onboarding'] : ['username', 'onboarding']);
   }
 });
+
+
+for (const [configured, expectedScope] of [[true, 'global'], [false, 'local'], [undefined, 'global']]) {
+  test(`managed logout uses ${expectedScope} scope for policy ${String(configured)}`, async () => {
+    const calls = [];
+    const { logoutUser } = load('src/lib/supabase/supacharger/supabase-auth.ts', {
+      '../server': { createClient: async () => ({ auth: { signOut: async (options) => { calls.push(options); return { error: null }; } } }) },
+      '@/supacharger/supacharger-config': { SC_CONFIG: { SUPABASE_AUTH: { SESSION: { SIGN_OUT_ALL_DEVICES: configured } } } },
+      '@/supacharger/auth/auth-action-result': {},
+      '@/supacharger/auth/login-redirect': {},
+      '@/supacharger/auth/otp-verification': {},
+      '@/supacharger/auth/safe-next-path': {},
+      '@/supacharger/utils/helpers': { isValidEmail: () => true, evaluatePasswordStrength: () => ({ valid: true }) },
+      '@/supacharger/utils/request-url': {},
+    });
+    assert.deepEqual(await logoutUser(), { success: true });
+    assert.deepEqual(calls, [{ scope: expectedScope }]);
+  });
+}
