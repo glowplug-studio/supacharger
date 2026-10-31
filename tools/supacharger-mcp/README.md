@@ -1,6 +1,6 @@
 # Supacharger repository MCP
 
-Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for extension architecture, ownership and distribution status. The current CLI source can list registry entries and review local bundles; the initialisation extension selector remains a preview and does not download or install an extension. The MCP does not install bundles, execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
+Use `supacharger_get_guidance` with `topic: "extensions"` or `supacharger://project/extensions` for extension architecture, ownership and distribution status. The current CLI source can list registry entries and review local bundles; the initialisation selector offers transactional email and passes a checksum-verified registry release to the extension installer. The MCP does not install bundles, execute the CLI or accept credentials. Future commercial tokens/downloads will be managed through Specdrive; they are not available yet.
 
 Manifest v2 supports extension-owned worker files and immutable forward migrations. Brevo 2.0.0 owns immediate post-commit delivery and Supabase retries; apps pass authorised props and optionally provide bulk privacy resolvers. Follow the installed guide for explicit migration, deployment and Vault configuration steps; file installation does not activate sending.
 
@@ -48,7 +48,7 @@ The account-settings resource records the managed `/account` shell and mutation 
 
 The organisations resource records the managed chooser and organisation-prefixed settings routes, disabled-route behaviour, session refresh before context navigation, owner/admin/member visibility, hashed invitation and reviewed-access UX, private media paths, organisation billing visibility, `FormProvider` extension seam with authoritative server Zod validation, the organisation chooser 301 redirect, and the exclusion of product usage and agent-licence surfaces from Core.
 
-The CLI-upgrades resource records registry-based Git/ZIP installation, generated Core version locks, upward `supacharger version` lookup, optional `PROJECT_NAMESPACE` selection, interactive environment creation, skill selection, extension preview, safe target replacement and clean cancellation. It also records the version 2 ownership flow, direct three-way file comparison, configuration-property comparison, developer-owned preservation, migration handling and Core-lock advancement.
+The CLI-upgrades resource records registry-based Git/ZIP installation, generated Core version locks, upward `supacharger which --core` lookup, optional `PROJECT_NAMESPACE` selection, interactive environment creation, skill selection, transactional-email release installation, safe target replacement and clean cancellation. It also records the version 2 ownership flow, direct three-way file comparison, configuration-property comparison, developer-owned preservation, migration handling and Core-lock advancement.
 
 The input-validation resource records the authoritative server-side Zod boundary for forms and untrusted requests, appropriate Edge Function parsing before privileged work, and the separate PostgreSQL validation, constraint, authentication, authorisation, grant, and RLS duties required for RPCs.
 

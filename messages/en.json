@@ -1,5 +1,6 @@
 {
   "ServiceUnavailable": {
+    "statusLabel": "Service status",
     "title": "We’ll be back shortly",
     "description": "We’re having trouble connecting. Please try again in a moment.",
     "retry": "Try again",
@@ -12,8 +13,8 @@
     "demoReload": "Reload the page to close this preview."
   },
   "Global": {
-    "siteTitle": "Korunet",
-    "siteDescription": "Start your next project without reinventing the wheel.",
+    "siteTitle": "Kuro",
+    "siteDescription": "Productivity, agility and workflows for teams that want to move faster.",
     "or": "or"
   },
   "GlobalUI": {
@@ -115,7 +116,7 @@
   },
   "AuthJourney": {
     "mfaStatusFailed": "Two-factor authentication status could not be checked.",
-    "heroTitle": "Join the Community",
+    "heroTitle": "One workspace for every team",
     "welcomeBack": "Welcome back",
     "createAccountTitle": "Create your account",
     "chooseStart": "Choose how you want to get started.",
@@ -414,20 +415,20 @@
     "builtWith": "Built with"
   },
   "MarketingDemo": {
-    "trustedOrganisations": "Growing together on Korunet"
+    "trustedOrganisations": "Optimising team workflows with Kuro"
   },
   "MarketingMetadata": {
     "home": {
-      "title": "A place for new beginnings to grow | Korunet",
-      "description": "A platform for people to connect around new life, growth, strength, and peace."
+      "title": "One workspace for every team | Kuro",
+      "description": "Kuro brings productivity, agility and workflows together so teams can plan, track and ship as one."
     },
     "legal": {
       "title": "Legal",
-      "description": "Read Korunet’s terms of use, privacy policy, and third-party cookie policy."
+      "description": "Read Kuro’s terms of use, privacy policy, and third-party cookie policy."
     },
     "pricing": {
       "title": "Pricing",
-      "description": "Explore Korunet membership for every stage of personal and shared growth."
+      "description": "Explore Kuro plans for teams of every size, from the first sprint to the whole organisation."
     },
     "license": {
       "title": "License",
@@ -517,6 +518,8 @@
     },
     "coreWidgetDemos": {
       "paywallLink": "Explore paywall demos",
+      "paywallStripTitle": "Paywall Demos",
+      "paywallStripDescription": "Paywall patterns are covered in their own interactive demo.",
       "notFoundTitle": "404 page",
       "notFoundDescription": "Preview the actual page-not-found screen. Reload the page to close the preview.",
       "notFoundToggle": "Show 404 page",
@@ -524,7 +527,6 @@
       "outageTitle": "Service outage",
       "outageDescription": "Preview the actual backend outage screen without disconnecting the service. Reload the page to close the preview.",
       "outageToggle": "Show outage warning",
-      "eyebrow": "Core delivered project scoped prebuilt widgets",
       "title": "Core Widget Demos",
       "description": "These working examples are installed into the project for developers to style, configure and extend without editing protected Core files.",
       "genericTitle": "Generic file upload",
@@ -555,6 +557,8 @@
       "toastLabel": "Toast notification",
       "toastDescription": "Preview the configured success toast.",
       "toastButtonLabel": "Show toast",
+      "confettiLabel": "Page confetti",
+      "confettiDescription": "Toggle the full-page celebration effect.",
       "gatingTitle": "Feature login gating",
       "gatingDescription": "Sign up or log in to continue to a feature that requires an account.",
       "gatingButtonLabel": "Try signup gating",
@@ -596,7 +600,7 @@
       },
       "title": "Paywall patterns for different purchase journeys",
       "description": "Compare public upgrade prompts without signing in. Authentication is only required when a visitor continues into an account-specific purchase flow.",
-      "heroImageAlt": "Korunet product workspace showing community billing features",
+      "heroImageAlt": "Kuro product workspace showing team billing features",
       "galleryTitle": "Choose the billing boundary that fits the moment",
       "galleryDescription": "Seven interaction patterns show how access, upgrades, products, services, and payments can appear inside a product.",
       "items": [
@@ -644,9 +648,9 @@
         }
       ],
       "modal": {
-        "title": "Unlock organisation controls",
-        "description": "Advanced roles and multiple organisers are available on the Community plan.",
-        "plan": "Community plan",
+        "title": "Unlock team controls",
+        "description": "Advanced roles and multiple admins are available on the Team plan.",
+        "plan": "Team plan",
         "price": "$19 per month",
         "priceCaption": "Billing begins after account creation and confirmation.",
         "dismiss": "Not now",
@@ -665,12 +669,12 @@
         "caption": "Compare plans, included capabilities, and purchase types before creating an account."
       },
       "tooltip": {
-        "feature": "Export organisation report",
-        "explanation": "Available in the Organisation plan. Upgrade to export reports and manage multiple communities."
+        "feature": "Export workspace report",
+        "explanation": "Available in the Scale plan. Upgrade to export reports and manage multiple workspaces."
       },
       "services": {
-        "basePlan": "Community",
-        "expandedPlan": "Organisation",
+        "basePlan": "Team",
+        "expandedPlan": "Scale",
         "basePrice": 19,
         "planLabel": "Resulting plan",
         "monthly": "per month in this demo",
@@ -678,19 +682,19 @@
           {
             "id": "onboarding",
             "name": "Managed onboarding",
-            "description": "Guided setup for organisers",
+            "description": "Guided setup for your team",
             "price": 12
           },
           {
             "id": "moderation",
-            "name": "Moderation support",
+            "name": "Workflow support",
             "description": "A recurring support service",
             "price": 24
           },
           {
             "id": "migration",
-            "name": "Content migration",
-            "description": "Import existing community data",
+            "name": "Workspace migration",
+            "description": "Import existing team data",
             "price": 18
           }
         ]
@@ -698,11 +702,11 @@
       "cart": {
         "title": "Your cart",
         "description": "Review one-time products before continuing to account creation.",
-        "product": "Community launch kit",
+        "product": "Team launch kit",
         "license": "One-time product license",
         "price": "$79",
         "checkout": "Continue to sign up",
-        "imageAlt": "Korunet mobile onboarding screens included in the community launch kit"
+        "imageAlt": "Kuro mobile onboarding screens included in the team launch kit"
       },
       "inApp": {
         "product": "Event promotion boost",
@@ -766,14 +770,18 @@
     }
   },
   "MarketingNavigation": {
-    "overview": "Our purpose",
-    "features": "How it grows",
-    "integrations": "Connections",
-    "benefits": "Four values",
-    "reviews": "Stories",
-    "pricing": "Membership",
-    "inPageAnchors": "Explore Korunet",
+    "overview": "Overview",
+    "features": "Features",
+    "integrations": "Integrations",
+    "benefits": "Benefits",
+    "reviews": "Reviews",
+    "pricing": "Pricing",
+    "inPageAnchors": "Explore Kuro",
     "supachargerFeatures": "Supacharger Features",
+    "featuresGroupLabel": "Platform",
+    "newBadge": "New",
+    "promoTitle": "Announcing Declarative Schema Support",
+    "promoDescription": "Define your Supabase schema in one declarative file and ship database changes with confidence.",
     "whatsIncluded": "What's included",
     "whatsIncludedDescription": "From core product features to developer specifications.",
     "paywallDemos": "Paywall demos",
@@ -798,15 +806,15 @@
     "chinese": "Chinese"
   },
   "MarketingFooter": {
-    "tagline": "A place to connect around new life, growth, strength, and peace—together.",
+    "tagline": "Productivity, agility and workflows — one calm workspace for teams to plan, track and ship together.",
     "navigation": "Navigation",
     "information": "Information",
-    "overview": "Our purpose",
-    "features": "How it grows",
-    "integrations": "Connections",
-    "benefits": "Four values",
-    "reviews": "Stories",
-    "pricing": "Membership",
+    "overview": "Overview",
+    "features": "Features",
+    "integrations": "Integrations",
+    "benefits": "Benefits",
+    "reviews": "Reviews",
+    "pricing": "Pricing",
     "faq": "FAQ",
     "termsOfUse": "Terms of use",
     "license": "License",
@@ -816,6 +824,7 @@
     "firstBuiltIn": "First commits made in",
     "newZealand": "New Zealand",
     "by": "by",
+    "backToTop": "Back to top",
     "privacyPolicy": "Privacy"
   },
   "LicensePage": {
@@ -858,300 +867,302 @@
   },
   "MarketingLanding": {
     "createAccount": "Create account",
-    "exploreFeatures": "Explore Korunet",
-    "trustedOrganisations": "Organisations Growing together on Korunet",
-    "getStarted": "Begin your journey",
+    "exploreFeatures": "Explore Kuro",
+    "trustedOrganisations": "Teams optimising their workflows with Kuro",
+    "getStarted": "Get started",
     "mostPopular": "Most popular",
     "roleAtOrganisation": "{role} at {organisation}",
     "hero": {
-      "title": "A place for new beginnings to grow.",
-      "description": "Korunet brings people together around new life, personal growth, shared strength, and peace—creating circles of support that keep unfolding."
+      "title": "One workspace for every team.",
+      "description": "Kuro brings your docs, tasks and automations together in a flexible operating system designed for teams that want to move faster.",
+      "updateBadge": "NEW UPDATE",
+      "updateText": "Announcing Supabase Declarative Schema Support"
     },
     "overview": {
-      "title": "Connection for every new chapter",
-      "description": "Like an unfurling koru, meaningful change begins from a strong centre. Find people who understand where you are, share what you are learning, and move forward together."
+      "title": "An operating system for teamwork",
+      "description": "Keep goals, tasks and conversations in one place so every team can see the work, own the outcome and adapt as priorities shift."
     },
     "features": {
-      "title": "Made to move and grow with you",
-      "description": "Begin with one conversation, gather a trusted circle, and create the spaces, practices, and events that support the life taking shape around you."
+      "title": "Built for the way your team works",
+      "description": "Plan sprints, automate handoffs and keep every workflow visible from the first idea to the final review."
     },
     "integrations": {
-      "title": "Bring your people and everyday tools together",
-      "description": "Connect the services your circle already uses while Korunet remains the calm, shared place you return to for reflection, encouragement, and action."
+      "title": "Connect the tools your team already uses",
+      "description": "Plug Kuro into your existing stack so updates flow automatically and nothing gets lost between apps."
     },
     "benefitsSection": {
-      "title": "Four values at the heart of Korunet",
-      "description": "New life opens possibility. Growth gives it direction. Strength makes it sustainable. Peace creates room for everyone to belong."
+      "title": "Four values behind every workflow",
+      "description": "Productivity turns plans into progress. Agility keeps teams responsive. Workflows make the work repeatable. Transparency keeps everyone aligned."
     },
     "experiences": {
-      "title": "From a first hello to lasting belonging",
-      "description": "Meet people in a similar season, turn shared intentions into meaningful activity, and keep returning to a circle that knows your story."
+      "title": "From first sprint to seamless delivery",
+      "description": "See how teams use Kuro to plan work, automate the routine parts and keep improving with every cycle."
     },
     "reviewsSection": {
-      "title": "Stories of change, held in community",
-      "description": "See how people use Korunet to begin again, grow with purpose, find strength in one another, and make more room for peace."
+      "title": "Teams work better with Kuro",
+      "description": "Hear how teams use Kuro to cut busywork, shorten feedback loops and focus on the work that matters."
     },
     "pricingSection": {
-      "title": "Space to grow, at your own pace",
-      "description": "Start with a small circle, then open more spaces and support as your community deepens and its impact reaches further."
+      "title": "Pricing that scales with your team",
+      "description": "Start free, then add power, automation and support as your team grows."
     },
     "faqSection": {
-      "title": "Everything you need to begin",
-      "description": "Learn how circles work, how privacy is protected, and how Korunet supports people through different seasons of life."
+      "title": "Everything you need to get started",
+      "description": "Learn how workspaces, workflows and automations fit together and how Kuro keeps your team moving."
     },
     "cta": {
-      "title": "Start your next chapter, together",
-      "description": "Create a welcoming circle around the change you are living, the growth you are seeking, or the peace you want to share."
+      "title": "Give your team one workspace",
+      "description": "Bring tasks, docs and workflows together so your team spends less time coordinating and more time delivering."
     },
     "images": {
-      "messagingWorkspace": "Korunet circle workspace for conversation and support",
-      "mobileScreens": "Korunet mobile screens for connection and growth",
-      "neighboursAtNight": "People gathering in a peaceful shared space surrounded by unfurling ferns",
-      "mobileExperience": "Korunet experience across mobile screens"
+      "messagingWorkspace": "Kuro workspace with team tasks, sprints and workflows",
+      "mobileScreens": "Kuro mobile screens for tasks and team updates",
+      "neighboursAtNight": "Team collaborating in a shared Kuro workspace",
+      "mobileExperience": "Kuro experience across desktop and mobile"
     },
     "communityPillars": [
       {
-        "title": "New life",
-        "description": "Welcome fresh starts, changing seasons, and the possibilities that emerge between them."
+        "title": "Productivity",
+        "description": "Turn plans into steady progress with clear priorities and fewer distractions."
       },
       {
-        "title": "Growth",
-        "description": "Share knowledge, reflection, and encouragement that helps every person keep unfolding."
+        "title": "Agility",
+        "description": "Adapt quickly as priorities change without losing sight of the goal."
       },
       {
-        "title": "Strength",
-        "description": "Build trusted circles where support becomes confidence, resilience, and collective action."
+        "title": "Workflows",
+        "description": "Standardise how work moves so handoffs are fast and nothing falls through."
       },
       {
-        "title": "Peace",
-        "description": "Create calm, respectful spaces where people can listen, belong, and move with intention."
+        "title": "Transparency",
+        "description": "Keep progress, ownership and blockers visible to the whole team."
       }
     ],
     "platformFeatures": [
       {
-        "title": "Find your circle",
-        "description": "Discover people, guides, and groups connected to the chapter of life you are navigating.",
-        "imageAlt": "Korunet screens for discovering people and circles"
+        "title": "Plan with clarity",
+        "description": "Map goals into sprints and tasks that everyone can see and own.",
+        "imageAlt": "Kuro screens for planning team work"
       },
       {
-        "title": "Nurture meaningful growth",
-        "description": "Keep conversations, shared practices, events, and progress together in one supportive place.",
-        "imageAlt": "Korunet workspace for shared growth and reflection"
+        "title": "Automate the busywork",
+        "description": "Let workflows move tasks forward, notify the right people and update statuses for you.",
+        "imageAlt": "Kuro workspace with automated team workflows"
       },
       {
-        "title": "Build strength together",
-        "description": "Turn encouragement into participation, shared purpose, and relationships that endure.",
-        "imageAlt": "People building strength through a supportive gathering"
+        "title": "Stay in flow together",
+        "description": "Keep conversations, feedback and progress attached to the work itself.",
+        "imageAlt": "Team collaborating through shared Kuro workflows"
       }
     ],
     "connectedExperiences": [
       {
-        "title": "Meet people in the same season",
-        "description": "Find circles shaped around new parenthood, recovery, creativity, wellbeing, change, or a shared purpose.",
-        "cta": "Find your circle",
-        "imageAlt": "Korunet profiles and circles for people in similar life seasons"
+        "title": "Bring your team onboard in minutes",
+        "description": "Invite people, assign roles and set up a workspace that mirrors how your team already works.",
+        "cta": "Set up your workspace",
+        "imageAlt": "Kuro profiles and roles for a new team workspace"
       },
       {
-        "title": "Turn intention into a shared rhythm",
-        "description": "Plan gatherings, share reflections, mark progress, and keep encouragement close between each meeting.",
+        "title": "Turn plans into working sprints",
+        "description": "Break goals into tasks, automate handoffs and watch progress move across the board.",
         "cta": "See how it works",
-        "imageAlt": "Korunet workspace with conversations, gatherings, and shared progress"
+        "imageAlt": "Kuro board with tasks moving across sprint columns"
       },
       {
-        "title": "Return, reflect, and begin again",
-        "description": "Keep your history close while making room for the next step, the next connection, and the next beginning.",
+        "title": "Improve with every cycle",
+        "description": "Review completed work, spot bottlenecks and let the next sprint run smoother than the last.",
         "cta": "Create account",
-        "imageAlt": "Korunet mobile experience supporting reflection and new beginnings"
+        "imageAlt": "Kuro mobile experience for tracking team progress"
       }
     ],
     "benefits": [
       {
-        "title": "Built for new beginnings",
-        "description": "Create a circle around a transition, intention, practice, or shared hope."
+        "title": "Built for real teams",
+        "description": "Shape workspaces around your people, your process and your priorities."
       },
       {
-        "title": "Room to grow",
-        "description": "Let each circle evolve without losing the relationships and context that ground it."
+        "title": "Adapts as you grow",
+        "description": "Add projects, teams and workflows without losing context or control."
       },
       {
-        "title": "Strength in connection",
-        "description": "Turn honest conversation and shared experience into practical, mutual support."
+        "title": "Less busywork",
+        "description": "Automations handle status updates, reminders and routine handoffs."
       },
       {
-        "title": "Peace by design",
-        "description": "Keep updates useful, spaces calm, and attention focused on what matters."
+        "title": "Clarity by default",
+        "description": "Dashboards and boards keep ownership, deadlines and blockers visible."
       },
       {
-        "title": "Circles of trust",
-        "description": "Choose who can join, what is shared, and how each space is cared for."
+        "title": "Access that fits",
+        "description": "Control who can see and change each workspace, project and workflow."
       },
       {
-        "title": "Always unfolding",
-        "description": "Support one small circle or a wider network while preserving a human sense of belonging."
+        "title": "Scales with you",
+        "description": "From one team to the whole company, keep the same simple operating rhythm."
       }
     ],
     "testimonials": [
       {
         "avatarAlt": "Portrait of Maya Okafor",
-        "organisation": "New Roots Parents",
+        "organisation": "Northwind Labs",
         "name": "Maya Okafor",
-        "quote": "Korunet gave us a gentle place to ask honest questions, celebrate small wins, and grow into parenthood together.",
-        "role": "Circle host"
+        "quote": "Kuro replaced three tools for us. Our sprints run themselves and everyone knows exactly what is next.",
+        "role": "Delivery Lead"
       },
       {
         "avatarAlt": "Portrait of Luca Moretti",
-        "organisation": "Next Chapter Collective",
+        "organisation": "Brightpath",
         "name": "Luca Moretti",
-        "quote": "I found people who understood the change I was living through. That sense of being seen made the next step feel possible.",
-        "role": "Community member"
+        "quote": "The workflow engine took our release process from chaos to calm. Nothing slips between teams anymore.",
+        "role": "Product Manager"
       },
       {
         "avatarAlt": "Portrait of Sora Kim",
-        "organisation": "Stillwater Wellbeing",
+        "organisation": "Hexa",
         "name": "Sora Kim",
-        "quote": "Our conversations stay calm and purposeful, and support continues naturally between our in-person gatherings.",
-        "role": "Wellbeing facilitator"
+        "quote": "Standups are shorter because the board tells the story. We spend our time building, not reporting.",
+        "role": "Engineering Manager"
       },
       {
         "avatarAlt": "Portrait of Tomasz Kowalski",
-        "organisation": "Strong Together",
+        "organisation": "Vantage Co",
         "name": "Tomasz Kowalski",
-        "quote": "What began as a small recovery circle became a dependable network built on trust, courage, and shared progress.",
-        "role": "Peer-support organiser"
+        "quote": "We automated our onboarding workflow and cut setup time from days to hours. The whole team felt it immediately.",
+        "role": "Operations Director"
       },
       {
         "avatarAlt": "Portrait of Elias Novak",
-        "organisation": "Open Studio Circle",
+        "organisation": "Studio Marlow",
         "name": "Elias Novak",
-        "quote": "Korunet helps us turn creative intention into a steady practice without losing the warmth of a close-knit group.",
-        "role": "Creative mentor"
+        "quote": "Feedback lives on the work itself, so design reviews are faster and nothing gets lost in chat threads.",
+        "role": "Design Lead"
       },
       {
         "avatarAlt": "Portrait of Camille Laurent",
-        "organisation": "Peace in Practice",
+        "organisation": "Alba",
         "name": "Camille Laurent",
-        "quote": "The platform gives our community enough structure to flourish while leaving room for reflection, care, and quiet connection.",
-        "role": "Community guide"
+        "quote": "Kuro gives my team just enough structure to move fast without the heavyweight feel of enterprise tools.",
+        "role": "Founder"
       }
     ],
     "plans": [
       {
-        "name": "Begin",
+        "name": "Starter",
         "price": "Free",
-        "description": "Create a focused circle and welcome your first members.",
+        "description": "For small teams getting their first workflow running.",
         "features": [
-          "One community circle",
-          "Shared conversations",
-          "Gathering plans",
-          "Member profiles"
+          "Up to 5 teammates",
+          "Boards and tasks",
+          "Basic workflows",
+          "Shared docs"
         ]
       },
       {
-        "name": "Grow",
+        "name": "Pro",
         "price": "9.99 USD/mo",
-        "description": "Nurture an active community with more ways to connect and contribute.",
+        "description": "For growing teams that need automations and more control.",
         "features": [
-          "Everything in Begin",
-          "Multiple circles",
-          "Guides and roles",
+          "Everything in Starter",
+          "Unlimited workflows",
+          "Automations",
           "Priority support"
         ]
       },
       {
-        "name": "Thrive",
+        "name": "Scale",
         "price": "Custom",
-        "description": "Support a network of communities with thoughtful governance and care.",
+        "description": "For organisations running many teams and workflows.",
         "features": [
-          "Everything in Grow",
-          "Network controls",
-          "Guided onboarding",
+          "Everything in Pro",
+          "Advanced permissions",
+          "SSO and audit logs",
           "Dedicated support"
         ]
       }
     ],
     "compliance": {
-      "title": "Peace of mind is part of the platform",
-      "description": "Clear permissions, private circles, and thoughtful defaults help people choose how they participate and what they share.",
+      "title": "Control is built in",
+      "description": "Granular permissions, audit trails and thoughtful defaults keep every workspace secure and every admin confident.",
       "items": [
-        "Private circles",
-        "Clear roles",
+        "Role-based access",
+        "Audit trails",
         "Data control",
         "Secure access",
-        "Member choice",
+        "Workspace privacy",
         "Thoughtful defaults"
       ]
     },
     "faqs": [
       {
-        "question": "What is Korunet?",
-        "answer": "Korunet is a platform for people to connect around new life, growth, strength, and peace through trusted circles, conversations, gatherings, and shared practices."
+        "question": "What is Kuro?",
+        "answer": "Kuro is a team workspace for productivity, agility and workflows — plan work, automate routine steps and keep every project visible in one place."
       },
       {
-        "question": "What can a circle be about?",
-        "answer": "A circle can support a life transition, wellbeing practice, learning journey, creative goal, recovery process, local initiative, or any shared intention that benefits from community."
+        "question": "Who is Kuro for?",
+        "answer": "Any team that wants to move faster: product, engineering, design, operations or a whole company."
       },
       {
-        "question": "Can circles stay private?",
-        "answer": "Yes. Circle hosts can choose who joins, what members can see, and which roles can guide or care for each space."
+        "question": "Can we keep workspaces private?",
+        "answer": "Yes. Admins control who joins each workspace, who can edit workflows and what guests can see."
       },
       {
-        "question": "Does Korunet support multiple languages?",
-        "answer": "Members can switch the interface language from the header or footer. This demo includes English, Spanish, and Chinese."
+        "question": "Does Kuro support multiple languages?",
+        "answer": "Team members can switch the interface language from the header or footer. This demo includes English, Spanish, and Chinese."
       },
       {
-        "question": "How do I get started?",
-        "answer": "Create an account, share a little about the chapter you are in, and begin or join a circle that reflects where you want to grow."
+        "question": "How do we get started?",
+        "answer": "Create an account, invite your team and set up your first board or workflow in minutes."
       }
     ]
   },
   "PricingPage": {
-    "title": "Membership for every stage of growth",
-    "description": "Begin with one trusted circle, then add more space, guidance, and support as your community unfolds.",
+    "title": "Pricing for every kind of team",
+    "description": "Start with a single workspace, then add automation, control and support as your team grows.",
     "included": "Includes",
-    "getStarted": "Begin your journey",
+    "getStarted": "Get started",
     "plans": [
       {
-        "name": "Begin",
-        "description": "For a new circle finding its rhythm",
+        "name": "Starter",
+        "description": "For a small team finding its rhythm",
         "price": "$10 per month",
         "features": [
-          "50 circle members",
-          "10 active spaces"
+          "5 team members",
+          "10 active projects"
         ]
       },
       {
-        "name": "Grow",
-        "description": "For communities deepening connection",
+        "name": "Pro",
+        "description": "For teams scaling their workflows",
         "price": "$20 per month",
         "features": [
-          "100 circle members",
-          "20 active spaces",
+          "25 team members",
+          "Unlimited projects",
           "Priority support"
         ]
       },
       {
-        "name": "Thrive",
-        "description": "For networks helping many circles flourish",
+        "name": "Scale",
+        "description": "For organisations coordinating many teams",
         "price": "$100 per month",
         "features": [
-          "300 community members",
-          "100 active spaces",
-          "100 guides and team members",
-          "Advanced care controls"
+          "100 team members",
+          "Advanced permissions",
+          "SSO and audit logs",
+          "Dedicated success manager"
         ]
       }
     ],
     "lifetime": {
-      "title": "Founding lifetime membership",
-      "description": "Make one payment for permanent access to the core Korunet experience and help the community grow from its roots.",
+      "title": "Founding lifetime licence",
+      "description": "Make one payment for permanent access to the core Kuro experience and help shape the product from the start.",
       "included": "What's included",
       "features": [
-        "Private founding circle",
-        "Member growth resources",
-        "Entry to the annual gathering",
-        "Founding member gift"
+        "Private founding workspace",
+        "Workflow templates",
+        "Founding member badge",
+        "Direct input on the roadmap"
       ],
-      "access": "Unlimited access, for every chapter",
+      "access": "Unlimited access, for every team",
       "price": "$500 USD",
       "getStarted": "Become a founding member"
     }
@@ -1513,7 +1524,7 @@
     "description": "Manage account security, profile details, notifications, privacy, and billing."
   },
   "AuthenticatedMetadata": {
-    "description": "Your Korunet account and community workspace."
+    "description": "Your Kuro account and team workspace."
   },
   "Organisations": {
     "common": {
@@ -1726,24 +1737,24 @@
     "recoveryDisclaimer": "This link can be used once. If you did not request this change, you can ignore this email."
   },
   "EmailTemplateExamples": {
-    "resetTitle": "Reset your Kuronet password",
-    "resetBody": "Follow this link to reset the password for your Kuronet account:",
+    "resetTitle": "Reset your Kuro password",
+    "resetBody": "Follow this link to reset the password for your Kuro account:",
     "resetButton": "Reset Password",
-    "resetBrand": "Kuronet",
+    "resetBrand": "Kuro",
     "exampleTitle": "Lorem ipsum",
     "exampleBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
     "exampleButton": "Lorem ipsum",
     "exampleBrand": "Supacharger",
-    "footerSentBy": "This email was sent by Kuronet.",
+    "footerSentBy": "This email was sent by Kuro.",
     "footerWebsite": "Website",
-    "footerCopyright": "Copyright © Kuronet. All Rights Reserved.",
+    "footerCopyright": "Copyright © Kuro. All Rights Reserved.",
     "footerAttribution": "Powered by Supacharger",
     "sectionTitle": "Lorem ipsum dolor sit amet",
     "sectionBody": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae justo eget magna fermentum iaculis. Aenean euismod elementum nisi, quis eleifend quam adipiscing vitae. Ut consequat semper viverra nam libero justo laoreet sit amet.",
-    "sectionImageAlt": "Kuronet application preview",
+    "sectionImageAlt": "Kuro application preview",
     "copyLink": "Or copy and paste this link:",
     "otpTitle": "Confirm your email address",
-    "otpBody": "Enter this code in Kuronet to confirm your email address:",
+    "otpBody": "Enter this code in Kuro to confirm your email address:",
     "otpDisclaimer": "If you did not create this account, you can ignore this email."
   },
   "SupabaseEmailResources": {
@@ -1838,5 +1849,12 @@
     "completeDescription": "Your email change is confirmed. You can now sign in with your new email address.",
     "invalidTitle": "Email confirmation failed",
     "invalidDescription": "This link is invalid or has expired. Return to account security to request another email change."
+  },
+  "DemoCelebration": {
+    "paymentComplete": "Payment Complete",
+    "welcome": "Welcome to Pro",
+    "dashboard": "Take me to the dashboard",
+    "confetti": "Toggle Canvas confetti",
+    "confettiJs": "Trigger Confetti.js"
   }
 }

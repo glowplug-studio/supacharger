@@ -5,7 +5,7 @@
     "retry": ""
   },
   "Global": {
-    "siteTitle": "Korunet",
+    "siteTitle": "Kuro",
     "siteDescription": "Comienza tu próximo proyecto sin reinventar la rueda",
     "or": "o"
   },
@@ -407,20 +407,20 @@
     "builtWith": "Construido con"
   },
   "MarketingDemo": {
-    "trustedOrganisations": "Creciendo juntos en Korunet"
+    "trustedOrganisations": "Creciendo juntos en Kuro"
   },
   "MarketingMetadata": {
     "home": {
-      "title": "Korunet",
+      "title": "Kuro",
       "description": "Una plataforma para conectar a personas en torno a la nueva vida, el crecimiento, la fortaleza y la paz."
     },
     "legal": {
       "title": "Legal",
-      "description": "Lea los términos de uso, la política de privacidad y la política de cookies de terceros de Korunet."
+      "description": "Lea los términos de uso, la política de privacidad y la política de cookies de terceros de Kuro."
     },
     "pricing": {
       "title": "Precios",
-      "description": "Explora las membresías de Korunet para cada etapa del crecimiento personal y compartido."
+      "description": "Explora las membresías de Kuro para cada etapa del crecimiento personal y compartido."
     },
     "license": {
       "title": "Licencia",
@@ -546,7 +546,7 @@
     "paywallDemos": {
       "title": "Patrones de muro de pago para diferentes procesos de compra",
       "description": "Compare las solicitudes de actualización públicas sin iniciar sesión. La autenticación solo se requiere cuando un visitante continúa con un flujo de compra específico de la cuenta.",
-      "heroImageAlt": "Espacio de trabajo del producto Korunet que muestra funciones de facturación comunitaria",
+      "heroImageAlt": "Espacio de trabajo del producto Kuro que muestra funciones de facturación comunitaria",
       "galleryTitle": "Elige el límite de facturación que se ajuste al momento",
       "galleryDescription": "Siete patrones de interacción muestran cómo el acceso, las actualizaciones, los productos, los servicios y los pagos pueden aparecer dentro de un producto.",
       "items": [
@@ -652,7 +652,7 @@
         "license": "Licencia de producto única",
         "price": "$79",
         "checkout": "Continuar registrándose",
-        "imageAlt": "Pantallas de incorporación móvil de Korunet incluidas en el kit de lanzamiento de la comunidad"
+        "imageAlt": "Pantallas de incorporación móvil de Kuro incluidas en el kit de lanzamiento de la comunidad"
       },
       "inApp": {
         "product": "Impulso a la promoción de eventos",
@@ -682,8 +682,12 @@
     "benefits": "Cuatro valores",
     "reviews": "Historias",
     "pricing": "Membresía",
-    "inPageAnchors": "Explorar Korunet",
+    "inPageAnchors": "Explorar Kuro",
     "supachargerFeatures": "Características de Supacharger",
+    "featuresGroupLabel": "",
+    "newBadge": "",
+    "promoTitle": "",
+    "promoDescription": "",
     "whatsIncluded": "Qué incluye",
     "whatsIncludedDescription": "Desde las funciones principales del producto hasta las especificaciones para desarrolladores.",
     "paywallDemos": "Demostraciones de muro de pago",
@@ -726,6 +730,7 @@
     "firstBuiltIn": "Primero construido",
     "newZealand": "Nueva Zelanda",
     "by": "por",
+    "backToTop": "",
     "privacyPolicy": ""
   },
   "LicensePage": {
@@ -771,18 +776,20 @@
     "auditDate": "Revisado con respecto a la dependencia del repositorio establecida el 22 de agosto de 2026.",
     "ccSoftwareFaq": "Preguntas frecuentes sobre el software Creative Commons",
     "repositoryLicense": "LICENCIA del repositorio",
-    "legalPage": "Página legal de Korunet"
+    "legalPage": "Página legal de Kuro"
   },
   "MarketingLanding": {
     "createAccount": "Crear una cuenta",
-    "exploreFeatures": "Explorar Korunet",
-    "trustedOrganisations": "Creciendo juntos en Korunet",
+    "exploreFeatures": "Explorar Kuro",
+    "trustedOrganisations": "Creciendo juntos en Kuro",
     "getStarted": "Comienza tu camino",
     "mostPopular": "Más popular",
     "roleAtOrganisation": "{role} en {organisation}",
     "hero": {
       "title": "Un lugar donde los nuevos comienzos pueden crecer.",
-      "description": "Korunet reúne a personas en torno a la nueva vida, el crecimiento personal, la fortaleza compartida y la paz, creando círculos de apoyo que siguen desplegándose."
+      "description": "Kuro reúne a personas en torno a la nueva vida, el crecimiento personal, la fortaleza compartida y la paz, creando círculos de apoyo que siguen desplegándose.",
+      "updateBadge": "",
+      "updateText": ""
     },
     "overview": {
       "title": "Conexión para cada nuevo capítulo",
@@ -794,10 +801,10 @@
     },
     "integrations": {
       "title": "Reúne a tu gente y tus herramientas cotidianas",
-      "description": "Conecta los servicios que tu círculo ya utiliza mientras Korunet sigue siendo ese lugar sereno y compartido al que volver para reflexionar, darse ánimo y actuar."
+      "description": "Conecta los servicios que tu círculo ya utiliza mientras Kuro sigue siendo ese lugar sereno y compartido al que volver para reflexionar, darse ánimo y actuar."
     },
     "benefitsSection": {
-      "title": "Cuatro valores en el corazón de Korunet",
+      "title": "Cuatro valores en el corazón de Kuro",
       "description": "La nueva vida abre posibilidades. El crecimiento les da dirección. La fortaleza las hace sostenibles. La paz crea espacio para que todos pertenezcan."
     },
     "experiences": {
@@ -806,7 +813,7 @@
     },
     "reviewsSection": {
       "title": "Historias de cambio sostenidas por la comunidad",
-      "description": "Descubre cómo las personas usan Korunet para empezar de nuevo, crecer con propósito, encontrar fortaleza mutua y abrir más espacio para la paz."
+      "description": "Descubre cómo las personas usan Kuro para empezar de nuevo, crecer con propósito, encontrar fortaleza mutua y abrir más espacio para la paz."
     },
     "pricingSection": {
       "title": "Espacio para crecer a tu propio ritmo",
@@ -814,17 +821,17 @@
     },
     "faqSection": {
       "title": "Todo lo que necesitas para comenzar",
-      "description": "Conoce cómo funcionan los círculos, cómo se protege la privacidad y cómo Korunet acompaña a las personas en distintas etapas de la vida."
+      "description": "Conoce cómo funcionan los círculos, cómo se protege la privacidad y cómo Kuro acompaña a las personas en distintas etapas de la vida."
     },
     "cta": {
       "title": "Empieza tu próximo capítulo en compañía",
       "description": "Crea un círculo acogedor alrededor del cambio que estás viviendo, el crecimiento que buscas o la paz que quieres compartir."
     },
     "images": {
-      "messagingWorkspace": "Espacio de Korunet para conversar y apoyarse en un círculo",
-      "mobileScreens": "Pantallas móviles de Korunet para conectar y crecer",
+      "messagingWorkspace": "Espacio de Kuro para conversar y apoyarse en un círculo",
+      "mobileScreens": "Pantallas móviles de Kuro para conectar y crecer",
       "neighboursAtNight": "Personas reunidas en un espacio sereno rodeado de helechos que se despliegan",
-      "mobileExperience": "Experiencia de Korunet en pantallas móviles"
+      "mobileExperience": "Experiencia de Kuro en pantallas móviles"
     },
     "communityPillars": [
       {
@@ -848,12 +855,12 @@
       {
         "title": "Encuentra tu círculo",
         "description": "Descubre personas, guías y grupos vinculados con el capítulo de vida que estás atravesando.",
-        "imageAlt": "Pantallas de Korunet para descubrir personas y círculos"
+        "imageAlt": "Pantallas de Kuro para descubrir personas y círculos"
       },
       {
         "title": "Cultiva un crecimiento con sentido",
         "description": "Reúne conversaciones, prácticas compartidas, encuentros y avances en un único espacio de apoyo.",
-        "imageAlt": "Espacio de Korunet para el crecimiento y la reflexión compartidos"
+        "imageAlt": "Espacio de Kuro para el crecimiento y la reflexión compartidos"
       },
       {
         "title": "Construyan fortaleza juntos",
@@ -866,19 +873,19 @@
         "title": "Conoce a personas en una etapa parecida",
         "description": "Encuentra círculos sobre nueva maternidad o paternidad, recuperación, creatividad, bienestar, cambio o un propósito compartido.",
         "cta": "Encuentra tu círculo",
-        "imageAlt": "Perfiles y círculos de Korunet para personas en etapas de vida parecidas"
+        "imageAlt": "Perfiles y círculos de Kuro para personas en etapas de vida parecidas"
       },
       {
         "title": "Convierte la intención en un ritmo compartido",
         "description": "Organiza encuentros, comparte reflexiones, reconoce avances y mantén cerca el ánimo entre una reunión y otra.",
         "cta": "Descubre cómo funciona",
-        "imageAlt": "Espacio de Korunet con conversaciones, encuentros y avances compartidos"
+        "imageAlt": "Espacio de Kuro con conversaciones, encuentros y avances compartidos"
       },
       {
         "title": "Vuelve, reflexiona y comienza de nuevo",
         "description": "Conserva tu historia mientras abres espacio para el siguiente paso, la siguiente conexión y un nuevo comienzo.",
         "cta": "Crear una cuenta",
-        "imageAlt": "Experiencia móvil de Korunet para la reflexión y los nuevos comienzos"
+        "imageAlt": "Experiencia móvil de Kuro para la reflexión y los nuevos comienzos"
       }
     ],
     "benefits": [
@@ -912,7 +919,7 @@
         "avatarAlt": "Retrato de Maya Okafor",
         "organisation": "Nuevas Raíces Familias",
         "name": "Maya Okafor",
-        "quote": "Korunet nos dio un lugar amable para hacer preguntas sinceras, celebrar pequeños logros y crecer juntos en la maternidad y la paternidad.",
+        "quote": "Kuro nos dio un lugar amable para hacer preguntas sinceras, celebrar pequeños logros y crecer juntos en la maternidad y la paternidad.",
         "role": "Anfitriona del círculo"
       },
       {
@@ -940,7 +947,7 @@
         "avatarAlt": "Retrato de Elias Novak",
         "organisation": "Círculo Estudio Abierto",
         "name": "Elias Novak",
-        "quote": "Korunet nos ayuda a convertir la intención creativa en una práctica constante sin perder la calidez de un grupo cercano.",
+        "quote": "Kuro nos ayuda a convertir la intención creativa en una práctica constante sin perder la calidez de un grupo cercano.",
         "role": "Mentor creativo"
       },
       {
@@ -1000,8 +1007,8 @@
     },
     "faqs": [
       {
-        "question": "¿Qué es Korunet?",
-        "answer": "Korunet es una plataforma para conectar a personas en torno a la nueva vida, el crecimiento, la fortaleza y la paz mediante círculos de confianza, conversaciones, encuentros y prácticas compartidas."
+        "question": "¿Qué es Kuro?",
+        "answer": "Kuro es una plataforma para conectar a personas en torno a la nueva vida, el crecimiento, la fortaleza y la paz mediante círculos de confianza, conversaciones, encuentros y prácticas compartidas."
       },
       {
         "question": "¿Sobre qué puede tratar un círculo?",
@@ -1012,7 +1019,7 @@
         "answer": "Sí. Quienes los coordinan pueden elegir quién se une, qué ven los miembros y qué roles pueden guiar o cuidar cada espacio."
       },
       {
-        "question": "¿Korunet admite varios idiomas?",
+        "question": "¿Kuro admite varios idiomas?",
         "answer": "Los miembros pueden cambiar el idioma de la interfaz desde el encabezado o el pie de página. Esta demo incluye inglés, español y chino."
       },
       {
@@ -1060,7 +1067,7 @@
     ],
     "lifetime": {
       "title": "Membresía fundadora de por vida",
-      "description": "Realiza un pago para acceder siempre a la experiencia esencial de Korunet y ayudar a la comunidad a crecer desde sus raíces.",
+      "description": "Realiza un pago para acceder siempre a la experiencia esencial de Kuro y ayudar a la comunidad a crecer desde sus raíces.",
       "included": "Qué incluye",
       "features": [
         "Círculo fundador privado",
@@ -1430,7 +1437,7 @@
     "description": "Administre la seguridad de la cuenta, los detalles del perfil, las notificaciones, la privacidad y la facturación."
   },
   "AuthenticatedMetadata": {
-    "description": "Tu cuenta de Korunet y espacio de trabajo comunitario."
+    "description": "Tu cuenta de Kuro y espacio de trabajo comunitario."
   },
   "Organisations": {
     "common": {

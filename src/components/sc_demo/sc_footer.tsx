@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
+import { ArrowUp } from 'lucide-react';
 
 import { SupachargerAttribution } from '@/components/sc_widgets/attribution/supacharger-attribution';
+import { Button } from '@/components/ui/button';
 import ModeToggle from '@/supacharger/components/buttons/mode-toggle-button';
 
 import LocaleSwitcher from './sc_locale-switcher';
@@ -66,7 +68,20 @@ export default async function SCFooter() {
           </div>
         </div>
 
-        <div className='border-border text-muted-foreground mt-16 grid gap-3 border-t pt-7 text-sm sm:grid-cols-3 sm:items-center'>
+        <div className='mt-12 flex justify-end'>
+          <Button
+            aria-label={t('backToTop')}
+            asChild
+            className='border-border text-foreground hover:bg-accent hover:text-foreground h-[46px] w-[46px] rounded-lg border bg-transparent px-0 py-3 shadow-none'
+            variant='outline'
+          >
+            <a href='#hero'>
+              <ArrowUp aria-hidden='true' />
+            </a>
+          </Button>
+        </div>
+
+        <div className='border-border text-muted-foreground mt-6 grid gap-3 border-t pt-7 text-sm sm:grid-cols-3 sm:items-center'>
           <div>
             <p>
               © {new Date().getFullYear()} {global('siteTitle')}. {t('allRightsReserved')}
@@ -80,20 +95,20 @@ export default async function SCFooter() {
               </a>
             </div>
           </div>
-          <p className='text-center'>
+          <p className='text-center text-[11px]'>
             {t('firstBuiltIn')}{' '}
             <a
-              className='hover:text-foreground transition-colors'
+              className='text-primary hover:text-primary/80 font-semibold transition-colors'
               href='https://en.wikipedia.org/wiki/Koru'
               rel='noopener noreferrer'
               target='_blank'
             >
-              🇳🇿{t('newZealand')}
+              {t('newZealand')}
             </a>
             <br />
             {t('by')}{' '}
             <a
-              className='hover:text-foreground transition-colors'
+              className='text-primary hover:text-primary/80 font-semibold transition-colors'
               href='https://bio.glowplug.link'
               rel='noopener noreferrer'
               target='_blank'
@@ -102,7 +117,7 @@ export default async function SCFooter() {
             </a>{' '}
             -{' '}
             <a
-              className='hover:text-foreground transition-colors'
+              className='text-primary hover:text-primary/80 font-semibold transition-colors'
               href='https://glowplug.studio'
               rel='noopener noreferrer'
               target='_blank'

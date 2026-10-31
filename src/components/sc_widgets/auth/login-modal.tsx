@@ -32,7 +32,7 @@ export function LoginModal({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         motion='fade'
-        className='max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto rounded-r-2xl bg-muted/60 p-0'
+        className='sc-login-demo-modal max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto rounded-2xl bg-background p-0'
       >
         <div className='grid min-h-[38rem] md:grid-cols-[0.8fr_1.2fr]'>
           <aside className='relative hidden overflow-hidden bg-muted md:block'>
@@ -64,12 +64,14 @@ export function LoginModal({
               </a>
             </p>
           </aside>
-          <div className='bg-background px-5 py-7 sm:px-8'>
+          <div className='bg-background flex min-w-0 items-center justify-center px-6 py-10 sm:px-10'>
             <DialogHeader className='sr-only'>
               <DialogTitle>{title}</DialogTitle>
               <DialogDescription>{description}</DialogDescription>
             </DialogHeader>
-            <AuthEntry initialMode={initialMode} nextPath={nextPath} />
+            <div className='sc-auth-page'>
+              <AuthEntry initialMode={initialMode} nextPath={nextPath} />
+            </div>
           </div>
         </div>
       </DialogContent>

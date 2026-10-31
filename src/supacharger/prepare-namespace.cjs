@@ -3,11 +3,12 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { namespacePrefix, resourceName } = require('./namespace.cjs');
-const { readServiceConfig } = require('./extensions/services.cjs');
 
 /** Derived Edge projection, never a second editable namespace setting. No database writes. */
-function prepareNamespace({ root }) {
-  const { namespace } = readServiceConfig(root);
+function prepareNamespace({ root, namespace }) {
+  // Fresh installs supply the value just written to SC_CONFIG before npm install.
+  // Normal regeneration reads the same authoritative configuration.
+  if (namespace === undefined) namespace = require('./extensions/services.cjs').readServiceConfig(root).namespace;
   const resources = {
     schemas: Object.fromEntries(['app', 'api', 'api_edge', 'internal', 'services'].map(name => [name, resourceName(namespace, name)])),
     buckets: { profile: resourceName(namespace, 'user-avatars', 'bucket') },

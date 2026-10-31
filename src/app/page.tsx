@@ -26,7 +26,9 @@ export default async function RootPage() {
         </>
       ) : (
         <>
-          <SCMarketingMenu />
+          <div className='bg-[linear-gradient(to_right,#f8fafc_0%,#f8fafc_100%)] fixed inset-x-0 top-0 z-40'>
+            <SCMarketingMenu />
+          </div>
           <SCMarketingLanding />
           <SCFooter />
         </>

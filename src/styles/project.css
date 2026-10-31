@@ -6,7 +6,7 @@
  */
 
 @theme inline {
-  --font-sans: var(--font-host-grotesk);
+  --font-sans: var(--font-instrument-sans);
 }
 
 @layer base {
@@ -90,7 +90,7 @@
   h5,
   h6,
   .sc-auth-entry-mode {
-    font-family: var(--font-host-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
   }
 }
 

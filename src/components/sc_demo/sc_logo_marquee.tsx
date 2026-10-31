@@ -116,7 +116,7 @@ export default function SCLogoMarquee({ label }: { label: string }) {
       <p className='text-muted-foreground text-center text-sm font-medium' id='sc-logo-marquee-label'>
         {label}
       </p>
-      <div className='mt-4 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]'>
+      <div className='mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]'>
         <div className='sc-logo-marquee-track flex w-max items-center' ref={trackRef}>
           <DemoLogoSet />
           <DemoLogoSet duplicate />

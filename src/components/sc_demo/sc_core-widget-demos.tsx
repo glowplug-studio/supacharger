@@ -11,6 +11,7 @@ import { LoginModal } from '@/components/sc_widgets/auth/login-modal';
 import { ErrorPagePreviewButton } from '@/components/sc_widgets/error-page/error-page-preview-button';
 import { FileUploadWidget } from '@/components/sc_widgets/file-upload/file-upload-widget';
 import { ImageUploadWidget } from '@/components/sc_widgets/image-upload/image-upload-widget';
+import { DemoConfettiToggle } from '@/components/sc_widgets/paywall/demo-confetti';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -87,8 +88,8 @@ function SimulationAction({
         {progress === 100 ? uploadAgainLabel : uploadLabel}
       </Button>
       {progress === 100 ? (
-        <p className='flex items-center gap-2 text-sm text-muted-foreground' role='status'>
-          <CheckCircle2 aria-hidden='true' className='size-4 text-primary' />
+        <p className='text-muted-foreground flex items-center gap-2 text-sm' role='status'>
+          <CheckCircle2 aria-hidden='true' className='text-primary size-4' />
           {completeLabel}
         </p>
       ) : null}
@@ -96,26 +97,55 @@ function SimulationAction({
   );
 }
 
-function LoaderDemos({ imageLabel, inlineLabel, inverseLabel }: { imageLabel: string; inlineLabel: string; inverseLabel: string }) {
+function LoaderDemos({
+  imageLabel,
+  inlineLabel,
+  inverseLabel,
+}: {
+  imageLabel: string;
+  inlineLabel: string;
+  inverseLabel: string;
+}) {
   return (
     <div className='grid gap-3 sm:grid-cols-3'>
-      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-border bg-background p-4 text-primary' role='status'>
+      <div
+        className='border-border bg-background text-primary flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border p-4'
+        role='status'
+      >
         <LoadingSpinner className='size-9' fill='currentColor' label={inlineLabel} />
-        <span className='text-sm text-foreground'>{inlineLabel}</span>
+        <span className='text-foreground text-sm'>{inlineLabel}</span>
       </div>
-      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-border bg-primary p-4 text-primary-foreground' role='status'>
+      <div
+        className='border-border bg-primary text-primary-foreground flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border p-4'
+        role='status'
+      >
         <LoadingSpinner className='size-9' fill='currentColor' label={inverseLabel} variant='dark' />
         <span className='text-sm'>{inverseLabel}</span>
       </div>
-      <div className='flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-border bg-muted/40 p-4 text-muted-foreground' role='status'>
+      <div
+        className='border-border bg-muted/40 text-muted-foreground flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border p-4'
+        role='status'
+      >
         <ImageLoader aria-hidden='true' className='size-[50px] shrink-0' />
-        <span className='text-sm text-foreground'>{imageLabel}</span>
+        <span className='text-foreground text-sm'>{imageLabel}</span>
       </div>
     </div>
   );
 }
 
-function ModalDemo({ cancelLabel, doneLabel, description, openLabel, title }: { cancelLabel: string; doneLabel: string; description: string; openLabel: string; title: string }) {
+function ModalDemo({
+  cancelLabel,
+  doneLabel,
+  description,
+  openLabel,
+  title,
+}: {
+  cancelLabel: string;
+  doneLabel: string;
+  description: string;
+  openLabel: string;
+  title: string;
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -125,13 +155,17 @@ function ModalDemo({ cancelLabel, doneLabel, description, openLabel, title }: { 
         </Button>
       </DialogTrigger>
       <DialogContent className='gap-0 overflow-hidden rounded-lg p-0' motion='fade'>
-        <DialogHeader className='border-b border-border p-6 pr-12'>
+        <DialogHeader className='border-border border-b p-6 pr-12'>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <DialogDescription className='p-6'>{description}</DialogDescription>
-        <div className='flex items-center justify-between border-t border-border p-4'>
+        <div className='border-border flex items-center justify-between border-t p-4'>
           <DialogClose asChild>
-            <Button className='rounded-lg text-red-600 hover:text-red-600 dark:text-red-400 dark:hover:text-red-400' type='button' variant='ghost'>
+            <Button
+              className='rounded-lg text-red-600 hover:text-red-600 dark:text-red-400 dark:hover:text-red-400'
+              type='button'
+              variant='ghost'
+            >
               <X aria-hidden='true' className='size-4' />
               {cancelLabel}
             </Button>
@@ -158,6 +192,8 @@ function UIDemos({
   modalDescription,
   modalOpenLabel,
   modalTitle,
+  confettiDescription,
+  confettiLabel,
   toastDescription,
   toastLabel,
   toastMessage,
@@ -175,6 +211,8 @@ function UIDemos({
   modalDescription: string;
   modalOpenLabel: string;
   modalTitle: string;
+  confettiDescription: string;
+  confettiLabel: string;
   toastDescription: string;
   toastLabel: string;
   toastMessage: string;
@@ -193,30 +231,51 @@ function UIDemos({
   return (
     <div className='flex flex-col gap-8'>
       <section>
-        <h3 className='mb-3 text-sm font-medium text-foreground'>{loadersTitle}</h3>
+        <h3 className='text-foreground mb-3 text-sm font-medium'>{loadersTitle}</h3>
         <LoaderDemos imageLabel={imageLoaderLabel} inlineLabel={inlineLoaderLabel} inverseLabel={inverseLoaderLabel} />
       </section>
-      <ModalDemo cancelLabel={cancelLabel} doneLabel={doneLabel} description={modalDescription} openLabel={modalOpenLabel} title={modalTitle} />
-      <div className='grid gap-4 sm:grid-cols-2'>
-        <section className='flex flex-col items-start rounded-lg border border-border bg-background p-4'>
-          <h3 className='text-sm font-medium text-foreground'>{toastLabel}</h3>
-          <p className='mt-1 mb-4 text-sm text-muted-foreground'>{toastDescription}</p>
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+        <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
+          <h3 className='text-foreground text-sm font-medium'>{toastLabel}</h3>
+          <p className='text-muted-foreground mt-1 mb-4 text-sm'>{toastDescription}</p>
           <Button className='mt-auto rounded-lg' type='button' variant='outline' onClick={showToast}>
             {toastButtonLabel}
           </Button>
         </section>
-        <section className='flex flex-col items-start rounded-lg border border-border bg-background p-4'>
-          <h3 className='text-sm font-medium text-foreground'>{gatingTitle}</h3>
-          <p className='mt-1 mb-4 text-sm text-muted-foreground'>{gatingDescription}</p>
+        <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
+          <h3 className='text-foreground text-sm font-medium'>{gatingTitle}</h3>
+          <p className='text-muted-foreground mt-1 mb-4 text-sm'>{gatingDescription}</p>
           <LoginModal
             title={gatingTitle}
             description={gatingDescription}
             initialMode='signup'
             nextPath='/features/core-widget-demos'
-            trigger={<Button className='mt-auto rounded-lg' type='button' variant='outline'>{gatingButtonLabel}</Button>}
+            trigger={
+              <Button className='mt-auto rounded-lg' type='button' variant='outline'>
+                {gatingButtonLabel}
+              </Button>
+            }
           />
         </section>
+        <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
+          <h3 className='text-foreground text-sm font-medium'>{modalTitle}</h3>
+          <p className='text-muted-foreground mt-1 mb-4 text-sm'>{modalDescription}</p>
+          <div className='mt-auto'>
+            <ModalDemo
+              cancelLabel={cancelLabel}
+              doneLabel={doneLabel}
+              description={modalDescription}
+              openLabel={modalOpenLabel}
+              title={modalTitle}
+            />
+          </div>
+        </section>
       </div>
+      <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
+        <h3 className='text-foreground text-sm font-medium'>{confettiLabel}</h3>
+        <p className='text-muted-foreground mt-1 mb-4 text-sm'>{confettiDescription}</p>
+        <DemoConfettiToggle />
+      </section>
     </div>
   );
 }
@@ -258,7 +317,9 @@ export function SCCoreWidgetDemos() {
       description: t('notFoundDescription'),
       icon: PanelsTopLeft,
       title: t('notFoundTitle'),
-      widget: <ErrorPagePreviewButton kind='notFound' label={t('notFoundToggle')} reloadHint={t('errorPreviewReload')} />,
+      widget: (
+        <ErrorPagePreviewButton kind='notFound' label={t('notFoundToggle')} reloadHint={t('errorPreviewReload')} />
+      ),
     },
     {
       description: t('genericDescription'),
@@ -384,6 +445,8 @@ export function SCCoreWidgetDemos() {
           modalDescription={t('modalBody')}
           modalOpenLabel={t('openModal')}
           modalTitle={t('modalDialogTitle')}
+          confettiDescription={t('confettiDescription')}
+          confettiLabel={t('confettiLabel')}
           toastDescription={t('toastDescription')}
           toastLabel={t('toastLabel')}
           toastMessage={t('toastMessage')}
@@ -400,31 +463,43 @@ export function SCCoreWidgetDemos() {
     <div className='bg-background text-foreground'>
       <section className='px-4 pt-24 pb-14 sm:px-6 lg:px-8 lg:pb-20'>
         <div className='mx-auto max-w-7xl'>
-          <p className='text-primary text-sm font-medium'>{t('eyebrow')}</p>
-          <h1 className='mt-4 max-w-4xl text-4xl leading-[1.08] font-normal tracking-[-0.04em] text-balance sm:text-6xl'>
+          <h1 className='max-w-4xl text-4xl leading-[1.08] font-normal tracking-[-0.04em] text-balance sm:text-6xl'>
             {t('title')}
           </h1>
-          <p className='mt-6 max-w-2xl text-base leading-7 text-muted-foreground'>{t('description')}</p>
-          <Button asChild className='mt-6' variant='outline'>
-            <Link href='/features/paywall-demos'>{t('paywallLink')}</Link>
-          </Button>
+          <p className='text-muted-foreground mt-6 max-w-2xl text-base leading-7'>{t('description')}</p>
         </div>
       </section>
 
-      <section className='border-y border-border bg-muted/20 px-4 py-14 sm:px-6 lg:px-8 lg:py-20'>
+      <section className='border-border bg-muted/20 border-y px-4 py-14 sm:px-6 lg:px-8 lg:py-20'>
         <div className='mx-auto max-w-7xl space-y-6'>
-          {demos.map(({ description, icon: Icon, title, widget }) => (
-            <article className='grid overflow-hidden rounded-lg border border-border bg-card lg:grid-cols-[0.62fr_1.38fr]' key={title}>
-              <div className='border-b border-border p-6 lg:border-r lg:border-b-0 lg:p-8'>
-                <div className='flex size-10 items-center justify-center rounded-lg border border-border bg-background text-primary'>
-                  <Icon aria-hidden='true' className='size-4' />
-                </div>
-                <h2 className='mt-8 text-2xl font-medium tracking-tight'>{title}</h2>
-                <p className='mt-3 max-w-sm text-sm leading-6 text-muted-foreground'>{description}</p>
-              </div>
-              <div className='p-5 sm:p-8'>{widget}</div>
-            </article>
+          {[[demos[0], demos[1]], [demos[2]], [demos[3], demos[4]], [demos[5]]].map((group) => (
+            <div key={group[0].title} className={group.length === 2 ? 'grid gap-6 md:grid-cols-2' : ''}>
+              {group.map(({ description, icon: Icon, title, widget }) => (
+                <article className={`border-border bg-card grid overflow-hidden rounded-lg border ${group.length === 1 ? 'lg:grid-cols-[0.62fr_1.38fr]' : ''}`} key={title}>
+                  <div className={`border-border border-b p-6 lg:p-8 ${group.length === 1 ? 'lg:border-r lg:border-b-0' : ''}`}>
+                    <div className='border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border'>
+                      <Icon aria-hidden='true' className='size-4' />
+                    </div>
+                    <h2 className='mt-8 text-2xl font-medium tracking-tight'>{title}</h2>
+                    <p className='text-muted-foreground mt-3 max-w-sm text-sm leading-6'>{description}</p>
+                  </div>
+                  <div className='p-5 sm:p-8'>{widget}</div>
+                </article>
+              ))}
+            </div>
           ))}
+        </div>
+      </section>
+
+      <section className='border-border border-b px-4 py-8 sm:px-6 lg:px-8'>
+        <div className='mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h2 className='text-2xl font-medium tracking-tight'>{t('paywallStripTitle')}</h2>
+            <p className='text-muted-foreground mt-3 text-sm'>{t('paywallStripDescription')}</p>
+          </div>
+          <Button asChild className='shrink-0 rounded-lg' variant='outline'>
+            <Link href='/features/paywall-demos'>{t('paywallLink')}</Link>
+          </Button>
         </div>
       </section>
 

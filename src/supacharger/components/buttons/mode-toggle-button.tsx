@@ -49,7 +49,7 @@ export default function ModeToggle({ appearance = 'default', className }: ModeTo
           className={cn(
             appearance === 'default' && 'relative bg-white dark:bg-slate-800',
             appearance === 'marketing' &&
-              'border-border text-foreground hover:bg-accent hover:text-foreground inline-flex items-center justify-center whitespace-nowrap h-auto gap-2 rounded-sm border bg-transparent px-5 py-3 text-sm font-medium shadow-none transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-300',
+              'border-border text-foreground hover:bg-accent hover:text-foreground inline-flex items-center justify-center whitespace-nowrap h-auto gap-2 rounded-lg border bg-transparent px-5 py-3 text-sm font-medium shadow-none transition-colors focus-visible:ring-1 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:focus-visible:ring-neutral-300',
             className,
           )}
           size={appearance === 'marketing' ? 'sm' : 'icon'}

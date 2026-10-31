@@ -25,8 +25,8 @@ export const SC_CONFIG: SupachargerConfig = {
     transactional_email: { provider: null },
   },
   // English fallbacks; translate Global.siteTitle and Global.siteDescription in messages/.
-  SITE_TITLE: 'Korunet',
-  SITE_DESCRIPTION: 'Start your next project without reinventing the wheel.',
+  SITE_TITLE: 'Kuro',
+  SITE_DESCRIPTION: 'Productivity, agility and workflows for teams that want to move faster.',
   MARKETING_SITE_URL: null,
   // Site-wide metadata defaults. Pages may override their OG image.
   METADATA: {

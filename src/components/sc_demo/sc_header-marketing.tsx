@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { BadgeDollarSign, ExternalLink, ListChecks, Menu, Scale, UploadCloud } from 'lucide-react';
@@ -29,6 +30,34 @@ const marketingNavigation = [
   { href: '/#pricing', labelKey: 'pricing' },
 ];
 
+const featuresNavigation = [
+  {
+    href: '/features/whats-included',
+    labelKey: 'whatsIncluded',
+    descriptionKey: 'whatsIncludedDescription',
+    icon: ListChecks,
+    isNew: true,
+  },
+  {
+    href: '/features/paywall-demos',
+    labelKey: 'paywallDemos',
+    descriptionKey: 'paywallDemosDescription',
+    icon: BadgeDollarSign,
+  },
+  {
+    href: '/features/core-widget-demos',
+    labelKey: 'coreWidgetDemos',
+    descriptionKey: 'coreWidgetDemosDescription',
+    icon: UploadCloud,
+  },
+  {
+    href: '/license',
+    labelKey: 'licenseInformation',
+    descriptionKey: 'licenseInformationDescription',
+    icon: Scale,
+  },
+];
+
 const navigationLinkClassName =
   'inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const navigationTriggerClassName =
@@ -38,6 +67,28 @@ const authControlClassName = 'h-auto rounded-lg px-5 py-3 text-sm';
 export function SCMarketingMenu() {
   const t = useTranslations('MarketingNavigation');
   const [activeHref, setActiveHref] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRootRef = useRef<React.ComponentRef<typeof NavigationMenu> | null>(null);
+  const [featuresMenuOffset, setFeaturesMenuOffset] = useState(0);
+
+  useEffect(() => {
+    const measureFeaturesMenuOffset = () => {
+      const menu = menuRootRef.current;
+      if (!menu) return;
+      const menuRect = menu.getBoundingClientRect();
+      // The viewport hangs from the nav list's left edge; shift it so the
+      // wide features panel is centred in the page, not under its trigger.
+      setFeaturesMenuOffset(Math.round(window.innerWidth / 2 - menuRect.left - 704 / 2));
+    };
+
+    measureFeaturesMenuOffset();
+    window.addEventListener('resize', measureFeaturesMenuOffset);
+    document.fonts?.ready.then(measureFeaturesMenuOffset).catch(() => {});
+
+    return () => {
+      window.removeEventListener('resize', measureFeaturesMenuOffset);
+    };
+  }, []);
 
   useEffect(() => {
     const updateFromHash = () => {
@@ -74,11 +125,22 @@ export function SCMarketingMenu() {
   }, []);
 
   return (
-    <header className='border-border bg-background/90 text-foreground fixed inset-x-0 top-0 z-40 border-b backdrop-blur-xl'>
+    <>
+      <div
+        aria-hidden='true'
+        className='pointer-events-none fixed inset-0 z-30 bg-black/20 opacity-0 transition-opacity duration-300 data-[state=open]:pointer-events-auto data-[state=open]:opacity-100'
+        data-state={menuOpen ? 'open' : 'closed'}
+      />
+      <header className='border-border bg-background/90 text-foreground shadow-[0_1px_2px_0_rgba(0,0,0,0.06)] fixed inset-x-0 top-0 z-40 border-b backdrop-blur-xl'>
       <div className='mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8 xl:grid xl:grid-cols-[1fr_auto_1fr]'>
         <SCSiteLogo showSiteTitle={true} />
 
-        <NavigationMenu className='hidden xl:flex'>
+        <NavigationMenu
+          className='hidden xl:flex'
+          ref={menuRootRef}
+          viewportStyle={{ transform: `translateX(${featuresMenuOffset}px)` }}
+          onValueChange={(value) => setMenuOpen(value !== '')}
+        >
           <NavigationMenuList className='space-x-1'>
             <NavigationMenuItem>
               <NavigationMenuTrigger className={navigationTriggerClassName}>
@@ -115,66 +177,70 @@ export function SCMarketingMenu() {
               <NavigationMenuTrigger className={navigationTriggerClassName}>
                 {t('supachargerFeatures')}
               </NavigationMenuTrigger>
-              <NavigationMenuContent className='w-[58rem] max-w-none rounded-lg p-0 md:w-[58rem]'>
-                <div className='grid grid-cols-4'>
+              <NavigationMenuContent className='w-[44rem] max-w-none rounded-lg p-0 md:w-[44rem]'>
+                <div className='flex'>
+                  <div className='w-[24rem] shrink-0 p-3'>
+                    <p className='text-muted-foreground px-3 pt-1 pb-2 text-xs font-medium tracking-[0.08em] uppercase'>
+                      {t('featuresGroupLabel')}
+                    </p>
+                    <ul className='grid gap-1'>
+                      {featuresNavigation.map((item) => {
+                        const FeatureIcon = item.icon;
+
+                        return (
+                          <li key={item.href}>
+                            <NavigationMenuLink asChild>
+                              <Link
+                                className='hover:bg-accent focus:bg-accent group flex gap-3 rounded-lg p-3 transition-colors outline-none'
+                                href={item.href}
+                              >
+                                <FeatureIcon
+                                  aria-hidden='true'
+                                  className='text-primary mt-0.5 size-5 shrink-0'
+                                />
+                                <span className='min-w-0'>
+                                  <span className='flex items-center gap-2'>
+                                    <span className='text-foreground block text-sm font-semibold'>
+                                      {t(item.labelKey)}
+                                    </span>
+                                    {item.isNew ? (
+                                      <span className='bg-foreground text-background rounded-full px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] uppercase'>
+                                        {t('newBadge')}
+                                      </span>
+                                    ) : null}
+                                  </span>
+                                  <span className='text-muted-foreground group-hover:text-foreground/80 mt-1 block text-sm leading-5'>
+                                    {t(item.descriptionKey)}
+                                  </span>
+                                </span>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                   <NavigationMenuLink asChild>
                     <Link
-                      className='hover:bg-accent focus:bg-accent group flex gap-3 p-5 transition-colors outline-none'
+                      className='relative hidden w-[20rem] overflow-hidden lg:block'
                       href='/features/whats-included'
                     >
-                      <ListChecks aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
-                      <span className='min-w-0'>
-                        <span className='text-foreground block text-sm font-semibold'>
-                          {t('whatsIncluded')}
+                      <Image
+                        alt=''
+                        className='object-cover'
+                        fill
+                        src='/images/sc_demo/fern-login-sidecar.webp'
+                      />
+                      <span className='absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent' />
+                      <span className='absolute right-0 bottom-0 left-0 p-5'>
+                        <span className='block text-base font-semibold text-white'>
+                          {t('promoTitle')}
                         </span>
-                        <span className='text-muted-foreground group-hover:text-foreground/80 mt-2 block text-sm leading-5'>
-                          {t('whatsIncludedDescription')}
-                        </span>
-                      </span>
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      className='border-border hover:bg-accent focus:bg-accent group flex gap-3 border-l p-5 transition-colors outline-none'
-                      href='/features/paywall-demos'
-                    >
-                      <BadgeDollarSign aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
-                      <span className='min-w-0'>
-                        <span className='text-foreground block text-sm font-semibold'>
-                          {t('paywallDemos')}
-                        </span>
-                        <span className='text-muted-foreground group-hover:text-foreground/80 mt-2 block text-sm leading-5'>
-                          {t('paywallDemosDescription')}
+                        <span className='mt-1 block text-sm leading-5 text-white/80'>
+                          {t('promoDescription')}
                         </span>
                       </span>
                     </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      className='border-border hover:bg-accent focus:bg-accent group flex gap-3 border-l p-5 transition-colors outline-none'
-                      href='/features/core-widget-demos'
-                    >
-                      <UploadCloud aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
-                      <span className='min-w-0'>
-                        <span className='text-foreground block text-sm font-semibold'>{t('coreWidgetDemos')}</span>
-                        <span className='text-muted-foreground group-hover:text-foreground/80 mt-2 block text-sm leading-5'>
-                          {t('coreWidgetDemosDescription')}
-                        </span>
-                      </span>
-                    </Link>
-                  </NavigationMenuLink>
-                  <NavigationMenuLink asChild>
-                  <Link className='border-border bg-muted/35 hover:bg-accent flex gap-3 border-l p-5' href='/license'>
-                    <Scale aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
-                    <span className='min-w-0'>
-                      <span className='text-foreground block text-sm font-semibold'>
-                        {t('licenseInformation')}
-                      </span>
-                      <span className='text-muted-foreground mt-2 block text-sm leading-5'>
-                        {t('licenseInformationDescription')}
-                      </span>
-                    </span>
-                  </Link>
                   </NavigationMenuLink>
                 </div>
               </NavigationMenuContent>
@@ -204,14 +270,14 @@ export function SCMarketingMenu() {
 
         <div className='hidden items-center gap-3 justify-self-end xl:flex'>
           <Link
-            className='text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center rounded-lg px-5 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none'
+            className='text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex items-center rounded-lg px-0 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none'
             href='/account/login'
           >
             {t('login')}
           </Link>
           <Button
             asChild
-            className={`${authControlClassName} bg-foreground text-background hover:bg-foreground/90 shadow-none`}
+            className={`${authControlClassName} bg-foreground text-background hover:bg-foreground/90 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.3)]`}
             size='sm'
           >
             <Link href='/account/create'>{t('createAccount')}</Link>
@@ -271,42 +337,25 @@ export function SCMarketingMenu() {
                     {t('supachargerFeatures')}
                   </p>
                   <div className='grid gap-1'>
-                    <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-lg px-3 py-3' href='/features/whats-included'>
-                        <span className='text-foreground block text-sm font-semibold'>
-                          {t('whatsIncluded')}
-                        </span>
-                        <span className='text-muted-foreground mt-1 block text-sm leading-5'>
-                          {t('whatsIncludedDescription')}
-                        </span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-lg px-3 py-3' href='/features/paywall-demos'>
-                        <span className='text-foreground block text-sm font-semibold'>
-                          {t('paywallDemos')}
-                        </span>
-                        <span className='text-muted-foreground mt-1 block text-sm leading-5'>
-                          {t('paywallDemosDescription')}
-                        </span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <Link className='hover:bg-accent rounded-lg px-3 py-3' href='/features/core-widget-demos'>
-                        <span className='text-foreground block text-sm font-semibold'>{t('coreWidgetDemos')}</span>
-                        <span className='text-muted-foreground mt-1 block text-sm leading-5'>
-                          {t('coreWidgetDemosDescription')}
-                        </span>
-                      </Link>
-                    </SheetClose>
-                    <SheetClose asChild><Link className='bg-muted/35 hover:bg-accent rounded-lg px-3 py-3' href='/license'>
-                      <span className='text-foreground block text-sm font-semibold'>
-                        {t('licenseInformation')}
-                      </span>
-                      <span className='text-muted-foreground mt-1 block text-sm leading-5'>
-                        {t('licenseInformationDescription')}
-                      </span>
-                    </Link></SheetClose>
+                    {featuresNavigation.map((item) => {
+                      const FeatureIcon = item.icon;
+
+                      return (
+                        <SheetClose asChild key={item.href}>
+                          <Link className='hover:bg-accent flex gap-3 rounded-lg px-3 py-3' href={item.href}>
+                            <FeatureIcon aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
+                            <span className='min-w-0'>
+                              <span className='text-foreground block text-sm font-semibold'>
+                                {t(item.labelKey)}
+                              </span>
+                              <span className='text-muted-foreground mt-1 block text-sm leading-5'>
+                                {t(item.descriptionKey)}
+                              </span>
+                            </span>
+                          </Link>
+                        </SheetClose>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -340,7 +389,7 @@ export function SCMarketingMenu() {
                 <SheetClose asChild>
                   <Button
                     asChild
-                    className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-lg px-5 py-3 text-sm'
+                    className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-lg px-5 py-3 text-sm shadow-[0_2px_10px_-2px_rgba(0,0,0,0.3)]'
                   >
                     <Link href='/account/create'>{t('createAccount')}</Link>
                   </Button>
@@ -351,5 +400,6 @@ export function SCMarketingMenu() {
         </div>
       </div>
     </header>
+    </>
   );
 }

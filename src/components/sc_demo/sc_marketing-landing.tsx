@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import {
   ArrowRight,
+  ArrowUpRight,
   BellRing,
   Building2,
   CalendarDays,
@@ -36,6 +37,8 @@ import SCLogoMarquee from './sc_logo_marquee';
 type DemoLogo = ComponentType<SVGProps<SVGSVGElement>>;
 
 const marketingButtonClassName = 'h-auto rounded-lg px-5 py-3 text-sm';
+const marketingPrimaryButtonClassName =
+  'bg-foreground text-background hover:bg-foreground/90 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.3)] active:scale-[0.98]';
 
 const communityPillars = [
   {
@@ -162,19 +165,28 @@ export default function SCMarketingLanding() {
     <main className='bg-background text-foreground overflow-hidden'>
       <section className='relative min-h-[100dvh] scroll-mt-16 pt-16' id='hero'>
         <div className='absolute inset-x-0 top-16 h-[560px] bg-[radial-gradient(circle_at_50%_18%,rgba(0,163,80,0.12),transparent_58%)]' />
-        <div className='relative mx-auto max-w-7xl px-4 pt-20 pb-16 sm:px-6 lg:px-8 lg:pt-24'>
-          <div className='sc-home-enter max-w-4xl'>
-            <h1 className='max-w-4xl text-[2.75rem] leading-[1.1] font-normal tracking-[-0.04em] text-balance sm:text-5xl'>
+        <div className='relative mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32'>
+          <div className='sc-home-enter mx-auto max-w-4xl text-center'>
+            <Link
+              className='border-border bg-card/80 text-foreground hover:border-foreground/20 inline-flex items-center gap-2.5 rounded-full border py-1.5 pr-1.5 pl-1.5 shadow-sm backdrop-blur transition-colors'
+              href='/features/whats-included'
+            >
+              <span className='bg-foreground text-background rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-[0.08em] uppercase'>
+                {t('hero.updateBadge')}
+              </span>
+              <span className='text-sm font-medium'>{t('hero.updateText')}</span>
+              <span className='bg-foreground/5 flex size-6 items-center justify-center rounded-full'>
+                <ArrowUpRight aria-hidden='true' className='size-3.5' />
+              </span>
+            </Link>
+            <h1 className='mx-auto mt-8 max-w-4xl text-5xl leading-[1.05] font-normal tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl'>
               {t('hero.title')}
             </h1>
-            <p className='text-muted-foreground mt-6 max-w-2xl text-base leading-7'>{t('hero.description')}</p>
-            <div className='mt-8 flex flex-wrap gap-3'>
+            <p className='text-muted-foreground mx-auto mt-7 max-w-2xl text-lg leading-8'>{t('hero.description')}</p>
+            <div className='mt-10 flex flex-wrap justify-center gap-3'>
               <Button
                 asChild
-                className={cn(
-                  marketingButtonClassName,
-                  'bg-foreground text-background hover:bg-foreground/90 shadow-none active:scale-[0.98]',
-                )}
+                className={cn(marketingButtonClassName, marketingPrimaryButtonClassName)}
               >
                 <Link href='/account/create'>{t('createAccount')}</Link>
               </Button>
@@ -182,7 +194,7 @@ export default function SCMarketingLanding() {
                 asChild
                 className={cn(
                   marketingButtonClassName,
-                  'border-border bg-foreground/5 text-foreground hover:bg-accent hover:text-foreground shadow-none active:scale-[0.98]',
+                  'border-border text-foreground hover:bg-accent hover:text-foreground bg-transparent shadow-none active:scale-[0.98]',
                 )}
                 variant='outline'
               >
@@ -194,19 +206,19 @@ export default function SCMarketingLanding() {
             </div>
           </div>
 
-          <SCLogoMarquee label={t('trustedOrganisations')} />
-
-          <div className='sc-home-enter-delayed border-border bg-card shadow-foreground/20 mt-14 overflow-hidden rounded-lg border p-2 shadow-2xl sm:p-4'>
+          <div className='sc-home-enter-delayed mt-20 overflow-hidden   lg:mt-24'>
             <Image
               alt={t('images.messagingWorkspace')}
               className='h-auto w-full rounded-lg'
-              height={960}
+              height={873}
               priority
               sizes='(max-width: 1280px) 100vw, 1216px'
               src='/images/sc_demo/sc-marketing-desktop-hero.webp'
-              width={1280}
+              width={1522}
             />
           </div>
+
+          <SCLogoMarquee label={t('trustedOrganisations')} />
 
           <div className='border-border mt-8 grid border-y sm:grid-cols-2 lg:grid-cols-4'>
             {localisedPillars.map((pillar, index) => {
@@ -356,10 +368,7 @@ export default function SCMarketingLanding() {
                   <p className='text-muted-foreground mt-5 text-base leading-7'>{experience.description}</p>
                   <Button
                     asChild
-                    className={cn(
-                      marketingButtonClassName,
-                      'bg-foreground text-background hover:bg-foreground/90 mt-7 active:scale-[0.98]',
-                    )}
+                    className={cn(marketingButtonClassName, marketingPrimaryButtonClassName, 'mt-7')}
                   >
                     <Link href={experience.href}>{experience.cta}</Link>
                   </Button>
@@ -448,7 +457,7 @@ export default function SCMarketingLanding() {
                       marketingButtonClassName,
                       'w-full',
                       plan.popular
-                        ? 'bg-foreground text-background hover:bg-foreground/90'
+                        ? marketingPrimaryButtonClassName
                         : 'border-border text-foreground hover:bg-accent hover:text-foreground bg-transparent',
                     )}
                     variant={plan.popular ? 'default' : 'outline'}
@@ -507,7 +516,7 @@ export default function SCMarketingLanding() {
               <div className='mt-8'>
                 <Button
                   asChild
-                  className={cn(marketingButtonClassName, 'bg-foreground text-background hover:bg-foreground/90')}
+                  className={cn(marketingButtonClassName, marketingPrimaryButtonClassName)}
                 >
                   <Link href='/account/create'>{t('createAccount')}</Link>
                 </Button>

@@ -407,7 +407,7 @@
     "builtWith": "内置"
   },
   "MarketingDemo": {
-    "trustedOrganisations": "在 Korunet 一起成长"
+    "trustedOrganisations": "在 Kuro 一起成长"
   },
   "MarketingMetadata": {
     "home": {
@@ -416,11 +416,11 @@
     },
     "legal": {
       "title": "合法的",
-      "description": "阅读 Korunet 的使用条款、隐私政策和第三方 cookie 政策。"
+      "description": "阅读 Kuro 的使用条款、隐私政策和第三方 cookie 政策。"
     },
     "pricing": {
       "title": "定价",
-      "description": "探索适合个人与共同成长每个阶段的 Korunet 会员方案。"
+      "description": "探索适合个人与共同成长每个阶段的 Kuro 会员方案。"
     },
     "license": {
       "title": "执照",
@@ -546,7 +546,7 @@
     "paywallDemos": {
       "title": "不同购买旅程的付费专区模式",
       "description": "无需登录即可比较公共升级提示。仅当访问者继续进入特定于帐户的购买流程时才需要进行身份验证。",
-      "heroImageAlt": "Korunet 产品工作区显示社区计费功能",
+      "heroImageAlt": "Kuro 产品工作区显示社区计费功能",
       "galleryTitle": "选择适合当下的计费边界",
       "galleryDescription": "七种交互模式展示了访问、升级、产品、服务和支付如何出现在产品内部。",
       "items": [
@@ -652,7 +652,7 @@
         "license": "一次性产品许可证",
         "price": "$79",
         "checkout": "继续报名",
-        "imageAlt": "社区启动套件中包含 Korunet 移动入门屏幕"
+        "imageAlt": "社区启动套件中包含 Kuro 移动入门屏幕"
       },
       "inApp": {
         "product": "活动推广助力",
@@ -682,8 +682,12 @@
     "benefits": "四个价值",
     "reviews": "故事",
     "pricing": "会员方案",
-    "inPageAnchors": "探索 Korunet",
+    "inPageAnchors": "探索 Kuro",
     "supachargerFeatures": "Supacharger 功能",
+    "featuresGroupLabel": "",
+    "newBadge": "",
+    "promoTitle": "",
+    "promoDescription": "",
     "whatsIncluded": "包含内容",
     "whatsIncludedDescription": "从核心产品功能到开发者规范。",
     "paywallDemos": "付费墙演示",
@@ -726,6 +730,7 @@
     "firstBuiltIn": "首先内置",
     "newZealand": "新西兰",
     "by": "经过",
+    "backToTop": "",
     "privacyPolicy": ""
   },
   "LicensePage": {
@@ -771,18 +776,20 @@
     "auditDate": "根据 2026 年 8 月 22 日设置的存储库依赖项进行审核。",
     "ccSoftwareFaq": "知识共享软件常见问题解答",
     "repositoryLicense": "存储库许可证",
-    "legalPage": "Korunet 法律页面"
+    "legalPage": "Kuro 法律页面"
   },
   "MarketingLanding": {
     "createAccount": "创建账户",
-    "exploreFeatures": "探索 Korunet",
-    "trustedOrganisations": "在 Korunet 一起成长",
+    "exploreFeatures": "探索 Kuro",
+    "trustedOrganisations": "在 Kuro 一起成长",
     "getStarted": "开启你的旅程",
     "mostPopular": "最受欢迎",
     "roleAtOrganisation": "{organisation}的{role}",
     "hero": {
       "title": "让新的开始生长的地方。",
-      "description": "Korunet 让人们因新生、成长、力量与和平相聚，形成持续舒展、彼此支持的圆环。"
+      "description": "Kuro 让人们因新生、成长、力量与和平相聚，形成持续舒展、彼此支持的圆环。",
+      "updateBadge": "",
+      "updateText": ""
     },
     "overview": {
       "title": "陪伴人生每个新篇章的连接",
@@ -794,10 +801,10 @@
     },
     "integrations": {
       "title": "让同行的人与日常工具汇聚一处",
-      "description": "连接圆环成员已经在使用的服务，同时让 Korunet 成为大家回归、沉淀、鼓励彼此并付诸行动的平静共同空间。"
+      "description": "连接圆环成员已经在使用的服务，同时让 Kuro 成为大家回归、沉淀、鼓励彼此并付诸行动的平静共同空间。"
     },
     "benefitsSection": {
-      "title": "Korunet 心中的四个价值",
+      "title": "Kuro 心中的四个价值",
       "description": "新生开启可能，成长指引方向，力量让改变延续，和平让每个人都拥有归属的空间。"
     },
     "experiences": {
@@ -806,7 +813,7 @@
     },
     "reviewsSection": {
       "title": "由社群承托的改变故事",
-      "description": "看看人们如何通过 Korunet 重新开始、有方向地成长、在彼此身上找到力量，并为和平留出更多空间。"
+      "description": "看看人们如何通过 Kuro 重新开始、有方向地成长、在彼此身上找到力量，并为和平留出更多空间。"
     },
     "pricingSection": {
       "title": "按自己的节奏，留出成长空间",
@@ -814,17 +821,17 @@
     },
     "faqSection": {
       "title": "开始所需的一切",
-      "description": "了解圆环如何运作、隐私如何得到保护，以及 Korunet 如何陪伴人生的不同阶段。"
+      "description": "了解圆环如何运作、隐私如何得到保护，以及 Kuro 如何陪伴人生的不同阶段。"
     },
     "cta": {
       "title": "与同行的人一起开启新篇章",
       "description": "围绕你正在经历的改变、向往的成长，或希望分享的和平，建立一个温暖的圆环。"
     },
     "images": {
-      "messagingWorkspace": "用于对话与互助的 Korunet 圆环空间",
-      "mobileScreens": "用于连接与成长的 Korunet 移动端界面",
+      "messagingWorkspace": "用于对话与互助的 Kuro 圆环空间",
+      "mobileScreens": "用于连接与成长的 Kuro 移动端界面",
       "neighboursAtNight": "人们在舒展的蕨叶环绕下相聚于宁静的共享空间",
-      "mobileExperience": "Korunet 多屏移动体验"
+      "mobileExperience": "Kuro 多屏移动体验"
     },
     "communityPillars": [
       {
@@ -848,12 +855,12 @@
       {
         "title": "找到你的圆环",
         "description": "发现与你正在经历的人生篇章相关的人、引导者与群组。",
-        "imageAlt": "用于发现同行者与圆环的 Korunet 界面"
+        "imageAlt": "用于发现同行者与圆环的 Kuro 界面"
       },
       {
         "title": "滋养有意义的成长",
         "description": "把对话、共同实践、相聚与进展放在一个充满支持的空间里。",
-        "imageAlt": "用于共同成长与反思的 Korunet 空间"
+        "imageAlt": "用于共同成长与反思的 Kuro 空间"
       },
       {
         "title": "共同积蓄力量",
@@ -866,19 +873,19 @@
         "title": "遇见处于相似人生阶段的人",
         "description": "寻找围绕初为父母、康复、创作、身心健康、人生变化或共同目标而形成的圆环。",
         "cta": "找到你的圆环",
-        "imageAlt": "为处于相似人生阶段的人展示资料与圆环的 Korunet 界面"
+        "imageAlt": "为处于相似人生阶段的人展示资料与圆环的 Kuro 界面"
       },
       {
         "title": "把心愿变成共同的节奏",
         "description": "安排相聚、分享思考、记录进展，让每次见面之间也始终有鼓励相伴。",
         "cta": "了解如何运作",
-        "imageAlt": "包含对话、相聚与共同进展的 Korunet 空间"
+        "imageAlt": "包含对话、相聚与共同进展的 Kuro 空间"
       },
       {
         "title": "回归、沉淀，再次出发",
         "description": "珍藏一路走来的故事，同时为下一步、下一次连接与下一个开始留出空间。",
         "cta": "创建账户",
-        "imageAlt": "支持反思与新开始的 Korunet 移动体验"
+        "imageAlt": "支持反思与新开始的 Kuro 移动体验"
       }
     ],
     "benefits": [
@@ -912,7 +919,7 @@
         "avatarAlt": "Maya Okafor 的肖像",
         "organisation": "新根父母社群",
         "name": "Maya Okafor",
-        "quote": "Korunet 给了我们一个温柔的地方，可以坦诚提问、庆祝微小进步，并在成为父母的路上一起成长。",
+        "quote": "Kuro 给了我们一个温柔的地方，可以坦诚提问、庆祝微小进步，并在成为父母的路上一起成长。",
         "role": "圆环引导者"
       },
       {
@@ -940,7 +947,7 @@
         "avatarAlt": "Elias Novak 的肖像",
         "organisation": "开放工作室圆环",
         "name": "Elias Novak",
-        "quote": "Korunet 帮助我们把创作心愿变成稳定实践，同时保留小团体亲近温暖的感觉。",
+        "quote": "Kuro 帮助我们把创作心愿变成稳定实践，同时保留小团体亲近温暖的感觉。",
         "role": "创作导师"
       },
       {
@@ -1000,8 +1007,8 @@
     },
     "faqs": [
       {
-        "question": "Korunet 是什么？",
-        "answer": "Korunet 是一个让人们围绕新生、成长、力量与和平相互连接的平台，通过可信赖的圆环、对话、相聚与共同实践建立支持。"
+        "question": "Kuro 是什么？",
+        "answer": "Kuro 是一个让人们围绕新生、成长、力量与和平相互连接的平台，通过可信赖的圆环、对话、相聚与共同实践建立支持。"
       },
       {
         "question": "圆环可以围绕什么主题？",
@@ -1012,7 +1019,7 @@
         "answer": "可以。圆环引导者能够决定谁可加入、成员能看到什么，以及哪些角色可以引导或照料每个空间。"
       },
       {
-        "question": "Korunet 支持多种语言吗？",
+        "question": "Kuro 支持多种语言吗？",
         "answer": "成员可以从页眉或页脚切换界面语言。本演示提供英语、西班牙语和中文。"
       },
       {
@@ -1060,7 +1067,7 @@
     ],
     "lifetime": {
       "title": "创始成员终身方案",
-      "description": "一次付费即可永久使用 Korunet 核心体验，并从根基开始帮助社群成长。",
+      "description": "一次付费即可永久使用 Kuro 核心体验，并从根基开始帮助社群成长。",
       "included": "方案包含",
       "features": [
         "私密创始圆环",
@@ -1430,7 +1437,7 @@
     "description": "管理帐户安全、个人资料详细信息、通知、隐私和计费。"
   },
   "AuthenticatedMetadata": {
-    "description": "您的 Korunet 帐户和社区工作区。"
+    "description": "您的 Kuro 帐户和社区工作区。"
   },
   "Organisations": {
     "common": {

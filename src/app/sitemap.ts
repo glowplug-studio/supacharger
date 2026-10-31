@@ -25,12 +25,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     },
     {
-      url: getURL('/pricing'),
-      lastModified,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
       url: getURL('/features/whats-included'),
       lastModified,
       changeFrequency: 'monthly',

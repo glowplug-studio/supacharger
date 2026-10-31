@@ -8,10 +8,15 @@ import { cn } from '@/utils/cn';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 
 // Root navigation menu
+interface NavigationMenuProps extends React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root> {
+  viewportClassName?: string;
+  viewportStyle?: React.CSSProperties;
+}
+
 const NavigationMenu = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Root>
->(({ className, children, ...props }, ref) => (
+  NavigationMenuProps
+>(({ className, children, viewportClassName, viewportStyle, ...props }, ref) => (
   <NavigationMenuPrimitive.Root
     ref={ref}
     className={cn(
@@ -21,7 +26,7 @@ const NavigationMenu = React.forwardRef<
     {...props}
   >
     {children}
-    <NavigationMenuViewport />
+    <NavigationMenuViewport wrapperClassName={viewportClassName} wrapperStyle={viewportStyle} />
   </NavigationMenuPrimitive.Root>
 ));
 NavigationMenu.displayName = 'NavigationMenu';
@@ -90,11 +95,20 @@ NavigationMenuContent.displayName = 'NavigationMenuContent';
 const NavigationMenuLink = NavigationMenuPrimitive.Link;
 
 // Viewport (dropdown container)
+interface NavigationMenuViewportProps
+  extends React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport> {
+  wrapperClassName?: string;
+  wrapperStyle?: React.CSSProperties;
+}
+
 const NavigationMenuViewport = React.forwardRef<
   React.ElementRef<typeof NavigationMenuPrimitive.Viewport>,
-  React.ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.Viewport>
->(({ className, ...props }, ref) => (
-  <div className={cn('absolute left-0 top-full flex justify-center')}>
+  NavigationMenuViewportProps
+>(({ className, wrapperClassName, wrapperStyle, ...props }, ref) => (
+  <div
+    className={cn('absolute left-0 top-full flex justify-center', wrapperClassName)}
+    style={wrapperStyle}
+  >
     <NavigationMenuPrimitive.Viewport
       ref={ref}
       className={cn(

@@ -25,7 +25,7 @@ export default async function SCLicensePage() {
           <h1 className='mt-6 max-w-4xl text-4xl font-normal tracking-[-0.04em] text-balance sm:text-5xl'>{t('title')}</h1>
           <p className='text-muted-foreground mt-6 max-w-3xl text-base leading-7'>{t('introduction')}</p>
           <div className='mt-8 flex flex-wrap gap-3'>
-            <Button asChild className='h-auto rounded-lg px-5 py-3'>
+            <Button asChild className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-lg px-5 py-3'>
               <a href='https://supacharger.dev/product/pricing' rel='noopener noreferrer' target='_blank'>
                 {t('nonAttributionCta')} <ExternalLink aria-hidden='true' />
               </a>

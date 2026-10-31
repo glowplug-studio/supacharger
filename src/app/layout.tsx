@@ -1,5 +1,5 @@
 import { PropsWithChildren, Suspense } from 'react';
-import { Host_Grotesk } from 'next/font/google';
+import { Instrument_Sans } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
 import { ThemeProvider } from 'next-themes';
@@ -23,8 +23,8 @@ import '@/supacharger/styles/globals.css';
 // can render, so the root is intentionally allowed to block.
 export const instant = false;
 
-const hostGrotesk = Host_Grotesk({
-  variable: '--font-host-grotesk',
+const instrumentSans = Instrument_Sans({
+  variable: '--font-instrument-sans',
   subsets: ['latin'],
 });
 
@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={cn('font-sans antialiased', hostGrotesk.variable)}>
+      <body className={cn('font-sans antialiased', instrumentSans.variable)}>
         <SmoothAnchorNavigation />
         {content}
         {SC_CONFIG.ROOT_PROVIDERS.TOASTS ? <SupachargerToastContainer config={SC_CONFIG.TOAST_CONFIG} /> : null}

@@ -5,7 +5,7 @@ import { createSupachargerPageMetadata } from '@/supacharger/root-document';
 import { localisedSiteConfig } from '@/supacharger/site-identity';
 
 type MarketingPageName =
-  'coreWidgetDemos' | 'home' | 'legal' | 'license' | 'paywallDemos' | 'pricing' | 'whatsIncluded';
+  'coreWidgetDemos' | 'home' | 'legal' | 'license' | 'paywallDemos' | 'whatsIncluded';
 
 const canonicalPaths: Record<MarketingPageName, string> = {
   coreWidgetDemos: '/features/core-widget-demos',
@@ -13,7 +13,6 @@ const canonicalPaths: Record<MarketingPageName, string> = {
   legal: '/legal',
   license: '/license',
   paywallDemos: '/features/paywall-demos',
-  pricing: '/pricing',
   whatsIncluded: '/features/whats-included',
 };
 

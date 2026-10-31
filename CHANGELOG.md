@@ -9,13 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-31T12:31:53Z; base_commit=0075d73b29d095d44fb631ccee50bb182a205f0a; main_commit=0075d73b29d095d44fb631ccee50bb182a205f0a; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=198376b5c340c393d168eb722c788124377e29ed; scope=username-default-allocation; excluded=unrelated-dirty-ui-marketing-cli-mcp-auth-and-legal-work; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-31T13:28:11Z; base_commit=d7fd82b620ffd04a9e5530c1b26d1620c0e66557; main_commit=d7fd82b620ffd04a9e5530c1b26d1620c0e66557; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=d7fd82b620ffd04a9e5530c1b26d1620c0e66557; scope=all-outstanding-marketing-auth-demo-namespace-and-mcp-changes; excluded=none; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
 
-- A reusable upgrade preview offers two selectable plans and animated mock payment-method and card screens. The widget gallery links to the paywall demos; the preview never submits payment details or creates a payment.
+- A reusable upgrade preview offers two selectable plans, animated mock payment-method and card screens, and a completion screen with reduced-motion-aware confetti. The widget gallery includes celebration controls and links to the paywall demos; the preview never submits payment details or creates a payment.
 
 - Backend outage recovery preserves sessions, checks availability briefly, then shows a full-page warning with checks every 30 seconds. Protected account pages distinguish temporary outages from invalid sessions. The widget gallery previews the actual 404 and outage presentation, remaining visible until page reload; recovery never automatically replays mutations. The initial Supabase SDK retry policy is unchanged.
 
@@ -46,6 +46,9 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- The starter marketing site uses Kuro branding, refreshed navigation and authentication presentation, and homepage pricing. The former `/pricing` page redirects to `/#pricing`; outage previews use the header’s SVG artwork.
+- CLI guidance documents command discovery, dependency installation and registry-backed extension inspection. Namespace preparation accepts the installer’s explicit namespace before dependencies are installed, while normal regeneration still reads application configuration. The repository MCP exposes database namespace, declarative database and widget guidance.
 
 - The default installation now includes a forward migration to `sc_` database schemas and matching Auth, Data API and Edge configuration. Existing installations must coordinate this migration with namespaced Storage and signing secrets; historical migrations remain unchanged.
 

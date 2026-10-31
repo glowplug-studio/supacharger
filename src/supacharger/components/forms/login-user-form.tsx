@@ -470,7 +470,9 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                 onFormHeadingChange?.(mode === 'signup' ? t('signUp') : t('signIn'));
               }}
             >
-              <Mail className='sc-auth-option-icon' />
+              <span className='sc-auth-provider-avatar'>
+                <Mail className='sc-auth-provider-logo' aria-hidden='true' />
+              </span>
               <span className='sc-auth-provider-label'>{t('continueEmail')}</span>
               <span aria-hidden='true' />
             </Button>

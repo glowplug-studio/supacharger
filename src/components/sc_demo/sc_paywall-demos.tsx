@@ -107,7 +107,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                   {content.items[0].cta}
                 </Button>
                 <DialogContent className='border-border bg-background text-foreground max-h-[90dvh] overflow-x-hidden overflow-y-auto rounded-lg p-0 sm:max-w-xl [&>button]:text-slate-500'>
-                  <UpgradeCheckoutPreview />
+                  <UpgradeCheckoutPreview onComplete={() => setUpgradeModalOpen(false)} />
                 </DialogContent>
               </Dialog>
               <div className='border-border mt-6 border-t pt-6'>
@@ -138,7 +138,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                   <p className='text-muted-foreground mt-2 text-sm leading-6'>{content.products.caption}</p>
                 </div>
                 <Button asChild className='h-auto rounded-lg px-4 py-2.5' variant='outline'>
-                  <Link href='/pricing'>
+                  <Link href='/#pricing'>
                     {content.items[1].cta}
                     <ArrowRight aria-hidden='true' />
                   </Link>
