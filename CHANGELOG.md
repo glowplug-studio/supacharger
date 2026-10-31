@@ -9,13 +9,13 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-31T00:29:09Z; base_commit=198376b5c340c393d168eb722c788124377e29ed; main_commit=198376b5c340c393d168eb722c788124377e29ed; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=198376b5c340c393d168eb722c788124377e29ed; scope=approved-backend-outage-recovery; excluded=concurrent-marketing-cli-namespace-navigation-and-mcp-work; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-31T00:35:01Z; base_commit=eed266c638f7f67962416cb7e3b7aa55232c047a; main_commit=eed266c638f7f67962416cb7e3b7aa55232c047a; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=198376b5c340c393d168eb722c788124377e29ed; scope=approved-error-page-previews; excluded=concurrent-marketing-cli-namespace-navigation-and-mcp-work; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
 
-- Backend outage recovery preserves sessions, checks availability briefly, then shows a full-page warning with checks every 30 seconds. Protected account pages distinguish temporary outages from invalid sessions. The widget gallery includes a safe outage preview; recovery never automatically replays mutations. The initial Supabase SDK retry policy is unchanged.
+- Backend outage recovery preserves sessions, checks availability briefly, then shows a full-page warning with checks every 30 seconds. Protected account pages distinguish temporary outages from invalid sessions. The widget gallery previews the actual 404 and outage presentation, remaining visible until page reload; recovery never automatically replays mutations. The initial Supabase SDK retry policy is unchanged.
 
 - `SUPABASE_AUTH.SESSION.SIGN_OUT_ALL_DEVICES` selects all-device or current-session logout. The default is `true`, preserving existing security behaviour; updates add missing keys without replacing application choices. Changing the value requires rebuilding and deploying the application.
 

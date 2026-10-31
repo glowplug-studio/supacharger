@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCloud } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
 import { LoginModal } from '@/components/sc_widgets/auth/login-modal';
+import { ErrorPagePreviewButton } from '@/components/sc_widgets/error-page/error-page-preview-button';
 import { FileUploadWidget } from '@/components/sc_widgets/file-upload/file-upload-widget';
 import { ImageUploadWidget } from '@/components/sc_widgets/image-upload/image-upload-widget';
 import { Button } from '@/components/ui/button';
@@ -240,7 +240,13 @@ export function SCCoreWidgetDemos() {
       description: t('outageDescription'),
       icon: PanelsTopLeft,
       title: t('outageTitle'),
-      widget: <Button asChild><Link href='/auth/unavailable?demo=1'>{t('outageToggle')}</Link></Button>,
+      widget: <ErrorPagePreviewButton kind='outage' label={t('outageToggle')} reloadHint={t('errorPreviewReload')} />,
+    },
+    {
+      description: t('notFoundDescription'),
+      icon: PanelsTopLeft,
+      title: t('notFoundTitle'),
+      widget: <ErrorPagePreviewButton kind='notFound' label={t('notFoundToggle')} reloadHint={t('errorPreviewReload')} />,
     },
     {
       description: t('genericDescription'),

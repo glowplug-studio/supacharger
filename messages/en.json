@@ -8,7 +8,8 @@
     "issues": "We’re having issues",
     "issuesDescription": "The service is temporarily unavailable. We’ll keep checking in the background.",
     "retrying": "Checking the connection…",
-    "demoExit": "Return to demo"
+    "demoExit": "Return to demo",
+    "demoReload": "Reload the page to close this preview."
   },
   "Global": {
     "siteTitle": "Korunet",
@@ -515,8 +516,12 @@
       "copyFailed": "Copy failed"
     },
     "coreWidgetDemos": {
+      "notFoundTitle": "404 page",
+      "notFoundDescription": "Preview the actual page-not-found screen. Reload the page to close the preview.",
+      "notFoundToggle": "Show 404 page",
+      "errorPreviewReload": "Reload the page to close this preview.",
       "outageTitle": "Service outage",
-      "outageDescription": "Preview the full-page warning shown when the backend remains unavailable. This demonstration does not disconnect the service.",
+      "outageDescription": "Preview the actual backend outage screen without disconnecting the service. Reload the page to close the preview.",
       "outageToggle": "Show outage warning",
       "eyebrow": "Core delivered project scoped prebuilt widgets",
       "title": "Core Widget Demos",
