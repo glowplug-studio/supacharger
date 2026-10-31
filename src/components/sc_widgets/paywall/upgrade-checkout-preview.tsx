@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Check, ChevronRight, CreditCard, LockKeyhole } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
+import { Button } from '@/components/ui/button';
 import { DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { cn } from '@/utils/cn';
 
@@ -97,15 +98,15 @@ export function UpgradeCheckoutPreview() {
                   ))}
                 </div>
               </fieldset>
-              <button
-                className={cn(blueButton, 'mt-6')}
+              <Button
+                className='mt-6 min-h-11 w-full bg-primary text-primary-foreground hover:bg-primary/90 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90'
                 disabled={!selected}
                 onClick={() => setStep('methods')}
                 type='button'
               >
                 {t('continueSignup')}
                 <ChevronRight aria-hidden='true' className='size-4' />
-              </button>
+              </Button>
             </>
           ) : (
             <>

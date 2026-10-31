@@ -16,7 +16,7 @@ The supplied widget groups are:
 
 The public Core Widget Demos page uses local simulated uploads to expose progress bars, percentages and completion states without authentication or network writes. It also previews the project loading assets and the shared centred, fade-only modal. The UI section places a toast button alongside a signup/login modal button; the authentication modal uses the real configured sign-in flow. Banner repositioning opens automatically after image selection, is vertical-only and has no zoom control; avatar repositioning opens automatically and supports free dragging and zoom.
 
-`paywall/upgrade-checkout-preview.tsx` is a project-owned, mock-only upgrade checkout preview. It offers USD 19 and USD 60 choices, keeps “Continue to sign up” disabled until a choice is made, then advances through a payment-method mock to a disabled mock card form. Only the blue continue buttons advance; the final blue pay button is inert. It makes no Stripe SDK or API calls. The Core Widget Demos gallery links to the paywall demos.
+`paywall/upgrade-checkout-preview.tsx` is a project-owned, mock-only upgrade checkout preview. It offers USD 19 and USD 60 choices, keeps “Continue to sign up” disabled until a choice is made, then advances through a payment-method mock to a disabled mock card form. Only the continue buttons advance; the final blue pay button is inert. It makes no Stripe SDK or API calls. The Core Widget Demos gallery links to the paywall demos.
 
 ## Image policy boundary
 
