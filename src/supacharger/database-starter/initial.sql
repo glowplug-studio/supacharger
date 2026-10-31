@@ -830,7 +830,9 @@ CREATE OR REPLACE FUNCTION sc_api.has_billing_access_by_current_user (
   ) end;
 $function$;
 
-CREATE OR REPLACE FUNCTION sc_api.initialise_account_username_by_current_user()
+CREATE OR REPLACE FUNCTION sc_api.initialise_account_username_by_current_user (
+  fallback_username text
+)
   RETURNS text
   LANGUAGE plpgsql
   SECURITY DEFINER
@@ -845,6 +847,7 @@ declare
   suffix text;
   attempt integer := 0;
   inserted_id uuid;
+  using_email boolean := false;
 begin
   if actor is null or coalesce((auth.jwt()->>'is_anonymous')::boolean, false) then
     raise exception 'Authentication required' using errcode = '42501';
@@ -854,9 +857,12 @@ begin
   if nullif(btrim(existing_username), '') is not null then return existing_username; end if;
   if exists(select 1 from sc_app.profile_username_initialisations i where i.profile_username_initialisation_id = actor) then return null; end if;
   select u.email into account_email from auth.users u where u.id = actor;
-  if nullif(btrim(account_email), '') is null then return null; end if;
-  base_username := left(regexp_replace(lower(split_part(account_email, '@', 1)), '[^a-z0-9]', '', 'g'), 40);
-  if char_length(base_username) < 3 then base_username := 'user'; end if;
+  if fallback_username is null or fallback_username !~ '^[a-z0-9_-]{3,40}$' then
+    raise exception 'Invalid fallback username' using errcode = '22023';
+  end if;
+  base_username := regexp_replace(lower(split_part(coalesce(account_email, ''), '@', 1)), '[^a-z0-9_-]', '', 'g');
+  using_email := char_length(base_username) between 3 and 40;
+  if not using_email then base_username := fallback_username; end if;
   insert into sc_app.profile_username_initialisations(profile_username_initialisation_id)
   values (actor) on conflict do nothing returning profile_username_initialisation_id into inserted_id;
   if inserted_id is null then return null; end if;
@@ -872,6 +878,12 @@ begin
       exception when unique_violation then
         -- A concurrent allocator or editor claimed this candidate; try the next.
       end;
+    end if;
+    if using_email then
+      base_username := fallback_username;
+      using_email := false;
+      attempt := 0;
+      continue;
     end if;
     attempt := attempt + 1;
     if attempt > 10000 then
@@ -2974,9 +2986,9 @@ REVOKE ALL ON FUNCTION "sc_api"."has_billing_access_by_current_user"(text) FROM 
 
 GRANT EXECUTE ON FUNCTION "sc_api"."has_billing_access_by_current_user"(text) TO "authenticated";
 
-REVOKE ALL ON FUNCTION "sc_api"."initialise_account_username_by_current_user"() FROM PUBLIC;
+REVOKE ALL ON FUNCTION "sc_api"."initialise_account_username_by_current_user"(text) FROM PUBLIC;
 
-GRANT EXECUTE ON FUNCTION "sc_api"."initialise_account_username_by_current_user"() TO "authenticated";
+GRANT EXECUTE ON FUNCTION "sc_api"."initialise_account_username_by_current_user"(text) TO "authenticated";
 
 REVOKE ALL ON FUNCTION "sc_api"."initialise_social_profile_by_current_user"() FROM PUBLIC;
 

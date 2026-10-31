@@ -16,13 +16,13 @@ headers {
   Content-Profile: {{SUPABASE_API_SCHEMA}}
 }
 body:json {
-  {}
+  { "fallback_username": "amberotter" }
 }
 docs {
-  One-time username allocation for the authenticated, non-anonymous current user. Accepts no arguments, email, or user ID.
-  Uses auth.users.email before the @, lowercase, stripping everything except ASCII letters and digits. Caps at 40 characters; fewer than three characters falls back to user.
+  One-time username allocation for the authenticated, non-anonymous current user. Requires fallback_username: 3–40 lowercase ASCII letters, digits, underscores or hyphens. Invalid fallback input raises 22023. Accepts no email or user ID.
+  Uses auth.users.email before the @, lowercases it and strips unsupported characters. A sanitised prefix of 3–40 characters is attempted first. Missing, invalid-length or occupied prefixes use fallback_username instead.
   A case-insensitive collision adds a numeric suffix, truncating the base to keep the total at most 40 characters. The unique index and retry loop protect concurrent allocation and manual edits. Exhaustion after 10001 candidates raises 54000 (HTTP 500), rolling back the attempt.
-  HTTP 200 returns the stored username, an existing unchanged username, or null when unavailable/preserved. No email means no allocation or marker.
+  HTTP 200 returns the stored username, an existing unchanged username, or null when unavailable/preserved. Accounts without email use the supplied fallback.
   A private one-time marker and username-write trigger preserve manual edits and removals. The migration protects historical edited blank profiles from backfill.
   Applications invoke this only when PROFILE_IDENTITY.USERNAME is optional or required, independently of POST_SIGN_IN_ONBOARDING.REQUIRED. Disabled applications skip it. Configuration is application policy; this owner-only RPC remains installed and callable.
   The OAuth callback calls it after social-name/picture initialisation, before onboarding. Protected app/onboarding boundaries and setup pages also initialise usernames for email sign-ins and direct entry. Proxy and requireVerifiedUser remain lookup-free.

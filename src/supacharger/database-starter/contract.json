@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "initialMigration": "20261030101906_supacharger_initial.sql",
-  "initialSha256": "f12128cfdcb179e34e5ad8f0e006a3b2ce9d0dd5b71f0b7c807401de7515e184",
+  "initialMigration": "20261031122922_supacharger_initial.sql",
+  "initialSha256": "2e71aaa981274b0be32392cc0343190b7cdfea608fbe4a1c159e455df3e4ba3e",
   "bootstrapSha256": "451804e32d54310abba1ba5127cf3424968a55791f29db723f0afb0e3c78ab36",
   "schemas": {
     "_cluster/event_triggers.sql": "387f1c79b0b225817c3ba13ce1cf6a461f7bed4d7c13383b6009d462baf1bbec",
@@ -22,7 +22,7 @@
     "sc_api/functions/get_public_account_profile.sql": "837988b277975ca3e52eb8b011a29791599555f131733c4aa5d83056eb81c05b",
     "sc_api/functions/get_user_profiles_by_identifiers.sql": "5df43f12cfb4c5909f58496f2dbb694ef06846fcce3addab935cc7474026f28d",
     "sc_api/functions/has_billing_access_by_current_user.sql": "21a69d560e403b193e303b3ea6d2fd01d40eb4e693555b2bc7f31f031a8b353f",
-    "sc_api/functions/initialise_account_username_by_current_user.sql": "c546ce5874e3d68e2a3983f660e99a84e61ba2448fe27278b479140b5bb8c461",
+    "sc_api/functions/initialise_account_username_by_current_user.sql": "49fb2e9d945623a05ab50571510c3a53266da97f8bf11338f2f3870a7b4f3d50",
     "sc_api/functions/initialise_social_profile_by_current_user.sql": "da9357ab5109a2be7508ec8fead33931cd1a663ab1136beadb08648e25e7ac0c",
     "sc_api/functions/is_profile_complete_by_current_user.sql": "b0ea62bbf514dd0eb2e9b08cd7d54aabc76bfaa5d17dc6688bfcf8a10867032e",
     "sc_api/functions/organisations.sql": "1a5b9d22d1676199e350942b24aee5f449938b72db03aeb430953c09f2fcf4b9",
@@ -138,7 +138,10 @@
     "20261029141804_core_service_bindings.sql": "0f34fecbe6ddb7f563e9262bda26ae746485d032c0746e98b1b1c30a9853b291",
     "20261029211044_core_namespace_cutover.sql": "37ef6a2b96d9895cdbcd59fcd28ad4d161016bf084f89d0fcdc3857b9e324405",
     "20261029221755_align_authenticator_namespace_setting.sql": "57af4cb8b073a83fd3527b992c53986f6b704584ecd2b6933a9976076c0729e6",
-    "20261030093347_reconcile_declarative_baseline.sql": "ec4a978c137f83c1fa6d9bab3cf7a4964871352779c9f2b59e92271e406f0084"
+    "20261030093347_reconcile_declarative_baseline.sql": "ec4a978c137f83c1fa6d9bab3cf7a4964871352779c9f2b59e92271e406f0084",
+    "20261031120804_generated_username_fallback.sql": "97c828c1a2625577d0d9f9985d28118adb7a5d62b107ee3bdcac0d4214159715"
   },
-  "schemaOnlyUpgrades": {}
+  "schemaOnlyUpgrades": {
+    "20261031120804_generated_username_fallback.sql": "97c828c1a2625577d0d9f9985d28118adb7a5d62b107ee3bdcac0d4214159715"
+  }
 }

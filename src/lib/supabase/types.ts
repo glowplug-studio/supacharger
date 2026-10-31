@@ -21,7 +21,7 @@ export type Database = {
       }
       get_profile_media_url: { Args: { object_path: string }; Returns: string }
       initialise_account_username_by_current_user: {
-        Args: never
+        Args: { fallback_username: string }
         Returns: string
       }
       initialise_social_profile_by_current_user: { Args: never; Returns: Json }

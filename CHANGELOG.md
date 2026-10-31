@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-31T01:09:12Z; base_commit=0ca4c2762c041b3dbba308e83c842b08e0848b2c; main_commit=0ca4c2762c041b3dbba308e83c842b08e0848b2c; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=198376b5c340c393d168eb722c788124377e29ed; scope=approved-image-upload-progress; excluded=concurrent-marketing-cli-namespace-navigation-and-mcp-work; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-10-31T12:31:53Z; base_commit=0075d73b29d095d44fb631ccee50bb182a205f0a; main_commit=0075d73b29d095d44fb631ccee50bb182a205f0a; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=198376b5c340c393d168eb722c788124377e29ed; scope=username-default-allocation; excluded=unrelated-dirty-ui-marketing-cli-mcp-auth-and-legal-work; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -67,6 +67,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - **Breaking:** account updates accept one validated profile/extension patch and commit identity, language and product fields together. Move product persistence to private SQL hooks and update callers; the old argument signature is removed.
 - Public profile identity has an explicit safe projection. Deploy the Core `profile-media` Supabase function and configure its per-environment origin; public image requests are authorised by Storage on every fetch.
+
+- **Breaking:** `api.initialise_account_username_by_current_user` now requires `fallback_username`. Apply the forward migration and update callers before deploying. Optional and required username flows sanitise the email prefix, then fall back to a standalone, customisable prefix/suffix generator (30 colour prefixes and 100 animal suffixes); collisions use numeric suffixes. Existing usernames and deliberate removals remain unchanged.
 
 - **Breaking:** image uploads use server-signed, user/file-bound permits and the generic `process_image_upload` endpoint. Move product image policies to `src/supacharger.adapters/media/image-targets.ts`, configure matching `IMAGE_UPLOAD_SIGNING_SECRET` values in Next.js and Edge, and update consumers before retiring the old endpoint. Files upload directly to Edge; new target sizes no longer require processor redeployment.
 
