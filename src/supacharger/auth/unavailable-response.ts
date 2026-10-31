@@ -2,11 +2,18 @@ import { type NextRequest, NextResponse } from 'next/server.js';
 import { createHash } from 'node:crypto';
 
 import { copySupabaseResponseState } from './proxy-response';
+import { getSafeNextPath } from './safe-next-path';
 
 export const unavailableEnglishCopy = {
   title: 'We’ll be back shortly',
   description: 'We’re having trouble connecting. Please try again in a moment.',
   retry: 'Try again',
+  checking: 'Reconnecting…',
+  checkingDescription: 'We’re checking the connection. Your session is preserved.',
+  issues: 'We’re having issues',
+  issuesDescription: 'The service is temporarily unavailable. We’ll keep checking in the background.',
+  retrying: 'Checking the connection…',
+  demoExit: 'Return to demo',
 };
 
 // This document deliberately has no React, application layout, remote font or Auth dependency.
@@ -33,6 +40,7 @@ export function createAuthUnavailableResponse(
   sessionResponse: NextResponse,
   siteTitle: string,
   messages: unknown,
+  options: { next?: string; demo?: boolean; forcePage?: boolean } = {},
 ) {
   const catalogue = messages && typeof messages === 'object' ? messages as Record<string, unknown> : {};
   const copy = Object.fromEntries(Object.entries(unavailableEnglishCopy).map(([key, fallback]) => {
@@ -44,19 +52,23 @@ export function createAuthUnavailableResponse(
     request.headers.get('accept')?.includes('text/html') || request.headers.get('rsc') === '1'
   );
   let result: NextResponse;
-  if (isPage) {
+  if (isPage || options.forcePage) {
     const retryUrl = request.nextUrl.clone();
     retryUrl.searchParams.delete('_rsc');
     // Prefix with this origin so even a //pathname cannot become an external link.
-    const retryHref = escapeHtml(`${retryUrl.origin}${retryUrl.pathname}${retryUrl.search}`);
+    const next = getSafeNextPath(options.next) ?? `${retryUrl.pathname}${retryUrl.search}`;
+    const retryHref = escapeHtml(new URL(next, retryUrl.origin).href);
+    const scriptCopy = JSON.stringify(Object.fromEntries(Object.entries(unavailableEnglishCopy).map(([key, fallback]) => [key, typeof catalogue[key] === 'string' && (catalogue[key] as string).trim() ? catalogue[key] : fallback]))).replace(/</g, '\u003c');
+    const script = `(()=>{const demo=${Boolean(options.demo)};const next=${JSON.stringify(next).replace(/</g, '\u003c')};const copy=${scriptCopy};const title=document.querySelector('h1');const description=document.querySelector('.description');const retry=document.querySelector('.retry');let timer;let pending=false;const started=Date.now();const warning=()=>{title.textContent=copy.issues;description.textContent=copy.issuesDescription};if(demo){warning();return}title.textContent=copy.checking;description.textContent=copy.checkingDescription;setTimeout(warning,10000);async function check(){if(pending)return;clearTimeout(timer);pending=true;retry.setAttribute('aria-busy','true');const controller=new AbortController();const deadline=setTimeout(()=>controller.abort(),10000);try{const response=await fetch('/auth/availability',{cache:'no-store',credentials:'same-origin',signal:controller.signal});if(response.ok||response.status===401){location.replace(next);return}}catch{}finally{clearTimeout(deadline);pending=false;retry.removeAttribute('aria-busy')}timer=setTimeout(check,Date.now()-started<10000?2000:30000)}retry.addEventListener('click',event=>{event.preventDefault();void check()});timer=setTimeout(check,0)})();`;
+    const scriptHash = createHash('sha256').update(script).digest('base64');
     const title = escapeHtml(siteTitle);
-    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${copy.title} · ${title}</title><style>${styles}</style></head><body><main><div class="panel"><img class="logo" src="/favicons/apple-touch-icon.png" alt="" width="64" height="64"><p class="brand">${title}</p><h1>${copy.title}</h1><p class="description">${copy.description}</p><a class="retry" href="${retryHref}">${copy.retry}</a></div></main></body></html>`;
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${copy.title} · ${title}</title><style>${styles}</style></head><body><main><div class="panel"><img class="logo" src="/favicons/apple-touch-icon.png" alt="" width="64" height="64"><p class="brand">${title}</p><h1 aria-live="polite">${copy.title}</h1><p class="description">${copy.description}</p><a class="retry" href="${retryHref}">${copy.retry}</a>${options.demo ? `<p><a class="description" href="/features/core-widget-demos">${copy.demoExit}</a></p>` : ''}</div></main><script>${script}</script></body></html>`;
     // Next's router treats a non-Flight 503 as a full document navigation.
     result = new NextResponse(request.method === 'HEAD' ? null : html, {
       status: 503,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Content-Security-Policy': `default-src 'none'; img-src 'self'; style-src 'sha256-${styleHash}'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
+        'Content-Security-Policy': `default-src 'none'; img-src 'self'; style-src 'sha256-${styleHash}'; script-src 'sha256-${scriptHash}'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
         'Referrer-Policy': 'no-referrer',
         'X-Content-Type-Options': 'nosniff',
       },

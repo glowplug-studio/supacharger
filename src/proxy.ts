@@ -29,6 +29,11 @@ function redirectWithSessionState(request: NextRequest, response: NextResponse, 
 }
 
 export async function proxy(request: NextRequest) {
+  // Recovery documents and read-only probes must remain reachable during Auth outages.
+  if (['/auth/unavailable', '/auth/availability'].includes(request.nextUrl.pathname)) {
+    return NextResponse.next({ request });
+  }
+
   if (request.nextUrl.pathname === '/organisation') {
     const destination = request.nextUrl.clone();
     destination.pathname = SC_CONFIG.ORGANISATIONS.CHOOSER_PATH;

@@ -2,7 +2,13 @@
   "ServiceUnavailable": {
     "title": "We’ll be back shortly",
     "description": "We’re having trouble connecting. Please try again in a moment.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "checking": "Reconnecting…",
+    "checkingDescription": "We’re checking the connection. Your session is preserved.",
+    "issues": "We’re having issues",
+    "issuesDescription": "The service is temporarily unavailable. We’ll keep checking in the background.",
+    "retrying": "Checking the connection…",
+    "demoExit": "Return to demo"
   },
   "Global": {
     "siteTitle": "Korunet",
@@ -509,6 +515,9 @@
       "copyFailed": "Copy failed"
     },
     "coreWidgetDemos": {
+      "outageTitle": "Service outage",
+      "outageDescription": "Preview the full-page warning shown when the backend remains unavailable. This demonstration does not disconnect the service.",
+      "outageToggle": "Show outage warning",
       "eyebrow": "Core delivered project scoped prebuilt widgets",
       "title": "Core Widget Demos",
       "description": "These working examples are installed into the project for developers to style, configure and extend without editing protected Core files.",

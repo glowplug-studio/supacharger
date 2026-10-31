@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { createClient } from '@/lib/supabase/server';
+import { isTransientServiceError } from '@/supacharger/auth/transient-error';
 import { schemaName } from '@/supacharger/namespace';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
@@ -33,6 +34,7 @@ export async function POST(request: NextRequest) {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+  if (isTransientServiceError(userError)) return unavailable();
   if (userError || !user) {
     return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
   }
@@ -40,14 +42,20 @@ export async function POST(request: NextRequest) {
   const { data, error } = await supabase.schema(schemaName('api')).rpc('organisations', {
     input_payload: parsed.data,
   });
+  if (isTransientServiceError(error)) return unavailable();
   if (error) {
     return NextResponse.json({ error: 'Unable to update organisation context' }, { status: 400 });
   }
 
   const { error: refreshError } = await supabase.auth.refreshSession();
+  if (isTransientServiceError(refreshError)) return unavailable();
   if (refreshError) {
     return NextResponse.json({ error: 'Unable to refresh organisation context' }, { status: 500 });
   }
 
   return NextResponse.json({ organisation: data });
+}
+
+function unavailable() {
+  return NextResponse.json({ error: 'service_temporarily_unavailable' }, { status: 503, headers: { 'Retry-After': '30', 'Cache-Control': 'private, no-store' } });
 }

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { AccountDetailsPageOverride } from '@/supacharger.adapters/account/details-page';
 import { accountProfileExtensionSchema } from '@/supacharger.adapters/account/profile-extension';
+import { redirectIfServiceUnavailable } from '@/supacharger/auth/service-unavailable';
 import { resolveSignedMediaUrls } from '@/supacharger/media/signed-media';
 import { schemaName, supabaseResourceName } from '@/supacharger/namespace';
 
@@ -25,11 +26,15 @@ export async function AccountDetailsPage() {
   if (AccountDetailsPageOverride) return <AccountDetailsPageOverride />;
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  redirectIfServiceUnavailable(userError, '/account');
   if (!user?.email || user.is_anonymous) redirect('/account/login');
 
   const { data, error } = await supabase.schema(schemaName('api')).rpc('get_account_profile_by_current_user');
-  if (error) throw error;
+  if (error) {
+    redirectIfServiceUnavailable(error, '/account');
+    throw error;
+  }
   const profile = (data?.[0] ?? {}) as ProfileRow;
   const [extension, media] = await Promise.all([
     Promise.resolve(accountProfileExtensionSchema.parse(profile.extension ?? {})),

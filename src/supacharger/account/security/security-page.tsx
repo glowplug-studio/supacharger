@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
+import { redirectIfServiceUnavailable } from '@/supacharger/auth/service-unavailable';
 
 import { SecurityForms } from './security-forms';
 import { TotpPanel } from './totp-panel';
@@ -16,6 +17,7 @@ export async function SecurityPage() {
     supabase.auth.getUser(),
     supabase.auth.getClaims(),
   ]);
+  redirectIfServiceUnavailable(error, '/account');
   if (error || !user?.email) redirect('/account/login');
 
   const providerKeys = Array.from(new Set([

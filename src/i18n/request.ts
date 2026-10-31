@@ -9,11 +9,13 @@ import chineseMessages from '../../messages/zh.json';
 
 import { type AppLocale, LOCALE_COOKIE_NAME, resolveLocale } from './config';
 
+type PartialCatalogue<T> = { [K in keyof T]?: T[K] extends object ? PartialCatalogue<T[K]> : T[K] };
+
 const messageCatalogues = {
   en: englishMessages,
   es: spanishMessages,
   zh: chineseMessages,
-} satisfies Record<AppLocale, typeof englishMessages>;
+} satisfies Record<AppLocale, PartialCatalogue<typeof englishMessages>>;
 
 export default getRequestConfig(async () => {
   const cookieStore = await cookies();

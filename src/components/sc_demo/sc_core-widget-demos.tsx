@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCloud } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -235,6 +236,12 @@ export function SCCoreWidgetDemos() {
   };
 
   const demos = [
+    {
+      description: t('outageDescription'),
+      icon: PanelsTopLeft,
+      title: t('outageTitle'),
+      widget: <Button asChild><Link href='/auth/unavailable?demo=1'>{t('outageToggle')}</Link></Button>,
+    },
     {
       description: t('genericDescription'),
       icon: FileUp,

@@ -1,11 +1,11 @@
 // Ref: https://supabase.com/docs/guides/auth/server-side/nextjs
 import { type NextRequest, NextResponse } from 'next/server';
 
+import { isTransientServiceError } from '@/supacharger/auth/transient-error';
 import type { Database } from '@/supacharger/database-types';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { getEnvVar } from '@/supacharger/utils/helpers';
 import { createServerClient } from '@supabase/ssr';
-import { isAuthRetryableFetchError } from '@supabase/supabase-js';
 
 export type VerifiedAuthClaims = {
   is_anonymous?: boolean;
@@ -60,11 +60,6 @@ export async function updateSession(request: NextRequest) {
     response,
     verificationError,
     // The SDK owns refresh, retries and cookie state. Only classify its final error.
-    temporarilyUnavailable: Boolean(
-      verificationError &&
-      (isAuthRetryableFetchError(verificationError) ||
-        verificationError.status === 429 ||
-        (verificationError.status ?? 0) >= 500),
-    ),
+    temporarilyUnavailable: isTransientServiceError(verificationError),
   };
 }

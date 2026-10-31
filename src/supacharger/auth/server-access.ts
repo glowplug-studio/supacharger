@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 import { decideAccess } from '@/supacharger/auth/access-decision';
+import { redirectIfServiceUnavailable } from '@/supacharger/auth/service-unavailable';
 import { schemaName } from '@/supacharger/namespace';
 import { initialiseAccountUsername } from '@/supacharger/profile/initialise-account-username';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -25,6 +26,7 @@ export type OnboardedUserIdentity = VerifiedUserIdentity & {
 export async function requireVerifiedUser(): Promise<VerifiedUserIdentity> {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
+  redirectIfServiceUnavailable(error);
   const claims = data?.claims;
 
   if (error || typeof claims?.sub !== 'string' || claims.role !== 'authenticated') {
@@ -52,7 +54,10 @@ export async function readAppAccessState(): Promise<AppAccessState> {
       })
     : { data: true, error: null };
 
-  if (profileResult.error) throw profileResult.error;
+  if (profileResult.error) {
+    redirectIfServiceUnavailable(profileResult.error);
+    throw profileResult.error;
+  }
 
   const isProfileComplete = profileResult.data === true;
   const billingResult = SC_CONFIG.BILLING_ACCESS.REQUIRED
@@ -61,7 +66,10 @@ export async function readAppAccessState(): Promise<AppAccessState> {
       })
     : { data: true, error: null };
 
-  if (billingResult.error) throw billingResult.error;
+  if (billingResult.error) {
+    redirectIfServiceUnavailable(billingResult.error);
+    throw billingResult.error;
+  }
 
   return {
     ...identity,
@@ -83,7 +91,10 @@ export async function requireOnboardedUser(): Promise<OnboardedUserIdentity> {
     input_username_required: SC_CONFIG.PROFILE_IDENTITY.USERNAME === 'required',
   });
 
-  if (profileResult.error) throw profileResult.error;
+  if (profileResult.error) {
+    redirectIfServiceUnavailable(profileResult.error);
+    throw profileResult.error;
+  }
 
   const decision = decideAccess({
     billingRequired: false,
@@ -110,7 +121,10 @@ export async function requireAppAccess(): Promise<AppAccessState> {
       })
     : { data: true, error: null };
 
-  if (billingResult.error) throw billingResult.error;
+  if (billingResult.error) {
+    redirectIfServiceUnavailable(billingResult.error);
+    throw billingResult.error;
+  }
 
   const access = {
     ...identity,
