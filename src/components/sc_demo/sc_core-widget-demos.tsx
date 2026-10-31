@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Check, CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCloud, X } from 'lucide-react';
 import { toast } from 'react-toastify';
@@ -404,6 +405,9 @@ export function SCCoreWidgetDemos() {
             {t('title')}
           </h1>
           <p className='mt-6 max-w-2xl text-base leading-7 text-muted-foreground'>{t('description')}</p>
+          <Button asChild className='mt-6' variant='outline'>
+            <Link href='/features/paywall-demos'>{t('paywallLink')}</Link>
+          </Button>
         </div>
       </section>
 

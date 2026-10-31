@@ -19,15 +19,11 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+import { UpgradeCheckoutPreview } from '@/components/sc_widgets/paywall/upgrade-checkout-preview';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -110,28 +106,8 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
                 <Button className='mt-8 h-auto rounded-lg px-4 py-2.5' onClick={openUpgradeModal}>
                   {content.items[0].cta}
                 </Button>
-                <DialogContent className='border-border bg-background text-foreground rounded-lg'>
-                  <DialogHeader>
-                    <DialogTitle>{content.modal.title}</DialogTitle>
-                    <DialogDescription className='text-muted-foreground leading-6'>
-                      {content.modal.description}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className='border-border bg-muted/40 mt-2 rounded-lg border p-5'>
-                    <p className='text-sm font-medium'>{content.modal.plan}</p>
-                    <p className='mt-2 text-3xl tracking-[-0.03em]'>{content.modal.price}</p>
-                    <p className='text-muted-foreground mt-2 text-sm'>{content.modal.priceCaption}</p>
-                  </div>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button className='rounded-lg' variant='outline'>
-                        {content.modal.dismiss}
-                      </Button>
-                    </DialogClose>
-                    <Button asChild className='rounded-lg'>
-                      <Link href={content.billingCta.href}>{content.modal.continue}</Link>
-                    </Button>
-                  </DialogFooter>
+                <DialogContent className='border-border bg-background text-foreground max-h-[90dvh] overflow-x-hidden overflow-y-auto rounded-lg p-0 sm:max-w-xl [&>button]:text-slate-500'>
+                  <UpgradeCheckoutPreview />
                 </DialogContent>
               </Dialog>
               <div className='border-border mt-6 border-t pt-6'>
