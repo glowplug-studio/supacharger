@@ -686,8 +686,9 @@
     outline-offset: 3px;
   }
 
-  .light .sc-auth-shell,
-  .light .sc-auth-panel {
+  html:not(.dark) .sc-auth-shell,
+  html:not(.dark) .sc-auth-panel,
+  html:not(.dark) .sc-auth-page {
     --auth-panel-background: #f7f8fa;
     --auth-surface-background: #ffffff;
     --auth-surface-background-hover: #f0f2f5;
@@ -696,49 +697,55 @@
     color: #17191d;
   }
 
-  .light .sc-auth-page,
-  .light .sc-auth-entry-title,
-  .light .sc-auth-entry-mode,
-  .light .sc-auth-surface-button,
-  .light .sc-auth-input,
-  .light .sc-auth-page .sc-control-input,
-  .light .sc-auth-check-email,
-  .light .sc-auth-resend {
+  html:not(.dark) .sc-auth-page,
+  html:not(.dark) .sc-auth-entry-title,
+  html:not(.dark) .sc-auth-entry-mode,
+  html:not(.dark) .sc-auth-surface-button,
+  html:not(.dark) .sc-auth-input,
+  html:not(.dark) .sc-auth-page .sc-control-input,
+  html:not(.dark) .sc-auth-check-email,
+  html:not(.dark) .sc-auth-resend,
+  html:not(.dark) .sc-auth-verification,
+  html:not(.dark) .sc-auth-verification-copy,
+  html:not(.dark) .sc-auth-resend-copy,
+  html:not(.dark) .sc-auth-password-tooltip,
+  html:not(.dark) .sc-auth-otp input,
+  html:not(.dark) .sc-otp-input {
     color: #17191d;
   }
 
-  .light .sc-auth-label,
-  .light .sc-auth-error-description,
-  .light .sc-auth-verification-help,
-  .light .sc-auth-secondary-link,
-  .light .sc-auth-back {
+  html:not(.dark) .sc-auth-label,
+  html:not(.dark) .sc-auth-error-description,
+  html:not(.dark) .sc-auth-verification-help,
+  html:not(.dark) .sc-auth-secondary-link,
+  html:not(.dark) .sc-auth-back {
     color: rgb(23 25 29 / 72%);
   }
 
-  .light .sc-auth-input::placeholder,
-  .light .sc-auth-page .sc-control-input::placeholder {
+  html:not(.dark) .sc-auth-input::placeholder,
+  html:not(.dark) .sc-auth-page .sc-control-input::placeholder {
     color: rgb(23 25 29 / 45%);
   }
 
-  .light .sc-auth-surface-button,
-  .light .sc-auth-page .sc-control-button.sc-auth-surface-button {
+  html:not(.dark) .sc-auth-surface-button,
+  html:not(.dark) .sc-auth-page .sc-control-button.sc-auth-surface-button {
     border: 1px solid var(--auth-input-border, #cfd4dc);
     color: #17191d;
   }
 
-  .light .sc-auth-surface-button:hover,
-  .light .sc-auth-page .sc-control-button.sc-auth-surface-button:hover {
+  html:not(.dark) .sc-auth-surface-button:hover,
+  html:not(.dark) .sc-auth-page .sc-control-button.sc-auth-surface-button:hover {
     color: #17191d;
   }
 
-  .light .sc-auth-primary-button,
-  .light .sc-auth-page .sc-control-button.sc-auth-primary-button {
+  html:not(.dark) .sc-auth-primary-button,
+  html:not(.dark) .sc-auth-page .sc-control-button.sc-auth-primary-button {
     background: hsl(var(--foreground));
     color: hsl(var(--background));
   }
 
-  .light .sc-auth-primary-button:hover,
-  .light .sc-auth-page .sc-control-button.sc-auth-primary-button:hover {
+  html:not(.dark) .sc-auth-primary-button:hover,
+  html:not(.dark) .sc-auth-page .sc-control-button.sc-auth-primary-button:hover {
     filter: brightness(1.15);
   }
 
@@ -1039,4 +1046,30 @@ html:not(.dark) .sc-login-demo-modal .sc-auth-surface-button:hover {
 }
 html:not(.dark) .sc-login-demo-modal input::placeholder {
   color: hsl(var(--muted-foreground));
+}
+
+/* Divider children carry utility colours, so theme them after the layers. */
+.sc-auth-page .sc-auth-divider > span {
+  color: hsl(var(--muted-foreground));
+}
+
+.sc-auth-page .sc-auth-divider > hr {
+  border-color: hsl(var(--border));
+}
+
+html:not(.dark) .sc-auth-page .sc-control-input:not([aria-invalid='true']) {
+  border: 1px solid var(--auth-input-border, #cfd4dc);
+  background: var(--auth-input-background, #ffffff);
+  color: #17191d;
+}
+
+html:not(.dark) .sc-auth-page .sc-auth-terms {
+  color: #17191d;
+}
+
+@layer components {
+  .sc-auth-forgot-password {
+    justify-self: end;
+    text-align: right;
+  }
 }

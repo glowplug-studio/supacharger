@@ -81,7 +81,7 @@ export default async function SCFooter() {
           </Button>
         </div>
 
-        <div className='border-border text-muted-foreground mt-6 grid gap-3 border-t pt-7 text-sm sm:grid-cols-3 sm:items-center'>
+        <div className='border-border text-muted-foreground mt-6 grid gap-3 border-t pt-7 text-sm sm:grid-cols-3 sm:items-start'>
           <div>
             <p>
               © {new Date().getFullYear()} {global('siteTitle')}. {t('allRightsReserved')}

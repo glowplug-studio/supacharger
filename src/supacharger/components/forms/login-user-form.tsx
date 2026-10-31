@@ -358,6 +358,11 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   function sendPasswordlessEmail() {
     setError(null);
     setLoginFailed(false);
+    if (!(emailInputRef.current?.value ?? email).trim()) {
+      setEmailInvalid(false);
+      emailInputRef.current?.focus();
+      return;
+    }
     const validatedEmail = validateEmail();
     if (!validatedEmail) return;
     setPendingAction('passwordless-email');
@@ -780,12 +785,6 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
             </Button>
           ) : null}
 
-          {passwordModeAvailable && mode === 'signin' ? (
-            <Link href='/account/reset-password' className='sc-auth-secondary-link'>
-              {t('forgotPassword')}
-            </Link>
-          ) : null}
-
           {passwordlessEmailAvailable ? (
             <>
               {passwordModeAvailable ? (
@@ -805,6 +804,11 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
                 {passwordlessButtonLabel}
               </Button>
             </>
+          ) : null}
+          {passwordModeAvailable && mode === 'signin' ? (
+            <Link href='/account/reset-password' className='sc-auth-link sc-auth-forgot-password'>
+              {t('forgotPassword')}
+            </Link>
           ) : null}
           {step === 'email' ? renderSignUpTerms() : null}
         </form>
