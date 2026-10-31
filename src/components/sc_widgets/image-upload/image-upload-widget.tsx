@@ -1,11 +1,12 @@
 'use client';
 
 import { type ChangeEvent, type DragEvent, useRef, useState } from 'react';
-import { ImageIcon, Trash2, Upload } from 'lucide-react';
+import { ImageIcon, LoaderCircle, Trash2, Upload } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import type { ImageUploadProgress } from '@/supacharger/media/upload-image';
 import { cn } from '@/utils/cn';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
@@ -49,8 +50,12 @@ export function ImageUploadWidget({
   onChange,
   onCropChange,
   processing = false,
-  processingProgress = 65,
+  processingProgress,
+  uploadProgress,
   processingText = 'Processing image…',
+  preparingText = 'Preparing image…',
+  uploadingText = 'Uploading image…',
+  savingText = 'Saving image…',
   repositionCopy,
   shape,
   variant,
@@ -68,7 +73,11 @@ export function ImageUploadWidget({
   onCropChange: (crop: ImageCrop | undefined, preview?: string) => void;
   processing?: boolean;
   processingProgress?: number;
+  uploadProgress?: ImageUploadProgress;
   processingText?: string;
+  preparingText?: string;
+  uploadingText?: string;
+  savingText?: string;
   repositionCopy?: ImageRepositionCopy;
   shape: 'circle' | 'rectangle';
   variant: 'avatar' | 'banner';
@@ -81,7 +90,14 @@ export function ImageUploadWidget({
   const [selectionRevision, setSelectionRevision] = useState(0);
   const objectUrl = useObjectUrl(file);
   const previewUrl = cropPreview ?? objectUrl ?? existingPreviewUrl ?? null;
-  const isDisabled = disabled || processing;
+  const isProcessing = Boolean(file && (processing || (uploadProgress && uploadProgress.phase !== 'completed')));
+  const progress = uploadProgress?.phase === 'uploading' ? uploadProgress.percent : uploadProgress ? undefined : processingProgress;
+  const progressText = uploadProgress?.phase === 'preparing'
+    ? preparingText
+    : uploadProgress?.phase === 'uploading'
+      ? uploadingText
+      : uploadProgress?.phase === 'completed' ? savingText : processingText;
+  const isDisabled = disabled || isProcessing;
 
   function updateCrop(nextCrop: ImageCrop | undefined, preview?: string) {
     setCrop(nextCrop);
@@ -233,15 +249,15 @@ export function ImageUploadWidget({
             <p className='truncate text-sm text-muted-foreground'>
               {file?.name ?? (existingPreviewUrl ? copy.current : '')}
             </p>
-            {processing ? (
-              <div className='space-y-1'>
-                <div className='flex items-center gap-3'>
-                  <Progress className='flex-1' value={processingProgress} />
+            {isProcessing ? (
+              <div className='space-y-1' role='status' aria-live='polite'>
+                {typeof progress === 'number' ? <div className='flex items-center gap-3'>
+                  <Progress className='flex-1' value={progress} />
                   <span className='w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground'>
-                    {Math.round(processingProgress)}%
+                    {Math.round(progress)}%
                   </span>
-                </div>
-                <p className='text-xs text-muted-foreground'>{processingText}</p>
+                </div> : <LoaderCircle aria-hidden='true' className='size-4 animate-spin motion-reduce:animate-none text-muted-foreground' />}
+                <p className='text-xs text-muted-foreground'>{progressText}</p>
               </div>
             ) : null}
           </div>

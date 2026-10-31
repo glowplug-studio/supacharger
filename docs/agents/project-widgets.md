@@ -26,6 +26,14 @@ The public Core Widget Demos page uses local simulated uploads to expose progres
 
 Crop coordinates are an integer rectangle in oriented source pixels. Send them in the metadata request to `/api/images/authorise`; the signed permit carries them to `process_image_upload`; no profile database column stores the crop. The returned object path is committed through the profile media RPC only after the image upload succeeds.
 
+## Image submission and progress
+
+Only a pending selected `File` should trigger `uploadProjectImage` or `uploadImage` at submit time. Leave empty fields and unchanged stored images untouched. Keep upload state per field, so a profile or account save does not mark every image as processing.
+
+Forward the helper's optional `onProgress` callback and pass its `ImageUploadProgress` value to `ImageUploadWidget` through `uploadProgress`. The `uploading` phase may show the measured multipart byte percentage; `preparing` and server `processing` remain indeterminate. Transfer reaching 100% means the request body was sent, not that transformation or Storage upload has finished. The widget suppresses processing presentation when no `File` is selected and has no default percentage. `preparingText`, `uploadingText`, `processingText` and `savingText` allow localised phase labels. Keep explicit demo simulations separate from real upload progress.
+
+See [Image submission and progress](image-transformation.md#submission-and-progress) for the helper phases and transport boundary.
+
 ## Generated image loading
 
 Render generated images through `media/image-with-loader.tsx`. Its reserved container displays the developer-owned `image-loader.svg` behind the image, waits for `HTMLImageElement.decode()`, then fades in the complete image. It resets when the source changes, handles cached images and failures, and pauses motion for reduced-motion users.

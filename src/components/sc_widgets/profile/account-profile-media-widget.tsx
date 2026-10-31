@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
 import type { AccountProfileMediaProps } from '@/supacharger/account/settings/account-settings-contract';
 import { showActionToast } from '@/supacharger/components/notifications/action-toast';
+import type { ImageUploadProgress } from '@/supacharger/media/upload-image';
 import { schemaName } from '@/supacharger/namespace';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
@@ -33,6 +34,7 @@ export function AccountProfileMediaWidget(props: AccountProfileMediaWidgetProps)
   const [headerCrop, setHeaderCrop] = useState<ImageCrop | undefined>();
   const [headerPath, setHeaderPath] = useState(props.initialHeaderPath);
   const [headerUrl, setHeaderUrl] = useState(props.initialHeaderUrl);
+  const [uploadProgress, setUploadProgress] = useState<ImageUploadProgress>();
   const [saving, setSaving] = useState<MediaKind | null>(null);
   const [message, setMessage] = useState<{ kind: 'error' | 'success'; text: string } | null>(null);
   const avatarObjectUrl = useObjectUrl(avatarFile);
@@ -55,6 +57,7 @@ export function AccountProfileMediaWidget(props: AccountProfileMediaWidgetProps)
         destination: policy.destination,
         file,
         target: policy.target,
+        onProgress: setUploadProgress,
       });
       const nextPath = result.path;
       if (!nextPath) throw new Error(t('uploadFailed'));
@@ -97,6 +100,7 @@ export function AccountProfileMediaWidget(props: AccountProfileMediaWidgetProps)
       showActionToast('error', message);
     } finally {
       setSaving(null);
+      setUploadProgress(undefined);
     }
   }
 
@@ -141,6 +145,7 @@ export function AccountProfileMediaWidget(props: AccountProfileMediaWidgetProps)
               label={t('banner')}
               maxBytes={profileImageWidgetPolicy.banner.maxInputBytes}
               processing={saving === 'banner'}
+              uploadProgress={saving === 'banner' ? uploadProgress : undefined}
               shape={profileImageWidgetPolicy.banner.shape}
               variant='banner'
               onChange={setHeaderFile}
@@ -160,6 +165,7 @@ export function AccountProfileMediaWidget(props: AccountProfileMediaWidgetProps)
               label={t('avatar')}
               maxBytes={profileImageWidgetPolicy.avatar.maxInputBytes}
               processing={saving === 'avatar'}
+              uploadProgress={saving === 'avatar' ? uploadProgress : undefined}
               shape={profileImageWidgetPolicy.avatar.shape}
               variant='avatar'
               onChange={setAvatarFile}

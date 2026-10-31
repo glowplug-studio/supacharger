@@ -13,6 +13,7 @@ const { outputText } = ts.transpileModule(
 );
 const loadedModule = { exports: {} };
 new Function('require', 'module', 'exports', outputText)((name) => {
+  if (name === '@/supacharger/media/image-upload-transport') return { imageUploadFetch: (...args) => fetch(...args) };
   if (name === '@/supacharger/utils/helpers') return {
     getSupabaseUrl: () => typeof window === 'undefined' ? 'https://render.supabase.co' : 'https://test.supabase.co',
     getSupabasePublishableKey: () => 'test-key',

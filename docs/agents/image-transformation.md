@@ -12,6 +12,14 @@ The generic Edge Function accepts exactly three multipart fields: `file`, `permi
 
 Storage operations still use the user's authenticated Supabase client and RLS. No service-role storage client is used. Paths always start with the authenticated user's ID. A permit is reusable for the same file/user until expiry; it is not a single-use token. Uploads use generated filenames and `upsert: false`. Domain-specific resource ownership checks belong in a narrow app server handler before signing; a client-supplied resource ID is never ownership evidence.
 
+## Submission and progress
+
+Call `uploadImage` only for a pending selected `File`. Empty fields and unchanged stored image paths or URLs must skip authorisation, processing and upload when the form is submitted. Track each image field separately; saving another field must not show upload activity on it.
+
+`uploadImage` accepts an optional `onProgress` callback with `preparing`, `uploading`, `processing` and `completed` phases. During `uploading`, `loaded` and optional `total`/`percent` describe actual multipart request bytes sent to the Edge Function, including multipart overhead. Show a percentage only when the browser supplies a measurable total. Once those bytes have been sent, `processing` is indeterminate until the server response: transfer completion does not measure image transformation or Storage upload progress. `completed` means the image request succeeded; the caller must still persist its returned location through the domain save flow.
+
+The browser Supabase client routes registered image requests through an XMLHttpRequest transport while retaining the SDK's session, request headers and response/error handling. Other requests continue to use fetch. Project upload wrappers must forward `onProgress` when exposing progress.
+
 ## Processing
 
 JPEG, PNG and WebP inputs are supported. Byte and decoded-pixel limits apply before cropping. The processor auto-orients, validates the crop, resizes without upscaling, strips metadata and encodes JPEG or PNG. Crop coordinates are oriented source pixels (integers after EXIF orientation), with non-negative x/y and positive width/height. The rectangle must fit entirely inside the source.
