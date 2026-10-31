@@ -547,6 +547,8 @@
       "modalDescription": "Preview loading indicators, the centred fade-only modal, toast notifications and signup gating.",
       "openModal": "Open modal",
       "closeModal": "Close modal",
+      "cancelModal": "Cancel",
+      "doneModal": "Done",
       "modalDialogTitle": "Example modal",
       "modalBody": "This project-owned demonstration uses the shared dialog primitive and opens with a centred fade.",
       "toastLabel": "Toast notification",

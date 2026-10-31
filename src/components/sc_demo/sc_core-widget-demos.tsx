@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCloud } from 'lucide-react';
+import { Check, CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCloud, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
@@ -114,7 +114,7 @@ function LoaderDemos({ imageLabel, inlineLabel, inverseLabel }: { imageLabel: st
   );
 }
 
-function ModalDemo({ closeLabel, description, openLabel, title }: { closeLabel: string; description: string; openLabel: string; title: string }) {
+function ModalDemo({ cancelLabel, doneLabel, description, openLabel, title }: { cancelLabel: string; doneLabel: string; description: string; openLabel: string; title: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -123,14 +123,23 @@ function ModalDemo({ closeLabel, description, openLabel, title }: { closeLabel: 
           {openLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent className='rounded-lg' motion='fade'>
-        <DialogHeader>
+      <DialogContent className='gap-0 overflow-hidden rounded-lg p-0' motion='fade'>
+        <DialogHeader className='border-b border-border p-6 pr-12'>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <div className='flex justify-end'>
+        <DialogDescription className='p-6'>{description}</DialogDescription>
+        <div className='flex items-center justify-between border-t border-border p-4'>
           <DialogClose asChild>
-            <Button className='rounded-lg' type='button'>{closeLabel}</Button>
+            <Button className='rounded-lg text-red-600 hover:text-red-600 dark:text-red-400 dark:hover:text-red-400' type='button' variant='ghost'>
+              <X aria-hidden='true' className='size-4' />
+              {cancelLabel}
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button className='rounded-lg' type='button'>
+              <Check aria-hidden='true' className='size-4' />
+              {doneLabel}
+            </Button>
           </DialogClose>
         </div>
       </DialogContent>
@@ -139,7 +148,8 @@ function ModalDemo({ closeLabel, description, openLabel, title }: { closeLabel: 
 }
 
 function UIDemos({
-  closeLabel,
+  cancelLabel,
+  doneLabel,
   imageLoaderLabel,
   inlineLoaderLabel,
   inverseLoaderLabel,
@@ -155,7 +165,8 @@ function UIDemos({
   gatingDescription,
   gatingButtonLabel,
 }: {
-  closeLabel: string;
+  cancelLabel: string;
+  doneLabel: string;
   imageLoaderLabel: string;
   inlineLoaderLabel: string;
   inverseLoaderLabel: string;
@@ -184,7 +195,7 @@ function UIDemos({
         <h3 className='mb-3 text-sm font-medium text-foreground'>{loadersTitle}</h3>
         <LoaderDemos imageLabel={imageLoaderLabel} inlineLabel={inlineLoaderLabel} inverseLabel={inverseLoaderLabel} />
       </section>
-      <ModalDemo closeLabel={closeLabel} description={modalDescription} openLabel={modalOpenLabel} title={modalTitle} />
+      <ModalDemo cancelLabel={cancelLabel} doneLabel={doneLabel} description={modalDescription} openLabel={modalOpenLabel} title={modalTitle} />
       <div className='grid gap-4 sm:grid-cols-2'>
         <section className='flex flex-col items-start rounded-lg border border-border bg-background p-4'>
           <h3 className='text-sm font-medium text-foreground'>{toastLabel}</h3>
@@ -363,7 +374,8 @@ export function SCCoreWidgetDemos() {
       title: t('modalTitle'),
       widget: (
         <UIDemos
-          closeLabel={t('closeModal')}
+          cancelLabel={t('cancelModal')}
+          doneLabel={t('doneModal')}
           imageLoaderLabel={t('imageLoaderLabel')}
           inlineLoaderLabel={t('inlineLoaderLabel')}
           inverseLoaderLabel={t('inverseLoaderLabel')}
