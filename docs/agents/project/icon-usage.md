@@ -6,7 +6,7 @@ For each approved mapping, record the concept, component, import source, scope a
 
 ## Approved project mappings
 
-No mappings are prescribed by this starter. Add the project's agreed choices here.
+Use `ClipboardCopy` from `lucide-react` for copy-to-clipboard actions, with `Check` only during successful feedback. Shared controls use `src/supacharger/components/buttons/clipboard-copy-button.tsx`: immediate animated “Click to copy” tooltip on hover/focus, “Copied” after the clipboard write succeeds, then dismissal after 2.5 seconds. Show failure feedback when copying fails and clear timers on unmount.
 
 ## Illustrative example only
 

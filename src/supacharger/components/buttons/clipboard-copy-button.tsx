@@ -1,0 +1,46 @@
+'use client';
+
+import { type ComponentProps, useEffect, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Check, ClipboardCopy } from 'lucide-react';
+
+import { Button } from '@/supacharger/components/primitives/button';
+import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+
+const Tooltip = TooltipPrimitive.Root;
+const TooltipProvider = TooltipPrimitive.Provider;
+const TooltipTrigger = TooltipPrimitive.Trigger;
+
+type Props = Omit<ComponentProps<typeof Button>, 'onClick' | 'asChild' | 'value'> & {
+  value: string;
+  iconClassName?: string;
+};
+
+export function ClipboardCopyButton({ value, children, disabled, iconClassName = 'size-4 shrink-0', ...props }: Props) {
+  const t = useTranslations('Clipboard');
+  const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [open, setOpen] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mounted = useRef(true);
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; if (timer.current) clearTimeout(timer.current); };
+  }, []);
+  async function copy() {
+    let next: 'copied' | 'failed' = 'copied';
+    try { await navigator.clipboard.writeText(value); } catch { next = 'failed'; }
+    if (!mounted.current) return;
+    if (timer.current) clearTimeout(timer.current);
+    setStatus(next);
+    setOpen(true);
+    timer.current = setTimeout(() => { setOpen(false); setStatus('idle'); }, 2500);
+  }
+  return <TooltipProvider delayDuration={0}><Tooltip delayDuration={0} open={open} onOpenChange={next => {
+    if (status === 'idle') setOpen(next);
+  }}><TooltipTrigger asChild>
+    <Button type='button' aria-label={t('clickToCopy')} {...props} disabled={disabled} onClick={() => void copy()}>
+      {status === 'copied' ? <Check aria-hidden='true' className={iconClassName} /> : <ClipboardCopy aria-hidden='true' className={iconClassName} />}
+      {children}
+    </Button>
+  </TooltipTrigger><TooltipPrimitive.Portal><TooltipPrimitive.Content sideOffset={4} className='z-50 rounded-md bg-neutral-900 px-3 py-1.5 text-xs text-neutral-50 animate-in fade-in-0 zoom-in-95 motion-reduce:animate-none'><span role='status'>{t(status === 'idle' ? 'clickToCopy' : status)}</span></TooltipPrimitive.Content></TooltipPrimitive.Portal></Tooltip></TooltipProvider>;
+}

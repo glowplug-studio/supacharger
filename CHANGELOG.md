@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-10-31T13:28:11Z; base_commit=d7fd82b620ffd04a9e5530c1b26d1620c0e66557; main_commit=d7fd82b620ffd04a9e5530c1b26d1620c0e66557; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=d7fd82b620ffd04a9e5530c1b26d1620c0e66557; scope=all-outstanding-marketing-auth-demo-namespace-and-mcp-changes; excluded=none; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-11-04T18:18:46Z; base_commit=18b1d7eb56394094594afa60920a925ede76fe80; main_commit=18b1d7eb56394094594afa60920a925ede76fe80; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=18b1d7eb56394094594afa60920a925ede76fe80; scope=shared-copy-feedback-and-history-since-prior-checkpoint; excluded=uncommitted-authentication-guidance; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -100,6 +100,9 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Core updates preserve project instructions and installed skills; shared agent guidance and Core release notes have explicit ownership.
 
 ### Fixed
+
+- Organisation invitation links confirm successful clipboard writes with timed feedback and report failures. Shared copy controls use a consistent clipboard icon and immediate hover/focus hint.
+- Authentication controls and verification text remain legible when the browser uses the light theme without an explicit light class.
 
 - Image fields skip upload indicators when empty or unchanged. Pending images report actual transfer progress to the image processor, with separate indeterminate preparation and processing states instead of fabricated percentages.
 

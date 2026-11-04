@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
+import { ClipboardCopyButton } from '@/supacharger/components/buttons/clipboard-copy-button';
 import { showActionToast } from '@/supacharger/components/notifications/action-toast';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
@@ -193,9 +194,9 @@ export function OrganisationTeam({ initialOrganisation }: { initialOrganisation:
               <p className='sc-organisation-invite-link-title'>{t('team.copyInviteOnce')}</p>
               <div className='sc-organisation-invite-link-control'>
                 <Input aria-label={t('team.inviteLink')} readOnly value={inviteLink} />
-                <Button onClick={() => void navigator.clipboard.writeText(inviteLink)} type='button' variant='outline'>
+                <ClipboardCopyButton value={inviteLink} variant='outline'>
                   {t('team.copy')}
-                </Button>
+                </ClipboardCopyButton>
               </div>
             </div>
           ) : null}

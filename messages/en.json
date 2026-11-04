@@ -1,4 +1,5 @@
 {
+  "Clipboard": {"clickToCopy": "Click to copy", "copied": "Copied", "failed": "Could not copy. Please try again."},
   "ServiceUnavailable": {
     "statusLabel": "Service status",
     "title": "We’ll be back shortly",
