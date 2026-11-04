@@ -24,6 +24,7 @@ import { signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
 import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
 import NewPasswordFields from '@/supacharger/components/forms/new-password-fields';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
+import { useTurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
@@ -78,6 +79,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   const termsUrl = signUpTermsUrl(locale);
   const tSupabaseErrorCodes = useTranslations('SupabaseErrorCodes');
   const router = useRouter();
+  const turnstile = useTurnstileGate();
   const startsInEmailMode = shouldStartInEmailMode(initialMode);
   const [step, setStep] = useState<AuthStep>(startsInEmailMode ? 'email' : 'choose');
   const [choicePanelMounted, setChoicePanelMounted] = useState(!startsInEmailMode);
@@ -210,6 +212,7 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     authError: { code: string; status: number | null },
     fallback: 'authenticationFailed' | 'emailSendFailed' | 'invalidCode',
   ) {
+    if (authError.code === 'turnstile_failed') return t('turnstileRequired');
     const messageKey = supabaseErrorCodeLocalisation(authError.code, authError.status);
     if (messageKey === 'genericError') return t(fallback);
     return tSupabaseErrorCodes.has(messageKey)
@@ -246,7 +249,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     }
 
     if (mode === 'signup') {
+      const challenge = turnstile.takeToken();
+      if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
       const formData = new FormData();
+      formData.set('turnstileToken', challenge ?? '');
       formData.set('email', normalisedEmail);
       formData.set('password', password);
       if (safeNextPath) formData.set('next', safeNextPath);
@@ -290,7 +296,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
       return;
     }
 
+    const challenge = turnstile.takeToken();
+    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
     const formData = new FormData();
+    formData.set('turnstileToken', challenge ?? '');
     formData.set('email', normalisedEmail);
     formData.set('password', password);
     if (safeNextPath) formData.set('next', safeNextPath);
@@ -325,13 +334,15 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
 
   async function requestVerificationEmail() {
     if (!parsedEmail.success || pendingAction !== null) return;
+    const challenge = turnstile.takeToken();
+    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
 
     setPendingAction('verification-email');
     try {
       const response = await fetch('/api/account/resend-activation-link', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: normalisedEmail, next: safeNextPath }),
+        body: JSON.stringify({ email: normalisedEmail, next: safeNextPath, turnstileToken: challenge }),
       });
 
       if (!response.ok) {
@@ -365,13 +376,15 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     }
     const validatedEmail = validateEmail();
     if (!validatedEmail) return;
+    const challenge = turnstile.takeToken();
+    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
     setPendingAction('passwordless-email');
     startAuthTransition(async () => {
       try {
         const result =
           mode === 'signup'
-            ? await signUpWithEmail(validatedEmail, safeNextPath)
-            : await signInWithEmail(validatedEmail, safeNextPath);
+            ? await signUpWithEmail(validatedEmail, safeNextPath, challenge)
+            : await signInWithEmail(validatedEmail, safeNextPath, challenge);
         if (result?.error) {
           return setError(
             result.error.code === 'otp_disabled'
@@ -398,10 +411,12 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   }
 
   async function resendPasswordlessEmail() {
+    const challenge = turnstile.takeToken();
+    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return false; }
     const result =
       verificationPurpose === 'signup'
-        ? await signUpWithEmail(verificationEmail, safeNextPath)
-        : await signInWithEmail(verificationEmail, safeNextPath);
+        ? await signUpWithEmail(verificationEmail, safeNextPath, challenge)
+        : await signInWithEmail(verificationEmail, safeNextPath, challenge);
     return !result.error;
   }
 

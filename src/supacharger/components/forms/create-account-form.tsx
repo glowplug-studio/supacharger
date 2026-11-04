@@ -1,7 +1,8 @@
 'use client';
 
 import { LoginUserForm } from '@/supacharger/components/forms/login-user-form';
+import { TurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 
 export function CreateAccountForm() {
-  return <LoginUserForm initialMode='signup' />;
+  return <TurnstileGate><LoginUserForm initialMode='signup' /></TurnstileGate>;
 }

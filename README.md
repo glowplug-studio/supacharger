@@ -124,14 +124,21 @@ Authentication, identity, onboarding, and organisations are application policy b
 
 ```ts
 AUTHENTICATION: {
-  EMAIL_PASSWORD: { SIGN_IN: true, SIGN_UP: true },
-  PASSWORDLESS_EMAIL: {
-    SIGN_IN: 'otp', // 'disabled' | 'otp' | 'link'
-    SIGN_UP: 'disabled',
-    OTP_LENGTH: 6, // 6 through 10
+  TURNSTILE: { ENABLED: false, SITE_KEY: null, HOSTNAMES: [] },
+  SIGN_UP_TERMS: { REQUIRED: false, URL: { DEFAULT: '/legal', LOCALES: {} } },
+  ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
+},
+SUPABASE_AUTH: {
+  METHODS: {
+    EMAIL_PASSWORD: { SIGN_IN: true, SIGN_UP: true },
+    PASSWORDLESS_EMAIL: {
+      SIGN_IN: 'otp', // 'disabled' | 'otp' | 'link'
+      SIGN_UP: 'disabled',
+      OTP_LENGTH: 6, // 6 through 10
+    },
+    SIGN_UP_EMAIL_VERIFICATION: 'otp', // also supports 'otp-and-link'
+    MFA_TOTP: { REQUIRED_FOR_SIGN_IN: false },
   },
-  SIGN_UP_EMAIL_VERIFICATION: 'otp', // also supports 'otp-and-link'
-  MFA_TOTP: { REQUIRED_FOR_SIGN_IN: false },
 },
 PROFILE_IDENTITY: {
   USERNAME: 'disabled', // 'disabled' | 'optional' | 'required'
@@ -159,6 +166,8 @@ ACCOUNT_SETTINGS: {
 The canonical login journey preserves SnapScreen's approved progressive visual structure across Core, SnapScreen, and Wakekeeper. Its public pages are exact managed routes at `/account/login`, `/account/create`, `/account/login-magic`, and `/account/reset-password`; `/auth/callback`, `/auth/confirm`, and the safe `/auth/error` page remain managed protocol/error routes. `/account/reset-password/new` is an authenticated-user-only managed page, not a public entry point. The managed shell imports the developer-owned `src/supacharger.adapters/auth/auth-sidecar.tsx`, while semantic `sc-auth-*` hooks are presented by the preserved `src/styles/supacharger-auth.css`. This keeps route logic and accessible structure upgradeable without replacing product imagery, branding, or licensed presentation. The password-requirements checklist floats below its input without contributing to form height, so opening it never moves the confirmation field.
 
 The journey supports password authentication and one exclusive passwordless email experience per action: `disabled`, `otp`, or `link`. `PASSWORDLESS_EMAIL.OTP_LENGTH` controls every OTP field and accepts 6 through 10; keep the local `[auth.email] otp_length` and the hosted Supabase setting equal to it. Passwordless sign-in sets `shouldCreateUser: false` and verifies entered codes with `type: 'email'`. Password signup and `SIGN_UP_EMAIL_VERIFICATION` remain separate; signup verification supports `disabled`, `otp`, `link`, or `otp-and-link` and verifies codes with `type: 'signup'`. Passwordless OTP templates contain `{{ .Token }}` without a sign-in link, while passwordless link templates contain the link without an OTP. Safe `next` paths are preserved across the journey. Specdrive uses the same managed route/form behaviour through its own developer-owned presentation and keeps its old `/auth/*` user routes only as temporary safe redirects.
+
+Core also includes optional Cloudflare Turnstile on the shared login and registration entry. It checks the challenge before invoking the selected auth provider; see [Turnstile configuration](docs/agents/authentication-and-claims.md#turnstile-on-authentication-entry). It is disabled in the Core starter.
 
 Logout also uses a safe application-relative destination. `POST /account/logout` clears the SSR session and returns JSON containing that relative `redirectTo` path for the managed button. Direct navigation through `GET /account/logout` clears the same session and issues a `303` with a relative `Location` header, which the browser resolves against the incoming request origin. This keeps logout on the origin the user actually opened and prevents a stale `NEXT_PUBLIC_SITE_URL` host, scheme, or port from turning a successful logout into a failed client redirect.
 
@@ -436,7 +445,7 @@ Then run `npm run migration:up` and your table will be added.
 
 Supacharger supports Apple (`apple`), Microsoft Azure (`azure`), Bitbucket (`bitbucket`), Discord (`discord`), Facebook (`facebook`), Figma (`figma`), GitHub (`github`), GitLab (`gitlab`), Google (`google`), Kakao (`kakao`), Keycloak (`keycloak`), LinkedIn OIDC (`linkedin_oidc`), Notion (`notion`), Twitch (`twitch`), X/Twitter OAuth 2.0 (`x`), Twitter OAuth 1.0a compatibility (`twitter`), Slack OIDC (`slack_oidc`), legacy Slack compatibility (`slack`), Spotify (`spotify`), WorkOS (`workos`), and Zoom (`zoom`).
 
-Set a provider to `true` in the typed `AUTH_PROVDERS_ENABLED` map to render its login/signup button and permit the shared OAuth server action; disabled providers are rejected by that action. Configure the same provider in Supabase and allow the application's exact `/auth/callback` URL before enabling its UI flag. Prefer the OIDC and OAuth 2.0 options for new LinkedIn, Slack, and Twitter/X integrations.
+Set a provider to `true` in the typed `SUPABASE_AUTH.OAUTH_PROVIDERS` map to render its login/signup button and permit the shared OAuth server action; disabled providers are rejected by that action. Configure the same provider in Supabase and allow the application's exact `/auth/callback` URL before enabling its UI flag. Prefer the OIDC and OAuth 2.0 options for new LinkedIn, Slack, and Twitter/X integrations.
 
 The CLI-managed Supabase SVG set lives in `src/supacharger/assets/svgr/auth-providers/`. It also contains Email, Phone, SAML, and Web3 artwork for future method-specific journeys; those methods are not interchangeable with `signInWithOAuth`.
 

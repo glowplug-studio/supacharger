@@ -44,7 +44,7 @@ Keep the complete Next.js `/_next/` framework namespace outside Proxy matching s
 
 The public user-facing routes `/account/login`, `/account/create`, `/account/login-magic`, and `/account/reset-password` live under `src/app/(supacharger)/(unauthenticated)/` and are exact managed Core. `/auth/callback`, `/auth/confirm`, and `/auth/error` are managed protocol/error routes. `/account/reset-password/new` shares the unauthenticated presentation shell but requires a verified, non-anonymous Supabase user; it is not a public entry point. Do not add duplicate public paths under another route group because Next.js cannot resolve two pages to the same URL. The route shell and forms expose stable `sc-auth-*` hooks, import `AuthSidecar` and `AuthMobileBrand` from the developer-owned adapter, and receive presentation from `src/styles/supacharger-auth.css`. The CLI installs the adapter and stylesheet only when absent and preserves them on later updates.
 
-`AUTHENTICATION` is the canonical feature policy. `EMAIL_PASSWORD.SIGN_IN` and `SIGN_UP` gate password operations. `PASSWORDLESS_EMAIL.SIGN_IN` and `SIGN_UP` independently select one exclusive mode: `disabled`, `otp`, or `link`; they never request both credentials in one passwordless email. A sign-in request always sets `shouldCreateUser: false`, while a configured passwordless signup may create the user. `PASSWORDLESS_EMAIL.OTP_LENGTH` is an integer from 6 through 10 and controls every rendered OTP field. `SIGN_UP_EMAIL_VERIFICATION` remains a separate password-signup policy and accepts `disabled`, `otp`, `link`, or `otp-and-link`. The managed TOTP factor journey is always exposed; `MFA_TOTP.REQUIRED_FOR_SIGN_IN` alone controls AAL2 enforcement for enrolled accounts. UI and server actions must enforce this value.
+`SUPABASE_AUTH.METHODS` owns the Supabase authentication method policy. All method paths in this paragraph are relative to `SUPABASE_AUTH.METHODS`. `EMAIL_PASSWORD.SIGN_IN` and `SIGN_UP` gate password operations. `PASSWORDLESS_EMAIL.SIGN_IN` and `SIGN_UP` independently select one exclusive mode: `disabled`, `otp`, or `link`; they never request both credentials in one passwordless email. A sign-in request always sets `shouldCreateUser: false`, while a configured passwordless signup may create the user. `PASSWORDLESS_EMAIL.OTP_LENGTH` is an integer from 6 through 10 and controls every rendered OTP field. `SIGN_UP_EMAIL_VERIFICATION` remains a separate password-signup policy and accepts `disabled`, `otp`, `link`, or `otp-and-link`. The managed TOTP factor journey is always exposed; `MFA_TOTP.REQUIRED_FOR_SIGN_IN` alone controls AAL2 enforcement for enrolled accounts. UI and server actions must enforce this value.
 
 `NEXT_PUBLIC_SITE_URL` defines the canonical origin for metadata and background links through `getSiteUrl()` / `getURL()`. Auth and billing destinations use the validated request-origin helpers described below. Supabase redirect configuration remains separate.
 
@@ -176,3 +176,27 @@ The hosted Site URL must use the production HTTPS origin. Allow-list the exact `
 Logout at `/account/logout` bypasses Proxy session refresh, page guards and product guards so a missing or expired session cannot redirect its POST to login. The handler owns SDK sign-out and cookie clearing. POST returns JSON; GET returns a 303 with a safe relative Location. All outcomes use `Cache-Control: private, no-store`. Other protected routes retain their guards.
 
 Keep the password-reset Sent button visible alongside the resend cooldown. Resending must show the shared loading indicator before Sent. Auth buttons expose `data-state` for developer-owned styling; email-change action alignment and `--auth-action-padding-block`/`--auth-action-padding-inline` belong in `src/styles/supacharger-auth.css`, with sent colours under `--auth-sent-background`, `--auth-sent-foreground` and `--auth-resend-sent-foreground`.
+
+## Turnstile on authentication entry
+
+Core includes Cloudflare Turnstile at the application authentication entry, independently of the selected auth provider. The Core starter leaves it off. To enable it in an application:
+
+1. Create a Cloudflare Turnstile widget for the application's exact production hostname. Keep its site key and secret key separate.
+2. In developer-owned `src/supacharger.config.ts`, set the canonical option:
+
+   ```ts
+   AUTHENTICATION: {
+     TURNSTILE: {
+       ENABLED: true,
+       SITE_KEY: 'your-public-site-key',
+       HOSTNAMES: ['members.example.com'],
+     },
+     // Keep the application's other AUTHENTICATION settings here.
+   },
+   ```
+
+3. Set `TURNSTILE_SECRET_KEY` to that widget's secret in the **server-only** deployment environment. Never put it in `src/supacharger.config.ts` or a `NEXT_PUBLIC_` variable. Rebuild and deploy the application after changing the configuration or secret. If the application has a Content Security Policy, allow `https://challenges.cloudflare.com` for the widget script, frame and verification connection.
+
+`ENABLED: false` removes the widget and skips verification; keep the same canonical `TURNSTILE` object with `SITE_KEY: null` and `HOSTNAMES: []` when disabled. When enabled, Core checks the single-use token with Cloudflare Siteverify before password, passwordless email and social auth initiation, including signup-confirmation resend. Missing configuration, invalid tokens and unexpected hostnames fail closed with `turnstile_failed`. The widget resets after each attempt.
+
+No Supabase CAPTCHA key or Supabase Auth setting is required for this application-level check. It protects Core's login and registration actions, not direct requests to the underlying provider's API. A future auth extension must invoke the shared verifier before starting its own login or registration operation. Keep the production `HOSTNAMES` list exact; a widget restricted to a production hostname will not validate local or preview hostnames unless separately configured.

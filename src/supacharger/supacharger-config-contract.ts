@@ -31,6 +31,8 @@ export type SupachargerToastTransition = 'bounce' | 'flip' | 'slide' | 'zoom';
 export type SupachargerConfig = {
   /** Provider-independent signup notice and confirmed-account destination. */
   AUTHENTICATION: {
+    /** Provider-independent challenge for login and registration initiation. */
+    TURNSTILE: { ENABLED: boolean; SITE_KEY: string | null; HOSTNAMES: readonly string[] };
     SIGN_UP_TERMS: {
       /** @deprecated Ignored: signup uses a notice without a checkbox. */ REQUIRED: boolean;
       URL: { DEFAULT: string | null; LOCALES: Readonly<Record<string, string>> };

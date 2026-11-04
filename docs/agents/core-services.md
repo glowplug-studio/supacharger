@@ -14,6 +14,8 @@ CORE_SERVICES: {
 
 Supabase is the supported authentication implementation. Social providers remain under `SUPABASE_AUTH.OAUTH_PROVIDERS`; password and OTP settings live under `SUPABASE_AUTH.METHODS`. Application transactional email does not alter Supabase Auth email delivery.
 
+Cloudflare Turnstile is included in Core as an optional, provider-independent check at the login and registration entry. Configure `AUTHENTICATION.TURNSTILE` in the application's `src/supacharger.config.ts` and a server-only `TURNSTILE_SECRET_KEY`; see [Turnstile on authentication entry](authentication-and-claims.md#turnstile-on-authentication-entry). The auth provider does not own this setting.
+
 ## Installed implementations
 
 Set `transactional_email.provider` to an installed extension registry name, such as `supacharger-ext-transactional-email`. A null provider allows Core to build without email. An enabled integration declaring `services: ['transactional_email']` fails preparation clearly when no implementation is available.

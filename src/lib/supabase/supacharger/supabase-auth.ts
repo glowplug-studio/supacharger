@@ -12,6 +12,7 @@ import { authActionFailure, type AuthActionResult, authActionSuccess } from '@/s
 import { getAuthLoginRedirect } from '@/supacharger/auth/login-redirect';
 import { hasVerifiedSessionForEmail } from '@/supacharger/auth/otp-verification';
 import { getSafeNextPath } from '@/supacharger/auth/safe-next-path';
+import { verifyTurnstileToken } from '@/supacharger/auth/turnstile';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
 import { evaluatePasswordStrength, isValidEmail } from '@/supacharger/utils/helpers';
@@ -70,6 +71,7 @@ export async function loginUser(formData: FormData) {
     .object({ email: emailSchema, password: passwordSchema })
     .safeParse({ email: formData.get('email'), password: formData.get('password') });
   if (!parsed.success) return authActionFailure('validation_failed');
+  if (!(await verifyTurnstileToken(formData.get('turnstileToken')))) return authActionFailure('turnstile_failed');
 
   const supabase = await createClient();
 
@@ -86,9 +88,11 @@ async function sendPasswordlessEmail(
   email: string,
   shouldCreateUser: boolean,
   nextPath: unknown = null,
+  turnstileToken: unknown = null,
 ): Promise<AuthActionResult> {
   const parsedEmail = emailSchema.safeParse(email);
   if (!parsedEmail.success) return authActionFailure('validation_failed');
+  if (!(await verifyTurnstileToken(turnstileToken))) return authActionFailure('turnstile_failed');
 
   const supabase = await createClient();
 
@@ -110,23 +114,23 @@ async function sendPasswordlessEmail(
 /**
  * Send the configured passwordless sign-in email to an existing user.
  */
-export async function signInWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
+export async function signInWithEmail(email: string, nextPath: string | null = null, turnstileToken: string | null = null): Promise<AuthActionResult> {
   if (SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_IN === 'disabled') {
     return authActionFailure('otp_disabled');
   }
 
-  return sendPasswordlessEmail(email, false, nextPath);
+  return sendPasswordlessEmail(email, false, nextPath, turnstileToken);
 }
 
 /**
  * Send the configured passwordless signup email.
  */
-export async function signUpWithEmail(email: string, nextPath: string | null = null): Promise<AuthActionResult> {
+export async function signUpWithEmail(email: string, nextPath: string | null = null, turnstileToken: string | null = null): Promise<AuthActionResult> {
   if (SC_CONFIG.SUPABASE_AUTH.METHODS.PASSWORDLESS_EMAIL.SIGN_UP === 'disabled') {
     return authActionFailure('otp_disabled');
   }
 
-  return sendPasswordlessEmail(email, true, nextPath);
+  return sendPasswordlessEmail(email, true, nextPath, turnstileToken);
 }
 
 /**
@@ -144,6 +148,7 @@ export async function createUserByEmailPassword(
     .object({ email: signUpEmailSchema, password: signUpPasswordSchema })
     .safeParse({ email: formData.get('email'), password: formData.get('password') });
   if (!parsed.success) return authActionFailure('validation_failed');
+  if (!(await verifyTurnstileToken(formData.get('turnstileToken')))) return authActionFailure('turnstile_failed');
   const nextPath = getSafeNextPath(formData.get('next'));
 
   const { data, error } = await supabase.auth.signUp({
@@ -204,11 +209,12 @@ export async function sendPasswordReset(email: string) {
 
 export type SupabaseOAuthProvider = SupachargerOAuthProvider;
 
-export async function signInWithOAuth(provider: SupabaseOAuthProvider) {
+export async function signInWithOAuth(provider: SupabaseOAuthProvider, turnstileToken: string | null = null) {
   // OAuth can create an account even when started from the sign-in chooser.
   if (!SC_CONFIG.SUPABASE_AUTH.OAUTH_PROVIDERS[provider]) {
     return authActionFailure('oauth_provider_disabled');
   }
+  if (!(await verifyTurnstileToken(turnstileToken))) return authActionFailure('turnstile_failed');
 
   const supabase = await createClient();
 

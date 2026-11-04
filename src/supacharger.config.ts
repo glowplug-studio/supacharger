@@ -41,6 +41,7 @@ export const SC_CONFIG: SupachargerConfig = {
   },
   // Provider-independent signup consent and account navigation.
   AUTHENTICATION: {
+    TURNSTILE: { ENABLED: false, SITE_KEY: null, HOSTNAMES: [] },
     SIGN_UP_TERMS: { REQUIRED: false, URL: { DEFAULT: '/legal', LOCALES: {} } },
     ACCOUNT_CONFIRMED_PATH: '/?account_confirmed=1',
   },

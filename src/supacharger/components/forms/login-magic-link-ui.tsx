@@ -11,10 +11,12 @@ import { useTranslations } from 'next-intl';
 import { toast } from "react-toastify";
 
 import { signInWithEmail } from "@/lib/supabase/supacharger/supabase-auth";
+import { TurnstileGate,useTurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 
-export function LoginMagicLinkUI() {
+function LoginMagicLinkForm() {
   const t = useTranslations('MagicLinkForm');
   const [pending, setPending] = useState(false);
+  const turnstile = useTurnstileGate();
 
   async function handleEmailSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -22,7 +24,9 @@ export function LoginMagicLinkUI() {
     const form = event.target as HTMLFormElement;
     const email = form["email"].value;
 
-    const response = await signInWithEmail(email);
+    const token = turnstile.takeToken();
+    if (turnstile.enabled && !token) { toast.error(t('turnstileRequired')); setPending(false); return; }
+    const response = await signInWithEmail(email, null, token);
 
     if (response?.error) {
       toast.error(t('failed'));
@@ -55,4 +59,8 @@ export function LoginMagicLinkUI() {
       </div>
     </form>
   );
+}
+
+export function LoginMagicLinkUI() {
+  return <TurnstileGate><LoginMagicLinkForm /></TurnstileGate>;
 }

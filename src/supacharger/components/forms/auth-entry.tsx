@@ -9,6 +9,7 @@ import {
   LoginUserForm,
   shouldStartInEmailMode,
 } from '@/supacharger/components/forms/login-user-form';
+import { TurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 
 export function AuthEntry({ initialMode, nextPath = null }: { initialMode: AuthMode; nextPath?: string | null }) {
   const t = useTranslations('AuthJourney');
@@ -45,7 +46,9 @@ export function AuthEntry({ initialMode, nextPath = null }: { initialMode: AuthM
           )}
         </div>
       </header>
-      <LoginUserForm initialMode={initialMode} nextPath={nextPath} onFormHeadingChange={handleFormHeadingChange} />
+      <TurnstileGate>
+        <LoginUserForm initialMode={initialMode} nextPath={nextPath} onFormHeadingChange={handleFormHeadingChange} />
+      </TurnstileGate>
     </div>
   );
 }

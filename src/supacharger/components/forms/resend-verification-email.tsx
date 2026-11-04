@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { ArrowRight, Check, MailCheck } from 'lucide-react';
 
 import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
+import { useTurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 type ResendMessage = {
@@ -28,6 +29,7 @@ export function ResendVerificationEmail({
   purpose?: ResendPurpose;
 }) {
   const t = useTranslations('AuthJourney');
+  const turnstile = useTurnstileGate();
   const tAuthTerms = useTranslations('AuthTerms');
   const signInCodeResendSuccessLabel = t.has('signInCodeResendSuccess')
     ? t('signInCodeResendSuccess')
@@ -59,10 +61,16 @@ export function ResendVerificationEmail({
       if (onResend) {
         succeeded = await onResend();
       } else {
+        const challenge = turnstile.takeToken();
+        if (turnstile.enabled && !challenge) {
+          setMessage({ kind: 'error', text: t('turnstileRequired') });
+          setIsSending(false);
+          return;
+        }
         const response = await fetch('/api/account/resend-activation-link', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, next: nextPath }),
+          body: JSON.stringify({ email, next: nextPath, turnstileToken: challenge }),
         });
         succeeded = response.ok;
       }

@@ -116,6 +116,7 @@
     "title": "Billing"
   },
   "AuthJourney": {
+    "turnstileRequired": "Complete the human verification and try again.",
     "mfaStatusFailed": "Two-factor authentication status could not be checked.",
     "heroTitle": "One workspace for every team",
     "welcomeBack": "Welcome back",
@@ -1496,6 +1497,7 @@
     "continue": "Continue"
   },
   "MagicLinkForm": {
+    "turnstileRequired": "Complete the human verification and try again.",
     "failed": "The sign-in link could not be sent.",
     "sent": "Sign-in link sent. Check your inbox.",
     "emailLabel": "Email address",

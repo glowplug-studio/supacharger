@@ -1,4 +1,6 @@
+import { useTranslations } from 'next-intl';
 import type { ComponentType, SVGProps } from 'react';
+import { toast } from 'react-toastify';
 
 import { signInWithOAuth } from '@/lib/supabase/supacharger/supabase-auth';
 import AppleLogo from '@/supacharger/assets/svgr/auth-providers/apple-icon.svg';
@@ -21,6 +23,7 @@ import TwitterLogo from '@/supacharger/assets/svgr/auth-providers/twitter-icon.s
 import WorkOSLogo from '@/supacharger/assets/svgr/auth-providers/workos-icon.svg';
 import XLogo from '@/supacharger/assets/svgr/auth-providers/x-icon.svg';
 import ZoomLogo from '@/supacharger/assets/svgr/auth-providers/zoom-icon.svg';
+import { useTurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 import { Button } from '@/supacharger/components/primitives/button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { SupachargerOAuthProvider } from '@/supacharger/supacharger-config-contract';
@@ -81,6 +84,8 @@ export default function AuthProviderButtons({
   disabled?: boolean;
 } = {}) {
   const enabledProviders = getEnabledProviders();
+  const turnstile = useTurnstileGate();
+  const t = useTranslations('AuthJourney');
 
   if (enabledProviders.length === 0) return null;
 
@@ -93,7 +98,13 @@ export default function AuthProviderButtons({
           className='sc-auth-surface-button sc-auth-provider-button'
           key={key}
           disabled={disabled}
-          onClick={() => void signInWithOAuth(key)}
+          onClick={() => {
+            const token = turnstile.takeToken();
+            if (turnstile.enabled && !token) { toast.error(t('turnstileRequired')); return; }
+            void signInWithOAuth(key, token).then((result) => {
+              if (result?.error) toast.error(result.error.code === 'turnstile_failed' ? t('turnstileRequired') : t('authenticationFailed'));
+            });
+          }}
         >
           <span className='sc-auth-provider-avatar'>
             <Logo className='sc-auth-provider-logo' aria-hidden='true' focusable='false' />
