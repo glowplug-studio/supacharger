@@ -4,6 +4,7 @@ import { syncStripeEntitlements } from '@/features/account/controllers/sync-enti
 import { upsertUserSubscription } from '@/features/account/controllers/upsert-user-subscription';
 import { upsertPrice } from '@/features/pricing/controllers/upsert-price';
 import { upsertProduct } from '@/features/pricing/controllers/upsert-product';
+import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
 import { getSupabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 import type { Json } from '@/lib/supabase/types';
 import { schemaName } from '@/supacharger/namespace';
@@ -25,6 +26,11 @@ const relevantEvents = new Set([
   'customer.subscription.deleted',
   'customer.subscription.paused',
   'customer.subscription.resumed',
+  'invoice.paid',
+  'invoice.payment_failed',
+  'charge.refunded',
+  'charge.dispute.created',
+  'radar.early_fraud_warning.created',
   'entitlements.active_entitlement_summary.updated',
 ]);
 
@@ -71,6 +77,41 @@ async function markFailed(eventId: string, error: unknown) {
   if (updateError) throw updateError;
 }
 
+async function syncSubscriptionForInvoice(invoice: Stripe.Invoice) {
+  const subscription = invoice.parent?.subscription_details?.subscription;
+  const customer = invoice.customer;
+  const subscriptionId = typeof subscription === 'string' ? subscription : subscription?.id;
+  const customerId = typeof customer === 'string' ? customer : customer?.id;
+  if (!subscriptionId || !customerId) return;
+  await upsertUserSubscription({ subscriptionId, customerId, isCreateAction: false });
+}
+
+async function syncSubscriptionsForPaymentIntent(paymentIntentId: string) {
+  for await (const payment of getStripeAdmin().invoicePayments.list({
+    payment: { payment_intent: paymentIntentId, type: 'payment_intent' },
+    status: 'paid',
+  })) {
+    const invoiceId = typeof payment.invoice === 'string' ? payment.invoice : payment.invoice.id;
+    const invoice = await getStripeAdmin().invoices.retrieve(invoiceId);
+    await syncSubscriptionForInvoice(invoice);
+  }
+}
+
+async function paymentIntentIdForRiskEvent(event: Stripe.Event) {
+  const object = event.data.object;
+  if (event.type === 'charge.refunded') {
+    const paymentIntent = (object as Stripe.Charge).payment_intent;
+    return typeof paymentIntent === 'string' ? paymentIntent : paymentIntent?.id ?? null;
+  }
+
+  const riskObject = object as Stripe.Dispute | Stripe.Radar.EarlyFraudWarning;
+  const paymentIntent = riskObject.payment_intent;
+  if (paymentIntent) return typeof paymentIntent === 'string' ? paymentIntent : paymentIntent.id;
+  const chargeId = typeof riskObject.charge === 'string' ? riskObject.charge : riskObject.charge.id;
+  const charge = await getStripeAdmin().charges.retrieve(chargeId);
+  return typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id ?? null;
+}
+
 async function processEvent(event: Stripe.Event) {
   switch (event.type) {
     case 'product.created':
@@ -111,10 +152,9 @@ async function processEvent(event: Stripe.Event) {
       return;
     }
     case 'checkout.session.completed':
-    case 'checkout.session.async_payment_succeeded':
-    case 'checkout.session.async_payment_failed': {
+    case 'checkout.session.async_payment_succeeded': {
       const session = event.data.object as Stripe.Checkout.Session;
-      if (session.mode !== 'subscription') return;
+      if (session.payment_status === 'unpaid' || session.mode !== 'subscription') return;
       if (typeof session.subscription !== 'string' || typeof session.customer !== 'string') {
         throw new Error(`Checkout Session ${session.id} is missing its subscription or customer ID.`);
       }
@@ -123,6 +163,19 @@ async function processEvent(event: Stripe.Event) {
         customerId: session.customer,
         isCreateAction: true,
       });
+      return;
+    }
+    case 'checkout.session.async_payment_failed':
+      return;
+    case 'invoice.paid':
+    case 'invoice.payment_failed':
+      await syncSubscriptionForInvoice(event.data.object as Stripe.Invoice);
+      return;
+    case 'charge.refunded':
+    case 'charge.dispute.created':
+    case 'radar.early_fraud_warning.created': {
+      const paymentIntentId = await paymentIntentIdForRiskEvent(event);
+      if (paymentIntentId) await syncSubscriptionsForPaymentIntent(paymentIntentId);
       return;
     }
     case 'entitlements.active_entitlement_summary.updated': {

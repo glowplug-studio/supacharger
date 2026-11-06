@@ -1,12 +1,27 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import Link from 'next/link';
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PriceCardVariant, productMetadataSchema } from '@/features/pricing/models/product-metadata';
-import { BillingInterval, Price, ProductWithPrices } from '@/features/pricing/types';
+import { Price, ProductWithPrices } from '@/features/pricing/types';
+
+function formatPrice(price: Price) {
+  if (price.unit_amount === null || !price.currency) return 'Custom';
+  return new Intl.NumberFormat(undefined, {
+    currency: price.currency.toUpperCase(),
+    style: 'currency',
+  }).format(price.unit_amount / 100);
+}
+
+function pricePeriod(price: Price, t: ReturnType<typeof useTranslations<'AccountPages.billing'>>) {
+  if (price.type === 'one_time') return t('oneTime');
+  if (!price.interval) return t('subscriptionPeriod');
+  return price.interval_count && price.interval_count > 1
+    ? t('everyInterval', { count: price.interval_count, interval: price.interval })
+    : t('perInterval', { interval: price.interval });
+}
 
 export function PricingCard({
   product,
@@ -17,86 +32,41 @@ export function PricingCard({
   price?: Price;
   createCheckoutAction?: ({ price }: { price: Price }) => void;
 }) {
-  const [billingInterval, setBillingInterval] = useState<BillingInterval>(
-    price ? (price.interval as BillingInterval) : 'month'
-  );
-
-  // Determine the price to render
-  const currentPrice = useMemo(() => {
-    // If price is passed in we use that one. This is used on the account page when showing the user their current subscription.
-    if (price) return price;
-
-    // If no price provided we need to find the right one to render for the product.
-    // First check if the product has a price - in the case of our enterprise product, no price is included.
-    // We'll return null and handle that case when rendering.
-    if (product.prices.length === 0) return null;
-
-    // Next determine if the product is a one time purchase - in these cases it will only have a single price.
-    if (product.prices.length === 1) return product.prices[0];
-
-    // Lastly we can assume the product is a subscription one with a month and year price, so we get the price according to the select billingInterval
-    return product.prices.find((price) => price.interval === billingInterval);
-  }, [billingInterval, price, product.prices]);
-
-  const monthPrice = product.prices.find((price) => price.interval === 'month')?.unit_amount;
-  const yearPrice = product.prices.find((price) => price.interval === 'year')?.unit_amount;
-  const isBillingIntervalYearly = billingInterval === 'year';
-  const metadata = productMetadataSchema.parse(product.metadata);
-  const buttonVariantMap = {
-    basic: 'secondary',
-    pro: 'secondary',
-    enterprise: 'default',
-  } as const;
-
-  function handleBillingIntervalChange(billingInterval: BillingInterval) {
-    setBillingInterval(billingInterval);
-  }
+  const t = useTranslations('AccountPages.billing');
+  const initialPrice = price ?? product.prices.find((item) => item.interval === 'month') ?? product.prices[0];
+  const [selectedPriceId, setSelectedPriceId] = useState(initialPrice?.id ?? '');
+  const currentPrice = price ?? product.prices.find((item) => item.id === selectedPriceId) ?? initialPrice;
 
   return (
     <div className='w-full flex-1'>
       <div className='flex w-full flex-col rounded-md border border-zinc-800 bg-black p-4 lg:p-8'>
         <div className='p-4'>
           <div className='mb-1 text-center text-xl font-bold'>{product.name}</div>
-          <div className='flex justify-center gap-0.5 text-zinc-400'>
-            <span className='font-semibold'>
-              {yearPrice && isBillingIntervalYearly
-                ? '$' + yearPrice / 100
-                : monthPrice
-                ? '$' + monthPrice / 100
-                : 'Custom'}
-            </span>
-            <span>{yearPrice && isBillingIntervalYearly ? '/year' : monthPrice ? '/month' : null}</span>
+          <div className='flex justify-center gap-1 text-zinc-400'>
+            <span className='font-semibold'>{currentPrice ? formatPrice(currentPrice) : t('unavailable')}</span>
+            {currentPrice ? <span>{pricePeriod(currentPrice, t)}</span> : null}
           </div>
         </div>
 
-        {!Boolean(price) && product.prices.length > 1 && <PricingSwitch onChange={handleBillingIntervalChange} />}
+        {!price && product.prices.length > 1 ? (
+          <PricingSwitch prices={product.prices} value={currentPrice?.id ?? ''} onChange={setSelectedPriceId} />
+        ) : null}
 
         <div className='m-auto flex w-fit flex-1 flex-col gap-2 px-8 py-4'>
-          {metadata.generatedImages === 'enterprise' && <CheckItem text={`Unlimited banner images`} />}
-          {metadata.generatedImages !== 'enterprise' && (
-            <CheckItem text={`Generate ${metadata.generatedImages} banner images`} />
-          )}
-          {<CheckItem text={`${metadata.imageEditor} image editing features`} />}
-          {<CheckItem text={`${metadata.supportLevel} support`} />}
+          <p className='text-sm text-zinc-400'>{product.description}</p>
         </div>
 
         {createCheckoutAction && (
           <div className='py-4'>
             {currentPrice && (
               <Button
-                variant={buttonVariantMap[metadata.priceCardVariant]}
+                variant='secondary'
                 className='w-full'
                 onClick={() => {
-                  console.log('Checkout price:', currentPrice);
                   createCheckoutAction({ price: currentPrice });
                 }}
               >
-                Get Started
-              </Button>
-            )}
-            {!currentPrice && (
-              <Button variant={buttonVariantMap[metadata.priceCardVariant]} className='w-full' asChild>
-                <Link href='/contact'>Contact Us</Link>
+                {currentPrice.type === 'one_time' ? t('buyNow') : t('subscribe')}
               </Button>
             )}
           </div>
@@ -106,24 +76,20 @@ export function PricingCard({
   );
 }
 
-function CheckItem({ text }: { text: string }) {
-  return (
-    <div className='flex items-center gap-2'>
-      <p className='text-sm font-medium text-white first-letter:capitalize'>{text}</p>
-    </div>
-  );
-}
-
-function PricingSwitch({ onChange }: { onChange: (value: BillingInterval) => void }) {
+function PricingSwitch({ prices, value, onChange }: { prices: Price[]; value: string; onChange: (value: string) => void }) {
+  const t = useTranslations('AccountPages.billing');
   return (
     <Tabs
-      defaultValue='month'
+      value={value}
       className='flex items-center'
-      onValueChange={(newBillingInterval) => onChange(newBillingInterval as BillingInterval)}
+      onValueChange={onChange}
     >
       <TabsList className='m-auto'>
-        <TabsTrigger value='month'>Monthly</TabsTrigger>
-        <TabsTrigger value='year'>Yearly</TabsTrigger>
+        {prices.map((item) => (
+          <TabsTrigger key={item.id} value={item.id}>
+            {item.type === 'one_time' ? t('oneTime') : item.interval === 'year' ? t('yearly') : t('monthly')}
+          </TabsTrigger>
+        ))}
       </TabsList>
     </Tabs>
   );

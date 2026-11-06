@@ -10,7 +10,7 @@ CREATE TABLE "sc_app"."subscription_items" (
   "updated_at"           timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
   CONSTRAINT "subscription_items_pkey" PRIMARY KEY (id),
   CONSTRAINT "subscription_items_price_id_fkey" FOREIGN KEY (price_id) REFERENCES sc_app.prices(id),
-  CONSTRAINT "subscription_items_subscription_id_fkey" FOREIGN KEY (subscription_id) REFERENCES sc_app.subscriptions(id) ON DELETE CASCADE
+  CONSTRAINT "subscription_items_subscription_id_fkey" FOREIGN KEY (subscription_id) REFERENCES sc_app.subscriptions(subscription_id) ON DELETE CASCADE
 );
 
 ALTER TABLE "sc_app"."subscription_items"

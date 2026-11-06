@@ -2,19 +2,21 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { requireAppAccess } from '@/supacharger/auth/server-access';
+import { requireOnboardedUser } from '@/supacharger/auth/server-access';
 import { getBillingOverviewForSubject } from '@/supacharger/billing/billing-service';
+import { BillingTabs } from '@/supacharger/billing/billing-tabs';
 import { Button } from '@/supacharger/components/primitives/button';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 export async function PersonalBillingPage({ portalError = false }: { portalError?: boolean }) {
   if (!SC_CONFIG.BILLING.ACCOUNT_SUBJECTS.PERSONAL) notFound();
-  await requireAppAccess();
+  await requireOnboardedUser();
   const t = await getTranslations('AccountPages.billing');
   const billingAccounts = await getBillingOverviewForSubject({ type: 'personal' });
 
   return (
     <section className='space-y-6' data-sc-personal-billing>
+      <BillingTabs active='overview' />
       <header>
         <h2 className='text-2xl font-semibold tracking-tight'>{t('title')}</h2>
         <p className='text-muted-foreground mt-1 text-sm'>{t('description')}</p>
@@ -24,7 +26,7 @@ export async function PersonalBillingPage({ portalError = false }: { portalError
         <BillingCard title={t('noAccount')}>
           <p className='text-muted-foreground text-sm'>{t('createAccountHelp')}</p>
           <Button className='mt-5' size='sm' variant='secondary' asChild>
-            <Link href='/account/billing/subscribe'>{t('startSubscription')}</Link>
+            <Link href='/account/billing/upgrade'>{t('startSubscription')}</Link>
           </Button>
         </BillingCard>
       ) : billingAccounts.map((account) => (
@@ -33,7 +35,7 @@ export async function PersonalBillingPage({ portalError = false }: { portalError
             <div>
               <p className='text-muted-foreground text-sm'>{t('noSubscriptions')}</p>
               <Button className='mt-5' size='sm' variant='secondary' asChild>
-                <Link href='/account/billing/subscribe'>{t('startSubscription')}</Link>
+                <Link href='/account/billing/upgrade'>{t('startSubscription')}</Link>
               </Button>
             </div>
           ) : (

@@ -1022,7 +1022,7 @@ export type Database = {
             columns: ["subscription_id"]
             isOneToOne: false
             referencedRelation: "subscriptions"
-            referencedColumns: ["id"]
+            referencedColumns: ["subscription_id"]
           },
         ]
       }
@@ -1040,7 +1040,7 @@ export type Database = {
           current_period_end: string
           current_period_start: string
           ended_at: string | null
-          id: string
+          subscription_id: string
           last_synced_at: string
           latest_invoice_id: string | null
           livemode: boolean | null
@@ -1066,7 +1066,7 @@ export type Database = {
           current_period_end: string
           current_period_start: string
           ended_at?: string | null
-          id: string
+          subscription_id: string
           last_synced_at?: string
           latest_invoice_id?: string | null
           livemode?: boolean | null
@@ -1092,7 +1092,7 @@ export type Database = {
           current_period_end?: string
           current_period_start?: string
           ended_at?: string | null
-          id?: string
+          subscription_id?: string
           last_synced_at?: string
           latest_invoice_id?: string | null
           livemode?: boolean | null

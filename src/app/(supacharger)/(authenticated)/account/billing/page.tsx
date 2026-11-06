@@ -1,5 +1,7 @@
 import { PersonalBillingPage } from '@/supacharger/billing/personal-billing-page';
 
+export const instant = false;
+
 export default async function BillingPage({ searchParams }: {
   searchParams: Promise<{ portal?: string }>;
 }) {

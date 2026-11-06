@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION sc_api.get_billing_overview_by_current_user()
               from sc_app.subscription_items si
               join sc_app.prices pr on pr.id = si.price_id
               left join sc_app.products p on p.id = pr.product_id
-              where si.subscription_id = s.id
+              where si.subscription_id = s.subscription_id
             ), '[]'::jsonb)
           ) order by s.created desc
         )

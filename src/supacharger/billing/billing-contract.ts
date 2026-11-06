@@ -93,6 +93,16 @@ export type BillingSubject = z.infer<typeof billingSubjectSchema>;
 export type BillingCheckoutRequest = z.infer<typeof billingCheckoutRequestSchema>;
 export type BillingAccountOverview = z.infer<typeof billingAccountOverviewSchema>;
 
+export type BillingInvoice = {
+  amountPaid: number;
+  currency: string;
+  invoicePdf: string | null;
+  hostedInvoiceUrl: string | null;
+  id: string;
+  number: string | null;
+  paidAt: Date | null;
+};
+
 export type BillingSubjectConfiguration = {
   BILLING: {
     ACCOUNT_SUBJECTS: {

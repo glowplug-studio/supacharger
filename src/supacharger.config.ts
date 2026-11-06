@@ -197,9 +197,10 @@ export const SC_CONFIG: SupachargerConfig = {
     // null means any active/trialling subscription. Set a feature lookup key
     // to authorise from the entitlement projection instead.
     FEATURE_LOOKUP_KEY: null as string | null,
-    REDIRECT_PATH: '/account/billing/subscribe?full=1',
+    REDIRECT_PATH: '/account/billing/upgrade?full=1',
   },
   BILLING: {
+    STRIPE_PRODUCT_NAMESPACE: 'supacharger',
     // Stripe chooses eligible local methods dynamically from Dashboard settings.
     AUTOMATIC_TAX: false,
     BILLING_ADDRESS_COLLECTION: 'auto' as 'auto' | 'required',

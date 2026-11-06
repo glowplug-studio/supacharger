@@ -3,10 +3,13 @@ import Stripe from 'stripe';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 import type { Database } from '@/lib/supabase/types';
 import { schemaName } from '@/supacharger/namespace';
+import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 type Product = Database['app']['Tables']['products']['Row'];
 
 export async function upsertProduct(product: Stripe.Product) {
+  if (product.metadata.supacharger_application !== SC_CONFIG.BILLING.STRIPE_PRODUCT_NAMESPACE) return false;
+
   const productData: Product = {
     id: product.id,
     active: product.active,
@@ -25,4 +28,5 @@ export async function upsertProduct(product: Stripe.Product) {
   } else {
     console.info(`Product inserted/updated: ${product.id}`);
   }
+  return true;
 }

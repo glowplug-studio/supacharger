@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION sc_api.get_active_subscription_by_current_user()
       from sc_app.subscription_items si
       join sc_app.prices pr on pr.id = si.price_id
       left join sc_app.products p on p.id = pr.product_id
-      where si.subscription_id = s.id
+      where si.subscription_id = s.subscription_id
     ), '[]'::jsonb),
     -- Deprecated aliases retained for one release for existing consumers.
     'prices', to_jsonb(first_price) || jsonb_build_object('products', to_jsonb(first_product))

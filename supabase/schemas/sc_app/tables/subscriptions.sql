@@ -1,5 +1,5 @@
 CREATE TABLE "sc_app"."subscriptions" (
-  "id"                    text                     NOT NULL,
+  "subscription_id"       text                     NOT NULL,
   "user_id"               uuid,
   "metadata"              jsonb,
   "price_id"              text,
@@ -25,7 +25,7 @@ CREATE TABLE "sc_app"."subscriptions" (
   CONSTRAINT "subscriptions_billing_account_id_fkey" FOREIGN KEY (billing_account_id) REFERENCES sc_app.billing_accounts(id),
   CONSTRAINT "subscriptions_billing_mode_check" CHECK (((billing_mode IS NULL) OR (billing_mode = ANY (ARRAY['classic'::text, 'flexible'::text])))),
   CONSTRAINT "subscriptions_currency_check" CHECK (((currency IS NULL) OR (char_length(currency) = 3))),
-  CONSTRAINT "subscriptions_pkey" PRIMARY KEY (id),
+  CONSTRAINT "subscriptions_pkey" PRIMARY KEY (subscription_id),
   CONSTRAINT "subscriptions_price_id_fkey" FOREIGN KEY (price_id) REFERENCES sc_app.prices(id),
   CONSTRAINT "subscriptions_user_id_fkey" FOREIGN KEY (user_id) REFERENCES sc_app.profiles(id) ON DELETE CASCADE
 );

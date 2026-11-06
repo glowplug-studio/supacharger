@@ -4,7 +4,7 @@ import { getEnvVar } from '@/supacharger/utils/helpers';
 
 import 'server-only';
 
-export const STRIPE_API_VERSION: Stripe.LatestApiVersion = '2026-07-29.dahlia';
+export const STRIPE_API_VERSION: Stripe.LatestApiVersion = '2026-09-30.endive';
 
 let stripeAdmin: Stripe | undefined;
 

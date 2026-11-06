@@ -20,7 +20,7 @@ export async function createCheckoutAction({
       items: requestedItems.map((item) => ({ priceId: item.priceId, quantity: item.quantity ?? 1 })),
       subject: { type: 'personal' },
     },
-    { cancel: '/account/billing/subscribe?checkout=cancelled', success: '/account/billing?checkout=success' },
+    { cancel: '/account/billing/upgrade?checkout=cancelled', success: '/account/billing?checkout=success' },
   );
   redirect(destination);
 }

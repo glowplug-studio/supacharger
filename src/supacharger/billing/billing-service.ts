@@ -1,3 +1,6 @@
+import { randomInt } from 'node:crypto';
+
+import { getProducts } from '@/features/pricing/controllers/get-products';
 import { getStripeAdmin, getStripeLivemode } from '@/lib/stripe/stripe-admin';
 import { createClient } from '@/lib/supabase/server';
 import {
@@ -14,6 +17,7 @@ import { getRequestURL } from '@/supacharger/utils/request-url';
 import {
   billingAccountMatchesSubject,
   billingCheckoutRequestSchema,
+  type BillingInvoice,
   billingOverviewSchema,
   type BillingSubject,
   billingSubjectIsEnabled,
@@ -21,6 +25,11 @@ import {
 } from './billing-contract';
 
 import 'server-only';
+
+function checkoutIntegrationIdentifier() {
+  const suffix = Array.from({ length: 8 }, () => String.fromCharCode(97 + randomInt(26))).join('');
+  return `${SC_CONFIG.BILLING.STRIPE_PRODUCT_NAMESPACE}-${suffix}`;
+}
 
 async function authenticatedActor() {
   const supabase = await createClient();
@@ -81,6 +90,25 @@ export async function getBillingOverviewForSubject(subjectInput: BillingSubject)
   return parsed.filter((account) => billingAccountMatchesSubject(account, actor.id, subject));
 }
 
+export async function getPaidBillingInvoicesForSubject(subjectInput: BillingSubject): Promise<BillingInvoice[]> {
+  const subject = billingSubjectSchema.parse(subjectInput);
+  const actor = await authenticatedActor();
+  const billingAccountId = await resolveBillingAccount(actor.id, subject);
+  const customerId = await getBillingCustomer(billingAccountId, getStripeLivemode());
+  if (!customerId) return [];
+
+  const invoices = await getStripeAdmin().invoices.list({ customer: customerId, limit: 100, status: 'paid' });
+  return invoices.data.map((invoice) => ({
+    amountPaid: invoice.amount_paid,
+    currency: invoice.currency,
+    hostedInvoiceUrl: invoice.hosted_invoice_url ?? null,
+    id: invoice.id,
+    invoicePdf: invoice.invoice_pdf ?? null,
+    number: invoice.number,
+    paidAt: invoice.status_transitions.paid_at ? new Date(invoice.status_transitions.paid_at * 1_000) : null,
+  }));
+}
+
 export async function createBillingPortalUrl(subjectInput: BillingSubject, returnPath: string) {
   const subject = billingSubjectSchema.parse(subjectInput);
   const returnUrl = await getRequestURL(returnPath);
@@ -102,16 +130,22 @@ export async function createBillingCheckoutUrl(
   const successUrl = await getRequestURL(paths.success);
   const actor = await authenticatedActor();
   const { billingAccountId, customerId } = await getOrCreateCustomer(actor.id, actor.email, request.subject);
+  const catalogue = await getProducts();
+  const cataloguePrices = new Map(catalogue.flatMap((product) => product.prices.map((price) => [price.id, price])));
+  for (const item of request.items) {
+    if (!cataloguePrices.has(item.priceId)) throw new Error('The requested Stripe Price is not in this application catalogue.');
+  }
   const stripe = getStripeAdmin();
   const prices = await Promise.all(request.items.map((item) => stripe.prices.retrieve(item.priceId)));
   for (const price of prices) {
-    if (!price.active || price.type !== 'recurring') {
-      throw new Error(`Stripe Price ${price.id} is not an active recurring price.`);
-    }
+    if (!price.active) throw new Error(`Stripe Price ${price.id} is inactive.`);
   }
   if (new Set(prices.map((price) => price.currency)).size !== 1) {
     throw new Error('All subscription items in one Checkout Session must use the same currency.');
   }
+  const modes = new Set(prices.map((price) => price.type));
+  if (modes.size !== 1) throw new Error('Recurring and one-off Prices cannot share one Checkout Session.');
+  const mode = prices[0].type === 'recurring' ? 'subscription' : 'payment';
 
   const checkout = await stripe.checkout.sessions.create({
     allow_promotion_codes: SC_CONFIG.BILLING.ALLOW_PROMOTION_CODES,
@@ -121,12 +155,18 @@ export async function createBillingCheckoutUrl(
     client_reference_id: billingAccountId,
     customer: customerId,
     customer_update: { address: 'auto' },
+    integration_identifier: checkoutIntegrationIdentifier(),
     line_items: request.items.map((item, index) => ({ price: prices[index].id, quantity: item.quantity })),
-    mode: 'subscription',
-    subscription_data: {
-      billing_mode: { type: 'flexible' },
-      metadata: { supachargerBillingAccountId: billingAccountId },
-    },
+    metadata: { supachargerApplication: SC_CONFIG.BILLING.STRIPE_PRODUCT_NAMESPACE },
+    mode,
+    ...(mode === 'payment'
+      ? { invoice_creation: { enabled: true } }
+      : {
+          subscription_data: {
+            billing_mode: { type: 'flexible' as const },
+            metadata: { supachargerBillingAccountId: billingAccountId },
+          },
+        }),
     success_url: successUrl,
   });
   if (!checkout.url) throw new Error('Stripe Checkout did not return a URL.');

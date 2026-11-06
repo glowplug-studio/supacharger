@@ -325,7 +325,7 @@ ALTER TABLE "sc_app"."subscription_items"
   ENABLE ROW LEVEL SECURITY;
 
 CREATE TABLE "sc_app"."subscriptions" (
-  "id"                    text                     NOT NULL,
+  "subscription_id"       text                     NOT NULL,
   "user_id"               uuid,
   "metadata"              jsonb,
   "price_id"              text,
@@ -350,7 +350,7 @@ CREATE TABLE "sc_app"."subscriptions" (
   "last_synced_at"        timestamp with time zone NOT NULL DEFAULT timezone('utc'::text, now()),
   CONSTRAINT "subscriptions_billing_mode_check" CHECK (((billing_mode IS NULL) OR (billing_mode = ANY (ARRAY['classic'::text, 'flexible'::text])))),
   CONSTRAINT "subscriptions_currency_check" CHECK (((currency IS NULL) OR (char_length(currency) = 3))),
-  CONSTRAINT "subscriptions_pkey" PRIMARY KEY (id)
+  CONSTRAINT "subscriptions_pkey" PRIMARY KEY (subscription_id)
 );
 
 ALTER TABLE "sc_app"."subscriptions"
@@ -686,7 +686,7 @@ CREATE OR REPLACE FUNCTION sc_api.get_active_subscription_by_current_user()
       from sc_app.subscription_items si
       join sc_app.prices pr on pr.id = si.price_id
       left join sc_app.products p on p.id = pr.product_id
-      where si.subscription_id = s.id
+      where si.subscription_id = s.subscription_id
     ), '[]'::jsonb),
     -- Deprecated aliases retained for one release for existing consumers.
     'prices', to_jsonb(first_price) || jsonb_build_object('products', to_jsonb(first_product))
@@ -722,7 +722,7 @@ CREATE OR REPLACE FUNCTION sc_api.get_billing_overview_by_current_user()
               from sc_app.subscription_items si
               join sc_app.prices pr on pr.id = si.price_id
               left join sc_app.products p on p.id = pr.product_id
-              where si.subscription_id = s.id
+              where si.subscription_id = s.subscription_id
             ), '[]'::jsonb)
           ) order by s.created desc
         )
@@ -1796,11 +1796,11 @@ CREATE OR REPLACE FUNCTION sc_api_edge.billing_upsert_subscription (
   SET search_path TO ''
   AS $function$
   insert into sc_app.subscriptions (
-    id, user_id, status, metadata, price_id, quantity, cancel_at_period_end,
+    subscription_id, user_id, status, metadata, price_id, quantity, cancel_at_period_end,
     created, current_period_start, current_period_end, ended_at, cancel_at,
     canceled_at, trial_start, trial_end
   ) values (
-    input_subscription->>'id', (input_subscription->>'user_id')::uuid,
+    input_subscription->>'subscription_id', (input_subscription->>'user_id')::uuid,
     (input_subscription->>'status')::sc_app.subscription_status, input_subscription->'metadata',
     input_subscription->>'price_id', (input_subscription->>'quantity')::integer,
     (input_subscription->>'cancel_at_period_end')::boolean,
@@ -1810,7 +1810,7 @@ CREATE OR REPLACE FUNCTION sc_api_edge.billing_upsert_subscription (
     (input_subscription->>'ended_at')::timestamptz, (input_subscription->>'cancel_at')::timestamptz,
     (input_subscription->>'canceled_at')::timestamptz,
     (input_subscription->>'trial_start')::timestamptz, (input_subscription->>'trial_end')::timestamptz
-  ) on conflict (id) do update set user_id = excluded.user_id, status = excluded.status,
+  ) on conflict (subscription_id) do update set user_id = excluded.user_id, status = excluded.status,
     metadata = excluded.metadata, price_id = excluded.price_id, quantity = excluded.quantity,
     cancel_at_period_end = excluded.cancel_at_period_end, created = excluded.created,
     current_period_start = excluded.current_period_start,
@@ -1831,13 +1831,13 @@ CREATE OR REPLACE FUNCTION sc_api_edge.billing_upsert_subscription_v2 (
 declare v_item jsonb;
 begin
   insert into sc_app.subscriptions (
-    id, user_id, billing_account_id, stripe_customer_id, status, metadata,
+    subscription_id, user_id, billing_account_id, stripe_customer_id, status, metadata,
     price_id, quantity, cancel_at_period_end, created, current_period_start,
     current_period_end, ended_at, cancel_at, canceled_at, trial_start, trial_end,
     livemode, collection_method, currency, billing_mode, latest_invoice_id,
     automatic_tax_enabled, last_synced_at
   ) values (
-    input_subscription->>'id', nullif(input_subscription->>'user_id', '')::uuid,
+    input_subscription->>'subscription_id', nullif(input_subscription->>'user_id', '')::uuid,
     (input_subscription->>'billing_account_id')::uuid,
     input_subscription->>'stripe_customer_id',
     (input_subscription->>'status')::sc_app.subscription_status,
@@ -1857,7 +1857,7 @@ begin
     input_subscription->>'billing_mode', input_subscription->>'latest_invoice_id',
     nullif(input_subscription->>'automatic_tax_enabled', '')::boolean,
     timezone('utc', now())
-  ) on conflict (id) do update set
+  ) on conflict (subscription_id) do update set
     user_id = excluded.user_id,
     billing_account_id = excluded.billing_account_id,
     stripe_customer_id = excluded.stripe_customer_id,
@@ -1875,13 +1875,13 @@ begin
     automatic_tax_enabled = excluded.automatic_tax_enabled,
     last_synced_at = excluded.last_synced_at;
 
-  delete from sc_app.subscription_items where subscription_id = input_subscription->>'id';
+  delete from sc_app.subscription_items where subscription_id = input_subscription->>'subscription_id';
   for v_item in select value from jsonb_array_elements(coalesce(input_items, '[]'::jsonb)) loop
     insert into sc_app.subscription_items (
       id, subscription_id, price_id, quantity, metadata,
       current_period_start, current_period_end
     ) values (
-      v_item->>'id', input_subscription->>'id', v_item->>'price_id',
+      v_item->>'id', input_subscription->>'subscription_id', v_item->>'price_id',
       nullif(v_item->>'quantity', '')::integer,
       coalesce(v_item->'metadata', '{}'::jsonb),
       (v_item->>'current_period_start')::timestamptz,
@@ -2655,7 +2655,7 @@ ALTER TABLE "sc_app"."subscriptions"
   ADD CONSTRAINT "subscriptions_billing_account_id_fkey" FOREIGN KEY (billing_account_id) REFERENCES sc_app.billing_accounts(id);
 
 ALTER TABLE "sc_app"."subscription_items"
-  ADD CONSTRAINT "subscription_items_subscription_id_fkey" FOREIGN KEY (subscription_id) REFERENCES sc_app.subscriptions(id) ON DELETE CASCADE;
+  ADD CONSTRAINT "subscription_items_subscription_id_fkey" FOREIGN KEY (subscription_id) REFERENCES sc_app.subscriptions(subscription_id) ON DELETE CASCADE;
 
 ALTER TABLE "sc_app"."subscriptions"
   ADD CONSTRAINT "subscriptions_price_id_fkey" FOREIGN KEY (price_id) REFERENCES sc_app.prices(id);

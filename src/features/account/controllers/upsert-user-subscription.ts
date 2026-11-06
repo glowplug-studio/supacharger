@@ -56,7 +56,7 @@ export async function upsertUserSubscription({
     typeof subscription.latest_invoice === 'string' ? subscription.latest_invoice : subscription.latest_invoice?.id;
 
   const subscriptionData = {
-    id: subscription.id,
+    subscription_id: subscription.id,
     user_id: null,
     billing_account_id: billingAccountId,
     stripe_customer_id: customerId,

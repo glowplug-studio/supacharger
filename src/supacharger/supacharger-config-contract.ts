@@ -188,6 +188,8 @@ export type SupachargerConfig = {
   };
   /** Shared Stripe billing policy. */
   BILLING: {
+    /** Product metadata namespace used to isolate this application inside one Stripe account. */
+    STRIPE_PRODUCT_NAMESPACE: string;
     /** Ask Stripe to calculate automatic tax. */ AUTOMATIC_TAX: boolean;
     /** Stripe Checkout address collection mode. */ BILLING_ADDRESS_COLLECTION: 'auto' | 'required';
     /** Allow valid promotion codes at Checkout. */ ALLOW_PROMOTION_CODES: boolean;

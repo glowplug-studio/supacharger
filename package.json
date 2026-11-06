@@ -76,7 +76,7 @@
     "recharts": "2.15.4",
     "server-only": "0.0.1",
     "sonner": "2.0.8",
-    "stripe": "22.5.0",
+    "stripe": "23.0.0",
     "tailwind-merge": "3.6.0",
     "tailwindcss": "4.3.3",
     "typewriter-effect": "^2.22.0",
