@@ -21,14 +21,11 @@ import {
 
 import { UpgradeCheckoutPreview } from '@/components/sc_widgets/paywall/upgrade-checkout-preview';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-import { SCCopyCodeButton } from './sc_copy-code-button';
+import englishMessages from '../../../messages/en.json';
 
 const demoIcons = [LockKeyhole, ExternalLink, Info, Sparkles, ShoppingBag, Smartphone, CreditCard];
 
@@ -39,20 +36,18 @@ const currency = new Intl.NumberFormat('en-US', {
 
 type PaywallService = { description: string; id: string; name: string; price: number };
 
-type ModalExampleContent = {
-  agentNote: string;
-  code: string;
-  copied: string;
-  copy: string;
-  copyFailed: string;
-  title: string;
+type TrialPlan = {
+  description: string;
+  name: string;
+  price: number;
+  trialLength: string;
 };
 
 function translatedText(value: string | undefined, fallback: string) {
   return value?.trim() || fallback;
 }
 
-export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFallback: ModalExampleContent }) {
+export function SCPaywallDemoGallery() {
   const t = useTranslations('MarketingFeaturePages');
   const content = t.raw('paywallDemos') as any;
   const [cartOpen, setCartOpen] = useState(false);
@@ -60,14 +55,14 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [stripeSubmitted, setStripeSubmitted] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
-  const modalExample = {
-    agentNote: translatedText(content.modalExample?.agentNote, modalExampleFallback.agentNote),
-    code: translatedText(content.modalExample?.code, modalExampleFallback.code),
-    copied: translatedText(content.modalExample?.copied, modalExampleFallback.copied),
-    copy: translatedText(content.modalExample?.copy, modalExampleFallback.copy),
-    copyFailed: translatedText(content.modalExample?.copyFailed, modalExampleFallback.copyFailed),
-    title: translatedText(content.modalExample?.title, modalExampleFallback.title),
-  };
+  const trialPlans = englishMessages.MarketingFeaturePages.paywallDemos.products.trialPlans.map(
+    (plan: TrialPlan, index) => ({
+      description: translatedText(content.products.trialPlans?.[index]?.description, plan.description),
+      name: translatedText(content.products.trialPlans?.[index]?.name, plan.name),
+      price: plan.price,
+      trialLength: translatedText(content.products.trialPlans?.[index]?.trialLength, plan.trialLength),
+    }),
+  );
 
   const selectedServiceDetails = content.services.options.filter((service: PaywallService) =>
     selectedServices.includes(service.id),
@@ -99,56 +94,146 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
           </h2>
           <p className='text-muted-foreground mt-5 max-w-2xl text-base leading-7'>{content.galleryDescription}</p>
 
-          <div className='mt-12 grid gap-5 lg:grid-cols-12'>
-            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-5' data-paywall-demo='modal'>
+          <div className='mt-12 grid items-stretch gap-5 lg:grid-cols-2'>
+            <article
+              className='border-border bg-card flex h-full flex-col rounded-lg border p-6'
+              data-paywall-demo='modal'
+            >
               <DemoHeading icon={demoIcons[0]} item={content.items[0]} />
               <Dialog onOpenChange={setUpgradeModalOpen} open={upgradeModalOpen}>
-                <Button className='mt-8 h-auto rounded-lg px-4 py-2.5' onClick={openUpgradeModal}>
+                <Button className='mt-8 h-auto self-start rounded-lg px-4 py-2.5' onClick={openUpgradeModal}>
                   {content.items[0].cta}
                 </Button>
                 <DialogContent className='border-border bg-background text-foreground max-h-[90dvh] overflow-x-hidden overflow-y-auto rounded-lg p-0 sm:max-w-xl [&>button]:text-slate-500'>
                   <UpgradeCheckoutPreview onComplete={() => setUpgradeModalOpen(false)} />
                 </DialogContent>
               </Dialog>
-              <div className='border-border mt-6 border-t pt-6'>
-                <div className='flex flex-wrap items-center justify-between gap-3'>
-                  <p className='text-sm font-medium'>{modalExample.title}</p>
-                  <SCCopyCodeButton
-                    code={modalExample.code}
-                    copiedLabel={modalExample.copied}
-                    copyLabel={modalExample.copy}
-                    errorLabel={modalExample.copyFailed}
-                  />
+            </article>
+
+            <article className='border-border h-full rounded-lg border p-6' data-paywall-demo='redirect'>
+              <div>
+                <ExternalLink aria-hidden='true' className='text-primary size-5' />
+                <h3 className='mt-5 text-xl font-medium tracking-[-0.02em]'>{content.items[1].title}</h3>
+              </div>
+              <div className='border-border bg-muted/35 mt-8 overflow-x-auto rounded-lg border' role='table'>
+                <div
+                  className='bg-muted/45 grid min-w-[32rem] grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_10rem]'
+                  role='row'
+                >
+                  {englishMessages.MarketingFeaturePages.paywallDemos.products.redirectTable.headers.map(
+                    (fallback, index) => (
+                      <div
+                        className='text-muted-foreground border-border px-4 py-3 text-xs font-medium not-last:border-r'
+                        key={fallback}
+                        role='columnheader'
+                      >
+                        {translatedText(content.products.redirectTable?.headers?.[index], fallback)}
+                      </div>
+                    ),
+                  )}
                 </div>
-                <pre className='border-border bg-muted/45 mt-3 overflow-x-auto rounded-lg border p-4 text-xs leading-6'>
-                  <code>{modalExample.code}</code>
-                </pre>
-                <p className='text-muted-foreground mt-3 text-xs leading-5'>{modalExample.agentNote}</p>
+                <div
+                  className='grid min-w-[32rem] grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_10rem] items-center'
+                  role='row'
+                >
+                  {englishMessages.MarketingFeaturePages.paywallDemos.products.redirectTable.row.map(
+                    (fallback, index) => (
+                      <div className='border-border px-4 py-4 text-sm not-last:border-r' key={fallback} role='cell'>
+                        {translatedText(content.products.redirectTable?.row?.[index], fallback)}
+                      </div>
+                    ),
+                  )}
+                  <div className='px-4 py-3' role='cell'>
+                    <Button asChild className='h-auto w-full rounded-lg px-4 py-2.5' variant='outline'>
+                      <Link href='/#pricing'>{content.items[1].cta}</Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             </article>
 
             <article
-              className='border-border bg-muted/35 rounded-lg border p-6 lg:col-span-7'
-              data-paywall-demo='redirect'
+              className='border-border bg-card h-full rounded-lg border p-6'
+              data-paywall-demo='stripe-embedded-checkout'
+              id='stripeEmbeddedCheckout'
             >
-              <DemoHeading icon={demoIcons[1]} item={content.items[1]} />
-              <div className='border-border mt-8 grid gap-4 border-t pt-6 sm:grid-cols-[1fr_auto] sm:items-end'>
-                <div>
-                  <p className='text-sm font-medium'>{content.products.plan}</p>
-                  <p className='text-muted-foreground mt-2 text-sm leading-6'>{content.products.caption}</p>
-                </div>
-                <Button asChild className='h-auto rounded-lg px-4 py-2.5' variant='outline'>
-                  <Link href='/#pricing'>
-                    {content.items[1].cta}
-                    <ArrowRight aria-hidden='true' />
-                  </Link>
-                </Button>
+              <div className='grid gap-8'>
+                <DemoHeading icon={demoIcons[6]} item={content.items[6]} />
+                <form className='bg-muted/35 rounded-lg p-5' onSubmit={submitStripePreview}>
+                  <div className='grid gap-4 sm:grid-cols-2'>
+                    <label className='grid gap-2 text-sm font-medium'>
+                      {content.stripe.emailLabel}
+                      <input
+                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-lg border px-3 text-sm outline-none focus-visible:ring-2'
+                        defaultValue='demo@example.com'
+                        type='email'
+                      />
+                    </label>
+                    <label className='grid gap-2 text-sm font-medium'>
+                      {content.stripe.cardLabel}
+                      <input
+                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-lg border px-3 text-sm outline-none focus-visible:ring-2'
+                        inputMode='numeric'
+                        placeholder={content.stripe.cardPlaceholder}
+                      />
+                    </label>
+                  </div>
+                  <Button className='mt-5 h-auto rounded-lg px-4 py-2.5' type='submit'>
+                    {content.items[6].cta}
+                  </Button>
+                  <p className='text-muted-foreground mt-3 text-xs leading-5'>{content.stripe.disclaimer}</p>
+                  {stripeSubmitted ? (
+                    <p className='text-primary mt-3 text-sm' role='status'>
+                      {content.stripe.status}
+                    </p>
+                  ) : null}
+                </form>
               </div>
             </article>
 
-            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-4' data-paywall-demo='tooltip'>
+            <article className='border-border bg-card h-full rounded-lg border p-6' data-paywall-demo='trial'>
+              <BadgeDollarSign aria-hidden='true' className='text-primary size-5' />
+              <h3 className='mt-5 text-xl font-medium tracking-[-0.02em]'>
+                {translatedText(
+                  content.products.trialTitle,
+                  englishMessages.MarketingFeaturePages.paywallDemos.products.trialTitle,
+                )}
+              </h3>
+              <p className='text-muted-foreground mt-3 max-w-xl text-sm leading-6'>
+                {translatedText(
+                  content.products.trialCaption,
+                  englishMessages.MarketingFeaturePages.paywallDemos.products.trialCaption,
+                )}
+              </p>
+              <div className='mt-8 grid gap-3 sm:grid-cols-3'>
+                {trialPlans.map((plan) => (
+                  <div className='border-border bg-background flex flex-col rounded-lg border p-4' key={plan.name}>
+                    <p className='text-sm font-medium'>{plan.name}</p>
+                    <p className='mt-3 text-2xl tracking-[-0.03em]'>{currency.format(plan.price)}</p>
+                    <p className='text-muted-foreground mt-1 text-xs'>
+                      {translatedText(
+                        content.products.monthlyAfterTrial,
+                        englishMessages.MarketingFeaturePages.paywallDemos.products.monthlyAfterTrial,
+                      )}
+                    </p>
+                    <p className='text-primary mt-4 text-xs font-medium'>{plan.trialLength}</p>
+                    <p className='text-muted-foreground mt-2 flex-1 text-xs leading-5'>{plan.description}</p>
+                    <Button asChild className='mt-5 h-auto w-full rounded-lg px-4 py-2.5'>
+                      <a href='https://checkout.stripe.dev/checkout' rel='noopener noreferrer' target='_blank'>
+                        {translatedText(
+                          content.products.trialCta,
+                          englishMessages.MarketingFeaturePages.paywallDemos.products.trialCta,
+                        )}
+                      </a>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className='border-border bg-card h-full rounded-lg border p-6' data-paywall-demo='tooltip'>
               <DemoHeading icon={demoIcons[2]} item={content.items[2]} />
-              <TooltipProvider>
+              <TooltipProvider delayDuration={0} skipDelayDuration={0}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className='mt-8 block cursor-help' tabIndex={0}>
@@ -164,9 +249,9 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
               </TooltipProvider>
             </article>
 
-            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-8' data-paywall-demo='services'>
+            <article className='border-border bg-card h-full rounded-lg border p-6' data-paywall-demo='services'>
               <DemoHeading icon={demoIcons[3]} item={content.items[3]} />
-              <div className='mt-8 grid gap-6 md:grid-cols-[1fr_15rem]'>
+              <div className='mt-8 grid gap-6 xl:grid-cols-[1fr_15rem]'>
                 <div className='grid gap-3'>
                   {content.services.options.map((service: PaywallService) => {
                     const selected = selectedServices.includes(service.id);
@@ -205,7 +290,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
             </article>
 
             <article
-              className='border-border bg-muted/35 overflow-hidden rounded-lg border lg:col-span-7'
+              className='border-border bg-muted/35 h-full overflow-hidden rounded-lg border'
               data-paywall-demo='cart'
             >
               <div className='grid h-full sm:grid-cols-[0.8fr_1.2fr]'>
@@ -227,7 +312,7 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
               </div>
             </article>
 
-            <article className='border-border bg-card rounded-lg border p-6 lg:col-span-5' data-paywall-demo='in-app'>
+            <article className='border-border bg-card h-full rounded-lg border p-6' data-paywall-demo='in-app'>
               <DemoHeading icon={demoIcons[5]} item={content.items[5]} />
               <div className='border-border mt-8 rounded-lg border p-4'>
                 <div className='flex items-center justify-between gap-4'>
@@ -251,44 +336,6 @@ export function SCPaywallDemoGallery({ modalExampleFallback }: { modalExampleFal
               </div>
             </article>
 
-            <article
-              className='border-border bg-card rounded-lg border p-6 lg:col-span-12'
-              data-paywall-demo='stripe-embedded-checkout'
-              id='stripeEmbeddedCheckout'
-            >
-              <div className='grid gap-8 lg:grid-cols-[0.8fr_1.2fr]'>
-                <DemoHeading icon={demoIcons[6]} item={content.items[6]} />
-                <form className='bg-muted/35 rounded-lg p-5' onSubmit={submitStripePreview}>
-                  <div className='grid gap-4 sm:grid-cols-2'>
-                    <label className='grid gap-2 text-sm font-medium'>
-                      {content.stripe.emailLabel}
-                      <input
-                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-lg border px-3 text-sm outline-none focus-visible:ring-2'
-                        defaultValue='demo@example.com'
-                        type='email'
-                      />
-                    </label>
-                    <label className='grid gap-2 text-sm font-medium'>
-                      {content.stripe.cardLabel}
-                      <input
-                        className='border-input bg-background focus-visible:ring-ring h-10 rounded-lg border px-3 text-sm outline-none focus-visible:ring-2'
-                        inputMode='numeric'
-                        placeholder={content.stripe.cardPlaceholder}
-                      />
-                    </label>
-                  </div>
-                  <Button className='mt-5 h-auto rounded-lg px-4 py-2.5' type='submit'>
-                    {content.items[6].cta}
-                  </Button>
-                  <p className='text-muted-foreground mt-3 text-xs leading-5'>{content.stripe.disclaimer}</p>
-                  {stripeSubmitted ? (
-                    <p className='text-primary mt-3 text-sm' role='status'>
-                      {content.stripe.status}
-                    </p>
-                  ) : null}
-                </form>
-              </div>
-            </article>
           </div>
         </div>
       </section>

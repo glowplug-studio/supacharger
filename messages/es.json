@@ -602,17 +602,33 @@
         "dismiss": "Ahora no",
         "continue": "Continuar registrándose"
       },
-      "modalExample": {
-        "title": "",
-        "code": "",
-        "copy": "",
-        "copied": "",
-        "copyFailed": "",
-        "agentNote": ""
-      },
       "products": {
         "plan": "Catálogo público de productos.",
-        "caption": "Compare planes, capacidades incluidas y tipos de compras antes de crear una cuenta."
+        "caption": "Compare planes, capacidades incluidas y tipos de compras antes de crear una cuenta.",
+        "trialTitle": "",
+        "trialCaption": "",
+        "monthlyAfterTrial": "",
+        "trialCta": "",
+        "trialPlans": [
+          {
+            "name": "",
+            "price": 9,
+            "trialLength": "",
+            "description": ""
+          },
+          {
+            "name": "",
+            "price": 19,
+            "trialLength": "",
+            "description": ""
+          },
+          {
+            "name": "",
+            "price": 49,
+            "trialLength": "",
+            "description": ""
+          }
+        ]
       },
       "tooltip": {
         "feature": "Informe de organización exportadora",

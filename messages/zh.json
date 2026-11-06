@@ -602,17 +602,33 @@
         "dismiss": "现在不要",
         "continue": "继续报名"
       },
-      "modalExample": {
-        "title": "",
-        "code": "",
-        "copy": "",
-        "copied": "",
-        "copyFailed": "",
-        "agentNote": ""
-      },
       "products": {
         "plan": "公共产品目录",
-        "caption": "创建帐户之前比较计划、包含的功能和购买类型。"
+        "caption": "创建帐户之前比较计划、包含的功能和购买类型。",
+        "trialTitle": "",
+        "trialCaption": "",
+        "monthlyAfterTrial": "",
+        "trialCta": "",
+        "trialPlans": [
+          {
+            "name": "",
+            "price": 9,
+            "trialLength": "",
+            "description": ""
+          },
+          {
+            "name": "",
+            "price": 19,
+            "trialLength": "",
+            "description": ""
+          },
+          {
+            "name": "",
+            "price": 49,
+            "trialLength": "",
+            "description": ""
+          }
+        ]
       },
       "tooltip": {
         "feature": "出口组织报告",

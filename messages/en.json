@@ -615,8 +615,8 @@
         {
           "id": "redirect",
           "title": "Redirect to a product page",
-          "description": "Send visitors to a complete public plan comparison without asking them to authenticate first.",
-          "cta": "Browse products"
+          "description": "Choose a feature from a product comparison.",
+          "cta": "Use Feature"
         },
         {
           "id": "tooltip",
@@ -658,17 +658,44 @@
         "dismiss": "Not now",
         "continue": "Continue to sign up"
       },
-      "modalExample": {
-        "title": "Attach the opener to any element",
-        "code": "const openUpgradeModal = () => setUpgradeModalOpen(true);\n\n<Button onClick={openUpgradeModal}>\n  Manage organisers\n</Button>",
-        "copy": "Copy code",
-        "copied": "Copied",
-        "copyFailed": "Copy failed",
-        "agentNote": "A coding agent can use the Supacharger MCP for repository context and its installed skills to apply this pattern to the right element."
-      },
       "products": {
         "plan": "Public product catalogue",
-        "caption": "Compare plans, included capabilities, and purchase types before creating an account."
+        "caption": "Compare plans, included capabilities, and purchase types before creating an account.",
+        "trialTitle": "Trials That Capture Card first",
+        "trialCaption": "Choose a plan and explore its included features for seven days before your paid subscription begins.",
+        "monthlyAfterTrial": "USD per month after trial",
+        "trialCta": "Start Trial",
+        "redirectTable": {
+          "headers": [
+            "Feature",
+            "Availability",
+            "Action"
+          ],
+          "row": [
+            "Example feature",
+            "Available on Team"
+          ]
+        },
+        "trialPlans": [
+          {
+            "name": "Starter",
+            "price": 9,
+            "trialLength": "7-day free trial",
+            "description": "Core tools for individuals testing a new workflow."
+          },
+          {
+            "name": "Team",
+            "price": 19,
+            "trialLength": "7-day free trial",
+            "description": "Collaboration and controls for growing teams."
+          },
+          {
+            "name": "Scale",
+            "price": 49,
+            "trialLength": "7-day free trial",
+            "description": "Advanced permissions and support for larger organisations."
+          }
+        ]
       },
       "tooltip": {
         "feature": "Export workspace report",

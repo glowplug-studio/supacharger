@@ -242,7 +242,7 @@ export function SCPaywallDemos() {
             </h1>
             <p className='text-muted-foreground mt-6 max-w-xl text-base leading-7'>{content.description}</p>
           </div>
-          <div className='border-border bg-card overflow-hidden rounded-lg border p-2 sm:p-3'>
+          <div className='border-border overflow-hidden rounded-lg border'>
             <Image
               alt={content.heroImageAlt || englishMessages.MarketingFeaturePages.paywallDemos.heroImageAlt}
               className='aspect-[16/10] h-auto w-full rounded-lg object-cover object-left-top'
@@ -256,7 +256,7 @@ export function SCPaywallDemos() {
         </div>
       </section>
 
-      <SCPaywallDemoGallery modalExampleFallback={englishMessages.MarketingFeaturePages.paywallDemos.modalExample} />
+      <SCPaywallDemoGallery />
     </div>
   );
 }

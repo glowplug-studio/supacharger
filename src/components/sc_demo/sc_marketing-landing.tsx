@@ -184,10 +184,7 @@ export default function SCMarketingLanding() {
             </h1>
             <p className='text-muted-foreground mx-auto mt-7 max-w-2xl text-lg leading-8'>{t('hero.description')}</p>
             <div className='mt-10 flex flex-wrap justify-center gap-3'>
-              <Button
-                asChild
-                className={cn(marketingButtonClassName, marketingPrimaryButtonClassName)}
-              >
+              <Button asChild className={cn(marketingButtonClassName, marketingPrimaryButtonClassName)}>
                 <Link href='/account/create'>{t('createAccount')}</Link>
               </Button>
               <Button
@@ -206,7 +203,7 @@ export default function SCMarketingLanding() {
             </div>
           </div>
 
-          <div className='sc-home-enter-delayed mt-20 overflow-hidden   lg:mt-24'>
+          <div className='sc-home-enter-delayed mt-20 overflow-hidden lg:mt-24'>
             <Image
               alt={t('images.messagingWorkspace')}
               className='h-auto w-full rounded-lg'
@@ -340,8 +337,8 @@ export default function SCMarketingLanding() {
         </div>
       </section>
 
-      <section className='scroll-mt-16 py-[72px]' id='about'>
-        <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+      <section className='border-border bg-muted/35 scroll-mt-16 border-y px-4 py-20 sm:px-6 lg:px-8' id='about'>
+        <div className='mx-auto max-w-7xl'>
           <SCSectionHeading description={t('experiences.description')} title={t('experiences.title')} />
 
           <div className='mt-16 space-y-16 lg:space-y-24'>
@@ -366,10 +363,7 @@ export default function SCMarketingLanding() {
                     {experience.title}
                   </h3>
                   <p className='text-muted-foreground mt-5 text-base leading-7'>{experience.description}</p>
-                  <Button
-                    asChild
-                    className={cn(marketingButtonClassName, marketingPrimaryButtonClassName, 'mt-7')}
-                  >
+                  <Button asChild className={cn(marketingButtonClassName, marketingPrimaryButtonClassName, 'mt-7')}>
                     <Link href={experience.href}>{experience.cta}</Link>
                   </Button>
                 </div>
@@ -514,10 +508,7 @@ export default function SCMarketingLanding() {
               </h2>
               <p className='text-muted-foreground mt-5 max-w-lg text-base leading-7'>{t('cta.description')}</p>
               <div className='mt-8'>
-                <Button
-                  asChild
-                  className={cn(marketingButtonClassName, marketingPrimaryButtonClassName)}
-                >
+                <Button asChild className={cn(marketingButtonClassName, marketingPrimaryButtonClassName)}>
                   <Link href='/account/create'>{t('createAccount')}</Link>
                 </Button>
               </div>
