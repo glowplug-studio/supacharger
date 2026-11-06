@@ -101,6 +101,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Account settings keep the developer-managed header and navigation visible while asynchronous page content loads, with loading contained to the content area.
+
 - Organisation invitation links confirm successful clipboard writes with timed feedback and report failures. Shared copy controls use a consistent clipboard icon and immediate hover/focus hint.
 - Authentication controls and verification text remain legible when the browser uses the light theme without an explicit light class.
 

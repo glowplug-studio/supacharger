@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Bell, Building2, CreditCard, IdCard, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
 
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { resolveAccountNavigation } from '@/supacharger.adapters/account/navigation';
 import type { AccountNavigationIconName, AccountNavigationItem } from '@/supacharger/account/settings/account-settings-contract';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
@@ -19,6 +20,14 @@ const navigationIcons = {
   organisations: Building2,
   product: IdCard,
 } satisfies Record<AccountNavigationIconName, typeof UserRound>;
+
+function AccountContentLoading({ label }: { label: string }) {
+  return (
+    <div aria-busy='true' aria-label={label} className='flex min-h-64 items-center justify-center'>
+      <LoadingSpinner className='h-8 w-32 text-muted-foreground' />
+    </div>
+  );
+}
 
 export function AccountSettingsShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -69,7 +78,9 @@ export function AccountSettingsShell({ children }: { children: React.ReactNode }
             })}
           </ul>
         </nav>
-        <div className='sc-account-content'>{children}</div>
+        <div className='sc-account-content'>
+          <Suspense fallback={<AccountContentLoading label={t('title')} />}>{children}</Suspense>
+        </div>
       </div>
     </main>
   );
