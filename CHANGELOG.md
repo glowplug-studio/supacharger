@@ -15,6 +15,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Optional Stripe Data Pipeline reconciliation reads Stripe-managed Product, Price and Subscription snapshots through a service-role-only RPC while retaining signed webhooks for immediate lifecycle events and Stripe API reconciliation for Entitlements. Consumers connect each Supabase project in Stripe Dashboard, apply the Core migration and set `STRIPE_DATA_PIPELINE_SCHEMA`.
+
 - A reusable upgrade preview offers two selectable plans, animated mock payment-method and card screens, and a completion screen with reduced-motion-aware confetti. The widget gallery includes celebration controls and links to the paywall demos; the preview never submits payment details or creates a payment.
 
 - Backend outage recovery preserves sessions, checks availability briefly, then shows a full-page warning with checks every 30 seconds. Protected account pages distinguish temporary outages from invalid sessions. The widget gallery previews the actual 404 and outage presentation, remaining visible until page reload; recovery never automatically replays mutations. The initial Supabase SDK retry policy is unchanged.

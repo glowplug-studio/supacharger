@@ -161,6 +161,14 @@ export type Database = {
           stripe_customer_id: string
         }[]
       }
+      billing_read_stripe_data_pipeline: {
+        Args: {
+          input_customer_ids: string[]
+          input_livemode: boolean
+          input_schema: string
+        }
+        Returns: Json
+      }
       billing_put_customer: {
         Args: { input_stripe_customer_id: string; input_user_id: string }
         Returns: string

@@ -26,9 +26,14 @@ function supportedPriceType(type: Stripe.Price.Type) {
   return type as (typeof supportedPriceTypes)[number];
 }
 
-export async function upsertPrice(price: Stripe.Price) {
+export type StripeProductResolver = (productId: string) => Promise<Stripe.Product>;
+
+export async function upsertPrice(
+  price: Stripe.Price,
+  resolveProduct: StripeProductResolver = (productId) => getStripeAdmin().products.retrieve(productId),
+) {
   const product = typeof price.product === 'string'
-    ? await getStripeAdmin().products.retrieve(price.product)
+    ? await resolveProduct(price.product)
     : price.product;
   if (product.deleted || !await upsertProduct(product)) return false;
   const productId = product.id;

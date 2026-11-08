@@ -1,7 +1,7 @@
 {
   "version": 1,
   "initialMigration": "20261031122922_supacharger_initial.sql",
-  "initialSha256": "2e71aaa981274b0be32392cc0343190b7cdfea608fbe4a1c159e455df3e4ba3e",
+  "initialSha256": "5c686376eef393e3ee1d3bf00cf0f281c0996a1670a763b7251ef16eb80f4058",
   "bootstrapSha256": "451804e32d54310abba1ba5127cf3424968a55791f29db723f0afb0e3c78ab36",
   "schemas": {
     "_cluster/event_triggers.sql": "387f1c79b0b225817c3ba13ce1cf6a461f7bed4d7c13383b6009d462baf1bbec",
@@ -16,8 +16,8 @@
     "sc_api/functions/get_account_profile_by_current_user.sql": "615364de235d503b9d7b8fffdf86686142c7640d1584e7dc190ed9fede253f3d",
     "sc_api/functions/get_account_summary_by_current_user.sql": "9bf49bc9a7c1259555e5b9d64247603ef1e45edb54ff1c013b5f307e5a4c3a2f",
     "sc_api/functions/get_active_products.sql": "3b343f431b7f4c8b6c749d25c9df7b96328bcaabe67318ccc3a1fce9f34c88ba",
-    "sc_api/functions/get_active_subscription_by_current_user.sql": "f3f28313ac8e1c1f6d2abd1250bac59e0bda96db2b7c9fff4df6c7ff7cd8b4df",
-    "sc_api/functions/get_billing_overview_by_current_user.sql": "ed1217cbe97c8e821900d2fde0a13f158e08c227692d72e802e400b69c4dc479",
+    "sc_api/functions/get_active_subscription_by_current_user.sql": "a2f9efe1b7e704ebfc4396811e087d70f1c15947e38a3518a28b54dd369102e1",
+    "sc_api/functions/get_billing_overview_by_current_user.sql": "28add713cadd28b022d7f069162c8d350395a1fea8c62d3fa2ee129fce82268f",
     "sc_api/functions/get_profile_media_url.sql": "c1d402393b67d3a297a2cc9a95e89ae89d46a9dffd18bef1b848a9af55a75a9a",
     "sc_api/functions/get_public_account_profile.sql": "837988b277975ca3e52eb8b011a29791599555f131733c4aa5d83056eb81c05b",
     "sc_api/functions/get_user_profiles_by_identifiers.sql": "5df43f12cfb4c5909f58496f2dbb694ef06846fcce3addab935cc7474026f28d",
@@ -38,6 +38,7 @@
     "sc_api_edge/functions/billing_get_or_create_user_account.sql": "e0d13dd25a31d18f64edb8cd316ff47f8653ff812431ce4954c1618eb0e86b8c",
     "sc_api_edge/functions/billing_get_user_id.sql": "2bf98953b22309018d08af7444e5d0e98c3b2756914d361f0bba02b98b7a1920",
     "sc_api_edge/functions/billing_list_customer_mappings.sql": "10529b8dc111f3f924352357b5563813495a597de4da7a43fbf46c0c062698d6",
+    "sc_api_edge/functions/billing_read_stripe_data_pipeline.sql": "7d4e4a82d8ef26c60057ad3e13f3dcb11578e402705d7c7e74f18e896829b5c9",
     "sc_api_edge/functions/billing_put_customer_for_account.sql": "a9002e4695dd67ccb23bea3196d1ec5f4a0877c44502095b1f0e2a7681394103",
     "sc_api_edge/functions/billing_put_customer.sql": "76fd537cf1bebbe9f7de0aae92ed87af5bf3e6190c49e090974f4c58d27cfb6f",
     "sc_api_edge/functions/billing_replace_stripe_entitlements.sql": "78a6cd47851c2c5abc68f8a29b5c12adafaf3c377c0bb7060c08898c3ae610e4",
@@ -46,8 +47,8 @@
     "sc_api_edge/functions/billing_update_payment_method.sql": "1a31a1b84bb1c58649fd297368e8c013fea989882391e39967e1ca7ef871b328",
     "sc_api_edge/functions/billing_upsert_price.sql": "1ba4a4f8ef8c542cd5ed752dc9791c716a9c59dc20aa7073588081b2c2077f65",
     "sc_api_edge/functions/billing_upsert_product.sql": "cf7e019a7c46b4490cd2348ff4311fd65524b22e8925404016f8cba9eef80f1a",
-    "sc_api_edge/functions/billing_upsert_subscription_v2.sql": "d4a9b7d047fff74bc05bac718aa840c08c85675cb28526769ce87d4df035aade",
-    "sc_api_edge/functions/billing_upsert_subscription.sql": "cee8593ddb921724ddf76f94a9413065bf7d797d77ca08b3d6c23a951cbc0b8a",
+    "sc_api_edge/functions/billing_upsert_subscription_v2.sql": "00b2188444fd796f4fd4ae4a74ecf3455d2efb62f4795f6676c5e8fe857cf259",
+    "sc_api_edge/functions/billing_upsert_subscription.sql": "e23e7e601dd662edb1c5a1ccc770785c97ca5d7f0e9b0caa24c71996852290fc",
     "sc_api_edge/functions/billing_user_can_manage.sql": "6c6ed21ec934f7b22b64b838000dd98b8ee9dd81e42b28457a6b8052cf7a2fa7",
     "sc_api_edge/functions/bind_organisation_billing_account.sql": "73ecc6b4e2356aac19842e6e376ca0ca610bda5a85f28fb3477e8366cb5c38ba",
     "sc_api_edge/functions/claim_auth_session_transfer.sql": "f0e541d962425824aeea69fb78aa0e409eeb6506164e6000b8781321034e3985",
@@ -91,8 +92,8 @@
     "sc_app/tables/stripe_customer_mappings.sql": "5e22f9f08c2c7b151f1e39d4306424e4a0a2e7568d225d03224da5528cd52a0b",
     "sc_app/tables/stripe_event_payloads.sql": "e7e53b6cdfa3328b5a9df1d617f9833323b4471dffc1aed0d81999ac935db360",
     "sc_app/tables/stripe_events.sql": "a6f6fd4338c9130d361302774cdf93eab157016ba3ee1ba17fb8574211d7ba23",
-    "sc_app/tables/subscription_items.sql": "f988454b062d41709316fd22a45c371b8ae56b6ab53c90e8fb3a65b6057a3739",
-    "sc_app/tables/subscriptions.sql": "efc1da99d050599d6b5ec07bab9707f23bf5222c161aa2eb3f72cb89f1dc5668",
+    "sc_app/tables/subscription_items.sql": "ea2d890b8d87d5ec986ccb180e3f2fb9a83d0f4b8885ef3a96b688d5872f2788",
+    "sc_app/tables/subscriptions.sql": "b7ae1afdf72a1329a343b7715fa012ef2da7f9cf5e12309ec2b769684e05a513",
     "sc_app/tables/user_roles.sql": "ecbe6b0947b229747eca447d6407d01f217d879c02c8fe140bc512cbc7087ac5",
     "sc_app/tables/user_session_contexts.sql": "87c7a372a2b13e8afe1fd8cb8196ce8fab3754dbdfd323eca628d83411150dae",
     "sc_app/types/application_role.sql": "73695f473b97bb668525614c92494806c615ea7826cf67964553226e93ecb5ba",
@@ -139,9 +140,15 @@
     "20261029211044_core_namespace_cutover.sql": "37ef6a2b96d9895cdbcd59fcd28ad4d161016bf084f89d0fcdc3857b9e324405",
     "20261029221755_align_authenticator_namespace_setting.sql": "57af4cb8b073a83fd3527b992c53986f6b704584ecd2b6933a9976076c0729e6",
     "20261030093347_reconcile_declarative_baseline.sql": "ec4a978c137f83c1fa6d9bab3cf7a4964871352779c9f2b59e92271e406f0084",
-    "20261031120804_generated_username_fallback.sql": "97c828c1a2625577d0d9f9985d28118adb7a5d62b107ee3bdcac0d4214159715"
+    "20261031120804_generated_username_fallback.sql": "97c828c1a2625577d0d9f9985d28118adb7a5d62b107ee3bdcac0d4214159715",
+    "20261106213009_align_subscription_id.sql": "fd9b3cb0e8a5deba8cf85e6b7b1d937c7ff60baeee9218835364c3ca5e5b8e10",
+    "20261106214102_align_subscription_contract.sql": "3d3a06a8804cf6ca4e015104d13db515f9701d8240de159ad7061505e151a6cd",
+    "20261108180424_add_stripe_data_pipeline_reconciliation.sql": "7d4e4a82d8ef26c60057ad3e13f3dcb11578e402705d7c7e74f18e896829b5c9"
   },
   "schemaOnlyUpgrades": {
-    "20261031120804_generated_username_fallback.sql": "97c828c1a2625577d0d9f9985d28118adb7a5d62b107ee3bdcac0d4214159715"
+    "20261031120804_generated_username_fallback.sql": "97c828c1a2625577d0d9f9985d28118adb7a5d62b107ee3bdcac0d4214159715",
+    "20261106213009_align_subscription_id.sql": "fd9b3cb0e8a5deba8cf85e6b7b1d937c7ff60baeee9218835364c3ca5e5b8e10",
+    "20261106214102_align_subscription_contract.sql": "3d3a06a8804cf6ca4e015104d13db515f9701d8240de159ad7061505e151a6cd",
+    "20261108180424_add_stripe_data_pipeline_reconciliation.sql": "7d4e4a82d8ef26c60057ad3e13f3dcb11578e402705d7c7e74f18e896829b5c9"
   }
 }

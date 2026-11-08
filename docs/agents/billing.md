@@ -67,6 +67,8 @@ Subscribe only to implemented events:
 
 Stripe events can be duplicated and delivered out of order. Subscription handlers retrieve the current object and atomically replace its complete item set. The processor route uses `STRIPE_EVENT_PROCESSOR_SECRET`. The independently scheduled reconciliation route uses `STRIPE_RECONCILIATION_SECRET`, refreshes every mapped Customer's subscriptions and entitlements, and reports per-Customer failures. Configure both routes in the deployment scheduler.
 
+Stripe Data Pipeline is an optional reconciliation source. When `STRIPE_DATA_PIPELINE_SCHEMA` names the connected Stripe-managed `stripe_sdp` schema, reconciliation reads Products, Prices and Subscriptions from its `_raw_data` snapshots through the service-only `billing_read_stripe_data_pipeline` RPC. Entitlements still use Stripe's API because they are not available in the pipeline schema. Webhooks remain required for immediate fulfilment, asynchronous payment outcomes and entitlement refreshes. If the variable is absent, reconciliation uses Stripe list APIs.
+
 Do not select all events. Add an event only with a handler, idempotency rule, retry behaviour and matching human/agent documentation.
 
 ## Database and security
@@ -85,4 +87,4 @@ Billing storage lives in the internal `app` schema. Browser access is through na
 - Test Customer Portal authorisation so ordinary members cannot open a management session.
 - Upgrade SDK, API/event-destination version, fixtures, types, README, Docusaurus, and this guidance together.
 
-Stripe Sync Engine is not the canonical default. Treat it only as a separately approved architecture and security migration. The repository MCP remains descriptive and read-only: it must not receive Stripe secrets, call Stripe, expose records, or apply migrations.
+Stripe Data Pipeline support is canonical but opt-in because Stripe creates each managed schema through Dashboard OAuth. Keep those provider-owned tables outside declarative schemas and never grant browser roles access. Stripe Sync Engine remains unsupported. The repository MCP remains descriptive and read-only: it must not receive Stripe secrets, call Stripe, expose records, or apply migrations.

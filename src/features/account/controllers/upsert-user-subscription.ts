@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 
-import { upsertPrice } from '@/features/pricing/controllers/upsert-price';
+import { type StripeProductResolver, upsertPrice } from '@/features/pricing/controllers/upsert-price';
 import { getStripeAdmin } from '@/lib/stripe/stripe-admin';
 import { supabaseAdminClient } from '@/lib/supabase/supacharger/supabase-admin';
 import { schemaName } from '@/supacharger/namespace';
@@ -33,22 +33,36 @@ export async function upsertUserSubscription({
   customerId: string;
   isCreateAction?: boolean;
 }) {
+  const subscription = await getStripeAdmin().subscriptions.retrieve(subscriptionId, {
+    expand: ['default_payment_method', 'items.data.price.product'],
+  });
+
+  return upsertSubscriptionSnapshot({ customerId, isCreateAction, subscription });
+}
+
+export async function upsertSubscriptionSnapshot({
+  subscription,
+  customerId,
+  isCreateAction,
+  resolveProduct,
+}: {
+  subscription: Stripe.Subscription;
+  customerId: string;
+  isCreateAction?: boolean;
+  resolveProduct?: StripeProductResolver;
+}) {
   const { data: billingAccountId, error: noCustomerError } = await supabaseAdminClient
     .schema(schemaName('api_edge'))
     .rpc('billing_get_account_by_customer', { input_stripe_customer_id: customerId });
   if (noCustomerError) throw noCustomerError;
   if (!billingAccountId) throw new Error(`No Supacharger billing-account mapping exists for ${customerId}.`);
 
-  const subscription = await getStripeAdmin().subscriptions.retrieve(subscriptionId, {
-    expand: ['default_payment_method', 'items.data.price.product'],
-  });
-
   const subscriptionItems = subscription.items.data;
   if (subscriptionItems.length === 0) {
     throw new Error(`Stripe subscription ${subscription.id} has no subscription items.`);
   }
 
-  await Promise.all(subscriptionItems.map((item) => upsertPrice(item.price)));
+  await Promise.all(subscriptionItems.map((item) => upsertPrice(item.price, resolveProduct)));
   const primaryItem = subscriptionItems[0];
   const periodStart = Math.min(...subscriptionItems.map((item) => item.current_period_start));
   const periodEnd = Math.max(...subscriptionItems.map((item) => item.current_period_end));
