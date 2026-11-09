@@ -377,7 +377,7 @@ node --version  # Should show v20.x.x
 
 ### 7. Run Stripe Fixture
 
-1. Install the [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
+1. Install the latest [Stripe CLI](https://docs.stripe.com/cli/install). For Stripe's maintained agent tooling and MCP connection, run `stripe agent setup` and follow the [Stripe MCP guide](https://docs.stripe.com/mcp); open any OAuth authorisation link yourself.
 1. Run `stripe fixtures ./stripe-fixtures.json --api-key YOUR_STRIPE_SECRET_KEY`
 
 ### 8. Test Your Setup
