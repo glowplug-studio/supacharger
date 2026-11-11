@@ -8,7 +8,6 @@ import {
   Building2,
   CalendarDays,
   Check,
-  CircleCheckBig,
   LockKeyhole,
   MapPin,
   MessageSquareMore,
@@ -58,48 +57,48 @@ const communityPillars = [
 const platformFeatures = [
   {
     id: 'discovery',
-    imageClassName: 'object-cover object-left-top',
-    imageHeight: 571,
+    imageClassName: 'object-cover object-center',
+    imageHeight: 967,
     imageSrc: '/images/sc_demo/sc-marketing-mobile-onboarding.webp',
-    imageWidth: 960,
+    imageWidth: 1626,
   },
   {
     id: 'workspace',
-    imageClassName: 'object-cover object-left-top',
-    imageHeight: 695,
+    imageClassName: 'object-contain object-center',
+    imageHeight: 1086,
     imageSrc: '/images/sc_demo/sc-marketing-chat-workspace.webp',
-    imageWidth: 1080,
+    imageWidth: 1448,
   },
   {
     id: 'participation',
-    imageClassName: 'object-cover object-center',
-    imageHeight: 450,
+    imageClassName: 'object-contain object-center',
+    imageHeight: 1086,
     imageSrc: '/images/sc_demo/sc-marketing-community-night.webp',
-    imageWidth: 800,
+    imageWidth: 1448,
   },
 ];
 
 const connectedExperiences = [
   {
     href: '#overview',
-    imageClassName: 'object-cover object-top',
-    imageHeight: 900,
+    imageClassName: 'object-contain object-center',
+    imageHeight: 1086,
     imageSrc: '/images/sc_demo/sc-marketing-app-multi.webp',
-    imageWidth: 900,
+    imageWidth: 1448,
   },
   {
     href: '#benefits',
-    imageClassName: 'object-cover object-left-top',
-    imageHeight: 579,
+    imageClassName: 'object-contain object-center',
+    imageHeight: 1086,
     imageSrc: '/images/sc_demo/sc-marketing-profile-discovery.webp',
-    imageWidth: 900,
+    imageWidth: 1448,
   },
   {
     href: '/account/create',
-    imageClassName: 'object-cover object-left-top',
-    imageHeight: 536,
+    imageClassName: 'object-contain object-center',
+    imageHeight: 1086,
     imageSrc: '/images/sc_demo/sc-marketing-mobile-community.webp',
-    imageWidth: 900,
+    imageWidth: 1448,
   },
 ];
 
@@ -191,7 +190,7 @@ export default function SCMarketingLanding() {
                 asChild
                 className={cn(
                   marketingButtonClassName,
-                  'border-border text-foreground hover:bg-accent hover:text-foreground bg-transparent shadow-none active:scale-[0.98]',
+                  'border-border bg-white text-neutral-950 hover:bg-white/90 hover:text-neutral-950 shadow-none active:scale-[0.98]',
                 )}
                 variant='outline'
               >
@@ -241,15 +240,15 @@ export default function SCMarketingLanding() {
       <section className='scroll-mt-16 py-[72px]' id='overview'>
         <div className='mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8'>
           <SCSectionHeading description={t('overview.description')} title={t('overview.title')} />
-          <div className='border-border bg-card overflow-hidden rounded-lg border'>
+          <div className='overflow-hidden rounded-lg bg-[#e4f7e8]'>
             <Image
               alt={t('images.mobileScreens')}
-              className='h-full w-full object-cover transition-transform duration-500 hover:scale-[1.015]'
-              height={600}
+              className='h-full w-full object-contain object-center transition-transform duration-500 hover:scale-[1.015]'
+              height={1024}
               loading='eager'
               sizes='(max-width: 1024px) 100vw, 58vw'
               src='/images/sc_demo/sc-marketing-hero.webp'
-              width={900}
+              width={1536}
             />
           </div>
         </div>
@@ -266,7 +265,7 @@ export default function SCMarketingLanding() {
                 className='group border-border bg-card text-foreground overflow-hidden rounded-lg py-0 shadow-none'
                 key={feature.id}
               >
-                <div className='bg-primary/10 aspect-[4/3] overflow-hidden'>
+                <div className='aspect-[4/3] overflow-hidden bg-[#e4f7e8]'>
                   <Image
                     alt={feature.imageAlt}
                     className={`h-full w-full transition-transform duration-500 group-hover:scale-[1.02] ${feature.imageClassName}`}
@@ -323,14 +322,14 @@ export default function SCMarketingLanding() {
                 );
               })}
             </div>
-            <div className='border-border bg-card min-h-[420px] overflow-hidden rounded-lg border'>
+            <div className='aspect-[16/9] overflow-hidden rounded-lg bg-[#e4f7e8] lg:aspect-auto lg:min-h-[420px]'>
               <Image
                 alt={t('images.neighboursAtNight')}
-                className='h-full w-full object-cover transition-transform duration-700 hover:scale-[1.02]'
-                height={507}
+                className='h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.02]'
+                height={941}
                 sizes='(max-width: 1024px) 100vw, 52vw'
                 src='/images/sc_demo/sc-marketing-community-night-backup.webp'
-                width={900}
+                width={1672}
               />
             </div>
           </div>
@@ -345,9 +344,7 @@ export default function SCMarketingLanding() {
             {localisedExperiences.map((experience, index) => (
               <div className='grid items-center gap-9 md:grid-cols-2 lg:gap-16' key={experience.title}>
                 <div
-                  className={`border-border bg-card overflow-hidden rounded-lg border ${
-                    index % 2 === 1 ? 'md:order-2' : ''
-                  }`}
+                  className={`overflow-hidden rounded-lg bg-[#e4f7e8] ${index % 2 === 1 ? 'md:order-2' : ''}`}
                 >
                   <Image
                     alt={experience.imageAlt}
@@ -465,22 +462,6 @@ export default function SCMarketingLanding() {
         </div>
       </section>
 
-      <section className='scroll-mt-16 py-[72px]' id='compliance'>
-        <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-          <div className='grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end'>
-            <SCSectionHeading description={t('compliance.description')} title={t('compliance.title')} />
-            <div className='border-border bg-foreground/10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border sm:grid-cols-3'>
-              {(t.raw('compliance.items') as string[]).map((item) => (
-                <div className='bg-muted flex items-center gap-3 px-5 py-6' key={item}>
-                  <CircleCheckBig aria-hidden='true' className='text-primary size-4 shrink-0' />
-                  <span className='text-foreground/65 text-sm'>{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className='scroll-mt-16 py-[72px]' id='faq'>
         <div className='mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8'>
           <SCSectionHeading description={t('faqSection.description')} title={t('faqSection.title')} />
@@ -513,14 +494,14 @@ export default function SCMarketingLanding() {
                 </Button>
               </div>
             </div>
-            <div className='bg-primary/10 min-h-80 overflow-hidden'>
+            <div className='min-h-80 overflow-hidden bg-[#dbfded]'>
               <Image
                 alt={t('images.mobileExperience')}
-                className='h-full w-full object-cover object-left-top'
-                height={507}
+                className='h-full w-full object-contain object-center'
+                height={941}
                 sizes='(max-width: 1024px) 100vw, 50vw'
                 src='/images/sc_demo/sc-marketing-hero-backup.webp'
-                width={900}
+                width={1672}
               />
             </div>
           </div>

@@ -233,7 +233,7 @@ export function SCMarketingMenu() {
                       />
                       <span className='absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent' />
                       <span className='absolute right-0 bottom-0 left-0 p-5'>
-                        <span className='block text-base font-semibold text-white'>
+                        <span className='block font-sans text-base font-semibold text-white'>
                           {t('promoTitle')}
                         </span>
                         <span className='mt-1 block text-sm leading-5 text-white/80'>
