@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-11-11T15:43:01Z; base_commit=efded2e5278631f9f5163d564db903308ffe25be; main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; scope=marketing-demo-extension-skills-and-react-audit; excluded=dirty-core-development-submodule-and-pending-account-stylesheet-rename; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-11-11T15:53:07Z; base_commit=08b85f8439060c5f3cc27816a840da311de793dc; main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; scope=installation-report-and-copy-control-layout-correction; excluded=dirty-core-development-submodule-and-pending-account-stylesheet-rename; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -109,7 +109,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, transparent demo artwork meets the footer without a surrounding card, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
+- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, copy icons have centred controls with deliberate spacing, transparent demo artwork meets the footer without a surrounding card, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
 
 - Account settings keep the developer-managed header and navigation visible while asynchronous page content loads, with loading contained to the content area.
 

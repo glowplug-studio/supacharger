@@ -147,16 +147,13 @@ export function InstallationReportPopover({
               <div className='flex items-start justify-between gap-4'>
                 <div>
                   <h2 className='text-xl leading-tight tracking-[-0.025em] text-[#193832]'>Setup Process Report</h2>
-                  <p className='mt-2 text-sm leading-5 text-[#52665b]'>
-                    This report shows the status of the setup process.
-                  </p>
                 </div>
                 <span className='shrink-0 text-2xl tracking-[-0.04em] text-[#26745a]'>{report.percentage}%</span>
               </div>
               <p className='mt-3 text-xs leading-5 text-[#52665b]'>
                 To remove, delete{' '}
                 <ClipboardCopyButtonBase
-                  className='inline-flex h-auto max-w-full overflow-hidden rounded-md border-[#cfdbd1] bg-[#f4f7f4] px-2 py-1 align-middle text-[#264d42] shadow-none hover:bg-[#eaf0eb]'
+                  className='inline-flex h-auto max-w-full gap-2 overflow-hidden rounded-md border-[#cfdbd1] bg-[#f4f7f4] px-3 py-1.5 align-middle text-[#264d42] shadow-none hover:bg-[#eaf0eb]'
                   iconClassName='size-3.5 shrink-0'
                   messages={copyMessages}
                   value={removalPath}

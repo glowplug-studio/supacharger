@@ -457,12 +457,18 @@ function UIDemos({
           <div className='relative mt-auto w-full'>
             <Input
               aria-label={copyDemoLabel}
-              className='bg-background h-10 pr-12 text-sm'
+              className='bg-background h-10 pr-14 text-sm'
               readOnly
               value={copyDemoValue}
             />
-            <div className='border-border absolute inset-y-0 right-0 flex items-center border-l px-1'>
-              <ClipboardCopyButton className='size-8 rounded-sm' size='icon' value={copyDemoValue} variant='ghost' />
+            <div className='border-border absolute inset-y-0 right-0 flex w-12 items-center justify-center border-l'>
+              <ClipboardCopyButton
+                className='flex size-10 items-center justify-center rounded-sm p-0'
+                iconClassName='size-4'
+                size='icon'
+                value={copyDemoValue}
+                variant='ghost'
+              />
             </div>
           </div>
         </section>
