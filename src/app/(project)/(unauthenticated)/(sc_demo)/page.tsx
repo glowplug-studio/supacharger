@@ -1,34 +1,34 @@
 import SCFooter from '@/components/sc_demo/sc_footer';
 import SCFooterSession from '@/components/sc_demo/sc_footer-session';
-import { SCMarketingMenu } from '@/components/sc_demo/sc_header-marketing';
 import { SCHeaderSession } from '@/components/sc_demo/sc_header-session';
 import { createMarketingPageMetadata } from '@/components/sc_demo/sc_marketing_metadata';
+import SCMarketingStructuredData from '@/components/sc_demo/sc_marketing_structured_data';
 import SCMarketingLanding from '@/components/sc_demo/sc_marketing-landing';
 import SCUserDash from '@/components/sc_demo/sc_user-dash';
 import { isLoggedIn } from '@/lib/supabase/supacharger/supabase-auth';
 
-// This page selects its entire product shell from the request-time auth cookie.
-// It intentionally blocks instead of participating in instant-navigation validation.
+// This page selects its product body from the request-time auth cookie.
 export const instant = false;
 
-export async function generateMetadata() { return createMarketingPageMetadata('home'); }
+export async function generateMetadata() {
+  return createMarketingPageMetadata('home');
+}
 
 export default async function RootPage() {
   const session = await isLoggedIn();
 
   return (
     <>
+      <SCMarketingStructuredData pageName='home' />
       {session ? (
         <>
+          <style>{`#sc-persistent-marketing-header { display: none; }`}</style>
           <SCHeaderSession />
-          <SCUserDash></SCUserDash>
+          <SCUserDash />
           <SCFooterSession />
         </>
       ) : (
         <>
-          <div className='bg-[linear-gradient(to_right,#f8fafc_0%,#f8fafc_100%)] fixed inset-x-0 top-0 z-40'>
-            <SCMarketingMenu />
-          </div>
           <SCMarketingLanding />
           <SCFooter />
         </>

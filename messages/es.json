@@ -534,6 +534,9 @@
         },
         {
           "title": "Herramientas de interfaz"
+        },
+        {
+          "title": ""
         }
       ],
       "packageTitle": "El package.json que recibe",
@@ -990,23 +993,13 @@
         "name": "Crecer",
         "price": "9,99 USD/mes",
         "description": "Cultiva una comunidad activa con más formas de conectar y contribuir.",
-        "features": [
-          "Todo lo de Comenzar",
-          "Varios círculos",
-          "Guías y roles",
-          "Soporte prioritario"
-        ]
+        "features": ["Todo lo de Comenzar", "Varios círculos", "Guías y roles", "Soporte prioritario"]
       },
       {
         "name": "Florecer",
         "price": "Personalizado",
         "description": "Acompaña una red de comunidades con una gobernanza atenta y cuidadosa.",
-        "features": [
-          "Todo lo de Crecer",
-          "Controles de red",
-          "Incorporación guiada",
-          "Soporte dedicado"
-        ]
+        "features": ["Todo lo de Crecer", "Controles de red", "Incorporación guiada", "Soporte dedicado"]
       }
     ],
     "compliance": {
@@ -1054,20 +1047,13 @@
         "name": "Comenzar",
         "description": "Para un círculo nuevo que encuentra su ritmo",
         "price": "$10 al mes",
-        "features": [
-          "50 miembros del círculo",
-          "10 espacios activos"
-        ]
+        "features": ["50 miembros del círculo", "10 espacios activos"]
       },
       {
         "name": "Crecer",
         "description": "Para comunidades que profundizan sus vínculos",
         "price": "$20 al mes",
-        "features": [
-          "100 miembros del círculo",
-          "20 espacios activos",
-          "Soporte prioritario"
-        ]
+        "features": ["100 miembros del círculo", "20 espacios activos", "Soporte prioritario"]
       },
       {
         "name": "Florecer",
@@ -1674,6 +1660,7 @@
     "AnotherSkillsInstallationIsActiveInspect": "",
     "RefusingUnsafeSkillDestinationValue": "",
     "ExistingSkillValueIsNotTracked": "",
+    "SkillSourceMismatchValue": "",
     "LocalChangesInValueInstallationRefused": "",
     "ValueIsInstalledUseSkillsUpdate": "",
     "ValueIsNotInstalledUseSkills": "",
@@ -1685,6 +1672,8 @@
     "UseUpdate": "",
     "UpdatePrompt": "",
     "InstallPrompt": "",
+    "LocalUpdatePrompt": "",
+    "LocalInstallPrompt": "",
     "InstalledResult": "",
     "UpdatedResult": "",
     "NoChanges": "",
@@ -1729,86 +1718,55 @@
   "SupabaseEmailResources": {
     "confirm-signup": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "invite-user": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "magic-link-or-otp": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "change-email-address": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "reauthentication": {
       "title": "",
-      "paragraphs": [
-        ""
-      ]
+      "paragraphs": [""]
     },
     "password-changed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "email-address-changed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "mfa-method-removed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "mfa-method-added": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "phone-number-changed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "identity-linked": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "identity-unlinked": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     }
   },
   "EmailChangeResult": {

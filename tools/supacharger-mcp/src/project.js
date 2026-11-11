@@ -356,7 +356,7 @@ export function classifyPath(inputPath) {
   if (relativePath === 'tools/supacharger-mcp' || relativePath.startsWith('tools/supacharger-mcp/') || relativePath === 'tools/supacharger-skills' || relativePath.startsWith('tools/supacharger-skills/')) {
     return {
       ownership: 'core-tooling',
-      guidance: 'Repository-maintainer tooling. The knowledge MCP stays read-only; the public skills installer performs explicitly requested local installations and is distributed through the CLI.',
+      guidance: 'Repository-maintainer tooling. The knowledge MCP stays read-only; the skills installer performs explicitly requested public or authorised local-source installations and is distributed through the CLI.',
     };
   }
 

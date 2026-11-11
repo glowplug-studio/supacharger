@@ -10,6 +10,10 @@ Profile media uploads go through the authenticated `process_image_upload` Edge F
 
 Managed account JSX uses only stable `sc-account-*` and shared `sc-control-*` class hooks for presentation. Layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling belong in the unlayered developer-owned `src/styles/supacharger-account.css`. The CLI installs that starter only when absent and preserves it on updates. Do not add Tailwind presentation utilities to managed account JSX; applications must be able to restyle the complete account surface without editing managed files.
 
+## Persistent account navigation
+
+When product account tabs and managed account tabs live in different route groups, mount one `AccountSettingsShell` in their shared persistent ancestor. The shell provides a context so nested account layouts pass their content through without duplicating the header, navigation or loading boundary. Keep the application chrome above that shell and route loading placeholders inside its content panel. This presentation wrapper does not replace route-level authentication or authorisation. Exclude sign-in, recovery and onboarding routes from a pathname-based settings wrapper.
+
 ## Developer-owned extensions
 
 The CLI installs missing starters under `src/supacharger.adapters/account/` once and preserves them on later updates:

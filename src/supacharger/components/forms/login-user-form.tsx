@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -21,8 +22,6 @@ import {
 } from '@/lib/supabase/supacharger/supabase-auth';
 import { getSafeNextPath, withNextPath } from '@/supacharger/auth/safe-next-path';
 import { signUpTermsUrl } from '@/supacharger/auth/sign-up-terms';
-import AuthProviderButtons, { EnabledAuthProviderIcons } from '@/supacharger/components/buttons/auth-provider-buttons';
-import NewPasswordFields from '@/supacharger/components/forms/new-password-fields';
 import { ResendVerificationEmail } from '@/supacharger/components/forms/resend-verification-email';
 import { useTurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
@@ -47,6 +46,11 @@ interface LoginUserFormProps {
 
 const emailSchema = z.string().trim().pipe(z.email());
 const OTP_SUCCESS_REDIRECT_DELAY_MS = 450;
+const AuthProviderButtons = dynamic(() => import('@/supacharger/components/buttons/auth-provider-buttons'));
+const EnabledAuthProviderIcons = dynamic(() =>
+  import('@/supacharger/components/buttons/auth-provider-buttons').then((module) => module.EnabledAuthProviderIcons),
+);
+const NewPasswordFields = dynamic(() => import('@/supacharger/components/forms/new-password-fields'));
 
 function isPasswordModeAvailable(mode: AuthMode) {
   return mode === 'signin'
@@ -250,7 +254,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
 
     if (mode === 'signup') {
       const challenge = turnstile.takeToken();
-      if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
+      if (turnstile.enabled && !challenge) {
+        setError(t('turnstileRequired'));
+        return;
+      }
       const formData = new FormData();
       formData.set('turnstileToken', challenge ?? '');
       formData.set('email', normalisedEmail);
@@ -297,7 +304,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     }
 
     const challenge = turnstile.takeToken();
-    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
+    if (turnstile.enabled && !challenge) {
+      setError(t('turnstileRequired'));
+      return;
+    }
     const formData = new FormData();
     formData.set('turnstileToken', challenge ?? '');
     formData.set('email', normalisedEmail);
@@ -335,7 +345,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
   async function requestVerificationEmail() {
     if (!parsedEmail.success || pendingAction !== null) return;
     const challenge = turnstile.takeToken();
-    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
+    if (turnstile.enabled && !challenge) {
+      setError(t('turnstileRequired'));
+      return;
+    }
 
     setPendingAction('verification-email');
     try {
@@ -377,7 +390,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
     const validatedEmail = validateEmail();
     if (!validatedEmail) return;
     const challenge = turnstile.takeToken();
-    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return; }
+    if (turnstile.enabled && !challenge) {
+      setError(t('turnstileRequired'));
+      return;
+    }
     setPendingAction('passwordless-email');
     startAuthTransition(async () => {
       try {
@@ -412,7 +428,10 @@ export function LoginUserForm({ initialMode = 'signin', nextPath = null, onFormH
 
   async function resendPasswordlessEmail() {
     const challenge = turnstile.takeToken();
-    if (turnstile.enabled && !challenge) { setError(t('turnstileRequired')); return false; }
+    if (turnstile.enabled && !challenge) {
+      setError(t('turnstileRequired'));
+      return false;
+    }
     const result =
       verificationPurpose === 'signup'
         ? await signUpWithEmail(verificationEmail, safeNextPath, challenge)

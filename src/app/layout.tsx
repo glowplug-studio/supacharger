@@ -1,9 +1,10 @@
 import { PropsWithChildren, Suspense } from 'react';
 import { Instrument_Sans } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 import { ThemeProvider } from 'next-themes';
 
+import SupachargerPageHooks from '@/supacharger.adapters/generated/page-hooks';
 import { AuthConfirmationNotice } from '@/supacharger/components/auth/auth-confirmation-notice';
 import { AuthLoginNotice } from '@/supacharger/components/auth/auth-login-notice';
 import { SmoothAnchorNavigation } from '@/supacharger/components/layout/smooth-anchor-navigation';
@@ -35,7 +36,7 @@ export async function generateMetadata() {
 export const viewport = createSupachargerViewport(SC_CONFIG);
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const [locale, messages] = await Promise.all([getLocale(), getMessages()]);
+  const [locale, messages, global] = await Promise.all([getLocale(), getMessages(), getTranslations('Global')]);
   const applicationContent = (
     <>
       <Suspense fallback={null}>
@@ -63,9 +64,20 @@ export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={cn('font-sans antialiased', instrumentSans.variable)}>
+        <a
+          className='bg-background text-foreground focus-visible:ring-ring pointer-events-none fixed top-3 left-3 z-50 -translate-y-24 rounded-lg px-4 py-3 font-medium opacity-0 shadow-sm transition focus:pointer-events-auto focus:translate-y-0 focus:opacity-100 focus-visible:ring-2 focus-visible:outline-none'
+          href='#main-content'
+        >
+          {global('skipToContent')}
+        </a>
         <SmoothAnchorNavigation />
-        {content}
+        <div id='main-content' tabIndex={-1}>
+          {content}
+        </div>
         {SC_CONFIG.ROOT_PROVIDERS.TOASTS ? <SupachargerToastContainer config={SC_CONFIG.TOAST_CONFIG} /> : null}
+        <Suspense fallback={null}>
+          <SupachargerPageHooks />
+        </Suspense>
         <SupachargerAnalytics config={SC_CONFIG} />
       </body>
     </html>

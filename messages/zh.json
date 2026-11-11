@@ -534,6 +534,9 @@
         },
         {
           "title": "界面工具"
+        },
+        {
+          "title": ""
         }
       ],
       "packageTitle": "您将获得的 package.json",
@@ -979,47 +982,25 @@
         "name": "起步",
         "price": "免费",
         "description": "创建一个专注的圆环，迎接最初的成员。",
-        "features": [
-          "一个社群圆环",
-          "共享对话",
-          "相聚计划",
-          "成员资料"
-        ]
+        "features": ["一个社群圆环", "共享对话", "相聚计划", "成员资料"]
       },
       {
         "name": "成长",
         "price": "9.99 美元/月",
         "description": "用更多连接与参与方式，滋养一个活跃的社群。",
-        "features": [
-          "包含“起步”的全部功能",
-          "多个圆环",
-          "引导者与角色",
-          "优先支持"
-        ]
+        "features": ["包含“起步”的全部功能", "多个圆环", "引导者与角色", "优先支持"]
       },
       {
         "name": "共荣",
         "price": "定制",
         "description": "以周全的治理与关怀，支持由多个社群组成的网络。",
-        "features": [
-          "包含“成长”的全部功能",
-          "网络管理",
-          "引导式加入流程",
-          "专属支持"
-        ]
+        "features": ["包含“成长”的全部功能", "网络管理", "引导式加入流程", "专属支持"]
       }
     ],
     "compliance": {
       "title": "安心是平台体验的一部分",
       "description": "清晰的权限、私密圆环与周全的默认设置，让每个人都能决定如何参与、分享什么。",
-      "items": [
-        "私密圆环",
-        "清晰角色",
-        "数据控制",
-        "安全访问",
-        "成员自主选择",
-        "周全的默认设置"
-      ]
+      "items": ["私密圆环", "清晰角色", "数据控制", "安全访问", "成员自主选择", "周全的默认设置"]
     },
     "faqs": [
       {
@@ -1054,43 +1035,26 @@
         "name": "起步",
         "description": "适合正在找到节奏的新圆环",
         "price": "每月 10 美元",
-        "features": [
-          "50 位圆环成员",
-          "10 个活跃空间"
-        ]
+        "features": ["50 位圆环成员", "10 个活跃空间"]
       },
       {
         "name": "成长",
         "description": "适合持续加深连接的社群",
         "price": "每月 20 美元",
-        "features": [
-          "100 位圆环成员",
-          "20 个活跃空间",
-          "优先支持"
-        ]
+        "features": ["100 位圆环成员", "20 个活跃空间", "优先支持"]
       },
       {
         "name": "共荣",
         "description": "适合帮助多个圆环蓬勃发展的网络",
         "price": "每月 100 美元",
-        "features": [
-          "300 位社群成员",
-          "100 个活跃空间",
-          "100 位引导者与团队成员",
-          "高级关怀管理"
-        ]
+        "features": ["300 位社群成员", "100 个活跃空间", "100 位引导者与团队成员", "高级关怀管理"]
       }
     ],
     "lifetime": {
       "title": "创始成员终身方案",
       "description": "一次付费即可永久使用 Kuro 核心体验，并从根基开始帮助社群成长。",
       "included": "方案包含",
-      "features": [
-        "私密创始圆环",
-        "成员成长资源",
-        "年度相聚活动入场资格",
-        "创始成员礼物"
-      ],
+      "features": ["私密创始圆环", "成员成长资源", "年度相聚活动入场资格", "创始成员礼物"],
       "access": "陪伴每个篇章的无限使用权",
       "price": "500 美元",
       "getStarted": "成为创始成员"
@@ -1674,6 +1638,7 @@
     "AnotherSkillsInstallationIsActiveInspect": "",
     "RefusingUnsafeSkillDestinationValue": "",
     "ExistingSkillValueIsNotTracked": "",
+    "SkillSourceMismatchValue": "",
     "LocalChangesInValueInstallationRefused": "",
     "ValueIsInstalledUseSkillsUpdate": "",
     "ValueIsNotInstalledUseSkills": "",
@@ -1685,6 +1650,8 @@
     "UseUpdate": "",
     "UpdatePrompt": "",
     "InstallPrompt": "",
+    "LocalUpdatePrompt": "",
+    "LocalInstallPrompt": "",
     "InstalledResult": "",
     "UpdatedResult": "",
     "NoChanges": "",
@@ -1729,86 +1696,55 @@
   "SupabaseEmailResources": {
     "confirm-signup": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "invite-user": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "magic-link-or-otp": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "change-email-address": {
       "title": "",
-      "paragraphs": [
-        ""
-      ],
+      "paragraphs": [""],
       "button": ""
     },
     "reauthentication": {
       "title": "",
-      "paragraphs": [
-        ""
-      ]
+      "paragraphs": [""]
     },
     "password-changed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "email-address-changed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "mfa-method-removed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "mfa-method-added": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "phone-number-changed": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "identity-linked": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     },
     "identity-unlinked": {
       "title": "",
-      "paragraphs": [
-        "",
-        ""
-      ]
+      "paragraphs": ["", ""]
     }
   },
   "EmailChangeResult": {

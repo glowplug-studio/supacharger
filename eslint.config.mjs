@@ -1,7 +1,7 @@
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
-export default [
+const config = [
   ...(Array.isArray(nextCoreWebVitals) ? nextCoreWebVitals : [nextCoreWebVitals]),
   {
     plugins: {
@@ -31,6 +31,8 @@ export default [
     },
   },
   {
-    ignores: ['.next/**', 'next-env.d.ts', 'node_modules/**'],
+    ignores: ['.next/**', 'next-env.d.ts', 'node_modules/**', 'tools/specdrive-mcp/**'],
   },
 ];
+
+export default config;

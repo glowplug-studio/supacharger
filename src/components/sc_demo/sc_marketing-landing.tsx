@@ -163,7 +163,7 @@ export default function SCMarketingLanding() {
   return (
     <main className='bg-background text-foreground overflow-hidden'>
       <section className='relative min-h-[100dvh] scroll-mt-16 pt-16' id='hero'>
-        <div className='absolute inset-x-0 top-16 h-[560px] bg-[radial-gradient(circle_at_50%_18%,rgba(0,163,80,0.12),transparent_58%)]' />
+        <div className='absolute inset-x-0 top-10 h-[880px] bg-[radial-gradient(ellipse_at_50%_8%,rgba(0,163,80,0.14),transparent_78%)]' />
         <div className='relative mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 lg:px-8 lg:pt-32'>
           <div className='sc-home-enter mx-auto max-w-4xl text-center'>
             <Link
@@ -190,7 +190,7 @@ export default function SCMarketingLanding() {
                 asChild
                 className={cn(
                   marketingButtonClassName,
-                  'border-border bg-white text-neutral-950 hover:bg-white/90 hover:text-neutral-950 shadow-none active:scale-[0.98]',
+                  'border-border bg-white text-neutral-950 shadow-none hover:bg-white/90 hover:text-neutral-950 active:scale-[0.98]',
                 )}
                 variant='outline'
               >
@@ -245,7 +245,7 @@ export default function SCMarketingLanding() {
               alt={t('images.mobileScreens')}
               className='h-full w-full object-contain object-center transition-transform duration-500 hover:scale-[1.015]'
               height={1024}
-              loading='eager'
+              loading='lazy'
               sizes='(max-width: 1024px) 100vw, 58vw'
               src='/images/sc_demo/sc-marketing-hero.webp'
               width={1536}
@@ -336,16 +336,14 @@ export default function SCMarketingLanding() {
         </div>
       </section>
 
-      <section className='border-border bg-muted/35 scroll-mt-16 border-y px-4 py-20 sm:px-6 lg:px-8' id='about'>
-        <div className='mx-auto max-w-7xl'>
+      <section className='border-border bg-muted/35 scroll-mt-16 border-y py-20' id='about'>
+        <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
           <SCSectionHeading description={t('experiences.description')} title={t('experiences.title')} />
 
           <div className='mt-16 space-y-16 lg:space-y-24'>
             {localisedExperiences.map((experience, index) => (
               <div className='grid items-center gap-9 md:grid-cols-2 lg:gap-16' key={experience.title}>
-                <div
-                  className={`overflow-hidden rounded-lg bg-[#e4f7e8] ${index % 2 === 1 ? 'md:order-2' : ''}`}
-                >
+                <div className={`overflow-hidden rounded-lg bg-[#e4f7e8] ${index % 2 === 1 ? 'md:order-2' : ''}`}>
                   <Image
                     alt={experience.imageAlt}
                     className={`aspect-[4/3] h-full w-full transition-transform duration-500 hover:scale-[1.015] ${experience.imageClassName}`}

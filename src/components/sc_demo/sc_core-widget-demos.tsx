@@ -1,9 +1,19 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { Check, CheckCircle2, Crop, FileUp, Image as ImageIcon, PanelsTopLeft, UploadCloud, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  Crop,
+  FileUp,
+  Image as ImageIcon,
+  PanelsTopLeft,
+  UploadCloud,
+  X,
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 
 import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
@@ -22,8 +32,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { Switch } from '@/components/ui/switch';
 import { SC_CONFIG } from '@/supacharger.config';
+import { ClipboardCopyButton } from '@/supacharger/components/buttons/clipboard-copy-button';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 
 import type { ImageCrop } from '../../../supabase/functions/_shared/image-target-contract';
@@ -182,6 +195,140 @@ function ModalDemo({
   );
 }
 
+function ExitIntentDemo({
+  accessLabel,
+  ctaLabel,
+  description,
+  dialogDescription,
+  dialogTitle,
+  disableLabel,
+  dismissLabel,
+  enabledHint,
+  enableLabel,
+  eyebrow,
+  featureLabels,
+  label,
+  priceLabel,
+  priceNote,
+}: {
+  accessLabel: string;
+  ctaLabel: string;
+  description: string;
+  dialogDescription: string;
+  dialogTitle: string;
+  disableLabel: string;
+  dismissLabel: string;
+  enabledHint: string;
+  enableLabel: string;
+  eyebrow: string;
+  featureLabels: string[];
+  label: string;
+  priceLabel: string;
+  priceNote: string;
+}) {
+  const [enabled, setEnabled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!enabled || open) return;
+
+    function handlePointerLeave(event: MouseEvent) {
+      if (event.clientY <= 0 && !event.relatedTarget) setOpen(true);
+    }
+
+    document.addEventListener('mouseout', handlePointerLeave);
+    return () => document.removeEventListener('mouseout', handlePointerLeave);
+  }, [enabled, open]);
+
+  return (
+    <>
+      <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
+        <div className='flex w-full items-start justify-between gap-4'>
+          <div>
+            <h3 className='text-foreground text-sm font-medium'>{label}</h3>
+            <p className='text-muted-foreground mt-1 text-sm'>{description}</p>
+          </div>
+          <Switch
+            aria-label={enabled ? disableLabel : enableLabel}
+            checked={enabled}
+            className='mt-0.5'
+            onCheckedChange={(checked) => {
+              setEnabled(checked);
+              if (!checked) setOpen(false);
+            }}
+          />
+        </div>
+        {enabled ? (
+          <p className='text-primary mt-4 flex items-center gap-2 text-sm font-medium' role='status'>
+            <span aria-hidden='true' className='size-2 rounded-full bg-current' />
+            {enabledHint}
+          </p>
+        ) : null}
+      </section>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent
+          className='border-border max-h-[calc(100dvh-2rem)] max-w-5xl gap-0 overflow-y-auto rounded-2xl p-0'
+          motion='fade'
+        >
+          <div className='grid min-h-[34rem] md:grid-cols-[0.82fr_1.18fr]'>
+            <aside className='bg-secondary text-secondary-foreground relative flex flex-col overflow-hidden p-8 sm:p-10'>
+              <div
+                aria-hidden='true'
+                className='border-secondary-foreground/10 absolute -right-24 -bottom-36 size-96 rounded-full border'
+              />
+              <div
+                aria-hidden='true'
+                className='border-secondary-foreground/10 absolute -right-8 -bottom-52 size-96 rounded-full border'
+              />
+              <p className='relative text-xs font-semibold tracking-[0.2em] uppercase'>{eyebrow}</p>
+              <div className='relative my-auto py-12'>
+                <p className='text-5xl leading-none font-medium tracking-[-0.06em] sm:text-7xl'>{accessLabel}</p>
+                <p className='mt-5 max-w-xs text-lg leading-7'>{priceNote}</p>
+              </div>
+              <div className='relative border-t border-current/20 pt-7'>
+                <p className='text-4xl font-medium tracking-[-0.04em]'>{priceLabel}</p>
+              </div>
+            </aside>
+
+            <div className='bg-card text-card-foreground flex flex-col p-8 sm:p-10 md:p-12'>
+              <div className='my-auto'>
+                <DialogHeader>
+                  <DialogTitle className='max-w-xl text-3xl leading-tight font-medium tracking-[-0.04em] text-balance sm:text-5xl'>
+                    {dialogTitle}
+                  </DialogTitle>
+                  <DialogDescription className='text-muted-foreground mt-5 max-w-lg text-base leading-7'>
+                    {dialogDescription}
+                  </DialogDescription>
+                </DialogHeader>
+                <ul className='mt-8 grid gap-4 sm:grid-cols-2' role='list'>
+                  {featureLabels.map((feature) => (
+                    <li className='text-muted-foreground flex items-start gap-3 text-sm leading-6' key={feature}>
+                      <Check aria-hidden='true' className='text-primary mt-1 size-4 shrink-0' />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild className='mt-10 h-12 w-full rounded-lg text-base'>
+                  <Link href='/account/create'>
+                    {ctaLabel}
+                    <ArrowRight aria-hidden='true' className='size-4' />
+                  </Link>
+                </Button>
+                <DialogClose asChild>
+                  <Button className='mt-3 w-full rounded-lg' type='button' variant='ghost'>
+                    {dismissLabel}
+                  </Button>
+                </DialogClose>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
 function UIDemos({
   cancelLabel,
   doneLabel,
@@ -194,10 +341,27 @@ function UIDemos({
   modalTitle,
   confettiDescription,
   confettiLabel,
+  exitIntentAccessLabel,
+  exitIntentCtaLabel,
+  exitIntentDescription,
+  exitIntentDialogDescription,
+  exitIntentDialogTitle,
+  exitIntentDisableLabel,
+  exitIntentDismissLabel,
+  exitIntentEnabledHint,
+  exitIntentEnableLabel,
+  exitIntentEyebrow,
+  exitIntentFeatures,
+  exitIntentLabel,
+  exitIntentPriceLabel,
+  exitIntentPriceNote,
   toastDescription,
   toastLabel,
   toastMessage,
   toastButtonLabel,
+  copyDemoDescription,
+  copyDemoLabel,
+  copyDemoValue,
   gatingTitle,
   gatingDescription,
   gatingButtonLabel,
@@ -213,10 +377,27 @@ function UIDemos({
   modalTitle: string;
   confettiDescription: string;
   confettiLabel: string;
+  exitIntentAccessLabel: string;
+  exitIntentCtaLabel: string;
+  exitIntentDescription: string;
+  exitIntentDialogDescription: string;
+  exitIntentDialogTitle: string;
+  exitIntentDisableLabel: string;
+  exitIntentDismissLabel: string;
+  exitIntentEnabledHint: string;
+  exitIntentEnableLabel: string;
+  exitIntentEyebrow: string;
+  exitIntentFeatures: string[];
+  exitIntentLabel: string;
+  exitIntentPriceLabel: string;
+  exitIntentPriceNote: string;
   toastDescription: string;
   toastLabel: string;
   toastMessage: string;
   toastButtonLabel: string;
+  copyDemoDescription: string;
+  copyDemoLabel: string;
+  copyDemoValue: string;
   gatingTitle: string;
   gatingDescription: string;
   gatingButtonLabel: string;
@@ -234,7 +415,7 @@ function UIDemos({
         <h3 className='text-foreground mb-3 text-sm font-medium'>{loadersTitle}</h3>
         <LoaderDemos imageLabel={imageLoaderLabel} inlineLabel={inlineLoaderLabel} inverseLabel={inverseLoaderLabel} />
       </section>
-      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+      <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
           <h3 className='text-foreground text-sm font-medium'>{toastLabel}</h3>
           <p className='text-muted-foreground mt-1 mb-4 text-sm'>{toastDescription}</p>
@@ -270,17 +451,50 @@ function UIDemos({
             />
           </div>
         </section>
+        <section className='border-border bg-background flex min-w-0 flex-col items-start rounded-lg border p-4'>
+          <h3 className='text-foreground text-sm font-medium'>{copyDemoLabel}</h3>
+          <p className='text-muted-foreground mt-1 mb-4 text-sm'>{copyDemoDescription}</p>
+          <div className='relative mt-auto w-full'>
+            <Input
+              aria-label={copyDemoLabel}
+              className='bg-background h-10 pr-12 text-sm'
+              readOnly
+              value={copyDemoValue}
+            />
+            <div className='border-border absolute inset-y-0 right-0 flex items-center border-l px-1'>
+              <ClipboardCopyButton className='size-8 rounded-sm' size='icon' value={copyDemoValue} variant='ghost' />
+            </div>
+          </div>
+        </section>
       </div>
-      <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
-        <h3 className='text-foreground text-sm font-medium'>{confettiLabel}</h3>
-        <p className='text-muted-foreground mt-1 mb-4 text-sm'>{confettiDescription}</p>
-        <DemoConfettiToggle />
-      </section>
+      <div className='grid gap-4 md:grid-cols-2'>
+        <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
+          <h3 className='text-foreground text-sm font-medium'>{confettiLabel}</h3>
+          <p className='text-muted-foreground mt-1 mb-4 text-sm'>{confettiDescription}</p>
+          <DemoConfettiToggle />
+        </section>
+        <ExitIntentDemo
+          accessLabel={exitIntentAccessLabel}
+          ctaLabel={exitIntentCtaLabel}
+          description={exitIntentDescription}
+          dialogDescription={exitIntentDialogDescription}
+          dialogTitle={exitIntentDialogTitle}
+          disableLabel={exitIntentDisableLabel}
+          dismissLabel={exitIntentDismissLabel}
+          enabledHint={exitIntentEnabledHint}
+          enableLabel={exitIntentEnableLabel}
+          eyebrow={exitIntentEyebrow}
+          featureLabels={exitIntentFeatures}
+          label={exitIntentLabel}
+          priceLabel={exitIntentPriceLabel}
+          priceNote={exitIntentPriceNote}
+        />
+      </div>
     </div>
   );
 }
 
-export function SCCoreWidgetDemos() {
+export function SCCoreWidgetDemos({ developerTools }: { developerTools: ReactNode }) {
   const t = useTranslations('MarketingFeaturePages.coreWidgetDemos');
   const fileCopy = useTranslations('SCWidgets.fileUpload');
   const cropCopy = useTranslations('SCWidgets.imageCrop');
@@ -447,10 +661,27 @@ export function SCCoreWidgetDemos() {
           modalTitle={t('modalDialogTitle')}
           confettiDescription={t('confettiDescription')}
           confettiLabel={t('confettiLabel')}
+          exitIntentAccessLabel={t('exitIntentAccessLabel')}
+          exitIntentCtaLabel={t('exitIntentCtaLabel')}
+          exitIntentDescription={t('exitIntentDescription')}
+          exitIntentDialogDescription={t('exitIntentDialogDescription')}
+          exitIntentDialogTitle={t('exitIntentDialogTitle')}
+          exitIntentDisableLabel={t('exitIntentDisableLabel')}
+          exitIntentDismissLabel={t('exitIntentDismissLabel')}
+          exitIntentEnabledHint={t('exitIntentEnabledHint')}
+          exitIntentEnableLabel={t('exitIntentEnableLabel')}
+          exitIntentEyebrow={t('exitIntentEyebrow')}
+          exitIntentFeatures={t.raw('exitIntentFeatures') as string[]}
+          exitIntentLabel={t('exitIntentLabel')}
+          exitIntentPriceLabel={t('exitIntentPriceLabel')}
+          exitIntentPriceNote={t('exitIntentPriceNote')}
           toastDescription={t('toastDescription')}
           toastLabel={t('toastLabel')}
           toastMessage={t('toastMessage')}
           toastButtonLabel={t('toastButtonLabel')}
+          copyDemoDescription={t('copyDemoDescription')}
+          copyDemoLabel={t('copyDemoLabel')}
+          copyDemoValue={t('copyDemoValue')}
           gatingTitle={t('gatingTitle')}
           gatingDescription={t('gatingDescription')}
           gatingButtonLabel={t('gatingButtonLabel')}
@@ -460,23 +691,38 @@ export function SCCoreWidgetDemos() {
   ];
 
   return (
-    <div className='bg-background text-foreground'>
-      <section className='px-4 pt-24 pb-14 sm:px-6 lg:px-8 lg:pb-20'>
-        <div className='mx-auto max-w-7xl'>
-          <h1 className='max-w-4xl text-4xl leading-[1.08] font-normal tracking-[-0.04em] text-balance sm:text-6xl'>
-            {t('title')}
-          </h1>
-          <p className='text-muted-foreground mt-6 max-w-2xl text-base leading-7'>{t('description')}</p>
+    <div className='bg-background text-foreground min-h-screen pt-16'>
+      <section className='border-border border-b'>
+        <div className='mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28'>
+          <h1 className='max-w-4xl text-4xl font-normal tracking-[-0.04em] text-balance sm:text-5xl'>{t('title')}</h1>
+          <p className='text-muted-foreground mt-6 max-w-3xl text-base leading-7'>{t('description')}</p>
+          <p className='text-muted-foreground mt-4 text-sm leading-6'>
+            {t('builtOnPrefix')}{' '}
+            <a
+              className='text-foreground decoration-border focus-visible:outline-ring font-medium underline underline-offset-4 transition-colors hover:decoration-current focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2'
+              href='https://ui.shadcn.com/'
+              rel='noreferrer'
+              target='_blank'
+            >
+              shadcn/ui
+            </a>
+            .
+          </p>
         </div>
       </section>
 
-      <section className='border-border bg-muted/20 border-y px-4 py-14 sm:px-6 lg:px-8 lg:py-20'>
-        <div className='mx-auto max-w-7xl space-y-6'>
+      <section className='border-border bg-muted/20 border-y py-14 lg:py-20'>
+        <div className='mx-auto w-full max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8'>
           {[[demos[0], demos[1]], [demos[2]], [demos[3], demos[4]], [demos[5]]].map((group) => (
             <div key={group[0].title} className={group.length === 2 ? 'grid gap-6 md:grid-cols-2' : ''}>
               {group.map(({ description, icon: Icon, title, widget }) => (
-                <article className={`border-border bg-card grid overflow-hidden rounded-lg border ${group.length === 1 ? 'lg:grid-cols-[0.62fr_1.38fr]' : ''}`} key={title}>
-                  <div className={`border-border border-b p-6 lg:p-8 ${group.length === 1 ? 'lg:border-r lg:border-b-0' : ''}`}>
+                <article
+                  className={`border-border bg-card grid overflow-hidden rounded-lg border ${group.length === 1 ? 'lg:grid-cols-[0.62fr_1.38fr]' : ''}`}
+                  key={title}
+                >
+                  <div
+                    className={`border-border border-b p-6 lg:p-8 ${group.length === 1 ? 'lg:border-r lg:border-b-0' : ''}`}
+                  >
                     <div className='border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border'>
                       <Icon aria-hidden='true' className='size-4' />
                     </div>
@@ -491,8 +737,8 @@ export function SCCoreWidgetDemos() {
         </div>
       </section>
 
-      <section className='border-border border-b px-4 py-8 sm:px-6 lg:px-8'>
-        <div className='mx-auto flex max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+      <section className='border-border border-b py-8'>
+        <div className='mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8'>
           <div>
             <h2 className='text-2xl font-medium tracking-tight'>{t('paywallStripTitle')}</h2>
             <p className='text-muted-foreground mt-3 text-sm'>{t('paywallStripDescription')}</p>
@@ -502,6 +748,8 @@ export function SCCoreWidgetDemos() {
           </Button>
         </div>
       </section>
+
+      {developerTools}
 
       <span className='sr-only'>
         {avatarCrop ? JSON.stringify(avatarCrop) : ''}

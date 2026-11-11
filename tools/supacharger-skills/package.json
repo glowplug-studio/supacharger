@@ -1,8 +1,8 @@
 {
-  "name": "supacharger-public-skills",
+  "name": "supacharger-skills",
   "version": "0.1.0",
   "private": true,
-  "description": "Canonical free public skills installer, distributed by the Supacharger CLI",
+  "description": "Canonical public and authorised local-source skills installer, distributed by the Supacharger CLI",
   "scripts": {
     "test": "node --test test/*.test.cjs"
   },

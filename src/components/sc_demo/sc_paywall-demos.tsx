@@ -6,10 +6,11 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import {
   ArrowRight,
-  BadgeDollarSign,
   Check,
   CreditCard,
+  CreditCardReader,
   ExternalLink,
+  HandCoins,
   Info,
   LockKeyhole,
   PackagePlus,
@@ -87,8 +88,8 @@ export function SCPaywallDemoGallery() {
 
   return (
     <>
-      <section className='px-4 py-16 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-7xl'>
+      <section className='py-16'>
+        <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
           <h2 className='max-w-2xl text-3xl leading-tight font-normal tracking-[-0.035em] text-balance sm:text-5xl'>
             {content.galleryTitle}
           </h2>
@@ -192,7 +193,7 @@ export function SCPaywallDemoGallery() {
             </article>
 
             <article className='border-border bg-card h-full rounded-lg border p-6' data-paywall-demo='trial'>
-              <BadgeDollarSign aria-hidden='true' className='text-primary size-5' />
+              <CreditCardReader aria-hidden='true' className='text-primary size-5' />
               <h3 className='mt-5 text-xl font-medium tracking-[-0.02em]'>
                 {translatedText(
                   content.products.trialTitle,
@@ -335,14 +336,13 @@ export function SCPaywallDemoGallery() {
                 ) : null}
               </div>
             </article>
-
           </div>
         </div>
       </section>
 
-      <section className='border-border bg-muted/35 border-y px-4 py-20 sm:px-6 lg:px-8'>
-        <div className='mx-auto max-w-7xl'>
-          <BadgeDollarSign aria-hidden='true' className='text-primary size-6' />
+      <section className='border-border bg-muted/35 border-y py-20'>
+        <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
+          <HandCoins aria-hidden='true' className='text-primary size-6' />
           <h2 className='mt-6 max-w-2xl text-3xl leading-tight font-normal tracking-[-0.035em] text-balance sm:text-5xl'>
             {content.billingCta.title}
           </h2>

@@ -70,7 +70,7 @@ Legacy releases without the declarative distribution contract retain the old app
 
 The private `.agents/supacharger/core-development/` contributor checkout remains opt-in through `supacharger coredev install` and `supacharger coredev update`. Ordinary CLI commands do not initialise it.
 
-Public skills remain separate. Their own `.supacharger/skills-lock.json` contains source commits and integrity hashes because skills are independently installed files; this does not affect Core file comparison.
+Public and licensed skills remain separate from Core. Their own `.supacharger/skills-lock.json` contains the actual source repository, immutable commit and integrity hashes because skills are independently installed files; this does not affect Core file comparison. Licensed skills are absent from the public selector and require an authorised committed checkout through `--source` for installation and updates. A legacy local-source record mislabelled as public is corrected only when the same immutable commit and installed hashes verify against the authorised checkout.
 
 ## Application test and reference cleanup
 

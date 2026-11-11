@@ -83,48 +83,51 @@ export default async function SCFooter() {
 
         <div className='border-border text-muted-foreground mt-6 grid gap-3 border-t pt-7 text-sm sm:grid-cols-3 sm:items-start'>
           <div>
-            <p>
-              © {new Date().getFullYear()} {global('siteTitle')}. {t('allRightsReserved')}
+            <p className='leading-6'>
+              <span className='block'>
+                © {new Date().getFullYear()} {global('siteTitle')}
+              </span>
+              <span className='block'>
+                Supacharger Theme by{' '}
+                <a
+                  className='hover:text-foreground focus-visible:text-foreground underline underline-offset-4 focus-visible:outline-none'
+                  href='https://glowplug.studio'
+                  rel='noopener noreferrer'
+                  target='_blank'
+                >
+                  Glowplug
+                </a>
+                . {t('allRightsReserved')}
+              </span>
             </p>
-            <div className='mt-1 flex gap-3 text-[11px]'>
-              <a href='/legal#terms' target='_blank' rel='noopener noreferrer' className='hover:underline'>
+          </div>
+          <div className='text-center'>
+            <p className='text-sm leading-6'>
+              {t('firstBuiltIn')}{' '}
+              <a
+                className='hover:text-foreground focus-visible:text-foreground underline underline-offset-4 focus-visible:outline-none'
+                href='https://en.wikipedia.org/wiki/Koru'
+                rel='noopener noreferrer'
+                target='_blank'
+              >
+                {t('newZealand')}
+              </a>
+            </p>
+            <div className='mt-1 flex justify-center gap-3 text-[11px]'>
+              <Link
+                className='hover:text-foreground focus-visible:text-foreground underline underline-offset-4 focus-visible:outline-none'
+                href='/legal#terms'
+              >
                 {t('termsOfUse')}
-              </a>
-              <a href='/legal#privacy' target='_blank' rel='noopener noreferrer' className='hover:underline'>
+              </Link>
+              <Link
+                className='hover:text-foreground focus-visible:text-foreground underline underline-offset-4 focus-visible:outline-none'
+                href='/legal#privacy'
+              >
                 {t('privacyPolicy')}
-              </a>
+              </Link>
             </div>
           </div>
-          <p className='text-center text-[11px]'>
-            {t('firstBuiltIn')}{' '}
-            <a
-              className='text-primary hover:text-primary/80 font-semibold transition-colors'
-              href='https://en.wikipedia.org/wiki/Koru'
-              rel='noopener noreferrer'
-              target='_blank'
-            >
-              {t('newZealand')}
-            </a>
-            <br />
-            {t('by')}{' '}
-            <a
-              className='text-primary hover:text-primary/80 font-semibold transition-colors'
-              href='https://bio.glowplug.link'
-              rel='noopener noreferrer'
-              target='_blank'
-            >
-              @remoteproductdev
-            </a>{' '}
-            -{' '}
-            <a
-              className='text-primary hover:text-primary/80 font-semibold transition-colors'
-              href='https://glowplug.studio'
-              rel='noopener noreferrer'
-              target='_blank'
-            >
-              Glowplug
-            </a>
-          </p>
           <div className='sm:justify-self-end'>
             <SupachargerAttribution />
           </div>

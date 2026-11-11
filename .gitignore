@@ -57,6 +57,9 @@ tools/supacharger-mcp/node_modules
 
 tools/supacharger-skills/node_modules/
 
+# Build-time extension registries
+/src/supacharger.adapters/generated/
+
 # BEGIN SUPACHARGER CORE-ONLY SKILLS
 /.agents/skills/
 /.supacharger/skills-lock.json

@@ -89,7 +89,7 @@ ANALYTICS: {
 },
 ```
 
-Set the required `NEXT_PUBLIC_SITE_URL` once to the stable canonical application origin; do not duplicate it as a runtime fallback or use a preview deployment URL as the canonical base. `getSiteUrl()` validates and normalises it, while `getURL(path)` constructs canonical metadata and background links. Interactive Auth and billing destinations use validated request-origin helpers. A missing value fails clearly instead of silently redirecting to a stale host or port. `INDEXING_ENABLED` prevents development and Vercel preview deployments from being indexed by default. Enable `FAVICON_SET_ENABLED` only when `public/favicon.ico` and the standard files under `public/favicons/` exist, and set `SOCIAL_IMAGE` when the application has an appropriate Open Graph image.
+Set the required `NEXT_PUBLIC_SITE_URL` once to the stable canonical application origin; do not duplicate it as a runtime fallback or use a preview deployment URL as the canonical base. `getSiteUrl()` validates and normalises it, while `getURL(path)` constructs canonical metadata and background links. Interactive Auth and billing destinations use validated request-origin helpers. A missing value fails clearly instead of silently redirecting to a stale host or port. `INDEXING_ENABLED` prevents development and Vercel preview deployments from being indexed by default. Enable `FAVICON_SET_ENABLED` only when the standard files under `public/favicons/` exist, and set `SOCIAL_IMAGE` when the application has an appropriate Open Graph image.
 
 Child pages can export a normal Next.js `metadata` object to receive the configured title template, or use the protected helper when they also need consistent canonical and social metadata:
 
@@ -577,7 +577,7 @@ empty placeholders are added only where catalogue type parity requires them.
 This covers temporary Auth refresh failures detected by Proxy, not every possible
 Supabase database or downstream service failure.
 
-## Agent instructions and public skills
+## Agent instructions and skills
 
 For handhold-me installation checklists, follow [the project-editable installation guide](docs/agents/installation.md), compare Core updates with [the immutable Core reference](docs/reports/sc-install/first-install-handhold-me-core.md), and save progress under `docs/reports/sc-install/`. Reports can be committed and are excluded from deployment uploads and traced server bundles.
 
@@ -585,7 +585,7 @@ Start at `AGENTS.md`. Shared working rules live in `.agents/supacharger/guidance
 
 `docs/agents/agent-guidance.md` indexes the technical references exposed by the read-only repository-knowledge MCP. Keep Supacharger development conventions in `docs/agents/` and repository working rules in `.agents/`.
 
-Use `supacharger skills install` to select free public skills, or `supacharger skills install general/changelog` for a named installation. Skill updates are explicit and separate from Core updates and paid extensions. Project instructions, installed skills, the optional contributor checkout and `CHANGELOG.project.md` are preserved by Core updates; shared guidance and `CHANGELOG.md` are exact-managed. Existing root instructions are not automatically replaced during upgrades.
+Use `supacharger skills install` to select free public skills, or `supacharger skills install general/changelog` for a named installation. Licensed skills are not shown in the public selector; install or update them from an authorised committed checkout, for example `supacharger skills install supacharger/core-upgrade-review --source /path/to/supacharger-license-skills`. The generated skills lock records the actual GitHub source and immutable commit and refuses cross-source updates. Skill updates are explicit and separate from Core updates and paid extensions. Project instructions, installed skills, the optional contributor checkout and `CHANGELOG.project.md` are preserved by Core updates; shared guidance and `CHANGELOG.md` are exact-managed. Existing root instructions are not automatically replaced during upgrades.
 
 See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing) for installation and ownership details.
 

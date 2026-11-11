@@ -8,7 +8,9 @@ export default async function RootLayout({ children }: PropsWithChildren) {
       id='marketing-root-layout'
       className='[&_button]:rounded-lg [&_input]:rounded-lg [&_select]:rounded-lg [&_textarea]:rounded-lg'
     >
-      <SCMarketingMenu />
+      <div id='sc-persistent-marketing-header'>
+        <SCMarketingMenu />
+      </div>
       <main className='relative flex-1'>
         <div className='relative h-full'>{children}</div>
       </main>

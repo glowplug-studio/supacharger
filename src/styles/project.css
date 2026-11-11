@@ -1,3 +1,5 @@
+@import './typeset.css';
+
 /**
  * Project: Supacharger
  *
@@ -95,6 +97,15 @@
 }
 
 @layer utilities {
+  .typeset-supacharger {
+    --typeset-font-body: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+    --typeset-font-heading: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+    --typeset-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --typeset-size: 0.875rem;
+    --typeset-leading: 1.6;
+    --typeset-flow: 1em;
+  }
+
   .sc-home-enter {
     animation: sc-home-enter 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
@@ -127,6 +138,23 @@
 
   .dark .sc-logo-marquee-item:hover .sc-logo-marquee-logo {
     filter: grayscale(0.08) brightness(1.85) contrast(1.15);
+  }
+}
+
+.sc-milkdown-demo .milkdown {
+  --crepe-base-font-size: 14px;
+  --crepe-font-default: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --crepe-font-title: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.sc-milkdown-demo .milkdown .editor {
+  min-height: 32rem;
+  padding: 1.25rem 2rem;
+}
+
+@media (width < 40rem) {
+  .sc-milkdown-demo .milkdown .editor {
+    padding-inline: 1.25rem;
   }
 }
 

@@ -130,6 +130,26 @@ graph does not include the extension through that entry. Direct payload imports
 bypass the boundary and are unsupported. TypeScript may still check files present
 in the repository; type checking is distinct from runtime bundling.
 
+### Page hooks
+
+An enabled extension may provide `page-hook.tsx` at its installed application root.
+Extension preparation discovers that convention and generates the shared page-hook
+registry. The Core root layout renders the registry after application content, so a
+hook can provide temporary global UI without requiring an application layout edit.
+The file must default-export a React component and is loaded only while the extension's
+literal configuration has `enabled: true`.
+
+Keep the hook thin. Server-only work belongs behind the hook and interactive UI in a
+narrow Client Component. Disabling or removing the extension excludes its import the
+next time Next.js loads its configuration. Do not use page hooks for authentication,
+authorisation or other request boundaries; they are presentation extensions only.
+
+Do not assume a page hook is inside the application's client-side providers. Resolve
+translated copy in the Server Component hook and pass plain strings into a narrow
+interactive control, or mount the exact provider the hook requires. A shared control
+that normally reads `next-intl` context should expose a message-driven base when a
+global hook needs to render outside that context.
+
 Preparation writes local modules only. It performs no SQL, network request, migration
 or deployment. Database administration is an explicit SQL operation, independent
 of frontend configuration and file removal. These build checks do not replace CLI update/drift verification.

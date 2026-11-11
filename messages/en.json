@@ -1,5 +1,5 @@
 {
-  "Clipboard": {"clickToCopy": "Click to copy", "copied": "Copied", "failed": "Could not copy. Please try again."},
+  "Clipboard": { "clickToCopy": "Copy", "copied": "Copied!", "failed": "Could not copy. Please try again." },
   "ServiceUnavailable": {
     "statusLabel": "Service status",
     "title": "We’ll be back shortly",
@@ -16,6 +16,7 @@
   "Global": {
     "siteTitle": "Kuro",
     "siteDescription": "Productivity, agility and workflows for teams that want to move faster.",
+    "skipToContent": "Skip to main content",
     "or": "or"
   },
   "GlobalUI": {
@@ -445,8 +446,8 @@
       "description": "Preview subscription and one-time purchase prompts for protected product features."
     },
     "coreWidgetDemos": {
-      "title": "Core Widget Demos",
-      "description": "Try the project-scoped, editable upload widgets delivered with Supacharger Core."
+      "title": "Included UI & Component Demo",
+      "description": "Explore the included project-scoped UI, editable components and developer tooling delivered with Supacharger Core."
     }
   },
   "MarketingFeaturePages": {
@@ -499,7 +500,7 @@
         }
       ],
       "stackTitle": "The installed stack",
-      "stackDescription": "The page reads exact dependency versions from package.json. Shared runtime packages are pinned for reproducible CLI updates.",
+      "stackDescription": "The page reads current runtime and development-tool versions directly from package.json. Shared packages are pinned for reproducible CLI updates.",
       "stackGroups": [
         {
           "title": "Application runtime"
@@ -509,6 +510,9 @@
         },
         {
           "title": "Interface tooling"
+        },
+        {
+          "title": "Content and build tooling"
         }
       ],
       "packageTitle": "The package.json you receive",
@@ -529,8 +533,26 @@
       "outageTitle": "Service outage",
       "outageDescription": "Preview the actual backend outage screen without disconnecting the service. Reload the page to close the preview.",
       "outageToggle": "Show outage warning",
-      "title": "Core Widget Demos",
+      "title": "Included UI & Component Demo",
       "description": "These working examples are installed into the project for developers to style, configure and extend without editing protected Core files.",
+      "builtOnPrefix": "Built on top of",
+      "developerToolsTitle": "Code and content tooling",
+      "developerToolsDescription": "The repository source is highlighted on the server with Shiki, alongside a working Milkdown Markdown editor.",
+      "shikiTitle": "Shiki · package.json",
+      "shikiDescription": "Syntax-highlighted directly from the current repository source. Choose a colour theme to compare the bundled palettes.",
+      "shikiThemeLabel": "Code colour theme",
+      "copyPackage": "Copy package.json",
+      "copiedPackage": "Copied",
+      "copyFailed": "Copy failed",
+      "milkdownTitle": "Milkdown editor",
+      "milkdownDescription": "Edit the Markdown in place and try the formatting bar, slash menu, task lists, table, links and code block.",
+      "milkdownEditorLabel": "Interactive Milkdown Markdown editor",
+      "milkdownLoading": "Loading the editor…",
+      "milkdownError": "The editor could not be loaded.",
+      "shadcnTitle": "Built with shadcn/ui",
+      "shadcnDescription": "Start with a well-made open-source component set, then shape every detail to fit your product.",
+      "shadcnLink": "Browse shadcn/ui components",
+      "shadcnImageAlt": "A selection of shadcn/ui controls, navigation, charts, forms and application panels",
       "genericTitle": "Generic file upload",
       "genericDescription": "A reusable single or multi-file selector with configurable file types, size limits, field name and deferred upload state.",
       "bannerTitle": "Resizable banner image",
@@ -559,8 +581,30 @@
       "toastLabel": "Toast notification",
       "toastDescription": "Preview the configured success toast.",
       "toastButtonLabel": "Show toast",
+      "copyDemoLabel": "Click to copy",
+      "copyDemoDescription": "Copy the example text from the read-only field.",
+      "copyDemoValue": "Lorem ipsum",
       "confettiLabel": "Page confetti",
       "confettiDescription": "Toggle the full-page celebration effect.",
+      "exitIntentLabel": "Exit-intent prompt",
+      "exitIntentDescription": "Turn it on to preview a prompt when someone is about to leave.",
+      "exitIntentEnableLabel": "Enable exit-intent prompt",
+      "exitIntentDisableLabel": "Disable exit-intent prompt",
+      "exitIntentEnabledHint": "Move your pointer beyond the top edge of the browser to test it.",
+      "exitIntentEyebrow": "Founding lifetime licence",
+      "exitIntentAccessLabel": "Kuro for good.",
+      "exitIntentPriceNote": "One payment for permanent access to the core Kuro experience.",
+      "exitIntentPriceLabel": "$500 USD",
+      "exitIntentDialogTitle": "Before you go, make work easier to run.",
+      "exitIntentDialogDescription": "Bring projects, docs and routine workflows into one focused workspace your whole team can use.",
+      "exitIntentFeatures": [
+        "Private founding workspace",
+        "Workflow templates",
+        "Founding member badge",
+        "Direct input on the roadmap"
+      ],
+      "exitIntentCtaLabel": "Become a founding member",
+      "exitIntentDismissLabel": "Not right now",
       "gatingTitle": "Feature login gating",
       "gatingDescription": "Sign up or log in to continue to a feature that requires an account.",
       "gatingButtonLabel": "Try signup gating",
@@ -604,7 +648,7 @@
       "description": "Compare public upgrade prompts without signing in. Authentication is only required when a visitor continues into an account-specific purchase flow.",
       "heroImageAlt": "Kuro product workspace showing team billing features",
       "galleryTitle": "Choose the billing boundary that fits the moment",
-      "galleryDescription": "Seven interaction patterns show how access, upgrades, products, services, and payments can appear inside a product.",
+      "galleryDescription": "Seven interaction patterns show how access, upgrades, products, services, and payments can appear inside a product. No need for detailed prompts—just tell your agent what you want and it works.",
       "items": [
         {
           "id": "modal",
@@ -666,15 +710,8 @@
         "monthlyAfterTrial": "USD per month after trial",
         "trialCta": "Start Trial",
         "redirectTable": {
-          "headers": [
-            "Feature",
-            "Availability",
-            "Action"
-          ],
-          "row": [
-            "Example feature",
-            "Available on Team"
-          ]
+          "headers": ["Feature", "Availability", "Action"],
+          "row": ["Example feature", "Available on Team"]
         },
         "trialPlans": [
           {
@@ -811,12 +848,13 @@
     "newBadge": "New",
     "promoTitle": "Announcing Declarative Schema Support",
     "promoDescription": "Define your Supabase schema in one declarative file and ship database changes with confidence.",
+    "promoImageAlt": "Fern backdrop for Supacharger declarative schema support",
     "whatsIncluded": "What's included",
     "whatsIncludedDescription": "From core product features to developer specifications.",
     "paywallDemos": "Paywall demos",
     "paywallDemosDescription": "See how calls to action encourage users to subscribe.",
-    "coreWidgetDemos": "Core Widget Demos",
-    "coreWidgetDemosDescription": "Try editable file and image upload widgets.",
+    "coreWidgetDemos": "Included UI & Component Demo",
+    "coreWidgetDemosDescription": "Try the included UI, editable components and developer tools.",
     "licenseInformation": "License information",
     "licenseInformationDescription": "Review licensing and attribution.",
     "license": "License",
@@ -868,7 +906,7 @@
     "readThirdPartyLicense": "Read {license}",
     "distributionBody": "Distribution means supplying a copy of code in source files, an application download or JavaScript sent to a browser. The source download references packages installed separately; an import or externally hosted script reference alone does not redistribute that code. Developers must follow the licences for code they use and distribute. Separately installed development tools and externally hosted scripts are outside this list.",
     "dependenciesTitle": "Licences for included third-party code",
-    "dependenciesIntro": "These licences cover third-party component source redistributed with Supacharger, including shadcn/ui, and runtime library code bundled into its built application. Each licence applies to its respective third-party code; Supacharger-owned source retains its own licence.",
+    "dependenciesIntro": "These licences cover third-party component source redistributed with Supacharger, including shadcn/ui, and third-party runtime, server, build and data packages present in the installed dependency graph. Each licence applies to its respective third-party code; Supacharger-owned source retains its own licence. This summary does not replace the complete upstream licence and notice files.",
     "groups": {
       "mit": {
         "title": "MIT",
@@ -880,19 +918,30 @@
       },
       "isc": {
         "title": "ISC and MIT",
-        "description": "Lucide icons use ISC, with MIT terms for icons derived from Feather. Retain the relevant copyright and licence notices."
+        "description": "Lucide and other ISC packages permit commercial use, modification and redistribution with their notices retained. Lucide icons derived from Feather retain MIT terms."
+      },
+      "bsd": {
+        "title": "BSD family and 0BSD",
+        "description": "Permissive BSD-family dependencies allow use and redistribution subject to their respective notice and disclaimer requirements; 0BSD imposes no attribution condition."
       },
       "mpl": {
         "title": "MPL-2.0",
-        "description": "Vercel Analytics uses MPL-2.0. When distributing covered code, make its source available under MPL; separate application files can keep their own licence."
+        "description": "The installed Vercel Analytics 1.x package uses MPL-2.0. When distributing covered code, make its source available under MPL; separate application files can keep their own licence."
+      },
+      "lgpl": {
+        "title": "LGPL-3.0-or-later",
+        "description": "Platform-specific libvips binaries used by Sharp carry LGPL terms. Review the full licence’s notice, source and relinking requirements for the form you distribute."
+      },
+      "ccBy": {
+        "title": "CC BY 4.0",
+        "description": "caniuse-lite browser compatibility data requires attribution when redistributed. Adaptations must indicate that changes were made."
       },
       "unlicense": {
         "title": "The Unlicense",
         "description": "email-validator is dedicated to the public domain and permits commercial use, modification and redistribution."
       }
     },
-    "repositoryLicense": "Supacharger source licence",
-    "legalPage": "Legal information"
+    "repositoryLicense": "Supacharger source licence"
   },
   "MarketingLanding": {
     "createAccount": "Create account",
@@ -1079,34 +1128,19 @@
         "name": "Starter",
         "price": "Free",
         "description": "For small teams getting their first workflow running.",
-        "features": [
-          "Up to 5 teammates",
-          "Boards and tasks",
-          "Basic workflows",
-          "Shared docs"
-        ]
+        "features": ["Up to 5 teammates", "Boards and tasks", "Basic workflows", "Shared docs"]
       },
       {
         "name": "Pro",
         "price": "9.99 USD/mo",
         "description": "For growing teams that need automations and more control.",
-        "features": [
-          "Everything in Starter",
-          "Unlimited workflows",
-          "Automations",
-          "Priority support"
-        ]
+        "features": ["Everything in Starter", "Unlimited workflows", "Automations", "Priority support"]
       },
       {
         "name": "Scale",
         "price": "Custom",
         "description": "For organisations running many teams and workflows.",
-        "features": [
-          "Everything in Pro",
-          "Advanced permissions",
-          "SSO and audit logs",
-          "Dedicated support"
-        ]
+        "features": ["Everything in Pro", "Advanced permissions", "SSO and audit logs", "Dedicated support"]
       }
     ],
     "compliance": {
@@ -1154,31 +1188,19 @@
         "name": "Starter",
         "description": "For a small team finding its rhythm",
         "price": "$10 per month",
-        "features": [
-          "5 team members",
-          "10 active projects"
-        ]
+        "features": ["5 team members", "10 active projects"]
       },
       {
         "name": "Pro",
         "description": "For teams scaling their workflows",
         "price": "$20 per month",
-        "features": [
-          "25 team members",
-          "Unlimited projects",
-          "Priority support"
-        ]
+        "features": ["25 team members", "Unlimited projects", "Priority support"]
       },
       {
         "name": "Scale",
         "description": "For organisations coordinating many teams",
         "price": "$100 per month",
-        "features": [
-          "100 team members",
-          "Advanced permissions",
-          "SSO and audit logs",
-          "Dedicated success manager"
-        ]
+        "features": ["100 team members", "Advanced permissions", "SSO and audit logs", "Dedicated success manager"]
       }
     ],
     "lifetime": {
@@ -1733,7 +1755,7 @@
     "UnsupportedSkillsCatalogue": "Unsupported skills catalogue.",
     "InvalidOrDuplicateSkillCatalogueEntry": "Invalid or duplicate skill catalogue entry.",
     "SkillsSourceDidNotResolveTo": "Skills source did not resolve to an immutable commit.",
-    "CannotReadPublicSkillsCatalogueValue": "Cannot read public skills catalogue: {value0}",
+    "CannotReadPublicSkillsCatalogueValue": "Cannot read skills catalogue: {value0}",
     "InvalidFileCountForValue": "Invalid file count for {value0}.",
     "LinksAndSubmodulesAreNotAllowed": "Links and submodules are not allowed inside {value0}.",
     "UnsafeSkillFilePath": "Unsafe skill file path.",
@@ -1749,10 +1771,11 @@
     "RefusingNonFileSkillsLock": "Refusing non-file skills lock.",
     "InstalledSkillContainsAnUnsafePath": "Installed skill contains an unsafe path or symbolic link.",
     "InstalledSkillContainsASpecialFile": "Installed skill contains a special file.",
-    "UnknownPublicSkillValue": "Unknown public skill: {value0}",
+    "UnknownPublicSkillValue": "Unknown skill in the selected source: {value0}",
     "AnotherSkillsInstallationIsActiveInspect": "Another skills installation is active. Inspect .supacharger/skills-install.lock before retrying.",
     "RefusingUnsafeSkillDestinationValue": "Refusing unsafe skill destination: {value0}",
     "ExistingSkillValueIsNotTracked": "Existing skill {value0} is not tracked as {value1}; preserve or move it before installing.",
+    "SkillSourceMismatchValue": "Installed skill {value0} is tracked from {value1}; use that source instead of {value2}.",
     "LocalChangesInValueInstallationRefused": "Local changes in {value0}; installation refused.",
     "ValueIsInstalledUseSkillsUpdate": "{value0} is installed. Use skills update {value1} explicitly.",
     "ValueIsNotInstalledUseSkills": "{value0} is not installed. Use skills install {value1}.",
@@ -1764,15 +1787,17 @@
     "UseUpdate": "use skills update for tracked installations",
     "UpdatePrompt": "Select free public skills to update",
     "InstallPrompt": "Select free public skills to install (Space selects; Enter confirms; empty skips)",
+    "LocalUpdatePrompt": "Select skills from this committed local source to update",
+    "LocalInstallPrompt": "Select skills from this committed local source to install (Space selects; Enter confirms; empty skips)",
     "InstalledResult": "Installed {ids} at {commit}.",
     "UpdatedResult": "Updated {ids} at {commit}.",
     "NoChanges": "No skills changed.",
     "Cancelled": "Skill selection cancelled.",
-    "CommandDescription": "Install free public agent skills from GitHub",
+    "CommandDescription": "Install agent skills from the public catalogue or a committed local source",
     "InstallDescription": "Choose skills with checkboxes, or supply category/name identifiers",
     "UpdateDescription": "Explicitly update tracked skills without overwriting local edits",
-    "RefDescription": "Public skills source ref, resolved to an immutable commit",
-    "SourceDescription": "Maintainer-only committed local skills checkout",
+    "RefDescription": "Skills source ref, resolved to an immutable commit",
+    "SourceDescription": "Committed local skills checkout, including authorised licensed skills",
     "SkipDescription": "Skip optional public skill selection",
     "OptionalFailed": "Optional skills were not installed: {reason}. Retry with supacharger skills install.",
     "RecoveryRetained": " Recovery files retained at {directory}: {reason}"
@@ -1808,9 +1833,7 @@
   "SupabaseEmailResources": {
     "confirm-signup": {
       "title": "Confirm your signup",
-      "paragraphs": [
-        "Follow this link to confirm your user:"
-      ],
+      "paragraphs": ["Follow this link to confirm your user:"],
       "button": "Confirm your mail"
     },
     "invite-user": {
@@ -1822,23 +1845,17 @@
     },
     "magic-link-or-otp": {
       "title": "Magic Link",
-      "paragraphs": [
-        "Follow this link to login:"
-      ],
+      "paragraphs": ["Follow this link to login:"],
       "button": "Log In"
     },
     "change-email-address": {
       "title": "Confirm Change of Email",
-      "paragraphs": [
-        "Follow this link to confirm the update of your email from {{ .Email }} to {{ .NewEmail }}:"
-      ],
+      "paragraphs": ["Follow this link to confirm the update of your email from {{ .Email }} to {{ .NewEmail }}:"],
       "button": "Change Email"
     },
     "reauthentication": {
       "title": "Confirm reauthentication",
-      "paragraphs": [
-        "Enter the code:"
-      ]
+      "paragraphs": ["Enter the code:"]
     },
     "password-changed": {
       "title": "Your password has been changed",

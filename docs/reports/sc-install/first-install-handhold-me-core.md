@@ -1,7 +1,7 @@
 # First install — Core checklist reference
 
 Created: unknown — not previously recorded
-Last edited: 2026-10-30T17:32:59+07:00 (Asia/Bangkok)
+Last edited: 2026-11-11T21:08:56+07:00 (Asia/Bangkok)
 
 > **DO NOT EDIT — Core CLI-managed.** This is the upstream procedure shipped with the installed Core version. Updates replace it. Execute and record progress in the developer-owned sibling `first-install-handhold-me.md`, which updates preserve. Never mark this reference complete in a consumer.
 
@@ -11,7 +11,7 @@ The remote payload only verifies the tools needed to obtain Core, obtains the ap
 
 ## Local Setup Wizard
 
-Use the installed handhold-me skill and repository instructions. Save each result in the live record before starting the next step. If a command fails, save the failure and next action before troubleshooting or asking for help. Mark completion only after verification.
+Use the installed handhold-me skill and repository instructions. Save each result in the live record before starting the next step. If a command fails, save the failure and next action before troubleshooting or asking for help. Use `[x]` only for verified completion, `[-]` for a reviewed step that is skipped or not needed, and `[ ]` for outstanding work. Record the reason whenever a step is skipped.
 
 - [ ] **Bootstrap handover.** Record the target, route, verified tools, Core/CLI versions and any earlier checkpoint immediately. Read `AGENTS.md` and `docs/agents/installation.md`. If bootstrap stopped before handhold-me was ready, save that state, run `supacharger skills install general/handhold-me` and read its installed `SKILL.md`. Preserve an older named active record instead of creating competing histories.
 - [ ] **Remaining prerequisites.** Check the versions declared by `package.json` and verify local development tools, including Docker. The human installs or upgrades Git, Node.js/npm, Docker, the Supacharger CLI and other system tools manually. Report missing prerequisites and pause dependent work.

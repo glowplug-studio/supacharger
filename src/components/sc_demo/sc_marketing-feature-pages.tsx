@@ -8,7 +8,6 @@ import {
   Code2,
   Database,
   ExternalLink,
-  FileCode2,
   Languages,
   PanelsTopLeft,
   ShieldCheck,
@@ -20,7 +19,6 @@ import { Button } from '@/components/ui/button';
 import englishMessages from '../../../messages/en.json';
 import packageJson from '../../../package.json';
 
-import { SCCopyCodeButton } from './sc_copy-code-button';
 import { SCPaywallDemoGallery } from './sc_paywall-demos';
 
 const includedIcons = [ShieldCheck, Building2, BadgeDollarSign, Languages, PanelsTopLeft, Wrench];
@@ -40,7 +38,6 @@ export function SCWhatsIncluded() {
   const t = useTranslations('MarketingFeaturePages');
   const translated = t.raw('whatsIncluded') as WhatsIncludedContent;
   const fallback = englishMessages.MarketingFeaturePages.whatsIncluded;
-  const packageCode = JSON.stringify(packageJson, null, 2);
   const items = fallback.items.map((item, index) => ({
     description: translatedText(translated.items[index]?.description, item.description),
     title: translatedText(translated.items[index]?.title, item.title),
@@ -78,23 +75,32 @@ export function SCWhatsIncluded() {
       ],
       title: translatedText(translated.stackGroups[2]?.title, fallback.stackGroups[2].title),
     },
+    {
+      packages: [
+        `Milkdown Crepe ${packageJson.dependencies['@milkdown/crepe']}`,
+        `Shiki ${packageJson.devDependencies.shiki}`,
+        `TypeScript ${packageJson.devDependencies.typescript}`,
+        `SVGR ${packageJson.devDependencies['@svgr/webpack']}`,
+      ],
+      title: translatedText(translated.stackGroups[3]?.title, fallback.stackGroups[3].title),
+    },
   ];
 
   return (
-    <div className='bg-background text-foreground'>
-      <section className='px-4 pt-24 pb-16 sm:px-6 lg:px-8 lg:pb-24'>
-        <div className='mx-auto max-w-7xl'>
-          <h1 className='max-w-3xl text-4xl leading-[1.08] font-normal tracking-[-0.04em] text-balance sm:text-6xl'>
+    <div className='bg-background text-foreground min-h-screen pt-16'>
+      <section className='border-border border-b'>
+        <div className='mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28'>
+          <h1 className='max-w-4xl text-4xl font-normal tracking-[-0.04em] text-balance sm:text-5xl'>
             {translatedText(translated.title, fallback.title)}
           </h1>
-          <p className='text-muted-foreground mt-6 max-w-2xl text-base leading-7'>
+          <p className='text-muted-foreground mt-6 max-w-3xl text-base leading-7'>
             {translatedText(translated.description, fallback.description)}
           </p>
         </div>
       </section>
 
-      <section className='border-border bg-muted/30 border-y px-4 py-16 sm:px-6 lg:px-8 lg:py-24'>
-        <div className='mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.55fr_1.45fr] lg:gap-20'>
+      <section className='border-border bg-muted/30 border-y py-16 lg:py-24'>
+        <div className='mx-auto grid w-full max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.55fr_1.45fr] lg:gap-20 lg:px-8'>
           <div>
             <h2 className='max-w-sm text-3xl font-normal tracking-[-0.035em] text-balance sm:text-4xl'>
               {translatedText(translated.capabilitiesTitle, fallback.capabilitiesTitle)}
@@ -128,8 +134,8 @@ export function SCWhatsIncluded() {
         </div>
       </section>
 
-      <section className='px-4 py-16 sm:px-6 lg:px-8 lg:py-24'>
-        <div className='mx-auto max-w-7xl'>
+      <section className='py-16 lg:py-24'>
+        <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
           <h2 className='max-w-2xl text-3xl font-normal tracking-[-0.035em] text-balance sm:text-4xl'>
             {translatedText(translated.boundariesTitle, fallback.boundariesTitle)}
           </h2>
@@ -163,8 +169,8 @@ export function SCWhatsIncluded() {
         </div>
       </section>
 
-      <section className='border-border border-y px-4 py-16 sm:px-6 lg:px-8 lg:py-24'>
-        <div className='mx-auto max-w-7xl'>
+      <section className='border-border border-y py-16 lg:py-24'>
+        <div className='mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='flex items-center gap-3'>
             <Database aria-hidden='true' className='text-primary size-5' />
             <h2 className='text-3xl font-normal tracking-[-0.035em] text-balance sm:text-4xl'>
@@ -175,7 +181,7 @@ export function SCWhatsIncluded() {
             {translatedText(translated.stackDescription, fallback.stackDescription)}
           </p>
 
-          <div className='mt-10 grid gap-10 md:grid-cols-3'>
+          <div className='mt-10 grid gap-10 md:grid-cols-2 lg:grid-cols-4'>
             {stackGroups.map((group) => (
               <div className='border-primary border-l-2 pl-5' key={group.title}>
                 <h3 className='font-medium'>{group.title}</h3>
@@ -186,37 +192,6 @@ export function SCWhatsIncluded() {
                 </ul>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className='px-4 py-16 sm:px-6 lg:px-8 lg:py-24'>
-        <div className='mx-auto max-w-7xl'>
-          <div className='flex flex-col items-start justify-between gap-6 md:flex-row md:items-end'>
-            <div>
-              <h2 className='max-w-2xl text-3xl font-normal tracking-[-0.035em] text-balance sm:text-4xl'>
-                {translatedText(translated.packageTitle, fallback.packageTitle)}
-              </h2>
-              <p className='text-muted-foreground mt-5 max-w-2xl text-sm leading-6'>
-                {translatedText(translated.packageDescription, fallback.packageDescription)}
-              </p>
-            </div>
-            <SCCopyCodeButton
-              code={packageCode}
-              copiedLabel={translatedText(translated.copiedPackage, fallback.copiedPackage)}
-              copyLabel={translatedText(translated.copyPackage, fallback.copyPackage)}
-              errorLabel={translatedText(translated.copyFailed, fallback.copyFailed)}
-            />
-          </div>
-
-          <div className='border-border bg-card mt-8 overflow-hidden rounded-lg border'>
-            <div className='border-border text-muted-foreground flex items-center gap-2 border-b px-4 py-3 font-mono text-xs'>
-              <FileCode2 aria-hidden='true' className='size-4' />
-              {translatedText(translated.packageFile, fallback.packageFile)}
-            </div>
-            <pre className='max-h-[42rem] overflow-auto p-5 text-xs leading-6 sm:p-7'>
-              <code>{packageCode}</code>
-            </pre>
           </div>
         </div>
       </section>
@@ -233,14 +208,14 @@ export function SCPaywallDemos() {
   };
 
   return (
-    <div className='bg-background text-foreground'>
-      <section className='px-4 pt-28 pb-16 sm:px-6 lg:px-8 lg:pt-24'>
-        <div className='mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]'>
+    <div className='bg-background text-foreground min-h-screen pt-16'>
+      <section className='border-border border-b'>
+        <div className='mx-auto grid w-full max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8 lg:py-28'>
           <div>
-            <h1 className='max-w-3xl text-4xl leading-[1.08] font-normal tracking-[-0.04em] text-balance sm:text-6xl'>
+            <h1 className='max-w-4xl text-4xl font-normal tracking-[-0.04em] text-balance sm:text-5xl'>
               {content.title}
             </h1>
-            <p className='text-muted-foreground mt-6 max-w-xl text-base leading-7'>{content.description}</p>
+            <p className='text-muted-foreground mt-6 max-w-3xl text-base leading-7'>{content.description}</p>
           </div>
           <div className='border-border overflow-hidden rounded-lg border'>
             <Image

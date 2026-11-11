@@ -15,17 +15,28 @@ export default function SCProfilePage() {
       <div className='mx-auto w-full max-w-6xl overflow-hidden rounded-lg bg-white shadow-md'>
         {/* Banner Image */}
         <div className='relative h-48 w-full'>
-          <img src={bannerUrl || '/placeholder.svg'} alt={t('bannerAlt')} className='h-full w-full object-cover' />
+          {/* Keep the remote demo image unoptimised; reserve its box and defer decoding instead. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={bannerUrl || '/placeholder.svg'}
+            alt={t('bannerAlt')}
+            className='h-full w-full object-cover'
+            decoding='async'
+            loading='lazy'
+          />
         </div>
 
         <div className='relative px-6 py-8 md:flex'>
           {/* Left Column - User Info */}
           <div className='-mt-20 flex flex-col items-center md:w-1/3 md:items-start md:pr-8'>
             <div className='h-28 w-28 overflow-hidden rounded-full border-4 border-white shadow-lg'>
+              {/* eslint-disable-next-line @next/next/no-img-element -- intentional remote demo image */}
               <img
                 src={avatarUrl || '/placeholder.svg'}
                 alt={t('avatarAlt', { username: String(username) })}
                 className='h-full w-full object-cover'
+                decoding='async'
+                loading='lazy'
               />
             </div>
             <h1 className='mt-4 text-2xl font-bold text-gray-900'>{username}</h1>

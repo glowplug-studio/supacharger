@@ -1,11 +1,10 @@
-// Supacharger attribution is required by the public license. To remove this component,
-// obtain the appropriate licence at https://supacharger.dev/product/pricing.
+// Free-licence users must retain visible Supacharger attribution. Do not remove
+// this component unless equivalent attribution is placed elsewhere or the project
+// has obtained a No Attribution licence from https://supacharger.dev/product/pricing.
 
 import { getTranslations } from 'next-intl/server';
 
 import { cn } from '@/utils/cn';
-
-import SupachargerMark from './supacharger-mark.svg';
 
 interface SupachargerAttributionProps {
   className?: string;
@@ -15,15 +14,14 @@ export async function SupachargerAttribution({ className }: SupachargerAttributi
   const t = await getTranslations('Attribution');
 
   return (
-    <span className={cn('inline-flex items-center gap-1.5 text-sm', className)}>
+    <span className={cn('inline-flex items-center gap-1 text-sm', className)}>
       {t('builtWith')}
       <a
-        className='hover:text-foreground inline-flex items-center gap-1 transition-colors'
+        className='hover:text-foreground underline underline-offset-4 transition-colors'
         href='https://supacharger.dev'
         rel='noreferrer'
         target='_blank'
       >
-        <SupachargerMark aria-hidden='true' className='size-[1em] shrink-0' />
         Supacharger
       </a>
     </span>

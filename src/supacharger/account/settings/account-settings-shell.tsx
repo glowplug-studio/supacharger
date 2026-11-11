@@ -1,10 +1,10 @@
 'use client';
 
-import { Suspense, useEffect, useRef } from 'react';
+import { createContext, Suspense, useContext, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Bell, Building2, CreditCard, IdCard, LockKeyhole, ShieldCheck, UserRound } from 'lucide-react';
+import { Bell, Building2, CreditCard, LockKeyhole, ShieldCheck, UserPen, UserRound } from 'lucide-react';
 
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { resolveAccountNavigation } from '@/supacharger.adapters/account/navigation';
@@ -18,7 +18,7 @@ const navigationIcons = {
   notifications: Bell,
   billing: CreditCard,
   organisations: Building2,
-  product: IdCard,
+  product: UserPen,
 } satisfies Record<AccountNavigationIconName, typeof UserRound>;
 
 function AccountContentLoading({ label }: { label: string }) {
@@ -29,7 +29,16 @@ function AccountContentLoading({ label }: { label: string }) {
   );
 }
 
+const ExistingAccountShell = createContext(false);
+
+/** A root-level shell may persist while product and managed route branches change. */
 export function AccountSettingsShell({ children }: { children: React.ReactNode }) {
+  const hasParentShell = useContext(ExistingAccountShell);
+  if (hasParentShell) return children;
+  return <ExistingAccountShell.Provider value={true}><AccountSettingsFrame>{children}</AccountSettingsFrame></ExistingAccountShell.Provider>;
+}
+
+function AccountSettingsFrame({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const t = useTranslations('AccountSettings');
   const navigationListRef = useRef<HTMLUListElement>(null);

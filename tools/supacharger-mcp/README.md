@@ -30,7 +30,7 @@ The same ownership resource describes semantic brand colours and application err
 
 The same ownership resource records the root-document contract. `src/app/layout.tsx` is installed as an editable developer template and preserved by updates; `src/supacharger/root-document.tsx` is protected. The managed helper supplies canonical metadata and title-template factories, page-level canonical/social metadata, viewport and favicon declarations, production-aware indexing, and configured Google/Vercel analytics without a hard-coded measurement ID. Application configuration owns values and provider switches.
 
-The favicon path contract keeps `public/favicon.ico` at the public root and groups every other standard favicon/manifest asset under `public/favicons/`. Protected metadata uses `/favicons/...` for those grouped files; product artwork remains application-owned.
+The favicon path contract groups the standard browser, Apple touch, web-app and manifest assets under `public/favicons/`. Protected metadata uses `/favicons/...`; product artwork remains application-owned.
 
 The `loading_ui` resource defines the developer-owned primary and dark inline-loader branding seams, SVGR-only UI asset convention, `fill` override behaviour, and replacement-file workflow. Path classification reports both exact loader paths as developer-owned even though adjacent shared assets may follow a different ownership policy.
 
@@ -91,7 +91,7 @@ Translate `AuthJourney.signUpAgreement` with its `<terms>...</terms>` rich-text 
 This replaces both `ACCOUNT_REQUIRED_TERMS_AGREEMENT_PATH` and `AUTHENTICATION.SIGN_UP_TERMS_URL`. Core's `/legal` is disposable demonstration content; replace it before launching a real product.
 
 
-## Instruction routing and public skills
+## Instruction routing and skills
 
 The `instructions` topic exposes root `AGENTS.md`, `working_rules` exposes `.agents/supacharger/guidance.md`, and `agent_guidance` exposes `docs/agents/agent-guidance.md`. Technical topics read the same `docs/agents/` files used locally; there is no separate knowledge copy. Optional contributor instructions and inactive legacy files are not automatically added to the guidance catalogue.
 
@@ -99,7 +99,7 @@ Project instructions and installed skills are developer-owned. The independent p
 
 Application copies of `docs/agents/` are developer-owned. Core updates install missing references and preserve existing ones; review changed conventions against the actual installed implementation. The MCP exposes those local references and does not imply that the application is at the latest Core revision.
 
-Installed skills are local tooling in Core and are not part of its committed reference set. The changelog skill is maintained in the public skills catalogue; contributor policy owns Core-specific decisions.
+Installed skills are local tooling in Core and are not part of its committed reference set. Public skills use the free catalogue; licensed skills use an authorised committed local checkout and remain absent from the public selector. The changelog skill is maintained in the public skills catalogue; contributor policy owns Core-specific decisions.
 
 ## Email template sources
 

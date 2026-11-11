@@ -9,11 +9,17 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-11-04T18:18:46Z; base_commit=18b1d7eb56394094594afa60920a925ede76fe80; main_commit=18b1d7eb56394094594afa60920a925ede76fe80; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=18b1d7eb56394094594afa60920a925ede76fe80; scope=shared-copy-feedback-and-history-since-prior-checkpoint; excluded=uncommitted-authentication-guidance; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-11-11T15:43:01Z; base_commit=efded2e5278631f9f5163d564db903308ffe25be; main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; scope=marketing-demo-extension-skills-and-react-audit; excluded=dirty-core-development-submodule-and-pending-account-stylesheet-rename; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
+
+- A removable installation-report extension uses the generated page-hook registry to show the live setup checklist and read-only configuration without an application-layout import. Its draggable avatar, translated copy control, skipped-step state and configuration tab remain local-only and can be removed with the extension folder.
+
+- Public marketing routes now share a persistent App Router layout with route metadata, structured data, sitemap coverage and crawler-readable `llms.txt`. The included-UI gallery adds Shiki source highlighting, a Milkdown editor, click-to-copy and current installed-stack demonstrations.
+
+- Licensed agent skills retain their actual GitHub source repository and immutable commit. The installer refuses cross-repository replacement and can repair a verified legacy local-source provenance record.
 
 - Optional Stripe Data Pipeline reconciliation reads Stripe-managed Product, Price and Subscription snapshots through a service-role-only RPC while retaining signed webhooks for immediate lifecycle events and Stripe API reconciliation for Entitlements. Consumers connect each Supabase project in Stripe Dashboard, apply the Core migration and set `STRIPE_DATA_PIPELINE_SCHEMA`.
 
@@ -103,6 +109,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, transparent demo artwork meets the footer without a surrounding card, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
+
 - Account settings keep the developer-managed header and navigation visible while asynchronous page content loads, with loading contained to the content area.
 
 - Organisation invitation links confirm successful clipboard writes with timed feedback and report failures. Shared copy controls use a consistent clipboard icon and immediate hover/focus hint.
@@ -138,6 +146,8 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Account summaries skip organisation-avatar signing when organisations are disabled. Organisation loading redirects only for missing or inaccessible records and preserves other failures.
 
 ### Removed
+
+- The unused legacy signup carousel, its remaining generic carousel primitive and the `embla-carousel-react` dependency.
 
 - Inactive agent archives, obsolete implementation reports and repository-local editor/Codex settings. Maintainer-local tooling directories are ignored rather than distributed as Core-managed content.
 - Bundled local Supabase email overrides and the old `supabase/templates` examples. Email resources are now selected and installed deliberately in hosted Auth; they are excluded from Vercel uploads and Next.js deployment traces.

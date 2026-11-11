@@ -4,29 +4,23 @@ import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 import { createSupachargerPageMetadata } from '@/supacharger/root-document';
 import { localisedSiteConfig } from '@/supacharger/site-identity';
 
-type MarketingPageName =
-  'coreWidgetDemos' | 'home' | 'legal' | 'license' | 'paywallDemos' | 'whatsIncluded';
-
-const canonicalPaths: Record<MarketingPageName, string> = {
-  coreWidgetDemos: '/features/core-widget-demos',
-  home: '/',
-  legal: '/legal',
-  license: '/license',
-  paywallDemos: '/features/paywall-demos',
-  whatsIncluded: '/features/whats-included',
-};
+import { MARKETING_PAGE_ROUTES, type MarketingPageName } from './sc_marketing_routes';
 
 export async function createMarketingPageMetadata(pageName: MarketingPageName): Promise<Metadata> {
-  const t = await getTranslations(`MarketingMetadata.${pageName}`);
+  const [t, messages, locale] = await Promise.all([
+    getTranslations(`MarketingMetadata.${pageName}`),
+    getMessages(),
+    getLocale(),
+  ]);
   const page = { description: t('description'), title: t('title') };
   const metadata = createSupachargerPageMetadata(
-    localisedSiteConfig(await getMessages()),
+    localisedSiteConfig(messages),
     {
       title: page.title,
       description: page.description,
-      canonicalPath: canonicalPaths[pageName],
+      canonicalPath: MARKETING_PAGE_ROUTES[pageName].path,
     },
-    await getLocale(),
+    locale,
   );
 
   if (pageName !== 'home') return metadata;

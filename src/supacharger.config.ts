@@ -28,14 +28,25 @@ export const SC_CONFIG: SupachargerConfig = {
   SITE_TITLE: 'Kuro',
   SITE_DESCRIPTION: 'Productivity, agility and workflows for teams that want to move faster.',
   MARKETING_SITE_URL: null,
-  // Site-wide metadata defaults. Pages may override their OG image.
+  // Set SITE_URL through NEXT_PUBLIC_SITE_URL. Keep page titles/descriptions in
+  // messages/* under MarketingMetadata, and register public pages in
+  // sc_marketing_routes.ts so metadata, sitemap, JSON-LD and llms.txt agree.
   METADATA: {
     SITE_URL: getSiteUrl(),
     INDEXING_ENABLED: process.env.VERCEL_ENV
       ? process.env.VERCEL_ENV === 'production'
       : process.env.NODE_ENV === 'production',
-    FAVICON_SET_ENABLED: false,
-    DEFAULT_OG_IMAGE: { DEFAULT: null, LOCALES: {} },
+    FAVICON_SET_ENABLED: true,
+    // Replace this project-owned social card when changing the product brand.
+    DEFAULT_OG_IMAGE: {
+      DEFAULT: {
+        URL: '/images/sc_demo/kuro-open-graph.webp',
+        ALT: 'Kuro mobile workspace for team tasks, sprints and project health',
+        WIDTH: 1200,
+        HEIGHT: 630,
+      },
+      LOCALES: {},
+    },
     COLOR_SCHEME: 'light dark',
     THEME_COLOR: null,
   },
@@ -114,6 +125,7 @@ export const SC_CONFIG: SupachargerConfig = {
         '/profile/:username',
         '/legal',
         '/license',
+        '/llms.txt',
         '/error',
         '/auth/error',
 

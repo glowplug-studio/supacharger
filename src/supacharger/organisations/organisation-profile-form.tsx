@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useForm, useFormContext } from 'react-hook-form';
@@ -257,7 +258,9 @@ function OrganisationMediaField({
       setUploading(false);
       return;
     }
-    const { data } = await supabase.storage.from(supabaseResourceName('organisation-logos', 'bucket')).createSignedUrl(path, 600);
+    const { data } = await supabase.storage
+      .from(supabaseResourceName('organisation-logos', 'bucket'))
+      .createSignedUrl(path, 600);
     methods.setValue(field, path, { shouldDirty: true });
     setPreview(data?.signedUrl ?? URL.createObjectURL(file));
     setUploading(false);
@@ -270,7 +273,9 @@ function OrganisationMediaField({
         <p className='sc-organisation-media-help'>{t('profile.mediaHelp')}</p>
       </div>
       <div className='sc-organisation-media-preview' data-kind={kind}>
-        {preview ? <img alt='' className='sc-organisation-media-image' src={preview} /> : null}
+        {preview ? (
+          <Image alt='' className='sc-organisation-media-image' height={640} src={preview} unoptimized width={1280} />
+        ) : null}
       </div>
       <Input
         accept='image/jpeg,image/png,image/webp,image/gif'
