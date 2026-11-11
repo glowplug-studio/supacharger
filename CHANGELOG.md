@@ -9,15 +9,15 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-11-11T16:45:55Z; base_commit=cab86814958a7baeb9a61d0f191e7895f7573c4f; main_commit=cab86814958a7baeb9a61d0f191e7895f7573c4f; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=cab86814958a7baeb9a61d0f191e7895f7573c4f; scope=embla-widget-demo-footer-and-dependency-security-updates; excluded=dirty-core-development-submodule; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-11-11T22:49:36Z; base_commit=dd692b23d664eff2e208587ea5af81dbf74af608; main_commit=dd692b23d664eff2e208587ea5af81dbf74af608; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=dd692b23d664eff2e208587ea5af81dbf74af608; scope=installation-report-theme-carousel-controls-and-marketing-top-anchor; excluded=dirty-core-development-submodule; earlier-history-not-audited -->
 
 ## [Unreleased]
 
 ### Added
 
-- The Core widget gallery includes an accessible Embla parallax carousel with reduced-motion handling, navigation controls and credited Unsplash fern photography.
+- The Core widget gallery includes an accessible Embla parallax carousel with reduced-motion handling, circular arrow controls, selected-slide pagination and credited Unsplash fern photography.
 
-- A removable installation-report extension uses the generated page-hook registry to show the live setup checklist and read-only configuration without an application-layout import. Its draggable avatar, translated copy control, skipped-step state and configuration tab remain local-only and can be removed with the extension folder.
+- A removable installation-report extension uses the generated page-hook registry to show the live setup checklist and read-only configuration without an application-layout import. Its draggable avatar opens a monochrome Tailwind report with copyable removal, checklist and configuration paths, explicit completed/skipped/remaining states and a configuration tab. It remains local-only and can be removed with the extension folder.
 
 - Public marketing routes now share a persistent App Router layout with route metadata, structured data, sitemap coverage and crawler-readable `llms.txt`. The included-UI gallery adds Shiki source highlighting, a Milkdown editor, click-to-copy and current installed-stack demonstrations.
 
@@ -117,7 +117,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The outage and 404 previews now share one centred reload notice in a gapless quarter-quarter layout beside the half-width carousel demo. Their actions have equal card widths, and the exit-intent instruction uses the neutral shared alert presentation.
 
-- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, copy icons have centred controls with deliberate spacing, UI demo actions fill their cards, and the shadcn artwork uses half the available desktop width. Transparent demo artwork meets the footer without a surrounding card, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
+- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, copy icons have centred controls with deliberate spacing, UI demo actions fill their cards, and the shadcn artwork uses half the available desktop width. Transparent demo artwork meets the footer without a surrounding card, the shared back-to-top control targets the persistent marketing header on every page, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
 
 - Account settings keep the developer-managed header and navigation visible while asynchronous page content loads, with loading contained to the content area.
 

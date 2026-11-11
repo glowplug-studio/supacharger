@@ -75,7 +75,7 @@ export default async function SCFooter() {
             className='border-border text-foreground hover:bg-accent hover:text-foreground h-[46px] w-[46px] rounded-lg border bg-transparent px-0 py-3 shadow-none'
             variant='outline'
           >
-            <a href='#hero'>
+            <a href='#sc-persistent-marketing-header'>
               <ArrowUp aria-hidden='true' />
             </a>
           </Button>

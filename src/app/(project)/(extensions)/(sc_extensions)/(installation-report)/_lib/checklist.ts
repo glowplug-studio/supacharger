@@ -11,16 +11,20 @@ export interface InstallationChecklistItem {
 
 export interface InstallationChecklistSection {
   checked: number;
+  done: number;
   items: InstallationChecklistItem[];
   percentage: number;
+  skipped: number;
   title: string;
   total: number;
 }
 
 export interface InstallationChecklistReport {
   checked: number;
+  done: number;
   percentage: number;
   sections: InstallationChecklistSection[];
+  skipped: number;
   status: string;
   title: string;
   total: number;
@@ -67,10 +71,10 @@ export function readInstallationChecklist(): InstallationChecklistReport | null 
       sections.push(current);
       continue;
     }
-    const item = /^\s*-\s+\[([ xX-])]\s+(.+)$/.exec(line);
+    const item = /^\s*-\s+\[([ xX\-sS~])]\s+(.+)$/.exec(line);
     if (item && current) {
       const marker = item[1].toLowerCase();
-      const status = marker === 'x' ? 'done' : marker === '-' ? 'skipped' : 'pending';
+      const status = marker === 'x' ? 'done' : ['-', 's', '~'].includes(marker) ? 'skipped' : 'pending';
       current.items.push({ checked: status !== 'pending', label: plainText(item[2]), status });
     }
   }
@@ -78,17 +82,23 @@ export function readInstallationChecklist(): InstallationChecklistReport | null 
   const populated = sections
     .filter((section) => section.items.length)
     .map((section) => {
-      const checked = section.items.filter((item) => item.checked).length;
+      const done = section.items.filter((item) => item.status === 'done').length;
+      const skipped = section.items.filter((item) => item.status === 'skipped').length;
+      const checked = done + skipped;
       const total = section.items.length;
-      return { ...section, checked, percentage: Math.round((checked / total) * 100), total };
+      return { ...section, checked, done, percentage: Math.round((checked / total) * 100), skipped, total };
     });
   const total = populated.reduce((sum, section) => sum + section.total, 0);
   const checked = populated.reduce((sum, section) => sum + section.checked, 0);
+  const done = populated.reduce((sum, section) => sum + section.done, 0);
+  const skipped = populated.reduce((sum, section) => sum + section.skipped, 0);
 
   return {
     checked,
+    done,
     percentage: total ? Math.round((checked / total) * 100) : 0,
     sections: populated,
+    skipped,
     status,
     title,
     total,

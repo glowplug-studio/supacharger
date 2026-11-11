@@ -178,16 +178,46 @@ export function SCEmblaParallaxCarousel({
         </div>
       </div>
 
-      <div className='mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-3'>
-        <Button className='w-full rounded-lg' type='button' variant='outline' onClick={() => emblaApi?.scrollPrev()}>
+      <div className='mt-4 grid grid-cols-[auto_1fr_auto] items-center gap-4'>
+        <Button
+          aria-label={previousLabel}
+          className='size-10 !rounded-full p-0'
+          type='button'
+          variant='outline'
+          onClick={() => emblaApi?.scrollPrev()}
+        >
           <ChevronLeft aria-hidden='true' className='size-4' />
-          {previousLabel}
         </Button>
-        <span aria-live='polite' className='text-muted-foreground min-w-10 text-center text-xs tabular-nums'>
-          {selectedIndex + 1} / {fernSlides.length}
-        </span>
-        <Button className='w-full rounded-lg' type='button' variant='outline' onClick={() => emblaApi?.scrollNext()}>
-          {nextLabel}
+
+        <div aria-label={`${label} pagination`} className='flex items-center justify-center gap-2' role='group'>
+          {fernSlides.map((slide, index) => {
+            const selected = index === selectedIndex;
+            return (
+              <Button
+                aria-current={selected ? 'true' : undefined}
+                aria-label={slideLabel(index + 1, fernSlides.length)}
+                className={`size-7 !rounded-full p-0 ${selected ? 'ring-2 ring-foreground ring-offset-2 ring-offset-background' : ''}`}
+                key={slide.src}
+                type='button'
+                variant='ghost'
+                onClick={() => emblaApi?.scrollTo(index)}
+              >
+                <span
+                  aria-hidden='true'
+                  className={`size-2.5 rounded-full ${selected ? 'bg-foreground' : 'bg-muted-foreground/35'}`}
+                />
+              </Button>
+            );
+          })}
+        </div>
+
+        <Button
+          aria-label={nextLabel}
+          className='size-10 !rounded-full p-0'
+          type='button'
+          variant='outline'
+          onClick={() => emblaApi?.scrollNext()}
+        >
           <ChevronRight aria-hidden='true' className='size-4' />
         </Button>
       </div>

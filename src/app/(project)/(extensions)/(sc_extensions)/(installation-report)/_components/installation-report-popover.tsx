@@ -3,6 +3,7 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { Input } from '@/components/ui/input';
 import InstallationAvatar from '@/supacharger/assets/svgr/brand/supacharger-installation-avatar.svg';
 import {
   ClipboardCopyButtonBase,
@@ -16,6 +17,40 @@ type ReportTab = 'configuration' | 'progress';
 type Position = { x: number; y: number };
 
 const removalPath = 'src/app/(project)/(extensions)/(sc_extensions)/(installation-report)';
+const checklistPath = 'docs/reports/sc-install/first-install-handhold-me.md';
+const configPath = 'src/supacharger.config.ts';
+
+function ReadonlyPathStrip({
+  copyMessages,
+  label,
+  value,
+}: {
+  copyMessages: ClipboardCopyButtonMessages;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div>
+      <p className='mb-1.5 text-xs leading-5 text-neutral-600'>{label}</p>
+      <div className='flex overflow-hidden rounded-md border border-neutral-200 bg-neutral-50'>
+        <Input
+          aria-label={label}
+          className='h-9 min-w-0 rounded-none border-0 bg-transparent px-3 font-mono text-[11px] text-neutral-900 shadow-none focus-visible:ring-0 dark:border-0'
+          readOnly
+          title={value}
+          value={value}
+        />
+        <ClipboardCopyButtonBase
+          className='flex h-9 w-11 shrink-0 items-center justify-center rounded-none border-0 border-l border-neutral-200 bg-transparent p-0 text-black shadow-none hover:bg-neutral-100'
+          iconClassName='size-3.5 shrink-0'
+          messages={copyMessages}
+          value={value}
+          variant='outline'
+        />
+      </div>
+    </div>
+  );
+}
 
 export function InstallationReportPopover({
   copyMessages,
@@ -137,37 +172,34 @@ export function InstallationReportPopover({
         style={{ transform: `translate3d(${position.x}px, ${position.y}px, 0)` }}
       >
         {open ? (
-          <div className='pointer-events-auto relative mb-3 flex max-h-[min(76vh,680px)] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-black/10 bg-white text-[#193832] shadow-[0_24px_70px_rgba(20,35,29,0.18)]'>
+          <div className='pointer-events-auto relative mb-3 flex max-h-[min(76vh,680px)] w-[min(440px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white text-black shadow-2xl'>
             <div
-              className='absolute right-6 -bottom-2 size-4 rotate-45 border-r border-b border-black/10 bg-white'
+              className='absolute right-6 -bottom-2 size-4 rotate-45 border-r border-b border-neutral-200 bg-white'
               aria-hidden='true'
             />
 
             <header className='shrink-0 px-5 pt-5 pb-4 sm:px-6 sm:pt-6'>
               <div className='flex items-start justify-between gap-4'>
-                <div>
-                  <h2 className='text-xl leading-tight tracking-[-0.025em] text-[#193832]'>Setup Process Report</h2>
+                <div className='min-w-0'>
+                  <h2 className='text-xl leading-tight tracking-[-0.025em] text-black'>
+                    Initial Setup Process Report
+                  </h2>
+                  <p className='mt-1.5 text-sm leading-5 text-neutral-600'>Work with your agent to complete this list.</p>
                 </div>
-                <span className='shrink-0 text-2xl tracking-[-0.04em] text-[#26745a]'>{report.percentage}%</span>
+                <span className='shrink-0 text-2xl tracking-[-0.04em] text-black'>{report.percentage}%</span>
               </div>
-              <p className='mt-3 text-xs leading-5 text-[#52665b]'>
-                To remove, delete{' '}
-                <ClipboardCopyButtonBase
-                  className='inline-flex h-auto max-w-full gap-2 overflow-hidden rounded-md border-[#cfdbd1] bg-[#f4f7f4] px-3 py-1.5 align-middle text-[#264d42] shadow-none hover:bg-[#eaf0eb]'
-                  iconClassName='size-3.5 shrink-0'
-                  messages={copyMessages}
+              <div className='mt-4'>
+                <ReadonlyPathStrip
+                  copyMessages={copyMessages}
+                  label='To remove, delete this file from the project source:'
                   value={removalPath}
-                  variant='outline'
-                >
-                  <code className='block min-w-0 truncate text-[11px]'>{removalPath}</code>
-                </ClipboardCopyButtonBase>{' '}
-                from the project source.
-              </p>
+                />
+              </div>
             </header>
 
-            <div className='grid shrink-0 grid-cols-2 border-t border-b border-[#dce4de]' role='tablist'>
+            <div className='grid shrink-0 grid-cols-2 border-t border-b border-neutral-200' role='tablist'>
               <button
-                className='border-r border-[#dce4de] px-4 py-3 text-sm text-[#52665b] aria-selected:bg-[#eef3ef] aria-selected:text-[#193832]'
+                className='border-r border-neutral-200 px-4 py-3 text-sm text-neutral-600 aria-selected:bg-black aria-selected:text-white'
                 id='installation-progress-tab'
                 role='tab'
                 type='button'
@@ -178,7 +210,7 @@ export function InstallationReportPopover({
                 Progress
               </button>
               <button
-                className='px-4 py-3 text-sm text-[#52665b] aria-selected:bg-[#eef3ef] aria-selected:text-[#193832]'
+                className='px-4 py-3 text-sm text-neutral-600 aria-selected:bg-black aria-selected:text-white'
                 id='installation-configuration-tab'
                 role='tab'
                 type='button'
@@ -197,9 +229,10 @@ export function InstallationReportPopover({
                 role='tabpanel'
                 aria-labelledby='installation-progress-tab'
               >
-                <div className='border-b border-[#dce4de] px-5 py-4 sm:px-6'>
+                <div className='border-b border-neutral-200 px-5 py-4 sm:px-6'>
+                  <ReadonlyPathStrip copyMessages={copyMessages} label='Installation Checklist' value={checklistPath} />
                   <div
-                    className='h-2 overflow-hidden rounded-full bg-[#dce4de]'
+                    className='mt-4 h-2 overflow-hidden rounded-full bg-neutral-200'
                     role='progressbar'
                     aria-label='Overall setup progress'
                     aria-valuemax={100}
@@ -207,12 +240,13 @@ export function InstallationReportPopover({
                     aria-valuenow={report.percentage}
                   >
                     <div
-                      className='h-full rounded-full bg-[#26745a] transition-[width] duration-500'
+                      className='h-full rounded-full bg-black transition-[width] duration-500'
                       style={{ width: `${report.percentage}%` }}
                     />
                   </div>
-                  <p className='mt-2 text-xs text-[#52665b]'>
-                    {report.checked}/{report.total} tasks resolved · {report.status}
+                  <p className='mt-2 text-xs text-neutral-600'>
+                    {report.done} done · {report.skipped} skipped · {report.total - report.checked} remaining ·{' '}
+                    {report.status}
                   </p>
                 </div>
 
@@ -220,39 +254,39 @@ export function InstallationReportPopover({
                   {report.sections.map((section) => (
                     <section key={section.title}>
                       <div className='flex items-center justify-between gap-3'>
-                        <h3 className='text-sm text-[#193832]'>{section.title}</h3>
-                        <span className='shrink-0 text-[11px] text-[#52665b]'>
-                          {section.checked}/{section.total}
+                        <h3 className='text-sm text-black'>{section.title}</h3>
+                        <span className='shrink-0 text-[11px] text-neutral-600'>
+                          {section.done} done · {section.skipped} skipped
                         </span>
                       </div>
                       <div
-                        className='mt-2 h-1 overflow-hidden rounded-full bg-[#e7ece8]'
+                        className='mt-2 h-1 overflow-hidden rounded-full bg-neutral-200'
                         role='progressbar'
                         aria-label={`${section.title} progress`}
                         aria-valuemax={100}
                         aria-valuemin={0}
                         aria-valuenow={section.percentage}
                       >
-                        <div className='h-full rounded-full bg-[#26745a]' style={{ width: `${section.percentage}%` }} />
+                        <div className='h-full rounded-full bg-black' style={{ width: `${section.percentage}%` }} />
                       </div>
                       <ul className='mt-2 space-y-1.5'>
                         {section.items.map((item) => (
-                          <li className='flex gap-2 text-xs leading-5 text-[#52665b]' key={item.label}>
+                          <li className='flex gap-2 text-xs leading-5 text-neutral-600' key={item.label}>
                             <span
                               className={
                                 item.status === 'done'
-                                  ? 'mt-1 flex size-3.5 shrink-0 items-center justify-center rounded-[4px] bg-[#20543e] text-[9px] text-white'
+                                  ? 'mt-1 flex size-3.5 shrink-0 items-center justify-center rounded-[4px] bg-black text-[9px] text-white'
                                   : item.status === 'skipped'
-                                    ? 'mt-1 flex size-3.5 shrink-0 items-center justify-center rounded-[4px] bg-[#dce4de] text-[10px] text-[#52665b]'
-                                    : 'mt-1 size-3.5 shrink-0 rounded-[4px] border border-[#b9c8bd] bg-white'
+                                    ? 'mt-1 flex size-3.5 shrink-0 items-center justify-center rounded-[4px] bg-neutral-200 text-[10px] text-neutral-700'
+                                    : 'mt-1 size-3.5 shrink-0 rounded-[4px] border border-neutral-400 bg-white'
                               }
                               aria-hidden='true'
                             >
                               {item.status === 'done' ? '✓' : item.status === 'skipped' ? '–' : null}
                             </span>
-                            <span className={item.status === 'pending' ? undefined : 'text-[#264d42]'}>
+                            <span className={item.status === 'pending' ? undefined : 'text-neutral-900'}>
                               {item.label}
-                              {item.status === 'skipped' ? ' (skipped)' : null}
+                              {item.status === 'skipped' ? ' (skipped / not needed)' : null}
                             </span>
                           </li>
                         ))}
@@ -268,22 +302,25 @@ export function InstallationReportPopover({
                 role='tabpanel'
                 aria-labelledby='installation-configuration-tab'
               >
-                <ul className='w-full divide-y divide-[#e7ece8]'>
+                <div className='border-b border-neutral-200 px-5 py-4 sm:px-6'>
+                  <ReadonlyPathStrip copyMessages={copyMessages} label='Config File' value={configPath} />
+                </div>
+                <ul className='w-full divide-y divide-neutral-200'>
                   {configReport.map((item) => (
                     <li className='flex min-h-14 items-center justify-between gap-4 px-5 py-3 sm:px-6' key={item.label}>
-                      <span className='min-w-0 text-xs leading-5 break-all text-[#52665b]'>{item.label}</span>
+                      <span className='min-w-0 text-xs leading-5 break-all text-neutral-600'>{item.label}</span>
                       {item.booleanValue === undefined ? (
-                        <span className='max-w-[45%] shrink-0 text-right text-xs leading-5 break-all text-[#193832]'>
+                        <span className='max-w-[45%] shrink-0 text-right text-xs leading-5 break-all text-black'>
                           {item.value}
                         </span>
                       ) : (
-                        <span className='flex shrink-0 items-center gap-2 text-xs text-[#193832]'>
+                        <span className='flex shrink-0 items-center gap-2 text-xs text-black'>
                           {item.value}
                           <span
                             className={
                               item.booleanValue
-                                ? 'relative h-5 w-9 rounded-full bg-[#26745a]'
-                                : 'relative h-5 w-9 rounded-full bg-[#cbd5ce]'
+                                ? 'relative h-5 w-9 rounded-full bg-black'
+                                : 'relative h-5 w-9 rounded-full bg-neutral-300'
                             }
                             role='switch'
                             aria-checked={item.booleanValue}
@@ -309,10 +346,10 @@ export function InstallationReportPopover({
           </div>
         ) : null}
 
-        <div className='pointer-events-auto rounded-[26px] bg-white p-2 shadow-[0_14px_36px_rgba(20,35,29,0.22)]'>
+        <div className='pointer-events-auto rounded-[26px] bg-white p-2 shadow-xl'>
           <button
             type='button'
-            className='block size-16 cursor-grab touch-none rounded-[20px] transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#26745a] focus-visible:ring-offset-2 focus-visible:outline-none active:translate-y-0 active:cursor-grabbing'
+            className='block size-16 cursor-grab touch-none rounded-[20px] transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none active:translate-y-0 active:cursor-grabbing'
             aria-expanded={open}
             aria-label={open ? 'Move or close setup process report' : 'Move or open setup process report'}
             onClick={toggleReport}
