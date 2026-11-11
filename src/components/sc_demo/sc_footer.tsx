@@ -85,10 +85,10 @@ export default async function SCFooter() {
           <div>
             <p className='leading-6'>
               <span className='block'>
-                © {new Date().getFullYear()} {global('siteTitle')}
+                {global('siteTitle')} Supacharger. {t('allRightsReserved')}
               </span>
               <span className='block'>
-                Supacharger Theme by{' '}
+                {t('themeBy')}{' '}
                 <a
                   className='hover:text-foreground focus-visible:text-foreground underline underline-offset-4 focus-visible:outline-none'
                   href='https://glowplug.studio'
@@ -97,7 +97,7 @@ export default async function SCFooter() {
                 >
                   Glowplug
                 </a>
-                . {t('allRightsReserved')}
+                .
               </span>
             </p>
           </div>

@@ -9,7 +9,9 @@ import {
   CheckCircle2,
   Crop,
   FileUp,
+  GalleryHorizontal,
   Image as ImageIcon,
+  Info,
   PanelsTopLeft,
   UploadCloud,
   X,
@@ -17,11 +19,13 @@ import {
 import { toast } from 'react-toastify';
 
 import ImageLoader from '@/assets/svgr/ui/image-loader.svg';
+import { SCEmblaParallaxCarousel } from '@/components/sc_demo/sc_embla-parallax-carousel';
 import { LoginModal } from '@/components/sc_widgets/auth/login-modal';
 import { ErrorPagePreviewButton } from '@/components/sc_widgets/error-page/error-page-preview-button';
 import { FileUploadWidget } from '@/components/sc_widgets/file-upload/file-upload-widget';
 import { ImageUploadWidget } from '@/components/sc_widgets/image-upload/image-upload-widget';
 import { DemoConfettiToggle } from '@/components/sc_widgets/paywall/demo-confetti';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -259,10 +263,10 @@ function ExitIntentDemo({
           />
         </div>
         {enabled ? (
-          <p className='text-primary mt-4 flex items-center gap-2 text-sm font-medium' role='status'>
-            <span aria-hidden='true' className='size-2 rounded-full bg-current' />
-            {enabledHint}
-          </p>
+          <Alert className='mt-4' role='status'>
+            <Info aria-hidden='true' className='size-4' />
+            <AlertDescription>{enabledHint}</AlertDescription>
+          </Alert>
         ) : null}
       </section>
 
@@ -531,14 +535,26 @@ export function SCCoreWidgetDemos({ developerTools }: { developerTools: ReactNod
       description: t('outageDescription'),
       icon: PanelsTopLeft,
       title: t('outageTitle'),
-      widget: <ErrorPagePreviewButton kind='outage' label={t('outageToggle')} reloadHint={t('errorPreviewReload')} />,
+      widget: (
+        <ErrorPagePreviewButton
+          className='w-full'
+          kind='outage'
+          label={t('outageToggle')}
+          reloadHint={t('errorPreviewReload')}
+        />
+      ),
     },
     {
       description: t('notFoundDescription'),
       icon: PanelsTopLeft,
       title: t('notFoundTitle'),
       widget: (
-        <ErrorPagePreviewButton kind='notFound' label={t('notFoundToggle')} reloadHint={t('errorPreviewReload')} />
+        <ErrorPagePreviewButton
+          className='w-full'
+          kind='notFound'
+          label={t('notFoundToggle')}
+          reloadHint={t('errorPreviewReload')}
+        />
       ),
     },
     {
@@ -696,6 +712,21 @@ export function SCCoreWidgetDemos({ developerTools }: { developerTools: ReactNod
     },
   ];
 
+  const carouselDemo = {
+    description: t('emblaDescription'),
+    title: t('emblaTitle'),
+    widget: (
+      <SCEmblaParallaxCarousel
+        label={t('emblaTitle')}
+        nextLabel={t('emblaNext')}
+        photoByLabel={t('emblaPhotoBy')}
+        previousLabel={t('emblaPrevious')}
+        slideAlts={t.raw('emblaSlideAlts') as string[]}
+        slideLabel={(current, total) => t('emblaSlideLabel', { current, total })}
+      />
+    ),
+  };
+
   return (
     <div className='bg-background text-foreground min-h-screen pt-16'>
       <section className='border-border border-b'>
@@ -719,7 +750,39 @@ export function SCCoreWidgetDemos({ developerTools }: { developerTools: ReactNod
 
       <section className='border-border bg-muted/20 border-y py-14 lg:py-20'>
         <div className='mx-auto w-full max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8'>
-          {[[demos[0], demos[1]], [demos[2]], [demos[3], demos[4]], [demos[5]]].map((group) => (
+          <div className='border-border bg-card grid overflow-hidden rounded-lg border lg:grid-cols-2'>
+            <div className='grid min-w-0 md:grid-cols-2 md:grid-rows-[1fr_auto]'>
+              {[demos[0], demos[1]].map(({ description, icon: Icon, title, widget }, index) => (
+                <article
+                  className={`border-border flex min-w-0 flex-col border-b p-6 lg:p-8 ${index === 0 ? 'md:border-r' : ''} md:border-b-0`}
+                  key={title}
+                >
+                  <div className='border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border'>
+                    <Icon aria-hidden='true' className='size-4' />
+                  </div>
+                  <h2 className='mt-8 text-2xl font-medium tracking-tight'>{title}</h2>
+                  <p className='text-muted-foreground mt-3 text-sm leading-6'>{description}</p>
+                  <div className='mt-auto pt-8'>{widget}</div>
+                </article>
+              ))}
+              <div className='border-border text-muted-foreground col-span-full border-t px-4 py-3 text-center text-sm'>
+                {t('errorPreviewReload')}
+              </div>
+            </div>
+
+            <article className='border-border flex min-w-0 flex-col border-t lg:border-t-0 lg:border-l'>
+              <div className='p-6 lg:p-8'>
+                <div className='border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border'>
+                  <GalleryHorizontal aria-hidden='true' className='size-4' />
+                </div>
+                <h2 className='mt-8 text-2xl font-medium tracking-tight'>{carouselDemo.title}</h2>
+                <p className='text-muted-foreground mt-3 text-sm leading-6'>{carouselDemo.description}</p>
+              </div>
+              <div className='border-border mt-auto border-t p-5 sm:p-8'>{carouselDemo.widget}</div>
+            </article>
+          </div>
+
+          {[[demos[2]], [demos[3], demos[4]], [demos[5]]].map((group) => (
             <div key={group[0].title} className={group.length === 2 ? 'grid gap-6 md:grid-cols-2' : ''}>
               {group.map(({ description, icon: Icon, title, widget }) => (
                 <article
