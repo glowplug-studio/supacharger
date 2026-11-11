@@ -22,7 +22,7 @@ test('classifies protected and developer-owned paths', () => {
   assert.equal(classifyPath('messages/en.json').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/project.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/supacharger-auth.css').ownership, 'developer-owned');
-  assert.equal(classifyPath('src/styles/supacharger-account.css').ownership, 'developer-owned');
+  assert.equal(classifyPath('src/styles/sc_account.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/styles/supacharger-organisations.css').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger.adapters/auth/auth-sidecar.tsx').ownership, 'developer-owned');
   assert.equal(classifyPath('src/supacharger.adapters/account/navigation.ts').ownership, 'developer-owned');

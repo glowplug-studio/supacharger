@@ -81,13 +81,13 @@ export async function SCDeveloperToolingDemo() {
             </a>
           </div>
 
-          <div className='mt-10 overflow-hidden'>
+          <div className='mt-10 overflow-hidden lg:w-1/2'>
             <Image
               alt={t('shadcnImageAlt')}
               className='h-auto w-full dark:hidden'
               height={347}
               loading='lazy'
-              sizes='(max-width: 1280px) 100vw, 1216px'
+              sizes='(min-width: 1280px) 608px, (min-width: 1024px) 50vw, 100vw'
               src='/images/sc_demo/shad-light.webp'
               width={1003}
             />
@@ -96,7 +96,7 @@ export async function SCDeveloperToolingDemo() {
               className='hidden h-auto w-full dark:block'
               height={347}
               loading='lazy'
-              sizes='(max-width: 1280px) 100vw, 1216px'
+              sizes='(min-width: 1280px) 608px, (min-width: 1024px) 50vw, 100vw'
               src='/images/sc_demo/shad-dark.webp'
               width={1002}
             />

@@ -290,7 +290,7 @@ export function classifyPath(inputPath) {
   }
 
   if (
-    relativePath === 'src/styles/supacharger-account.css' ||
+    relativePath === 'src/styles/sc_account.css' ||
     relativePath === 'src/styles/supacharger-organisations.css'
   ) {
     return {

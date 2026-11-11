@@ -9,7 +9,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 >
 > Install the optional [Core contributor instructions](https://github.com/glowplug-studio/supacharger-development-agents.md) at `.agents/supacharger/core-development/`: use `git submodule update --init .agents/supacharger/core-development` when already registered, or `git submodule add git@github.com:glowplug-studio/supacharger-development-agents.md.git .agents/supacharger/core-development` otherwise. Install the writer with `supacharger skills install general/changelog`. See [Contributing to Supacharger](https://supacharger.dev/docs/contributing) for setup and triggers, and [Agent guidance](https://supacharger.dev/docs/agents) for instruction ownership and technical references.
 
-<!-- changelog-review: reviewed_at=2026-11-11T15:53:07Z; base_commit=08b85f8439060c5f3cc27816a840da311de793dc; main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; scope=installation-report-and-copy-control-layout-correction; excluded=dirty-core-development-submodule-and-pending-account-stylesheet-rename; earlier-history-not-audited -->
+<!-- changelog-review: reviewed_at=2026-11-11T16:11:34Z; base_commit=2014106944c4eb96c47166b1d6d98af2cc8eccda; main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; history_start=f8510bcce0759c17578e406bbdf3fa3df5c11cdb; remote_main_commit=5be0fd78a278106d45d32000c78e9c83c1a381c1; scope=account-stylesheet-seam-and-widget-demo-layout; excluded=dirty-core-development-submodule; earlier-history-not-audited -->
 
 ## [Unreleased]
 
@@ -54,6 +54,10 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A developer-owned application changelog alongside contributor-maintained Core release notes.
 
 ### Changed
+
+- The developer-owned account presentation seam is now `src/styles/sc_account.css`. Core imports, ownership guidance and repository tooling use the new path; existing consumers should update their import and manifest, while the matching CLI update renames the former stylesheet without replacing product CSS.
+
+- Project UI guidance now prefers installed component-library controls over bare HTML form controls when a suitable accessible primitive exists.
 
 - The starter marketing site uses Kuro branding, refreshed navigation and authentication presentation, and homepage pricing. The former `/pricing` page redirects to `/#pricing`; outage previews use the header’s SVG artwork.
 - CLI guidance documents command discovery, dependency installation and registry-backed extension inspection. Namespace preparation accepts the installer’s explicit namespace before dependencies are installed, while normal regeneration still reads application configuration. The repository MCP exposes database namespace, declarative database and widget guidance.
@@ -109,7 +113,7 @@ and releases follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, copy icons have centred controls with deliberate spacing, transparent demo artwork meets the footer without a surrounding card, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
+- Marketing demo headers now use the licence page's typography and spacing. The Shiki theme picker uses the installed shadcn Select, copy icons have centred controls with deliberate spacing, UI demo actions fill their cards, and the shadcn artwork uses half the available desktop width. Transparent demo artwork meets the footer without a surrounding card, and the source-licence link resolves to `LICENSE.md` without the redundant legal-page link.
 
 - Account settings keep the developer-managed header and navigation visible while asynchronous page content loads, with loading contained to the content area.
 

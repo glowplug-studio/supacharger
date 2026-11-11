@@ -75,9 +75,9 @@ export function DemoConfettiToggle() {
   const t = useTranslations('DemoCelebration');
   const [active, setActive] = useState(false);
   return (
-    <div className='flex flex-wrap gap-3'>
+    <div className='flex w-full flex-col gap-3'>
       <DemoConfetti active={active} fullPage />
-      <Button className='relative z-10 rounded-lg' type='button' variant='outline' aria-pressed={active} onClick={() => setActive(!active)}>
+      <Button className='relative z-10 w-full rounded-lg' type='button' variant='outline' aria-pressed={active} onClick={() => setActive(!active)}>
         {t('confetti')}
       </Button>
       <DemoConfettiJsTrigger />
@@ -106,7 +106,7 @@ export function DemoConfettiJsTrigger() {
   return (
     <Button
       ref={buttonRef}
-      className='relative z-10 rounded-lg'
+      className='relative z-10 w-full rounded-lg'
       type='button'
       variant='outline'
       onClick={trigger}

@@ -162,7 +162,7 @@ function ModalDemo({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className='rounded-lg' type='button' variant='outline'>
+        <Button className='w-full rounded-lg' type='button' variant='outline'>
           <PanelsTopLeft aria-hidden='true' className='size-4' />
           {openLabel}
         </Button>
@@ -419,7 +419,7 @@ function UIDemos({
         <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
           <h3 className='text-foreground text-sm font-medium'>{toastLabel}</h3>
           <p className='text-muted-foreground mt-1 mb-4 text-sm'>{toastDescription}</p>
-          <Button className='mt-auto rounded-lg' type='button' variant='outline' onClick={showToast}>
+          <Button className='mt-auto w-full rounded-lg' type='button' variant='outline' onClick={showToast}>
             {toastButtonLabel}
           </Button>
         </section>
@@ -432,7 +432,7 @@ function UIDemos({
             initialMode='signup'
             nextPath='/features/core-widget-demos'
             trigger={
-              <Button className='mt-auto rounded-lg' type='button' variant='outline'>
+              <Button className='mt-auto w-full rounded-lg' type='button' variant='outline'>
                 {gatingButtonLabel}
               </Button>
             }
@@ -441,7 +441,7 @@ function UIDemos({
         <section className='border-border bg-background flex flex-col items-start rounded-lg border p-4'>
           <h3 className='text-foreground text-sm font-medium'>{modalTitle}</h3>
           <p className='text-muted-foreground mt-1 mb-4 text-sm'>{modalDescription}</p>
-          <div className='mt-auto'>
+          <div className='mt-auto w-full'>
             <ModalDemo
               cancelLabel={cancelLabel}
               doneLabel={doneLabel}
@@ -463,7 +463,7 @@ function UIDemos({
             />
             <div className='border-border absolute inset-y-0 right-0 flex w-12 items-center justify-center border-l'>
               <ClipboardCopyButton
-                className='flex size-10 items-center justify-center rounded-sm p-0'
+                className='flex h-full w-full items-center justify-center rounded-none p-0'
                 iconClassName='size-4'
                 size='icon'
                 value={copyDemoValue}

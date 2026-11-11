@@ -8,7 +8,7 @@ The canonical account details route is `/account`. Its route scaffold, settings 
 
 Profile media uploads go through the authenticated `process_image_upload` Edge Function. Persist the new canonical path before deleting the previous object. If the database mutation fails, delete the newly uploaded object and preserve the old one. Successful details and media mutations publish `supacharger:account-summary-changed` so active menus update without a browser restart.
 
-Managed account JSX uses only stable `sc-account-*` and shared `sc-control-*` class hooks for presentation. Layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling belong in the unlayered developer-owned `src/styles/supacharger-account.css`. The CLI installs that starter only when absent and preserves it on updates. Do not add Tailwind presentation utilities to managed account JSX; applications must be able to restyle the complete account surface without editing managed files.
+Managed account JSX uses only stable `sc-account-*` and shared `sc-control-*` class hooks for presentation. Layout, spacing, typography, colours, borders, dimensions, responsive behaviour, and interaction styling belong in the unlayered developer-owned `src/styles/sc_account.css`. The CLI installs that starter only when absent and preserves it on updates. Do not add Tailwind presentation utilities to managed account JSX; applications must be able to restyle the complete account surface without editing managed files.
 
 ## Persistent account navigation
 
