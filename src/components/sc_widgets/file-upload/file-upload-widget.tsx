@@ -3,9 +3,9 @@
 import { type ChangeEvent, type DragEvent, useRef, useState } from 'react';
 import { FileText, Upload, X } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/supacharger/components/ui/button';
+import { Input } from '@/supacharger/components/ui/input';
+import { Progress } from '@/supacharger/components/ui/progress';
 import { cn } from '@/utils/cn';
 
 export type ExistingUploadFile = {

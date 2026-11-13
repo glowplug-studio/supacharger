@@ -10,7 +10,6 @@ import AnimateHeight from 'react-animate-height';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { createClient } from '@/lib/supabase/client';
 import {
   createUserByEmailPassword,
@@ -29,6 +28,7 @@ import { Button } from '@/supacharger/components/primitives/button';
 import { Input } from '@/supacharger/components/primitives/input';
 import { OtpField } from '@/supacharger/components/primitives/otp-field';
 import { UIDivider } from '@/supacharger/components/ui/divider';
+import { LoadingSpinner } from '@/supacharger/components/ui/loading-spinner';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import type { EmailPasswordlessMode, SignUpEmailVerificationMode } from '@/supacharger/supacharger-config-contract';
 import { supabaseErrorCodeFallback, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';

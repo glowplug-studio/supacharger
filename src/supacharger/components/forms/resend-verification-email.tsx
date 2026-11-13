@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowRight, Check, MailCheck } from 'lucide-react';
 
-import { LoadingSpinner as Loader2 } from '@/components/ui/loading-spinner';
 import { useTurnstileGate } from '@/supacharger/components/forms/turnstile-gate';
+import { LoadingSpinner as Loader2 } from '@/supacharger/components/ui/loading-spinner';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 type ResendMessage = {

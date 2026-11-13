@@ -21,7 +21,7 @@ import type { ComponentType, CSSProperties } from 'react';
 import SCAccountMenu from '@/components/sc_demo/sc_account-menu';
 import { SCDashboard } from '@/components/sc_demo/sc_dashboard';
 import SCSiteLogo from '@/components/sc_demo/sc_site-logo';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
@@ -37,7 +37,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from '@/components/ui/sidebar';
+} from '@/supacharger/components/ui/sidebar';
 
 type SidebarLink = {
   href: string;

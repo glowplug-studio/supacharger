@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Check, Clipboard, TriangleAlert } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 type CopyStatus = 'copied' | 'error' | 'idle';
 

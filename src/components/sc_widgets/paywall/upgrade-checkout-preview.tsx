@@ -5,8 +5,8 @@ import { useTranslations } from 'next-intl';
 import { Check, ChevronRight, CreditCard, LockKeyhole } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
-import { Button } from '@/components/ui/button';
-import { DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/supacharger/components/ui/button';
+import { DialogDescription, DialogTitle } from '@/supacharger/components/ui/dialog';
 import { cn } from '@/utils/cn';
 
 import { DemoConfetti } from './demo-confetti';

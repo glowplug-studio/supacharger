@@ -4,10 +4,10 @@ import { useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import SaveButton from '@/supacharger/components/buttons/form-save-button';
 import PasswordValidationIndicator from '@/supacharger/components/forms/password-validation-indicator';
+import { Input } from '@/supacharger/components/ui/input';
+import { Label } from '@/supacharger/components/ui/label';
 
 
 export default function AccountChangePasswordForm() {

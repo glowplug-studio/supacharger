@@ -6,9 +6,9 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Bell, Building2, CreditCard, LockKeyhole, ShieldCheck, UserPen, UserRound } from 'lucide-react';
 
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { resolveAccountNavigation } from '@/supacharger.adapters/account/navigation';
 import type { AccountNavigationIconName, AccountNavigationItem } from '@/supacharger/account/settings/account-settings-contract';
+import { LoadingSpinner } from '@/supacharger/components/ui/loading-spinner';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 
 const navigationIcons = {

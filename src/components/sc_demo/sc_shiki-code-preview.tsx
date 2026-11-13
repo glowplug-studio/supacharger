@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/supacharger/components/ui/select';
 
 import { SCCopyCodeButton } from './sc_copy-code-button';
 
@@ -45,7 +45,13 @@ export function SCShikiCodePreview({
           <label className='sr-only' htmlFor='shiki-theme'>
             {selectLabel}
           </label>
-          <Select value={selectedTheme} onValueChange={setSelectedTheme}>
+          <Select
+            items={themes.map(({ id, label }) => ({ value: id, label }))}
+            value={selectedTheme}
+            onValueChange={(theme) => {
+              if (theme) setSelectedTheme(theme);
+            }}
+          >
             <SelectTrigger aria-label={selectLabel} className='bg-background w-44' id='shiki-theme'>
               <SelectValue />
             </SelectTrigger>

@@ -3,8 +3,8 @@ import { getTranslations } from 'next-intl/server';
 import { ArrowUp } from 'lucide-react';
 
 import { SupachargerAttribution } from '@/components/sc_widgets/attribution/supacharger-attribution';
-import { Button } from '@/components/ui/button';
 import ModeToggle from '@/supacharger/components/buttons/mode-toggle-button';
+import { Button } from '@/supacharger/components/ui/button';
 
 import LocaleSwitcher from './sc_locale-switcher';
 import SCSiteLogo from './sc_site-logo';

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 export default function SCPricingOneTime() {
   const t = useTranslations('PricingPage.lifetime');

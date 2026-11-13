@@ -21,10 +21,10 @@ import {
 } from 'lucide-react';
 
 import { UpgradeCheckoutPreview } from '@/components/sc_widgets/paywall/upgrade-checkout-preview';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/supacharger/components/ui/button';
+import { Dialog, DialogContent } from '@/supacharger/components/ui/dialog';
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/supacharger/components/ui/sheet';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/supacharger/components/ui/tooltip';
 
 import englishMessages from '../../../messages/en.json';
 
@@ -234,15 +234,17 @@ export function SCPaywallDemoGallery() {
 
             <article className='border-border bg-card h-full rounded-lg border p-6' data-paywall-demo='tooltip'>
               <DemoHeading icon={demoIcons[2]} item={content.items[2]} />
-              <TooltipProvider delayDuration={0} skipDelayDuration={0}>
+              <TooltipProvider delay={0}>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className='mt-8 block cursor-help' tabIndex={0}>
-                      <Button className='w-full rounded-lg' disabled>
-                        {content.tooltip.feature}
-                      </Button>
-                    </span>
-                  </TooltipTrigger>
+                  <TooltipTrigger
+                    render={
+                      <span className='mt-8 block cursor-help' tabIndex={0}>
+                        <Button className='w-full rounded-lg' disabled>
+                          {content.tooltip.feature}
+                        </Button>
+                      </span>
+                    }
+                  />
                   <TooltipContent className='max-w-64 rounded-lg px-3 py-2 leading-5'>
                     {content.tooltip.explanation}
                   </TooltipContent>

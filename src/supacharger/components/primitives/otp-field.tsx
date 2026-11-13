@@ -2,14 +2,16 @@
 
 import * as React from 'react';
 
-import * as OTPPrimitive from '@radix-ui/react-one-time-password-field';
+import { OTPField as OTPPrimitive } from '@base-ui/react/otp-field';
 
-type OtpFieldProps = React.ComponentPropsWithoutRef<typeof OTPPrimitive.Root> & {
+type OtpFieldProps = Omit<React.ComponentPropsWithoutRef<typeof OTPPrimitive.Root>, 'length' | 'className'> & {
+  placeholder?: string;
+  className?: string;
   length?: number;
 };
 
 export const OtpField = React.forwardRef<React.ElementRef<typeof OTPPrimitive.Root>, OtpFieldProps>(
-  ({ length = 6, className, placeholder, value, defaultValue, onValueChange, ...props }, ref) => {
+  ({ length = 6, autoFocus, className, placeholder, value, defaultValue, onValueChange, ...props }, ref) => {
     const resolvedPlaceholder = placeholder ?? '0'.repeat(length);
     const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? '');
     const [focusedIndex, setFocusedIndex] = React.useState<number | null>(null);
@@ -18,13 +20,14 @@ export const OtpField = React.forwardRef<React.ElementRef<typeof OTPPrimitive.Ro
 
     return (
       <OTPPrimitive.Root
+        length={length}
         {...props}
         ref={ref}
         value={value}
         defaultValue={defaultValue}
-        onValueChange={(nextValue) => {
+        onValueChange={(nextValue, details) => {
           if (value === undefined) setUncontrolledValue(nextValue);
-          onValueChange?.(nextValue);
+          onValueChange?.(nextValue, details);
         }}
         className={['sc-otp-field', className].filter(Boolean).join(' ')}
         data-length={length}
@@ -33,7 +36,7 @@ export const OtpField = React.forwardRef<React.ElementRef<typeof OTPPrimitive.Ro
           <React.Fragment key={index}>
             <span className='sc-otp-slot' data-active={focusedIndex === index ? 'true' : 'false'}>
               <OTPPrimitive.Input
-                index={index}
+                autoFocus={autoFocus && index === 0}
                 className='sc-otp-input'
                 onFocus={() => setFocusedIndex(index)}
                 onBlur={() => setFocusedIndex((currentIndex) => (currentIndex === index ? null : currentIndex))}
@@ -49,7 +52,6 @@ export const OtpField = React.forwardRef<React.ElementRef<typeof OTPPrimitive.Ro
             ) : null}
           </React.Fragment>
         ))}
-        <OTPPrimitive.HiddenInput />
       </OTPPrimitive.Root>
     );
   },

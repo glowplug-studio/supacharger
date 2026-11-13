@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { ArrowUpDown } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
 

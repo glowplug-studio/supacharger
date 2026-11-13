@@ -1,7 +1,7 @@
 # First install — Core checklist reference
 
 Created: unknown — not previously recorded
-Last edited: 2026-11-11T21:08:56+07:00 (Asia/Bangkok)
+Last edited: 2026-11-12T06:46:33+07:00 (Asia/Bangkok)
 
 > **DO NOT EDIT — Core CLI-managed.** This is the upstream procedure shipped with the installed Core version. Updates replace it. Execute and record progress in the developer-owned sibling `first-install-handhold-me.md`, which updates preserve. Never mark this reference complete in a consumer.
 
@@ -16,6 +16,7 @@ Use the installed handhold-me skill and repository instructions. Save each resul
 - [ ] **Bootstrap handover.** Record the target, route, verified tools, Core/CLI versions and any earlier checkpoint immediately. Read `AGENTS.md` and `docs/agents/installation.md`. If bootstrap stopped before handhold-me was ready, save that state, run `supacharger skills install general/handhold-me` and read its installed `SKILL.md`. Preserve an older named active record instead of creating competing histories.
 - [ ] **Remaining prerequisites.** Check the versions declared by `package.json` and verify local development tools, including Docker. The human installs or upgrades Git, Node.js/npm, Docker, the Supacharger CLI and other system tools manually. Report missing prerequisites and pause dependent work.
 - [ ] **Application dependencies.** Read the installed package manager, lockfile and declared scripts. Install project dependencies using the supported command, currently `npm install`. Preserve existing configuration and use the project-pinned Supabase CLI through `npx`.
+- [ ] **Starter UI.** Run `npm run setup:ui` after installing dependencies. Interactive CLI dependency installation also runs this step. On resume it fills in missing starter components and preserves existing files in `src/components/ui/`.
 - [ ] **Namespace and fresh database.** Confirm `PROJECT_NAMESPACE` in `src/supacharger.config.ts`: an empty value uses `sc_`; an optional 1–6 character code adds that project code. CLI initialisation prepares the desired definitions, local Supabase configuration and one initial migration automatically; non-interactive installs accept `--namespace <code>` and default to the empty value. For a manual fresh download only, run `node src/supacharger/database-starter.cjs --fresh` after dependencies and before linking or starting Supabase. Verify the resulting names. On resume, preserve the chosen namespace and existing history; never rerun fresh preparation against an installed application.
 - [ ] **Skills and guidance.** Offer other relevant skills and install selected ones. Read local Supacharger references directly or through its read-only MCP. Missing MCP access does not prevent reading installed files.
 - [ ] **Local services and connections.** With Docker running, start local Supabase using the installed project's command, normally `npx supabase start`. Verify service status without exposing credentials. Configure selected project-scoped MCP connections for the intended development environment; reuse existing connections and provide OAuth links for the human to open. Never reset existing databases by default.

@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Price, ProductWithPrices } from '@/features/pricing/types';
+import { Button } from '@/supacharger/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/supacharger/components/ui/tabs';
 
 function formatPrice(price: Price) {
   if (price.unit_amount === null || !price.currency) return 'Custom';

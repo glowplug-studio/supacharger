@@ -18,17 +18,17 @@ import {
 } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import DiscordLogo from '@/supacharger/assets/svgr/auth-providers/discord-icon.svg';
 import FigmaLogo from '@/supacharger/assets/svgr/auth-providers/figma-icon.svg';
 import GitHubLogo from '@/supacharger/assets/svgr/auth-providers/github-icon.svg';
 import GoogleLogo from '@/supacharger/assets/svgr/auth-providers/google-icon.svg';
 import MicrosoftLogo from '@/supacharger/assets/svgr/auth-providers/microsoft-icon.svg';
 import SlackLogo from '@/supacharger/assets/svgr/auth-providers/slack-icon.svg';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/supacharger/components/ui/accordion';
+import { Badge } from '@/supacharger/components/ui/badge';
+import { Button } from '@/supacharger/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/supacharger/components/ui/card';
+import { Separator } from '@/supacharger/components/ui/separator';
 import { cn } from '@/utils/cn';
 
 import SCLogoMarquee from './sc_logo_marquee';
@@ -463,7 +463,7 @@ export default function SCMarketingLanding() {
       <section className='scroll-mt-16 py-[72px]' id='faq'>
         <div className='mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8'>
           <SCSectionHeading description={t('faqSection.description')} title={t('faqSection.title')} />
-          <Accordion className='w-full' collapsible type='single'>
+          <Accordion className='w-full'>
             {faqs.map((faq, index) => (
               <AccordionItem className='border-border' key={faq.question} value={`item-${index}`}>
                 <AccordionTrigger className='text-foreground py-5 text-base font-medium hover:no-underline'>

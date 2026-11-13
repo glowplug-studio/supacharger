@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "description": "Canonical public and authorised local-source skills installer, distributed by the Supacharger CLI",
-  "scripts": {
-    "test": "node --test test/*.test.cjs"
-  },
   "dependencies": {
     "@inquirer/checkbox": "5.2.5",
     "yaml": "2.9.1"

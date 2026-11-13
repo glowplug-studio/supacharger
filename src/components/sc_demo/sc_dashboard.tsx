@@ -14,10 +14,10 @@ import {
   Search,
 } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@/supacharger/components/ui/badge';
+import { Button } from '@/supacharger/components/ui/button';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/supacharger/components/ui/card';
+import { Input } from '@/supacharger/components/ui/input';
 import { cn } from '@/utils/cn';
 
 const PerformanceChart = dynamic(() => import('./sc_dashboard-chart').then((module) => module.SCDashboardChart));

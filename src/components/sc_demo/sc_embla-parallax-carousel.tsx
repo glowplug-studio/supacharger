@@ -6,7 +6,7 @@ import type { EmblaCarouselType, EmblaEventType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 const TWEEN_FACTOR_BASE = 0.2;
 

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 export function DemoConfetti({ active, fullPage = false }: { active: boolean; fullPage?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);

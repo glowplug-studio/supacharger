@@ -38,9 +38,11 @@ Keep the task index in `docs/agents/agent-guidance.md` and project UI/icon conve
 
 Project instructions may override this shared guidance for the application, subject to the human's instructions and applicable higher-priority rules. Prefer recording overrides in the project file. Editing this shared file creates upstream drift; the Core updater must report the conflict rather than silently replace it.
 
-## CLI regression tests
+## Test ownership
 
-When working on Supacharger Core or consuming applications, do not create or extend regression tests relating to the Supacharger CLI unless the human explicitly requests those tests. This includes tests added in the CLI repository as part of Core or consumer work. Do not add associated test fixtures, scripts or dependencies as incidental work. Verify changes using existing checks or focused manual inspection.
+Supacharger Core does not supply, install, generate or maintain application tests. Tests in a consuming application are project-owned. Do not create tests, fixtures, test scripts or test dependencies unless the human explicitly requests them. When requested, keep them outside Core-managed paths and limit them to the approved application scope.
+
+Tests required to maintain the Supacharger CLI belong only in the separate CLI repository. Do not create or extend CLI regression tests during Core or consumer work unless the human explicitly requests those tests. Verify other changes with the relevant existing checks or focused manual inspection.
 
 ## Installation checklists
 

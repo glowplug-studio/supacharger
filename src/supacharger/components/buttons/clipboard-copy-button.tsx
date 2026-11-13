@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Check, ClipboardCopy } from 'lucide-react';
 
 import { Button } from '@/supacharger/components/primitives/button';
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import { Tooltip as TooltipPrimitive } from '@base-ui/react/tooltip';
 
 const Tooltip = TooltipPrimitive.Root;
 const TooltipProvider = TooltipPrimitive.Provider;
@@ -58,37 +58,37 @@ export function ClipboardCopyButtonBase({
     }, 2500);
   }
   return (
-    <TooltipProvider delayDuration={0}>
+    <TooltipProvider delay={0}>
       <Tooltip
-        delayDuration={0}
         open={open}
         onOpenChange={(next) => {
           if (status === 'idle') setOpen(next);
         }}
       >
-        <TooltipTrigger asChild>
-          <Button
-            type='button'
-            aria-label={messages.clickToCopy}
-            {...props}
-            disabled={disabled}
-            onClick={() => void copy()}
-          >
-            {status === 'copied' ? (
-              <Check aria-hidden='true' className={iconClassName} />
-            ) : (
-              <ClipboardCopy aria-hidden='true' className={iconClassName} />
-            )}
-            {children}
-          </Button>
-        </TooltipTrigger>
+        <TooltipTrigger
+          render={
+            <Button
+              type='button'
+              aria-label={messages.clickToCopy}
+              {...props}
+              disabled={disabled}
+              onClick={() => void copy()}
+            >
+              {status === 'copied' ? (
+                <Check aria-hidden='true' className={iconClassName} />
+              ) : (
+                <ClipboardCopy aria-hidden='true' className={iconClassName} />
+              )}
+              {children}
+            </Button>
+          }
+        />
         <TooltipPrimitive.Portal>
-          <TooltipPrimitive.Content
-            sideOffset={4}
-            className='animate-in fade-in-0 zoom-in-95 z-50 rounded-md bg-neutral-900 px-3 py-1.5 text-xs text-neutral-50 motion-reduce:animate-none'
-          >
-            <span role='status'>{messages[status === 'idle' ? 'clickToCopy' : status]}</span>
-          </TooltipPrimitive.Content>
+          <TooltipPrimitive.Positioner sideOffset={4} className='z-50'>
+            <TooltipPrimitive.Popup className='animate-in fade-in-0 zoom-in-95 z-50 rounded-md bg-neutral-900 px-3 py-1.5 text-xs text-neutral-50 motion-reduce:animate-none'>
+              <span role='status'>{messages[status === 'idle' ? 'clickToCopy' : status]}</span>
+            </TooltipPrimitive.Popup>
+          </TooltipPrimitive.Positioner>
         </TooltipPrimitive.Portal>
       </Tooltip>
     </TooltipProvider>

@@ -56,7 +56,7 @@ A real update:
 6. directly compares every installed managed file with the downloaded target; and
 7. advances `.supacharger/core-lock.json` only when the files match.
 
-The updater does not distribute, generate or run application tests, fixtures, database tests, test package scripts, lint, TypeScript or Bruno parity checks.
+The updater does not distribute, generate or run application tests, fixtures, database tests or test package scripts. Tests in a consuming application are project-owned and agents create them only when the human explicitly requests them. Lint, TypeScript and Bruno parity checks also remain outside the updater.
 
 ## Forward migrations
 
@@ -70,11 +70,11 @@ Legacy releases without the declarative distribution contract retain the old app
 
 The private `.agents/supacharger/core-development/` contributor checkout remains opt-in through `supacharger coredev install` and `supacharger coredev update`. Ordinary CLI commands do not initialise it.
 
-Public and licensed skills remain separate from Core. Their own `.supacharger/skills-lock.json` contains the actual source repository, immutable commit and integrity hashes because skills are independently installed files; this does not affect Core file comparison. Licensed skills are absent from the public selector and require an authorised committed checkout through `--source` for installation and updates. A legacy local-source record mislabelled as public is corrected only when the same immutable commit and installed hashes verify against the authorised checkout.
+Public and licensed skills remain separate from Core. Their own `.supacharger/skills-lock.json` contains the actual source repository, immutable commit and one SHA-256 digest for the complete installed skill directory; this does not affect Core file comparison. Licensed skills are absent from the public selector and require an authorised committed checkout through `--source` for installation and updates. A legacy local-source record mislabelled as public is corrected only when the same immutable commit and installed directory digest verify against the authorised checkout.
 
 ## Application test and reference cleanup
 
-Initialisation filters test suites, fixtures, coverage output and test scripts from the cloned starter, including nested maintainer tooling. Installed skills are preserved. Core updates remove obsolete test package scripts, including scripts using a test runner under a check name; they do not sweep developer-owned application files. Existing application test files require deliberate cleanup. CLI and Core maintainer tests stay in their source repositories.
+Initialisation filters test suites, fixtures, coverage output and test scripts from the cloned starter, including nested maintainer tooling. Installed skills are preserved. Core updates remove obsolete test package scripts, including scripts using a test runner under a check name; they do not sweep developer-owned application files. Existing application tests remain project-owned. Agents create or change them only when the human explicitly requests that work. CLI maintainer tests stay in the CLI repository.
 
 `docs/agents/` is developer-owned in applications. Updates install missing Markdown references, including the orientation index, and preserve existing files. Review upstream reference changes deliberately alongside the implementation; copying documentation alone does not upgrade runtime behaviour. The update plan reports removed test scripts.
 

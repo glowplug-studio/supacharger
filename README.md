@@ -25,7 +25,7 @@ The managed custom access-token hook owns the canonical `user_role` and active-o
 - [Tailwind CSS 4.3](https://tailwindcss.com/) - CSS framework
 - [Lucide React 1.31](https://lucide.dev/) - Icon library
 - [Zod 4.4](https://zod.dev/) - Runtime validation and typed schemas
-- [shadcn/ui](https://ui.shadcn.com) - Prebuilt accessible components
+- [shadcn/ui](https://ui.shadcn.com) with Base UI. Setup Wizard runs `npm run setup:ui` to install vanilla components in `src/components/ui/`. Core, demo and admin use separate styled components in `src/supacharger/components/`. Add further Base UI components with `npx shadcn add <component>`.
 - Durable Stripe event processing, scheduled reconciliation, multi-item subscriptions, and entitlement projection
 - Stripe fixture to bootstrap product data
 - Supabase migrations to bootstrap and manage your db schema
@@ -38,7 +38,7 @@ Shared runtime and tooling dependencies are exact-pinned in `package.json`. Cons
 
 Core contains the generic ownership-aware installer under `tools/supacharger-extensions/`, not the Brevo extension payload. Brevo is maintained in its separate extension repository and developed/integrated in Wakekeeper. Installed extension files are committed with the consuming application; published payloads and installed migration history remain immutable. Read [extension guidance](docs/agents/extensions.md) for file ownership, local installation and verification.
 
-Run `node --test tools/supacharger-extensions/installer.test.cjs` for the generic installer checks. Brevo provider and delivery checks belong in the separate extension repository. Installing files does not apply migrations, deploy functions or configure provider secrets.
+Brevo provider and delivery checks belong in the separate extension repository. Installing files does not apply migrations, deploy functions or configure provider secrets.
 
 ### Application configuration contract
 
@@ -585,7 +585,7 @@ Start at `AGENTS.md`. Shared working rules live in `.agents/supacharger/guidance
 
 `docs/agents/agent-guidance.md` indexes the technical references exposed by the read-only repository-knowledge MCP. Keep Supacharger development conventions in `docs/agents/` and repository working rules in `.agents/`.
 
-Use `supacharger skills install` to select free public skills, or `supacharger skills install general/changelog` for a named installation. Licensed skills are not shown in the public selector; install or update them from an authorised committed checkout, for example `supacharger skills install supacharger/core-upgrade-review --source /path/to/supacharger-license-skills`. The generated skills lock records the actual GitHub source and immutable commit and refuses cross-source updates. Skill updates are explicit and separate from Core updates and paid extensions. Project instructions, installed skills, the optional contributor checkout and `CHANGELOG.project.md` are preserved by Core updates; shared guidance and `CHANGELOG.md` are exact-managed. Existing root instructions are not automatically replaced during upgrades.
+Use `supacharger skills install` to select free public skills, or `supacharger skills install general/changelog` for a named installation. Licensed skills are not shown in the public selector; install or update them from an authorised committed checkout, for example `supacharger skills install supacharger/core-upgrade-review --source /path/to/supacharger-license-skills`. The generated skills lock records the actual GitHub source, immutable commit and one SHA-256 digest for the complete skill directory. Skill updates are explicit and separate from Core updates and paid extensions. Project instructions, installed skills, the optional contributor checkout and `CHANGELOG.project.md` are preserved by Core updates; shared guidance and `CHANGELOG.md` are exact-managed. Existing root instructions are not automatically replaced during upgrades.
 
 See [Agent guidance](https://supacharger.dev/docs/agents) and [Contributing](https://supacharger.dev/docs/contributing) for installation and ownership details.
 

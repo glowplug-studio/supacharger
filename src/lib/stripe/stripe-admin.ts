@@ -4,12 +4,13 @@ import { getEnvVar } from '@/supacharger/utils/helpers';
 
 import 'server-only';
 
-export const STRIPE_API_VERSION: Stripe.LatestApiVersion = '2026-09-30.endive';
+export const STRIPE_API_VERSION = '2026-09-30.endive';
 
 let stripeAdmin: Stripe | undefined;
 
 export function getStripeAdmin(): Stripe {
   stripeAdmin ??= new Stripe(getEnvVar(process.env.STRIPE_SECRET_KEY, 'STRIPE_SECRET_KEY'), {
+    // @ts-expect-error The application pins its Stripe API version independently of SDK upgrades.
     apiVersion: STRIPE_API_VERSION,
     maxNetworkRetries: 2,
   });

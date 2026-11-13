@@ -1,8 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-
-import * as Dialog from '@radix-ui/react-dialog';
+import { Dialog } from '@base-ui/react/dialog';
 
 interface FullScreenDialogProps {
   open: boolean;
@@ -24,15 +22,21 @@ export default function FullScreenDialog({
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className='fixed inset-0 z-40 bg-black/40 backdrop-blur-lg' />
-        <Dialog.Content className='fixed inset-0 z-50 flex items-center justify-center p-0'>
-          <div className='m-12 flex h-[calc(100vh-6rem)] w-full flex-col items-center justify-center rounded-lg bg-background px-8 py-6 shadow-xl'>
+        <Dialog.Backdrop className='fixed inset-0 z-40 bg-black/40 backdrop-blur-lg' />
+        <Dialog.Popup className='fixed inset-0 z-50 flex items-center justify-center p-0'>
+          <div className='bg-background m-12 flex h-[calc(100vh-6rem)] w-full flex-col items-center justify-center rounded-lg px-8 py-6 shadow-xl'>
             {dialogHeader && <div className='mb-4'>{dialogHeader}</div>}
-            <h1 className='mb-2 text-center text-3xl font-bold'>{dialogTitle}</h1>
-            {dialogDescription && <p className='mb-6 text-center text-lg text-muted-foreground'>{dialogDescription}</p>}
+            <Dialog.Title render={<h1 />} className='mb-2 text-center text-3xl font-bold'>
+              {dialogTitle}
+            </Dialog.Title>
+            {dialogDescription && (
+              <Dialog.Description className='text-muted-foreground mb-6 text-center text-lg'>
+                {dialogDescription}
+              </Dialog.Description>
+            )}
             <div className='flex w-full flex-col items-center'>{dialogContent}</div>
           </div>
-        </Dialog.Content>
+        </Dialog.Popup>
       </Dialog.Portal>
     </Dialog.Root>
   );

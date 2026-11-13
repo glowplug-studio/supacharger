@@ -5,17 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { toast } from 'react-toastify';
 
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { verifyOtp } from '@/lib/supabase/supacharger/supabase-auth';
 import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
 import { OtpField } from '@/supacharger/components/primitives/otp-field';
+import { LoadingSpinner } from '@/supacharger/components/ui/loading-spinner';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
-import {
-  isValidEmail,
-  supabaseErrorCodeFallback,
-  supabaseErrorCodeLocalisation,
-} from '@/supacharger/utils/helpers';
-import * as LabelPrimitive from '@radix-ui/react-label';
+import { isValidEmail, supabaseErrorCodeFallback, supabaseErrorCodeLocalisation } from '@/supacharger/utils/helpers';
 
 export function OtpFieldsForm({ email }: { email: string }) {
   const [otp, setOtp] = useState('');
@@ -26,12 +21,12 @@ export function OtpFieldsForm({ email }: { email: string }) {
   const router = useRouter();
 
   // Ref for OTP input
-  const otpRef = useRef<HTMLInputElement | null>(null);
+  const otpRef = useRef<HTMLDivElement | null>(null);
 
   // Autofocus OTP field when form is shown or when loading is toggled off (error case)
   useEffect(() => {
     if (!loading && otpRef.current) {
-      otpRef.current.focus();
+      otpRef.current.querySelector<HTMLInputElement>('input:not([type="hidden"])')?.focus();
     }
   }, [loading]);
 
@@ -63,7 +58,10 @@ export function OtpFieldsForm({ email }: { email: string }) {
         router.push(SC_CONFIG.USER_REDIRECTS.AUTHED_USER.HOME_PATH);
       }
     } catch (err: any) {
-      toast.error(tSupabaseErrorCodes(supabaseErrorCodeLocalisation('genericError')), resolveToastOptions(SC_CONFIG.TOAST_CONFIG));
+      toast.error(
+        tSupabaseErrorCodes(supabaseErrorCodeLocalisation('genericError')),
+        resolveToastOptions(SC_CONFIG.TOAST_CONFIG),
+      );
       setLoading(false); // Show form again
     }
   };
@@ -81,9 +79,9 @@ export function OtpFieldsForm({ email }: { email: string }) {
       <p className='sc-auth-otp-copy'>{tOTPFormComponent('emailSent', { email })}</p>
       <p className='sc-auth-otp-copy'>{tOTPFormComponent('description')}</p>
 
-      <LabelPrimitive.Root htmlFor='otp-group' className='sc-auth-label'>
+      <label htmlFor='otp-group' className='sc-auth-label'>
         {tOTPFormComponent('fieldLabel')}
-      </LabelPrimitive.Root>
+      </label>
 
       <div className='sc-auth-otp-stage'>
         {loading ? (
@@ -91,12 +89,7 @@ export function OtpFieldsForm({ email }: { email: string }) {
             <LoadingSpinner className='sc-auth-otp-loading-icon' label={tOTPFormComponent('verifyingCode')} />
           </div>
         ) : (
-          <OtpField
-            length={6}
-            onValueChange={handleOtpChange}
-            ref={otpRef}
-            autoFocus
-          />
+          <OtpField id='otp-group' length={6} onValueChange={handleOtpChange} ref={otpRef} autoFocus />
         )}
       </div>
     </div>

@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ExternalLink, ListChecks, Menu, Scale, UploadCloud, Wallet } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -14,8 +14,8 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+} from '@/supacharger/components/ui/navigation-menu';
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/supacharger/components/ui/sheet';
 import { cn } from '@/utils/cn';
 
 import LocaleSwitcher from './sc_locale-switcher';
@@ -61,34 +61,13 @@ const featuresNavigation = [
 const navigationLinkClassName =
   'inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring';
 const navigationTriggerClassName =
-  'h-9 rounded-lg px-3 py-0 text-sm text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[state=open]:bg-accent data-[state=open]:text-foreground';
+  'h-9 rounded-lg px-3 py-0 text-sm text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-accent data-popup-open:text-foreground';
 const authControlClassName = 'h-auto rounded-lg px-5 py-3 text-sm';
 
 export function SCMarketingMenu() {
   const t = useTranslations('MarketingNavigation');
   const [activeHref, setActiveHref] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRootRef = useRef<React.ComponentRef<typeof NavigationMenu> | null>(null);
-  const [featuresMenuOffset, setFeaturesMenuOffset] = useState(0);
-
-  useEffect(() => {
-    const measureFeaturesMenuOffset = () => {
-      const menu = menuRootRef.current;
-      if (!menu) return;
-      const menuRect = menu.getBoundingClientRect();
-      // The viewport hangs from the nav list's left edge; shift it so the
-      // wide features panel is centred in the page, not under its trigger.
-      setFeaturesMenuOffset(Math.round(window.innerWidth / 2 - menuRect.left - 704 / 2));
-    };
-
-    measureFeaturesMenuOffset();
-    window.addEventListener('resize', measureFeaturesMenuOffset);
-    document.fonts?.ready.then(measureFeaturesMenuOffset).catch(() => {});
-
-    return () => {
-      window.removeEventListener('resize', measureFeaturesMenuOffset);
-    };
-  }, []);
 
   useEffect(() => {
     const updateFromHash = () => {
@@ -135,12 +114,7 @@ export function SCMarketingMenu() {
         <div className='mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8 xl:grid xl:grid-cols-[1fr_auto_1fr]'>
           <SCSiteLogo showSiteTitle={true} />
 
-          <NavigationMenu
-            className='hidden xl:flex'
-            ref={menuRootRef}
-            viewportStyle={{ transform: `translateX(${featuresMenuOffset}px)` }}
-            onValueChange={(value) => setMenuOpen(value !== '')}
-          >
+          <NavigationMenu className='hidden xl:flex' onValueChange={(value) => setMenuOpen(value != null)}>
             <NavigationMenuList className='space-x-1'>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className={navigationTriggerClassName}>
@@ -153,19 +127,21 @@ export function SCMarketingMenu() {
 
                       return (
                         <li key={item.href}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              aria-current={isActive ? 'location' : undefined}
-                              className={cn(
-                                'text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors outline-none',
-                                isActive && 'bg-accent text-foreground',
-                              )}
-                              href={item.href}
-                              onClick={() => setActiveHref(item.href)}
-                            >
-                              {t(item.labelKey)}
-                            </Link>
-                          </NavigationMenuLink>
+                          <NavigationMenuLink
+                            render={
+                              <Link
+                                aria-current={isActive ? 'location' : undefined}
+                                className={cn(
+                                  'text-muted-foreground hover:bg-accent hover:text-foreground focus:bg-accent focus:text-foreground block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors outline-none',
+                                  isActive && 'bg-accent text-foreground',
+                                )}
+                                href={item.href}
+                                onClick={() => setActiveHref(item.href)}
+                              >
+                                {t(item.labelKey)}
+                              </Link>
+                            }
+                          />
                         </li>
                       );
                     })}
@@ -189,76 +165,86 @@ export function SCMarketingMenu() {
 
                           return (
                             <li key={item.href}>
-                              <NavigationMenuLink asChild>
-                                <Link
-                                  className='hover:bg-accent focus:bg-accent group flex gap-3 rounded-lg p-3 transition-colors outline-none'
-                                  href={item.href}
-                                >
-                                  <FeatureIcon aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
-                                  <span className='min-w-0'>
-                                    <span className='flex items-center gap-2'>
-                                      <span className='text-foreground block text-sm font-semibold'>
-                                        {t(item.labelKey)}
-                                      </span>
-                                      {item.isNew ? (
-                                        <span className='bg-foreground text-background rounded-full px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] uppercase'>
-                                          {t('newBadge')}
+                              <NavigationMenuLink
+                                render={
+                                  <Link
+                                    className='hover:bg-accent focus:bg-accent group flex gap-3 rounded-lg p-3 transition-colors outline-none'
+                                    href={item.href}
+                                  >
+                                    <FeatureIcon aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
+                                    <span className='min-w-0'>
+                                      <span className='flex items-center gap-2'>
+                                        <span className='text-foreground block text-sm font-semibold'>
+                                          {t(item.labelKey)}
                                         </span>
-                                      ) : null}
+                                        {item.isNew ? (
+                                          <span className='bg-foreground text-background rounded-full px-1.5 py-0.5 text-[10px] font-semibold tracking-[0.08em] uppercase'>
+                                            {t('newBadge')}
+                                          </span>
+                                        ) : null}
+                                      </span>
+                                      <span className='text-muted-foreground group-hover:text-foreground/80 mt-1 block text-sm leading-5'>
+                                        {t(item.descriptionKey)}
+                                      </span>
                                     </span>
-                                    <span className='text-muted-foreground group-hover:text-foreground/80 mt-1 block text-sm leading-5'>
-                                      {t(item.descriptionKey)}
-                                    </span>
-                                  </span>
-                                </Link>
-                              </NavigationMenuLink>
+                                  </Link>
+                                }
+                              />
                             </li>
                           );
                         })}
                       </ul>
                     </div>
-                    <NavigationMenuLink asChild>
-                      <Link
-                        className='relative hidden w-[20rem] overflow-hidden lg:block'
-                        href='/features/whats-included'
-                      >
-                        <Image
-                          alt={t('promoImageAlt')}
-                          className='object-cover'
-                          fill
-                          src='/images/sc_demo/fern-login-sidecar.webp'
-                        />
-                        <span className='absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent' />
-                        <span className='absolute right-0 bottom-0 left-0 p-5'>
-                          <span className='block font-sans text-base font-semibold text-white'>{t('promoTitle')}</span>
-                          <span className='mt-1 block text-sm leading-5 text-white/80'>{t('promoDescription')}</span>
-                        </span>
-                      </Link>
-                    </NavigationMenuLink>
+                    <NavigationMenuLink
+                      render={
+                        <Link
+                          className='relative hidden w-[20rem] overflow-hidden lg:block'
+                          href='/features/whats-included'
+                        >
+                          <Image
+                            alt={t('promoImageAlt')}
+                            className='object-cover'
+                            fill
+                            src='/images/sc_demo/fern-login-sidecar.webp'
+                          />
+                          <span className='absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent' />
+                          <span className='absolute right-0 bottom-0 left-0 p-5'>
+                            <span className='block font-sans text-base font-semibold text-white'>
+                              {t('promoTitle')}
+                            </span>
+                            <span className='mt-1 block text-sm leading-5 text-white/80'>{t('promoDescription')}</span>
+                          </span>
+                        </Link>
+                      }
+                    />
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <a
-                    aria-label={`${t('supacharger')} (${t('opensInNewTab')})`}
-                    className={cn(navigationLinkClassName, 'gap-1.5')}
-                    href='https://supacharger.dev'
-                    rel='noopener noreferrer'
-                    target='_blank'
-                  >
-                    {t('supacharger')}
-                    <ExternalLink aria-hidden='true' className='size-3.5' />
-                  </a>
-                </NavigationMenuLink>
+                <NavigationMenuLink
+                  render={
+                    <a
+                      aria-label={`${t('supacharger')} (${t('opensInNewTab')})`}
+                      className={cn(navigationLinkClassName, 'gap-1.5')}
+                      href='https://supacharger.dev'
+                      rel='noopener noreferrer'
+                      target='_blank'
+                    >
+                      {t('supacharger')}
+                      <ExternalLink aria-hidden='true' className='size-3.5' />
+                    </a>
+                  }
+                />
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link className={navigationLinkClassName} href='/license'>
-                    {t('license')}
-                  </Link>
-                </NavigationMenuLink>
+                <NavigationMenuLink
+                  render={
+                    <Link className={navigationLinkClassName} href='/license'>
+                      {t('license')}
+                    </Link>
+                  }
+                />
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -283,16 +269,18 @@ export function SCMarketingMenu() {
           <div className='ml-auto flex items-center gap-2 xl:hidden'>
             <LocaleSwitcher appearance='marketing' className={authControlClassName} />
             <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  aria-label={t('openNavigation')}
-                  className='border-border text-foreground hover:bg-accent hover:text-foreground size-11 rounded-lg bg-transparent shadow-none'
-                  size='icon'
-                  variant='outline'
-                >
-                  <Menu aria-hidden='true' />
-                </Button>
-              </SheetTrigger>
+              <SheetTrigger
+                render={
+                  <Button
+                    aria-label={t('openNavigation')}
+                    className='border-border text-foreground hover:bg-accent hover:text-foreground size-11 rounded-lg bg-transparent shadow-none'
+                    size='icon'
+                    variant='outline'
+                  >
+                    <Menu aria-hidden='true' />
+                  </Button>
+                }
+              />
               <SheetContent className='border-border bg-background text-foreground'>
                 <SheetHeader>
                   <SheetTitle className='text-foreground'>
@@ -307,19 +295,22 @@ export function SCMarketingMenu() {
                         const isActive = activeHref === item.href;
 
                         return (
-                          <SheetClose asChild key={item.href}>
-                            <Link
-                              aria-current={isActive ? 'location' : undefined}
-                              className={cn(
-                                'text-muted-foreground hover:bg-accent hover:text-foreground rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                                isActive && 'bg-accent text-foreground hover:bg-accent',
-                              )}
-                              href={item.href}
-                              onClick={() => setActiveHref(item.href)}
-                            >
-                              {t(item.labelKey)}
-                            </Link>
-                          </SheetClose>
+                          <SheetClose
+                            key={item.href}
+                            render={
+                              <Link
+                                aria-current={isActive ? 'location' : undefined}
+                                className={cn(
+                                  'text-muted-foreground hover:bg-accent hover:text-foreground rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                                  isActive && 'bg-accent text-foreground hover:bg-accent',
+                                )}
+                                href={item.href}
+                                onClick={() => setActiveHref(item.href)}
+                              >
+                                {t(item.labelKey)}
+                              </Link>
+                            }
+                          />
                         );
                       })}
                     </div>
@@ -332,60 +323,73 @@ export function SCMarketingMenu() {
                         const FeatureIcon = item.icon;
 
                         return (
-                          <SheetClose asChild key={item.href}>
-                            <Link className='hover:bg-accent flex gap-3 rounded-lg px-3 py-3' href={item.href}>
-                              <FeatureIcon aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
-                              <span className='min-w-0'>
-                                <span className='text-foreground block text-sm font-semibold'>{t(item.labelKey)}</span>
-                                <span className='text-muted-foreground mt-1 block text-sm leading-5'>
-                                  {t(item.descriptionKey)}
+                          <SheetClose
+                            key={item.href}
+                            render={
+                              <Link className='hover:bg-accent flex gap-3 rounded-lg px-3 py-3' href={item.href}>
+                                <FeatureIcon aria-hidden='true' className='text-primary mt-0.5 size-5 shrink-0' />
+                                <span className='min-w-0'>
+                                  <span className='text-foreground block text-sm font-semibold'>
+                                    {t(item.labelKey)}
+                                  </span>
+                                  <span className='text-muted-foreground mt-1 block text-sm leading-5'>
+                                    {t(item.descriptionKey)}
+                                  </span>
                                 </span>
-                              </span>
-                            </Link>
-                          </SheetClose>
+                              </Link>
+                            }
+                          />
                         );
                       })}
                     </div>
                   </div>
 
-                  <SheetClose asChild>
-                    <a
-                      aria-label={`${t('supacharger')} (${t('opensInNewTab')})`}
-                      className='text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center gap-2 rounded-lg px-3 py-3 text-sm font-semibold'
-                      href='https://supacharger.dev'
-                      rel='noopener noreferrer'
-                      target='_blank'
-                    >
-                      {t('supacharger')}
-                      <ExternalLink aria-hidden='true' className='size-4' />
-                    </a>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <Link
-                      className='text-muted-foreground hover:bg-accent hover:text-foreground rounded-lg px-3 py-3 text-sm font-semibold'
-                      href='/license'
-                    >
-                      {t('license')}
-                    </Link>
-                  </SheetClose>
+                  <SheetClose
+                    render={
+                      <a
+                        aria-label={`${t('supacharger')} (${t('opensInNewTab')})`}
+                        className='text-muted-foreground hover:bg-accent hover:text-foreground inline-flex items-center gap-2 rounded-lg px-3 py-3 text-sm font-semibold'
+                        href='https://supacharger.dev'
+                        rel='noopener noreferrer'
+                        target='_blank'
+                      >
+                        {t('supacharger')}
+                        <ExternalLink aria-hidden='true' className='size-4' />
+                      </a>
+                    }
+                  />
+                  <SheetClose
+                    render={
+                      <Link
+                        className='text-muted-foreground hover:bg-accent hover:text-foreground rounded-lg px-3 py-3 text-sm font-semibold'
+                        href='/license'
+                      >
+                        {t('license')}
+                      </Link>
+                    }
+                  />
                 </nav>
                 <div className='border-border mt-8 grid gap-3 border-t pt-6'>
-                  <SheetClose asChild>
-                    <Link
-                      className='text-muted-foreground hover:text-foreground rounded-lg px-5 py-3 text-sm font-medium'
-                      href='/account/login'
-                    >
-                      {t('login')}
-                    </Link>
-                  </SheetClose>
-                  <SheetClose asChild>
-                    <Button
-                      asChild
-                      className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-lg px-5 py-3 text-sm shadow-[0_2px_10px_-2px_rgba(0,0,0,0.3)]'
-                    >
-                      <Link href='/account/create'>{t('createAccount')}</Link>
-                    </Button>
-                  </SheetClose>
+                  <SheetClose
+                    render={
+                      <Link
+                        className='text-muted-foreground hover:text-foreground rounded-lg px-5 py-3 text-sm font-medium'
+                        href='/account/login'
+                      >
+                        {t('login')}
+                      </Link>
+                    }
+                  />
+                  <SheetClose
+                    render={
+                      <Button
+                        asChild
+                        className='bg-foreground text-background hover:bg-foreground/90 h-auto rounded-lg px-5 py-3 text-sm shadow-[0_2px_10px_-2px_rgba(0,0,0,0.3)]'
+                      >
+                        <Link href='/account/create'>{t('createAccount')}</Link>
+                      </Button>
+                    }
+                  />
                 </div>
               </SheetContent>
             </Sheet>

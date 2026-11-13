@@ -3,8 +3,8 @@
 import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/supacharger/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/supacharger/components/ui/card';
 
 type Plan = { description: string; features: string[]; name: string; price: string };
 

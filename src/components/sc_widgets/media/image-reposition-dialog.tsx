@@ -3,7 +3,7 @@
 import { useId, useRef, useState } from 'react';
 import { ArrowUpDown, Move } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -12,9 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
+} from '@/supacharger/components/ui/dialog';
+import { Label } from '@/supacharger/components/ui/label';
+import { Slider } from '@/supacharger/components/ui/slider';
 import { cn } from '@/utils/cn';
 
 import type { ImageCrop } from '../../../../supabase/functions/_shared/image-target-contract';
@@ -117,12 +117,14 @@ export function ImageRepositionDialog({
         }
       }}
     >
-      <DialogTrigger asChild>
-        <Button disabled={disabled} type='button' variant='outline'>
-          <Move aria-hidden='true' className='size-4' />
-          {copy.reposition}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button disabled={disabled} type='button' variant='outline'>
+            <Move aria-hidden='true' className='size-4' />
+            {copy.reposition}
+          </Button>
+        }
+      />
       <DialogContent
         className={cn(
           'flex max-h-[90dvh] flex-col overflow-y-auto duration-150 [&>*]:shrink-0',
@@ -142,7 +144,7 @@ export function ImageRepositionDialog({
         </DialogHeader>
         <div
           className={cn(
-            'relative isolate mx-auto w-full overflow-hidden rounded-md bg-muted',
+            'bg-muted relative isolate mx-auto w-full overflow-hidden rounded-md',
             shape === 'circle' ? 'max-w-[50dvh]' : 'max-w-3xl',
           )}
           // Keep the preview square/rectangular even when the dialog must scroll.
@@ -201,7 +203,9 @@ export function ImageRepositionDialog({
             variant='ghost'
             onKeyDown={(event) => {
               const permittedKeys =
-                movement === 'vertical' ? ['ArrowUp', 'ArrowDown'] : ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+                movement === 'vertical'
+                  ? ['ArrowUp', 'ArrowDown']
+                  : ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
               if (!crop || !image || !permittedKeys.includes(event.key)) return;
               event.preventDefault();
               const step = crop.width * 0.025;
@@ -254,7 +258,7 @@ export function ImageRepositionDialog({
           </Button>
         </div>
         {failed ? (
-          <p className='text-sm text-destructive' role='alert'>
+          <p className='text-destructive text-sm' role='alert'>
             {copy.failed}
           </p>
         ) : null}
@@ -265,19 +269,20 @@ export function ImageRepositionDialog({
             </Label>
             <Slider
               aria-label={copy.zoom}
-              className='min-h-8 [&_[role=slider]]:border-foreground/50 [&_[role=slider]]:bg-foreground [&_[role=slider]]:ring-1 [&_[role=slider]]:ring-foreground/30'
+              className='[&_[role=slider]]:border-foreground/50 [&_[role=slider]]:bg-foreground [&_[role=slider]]:ring-foreground/30 min-h-8 [&_[role=slider]]:ring-1'
               disabled={!image || failed}
               id={zoomId}
               max={4}
               min={1}
               step={0.01}
               value={[zoom]}
-              onValueChange={([next]) => {
+              onValueChange={(value) => {
+                const next = typeof value === 'number' ? value : value[0];
                 setZoom(next);
                 move(centre.x, centre.y, next);
               }}
             />
-            <span className='w-12 shrink-0 text-right text-sm tabular-nums text-muted-foreground'>
+            <span className='text-muted-foreground w-12 shrink-0 text-right text-sm tabular-nums'>
               {Math.round(zoom * 100)}%
             </span>
           </div>
@@ -296,17 +301,7 @@ export function ImageRepositionDialog({
               canvas.height = Math.round(384 / aspectRatio);
               const context = canvas.getContext('2d');
               if (!context) return;
-              context.drawImage(
-                image,
-                crop.x,
-                crop.y,
-                crop.width,
-                crop.height,
-                0,
-                0,
-                canvas.width,
-                canvas.height,
-              );
+              context.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
               onDone(crop, canvas.toDataURL('image/png'));
               setOpen(false);
             }}

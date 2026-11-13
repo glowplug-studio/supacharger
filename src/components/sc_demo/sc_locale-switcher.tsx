@@ -5,15 +5,15 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { Button } from '@/components/ui/button';
+import { type AppLocale, resolveLocale } from '@/i18n/config';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+import { Button } from '@/supacharger/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { type AppLocale, resolveLocale } from '@/i18n/config';
-import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+} from '@/supacharger/components/ui/dropdown-menu';
 import { SC_CONFIG } from '@/supacharger/supacharger-config';
 import { cn } from '@/utils/cn';
 
@@ -57,23 +57,25 @@ export default function LocaleSwitcher({ appearance = 'default', className }: Lo
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          aria-label={t('changeLanguage')}
-          className={cn(
-            'gap-2',
-            appearance === 'marketing' &&
-              'border-border text-foreground hover:bg-accent hover:text-foreground h-auto rounded-lg bg-transparent px-5 py-3 text-sm shadow-none',
-            className,
-          )}
-          size='sm'
-          variant='outline'
-          disabled={pendingLocale !== null}
-        >
-          <span aria-hidden='true'>{currentOption.flag}</span>
-          {currentLocale.toUpperCase()}
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            aria-label={t('changeLanguage')}
+            className={cn(
+              'gap-2',
+              appearance === 'marketing' &&
+                'border-border text-foreground hover:bg-accent hover:text-foreground h-auto rounded-lg bg-transparent px-5 py-3 text-sm shadow-none',
+              className,
+            )}
+            size='sm'
+            variant='outline'
+            disabled={pendingLocale !== null}
+          >
+            <span aria-hidden='true'>{currentOption.flag}</span>
+            {currentLocale.toUpperCase()}
+          </Button>
+        }
+      />
       <DropdownMenuContent
         align='end'
         className={cn(
@@ -84,7 +86,7 @@ export default function LocaleSwitcher({ appearance = 'default', className }: Lo
           <DropdownMenuItem
             disabled={pendingLocale !== null}
             key={option.value}
-            onSelect={() => handleLocaleChange(option.value)}
+            onClick={() => handleLocaleChange(option.value)}
           >
             <span aria-hidden='true'>{option.flag}</span>
             <span className='flex-1'>{option.label}</span>

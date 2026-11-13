@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { ExternalLink, FileCode2, Scale } from 'lucide-react';
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/supacharger/components/ui/badge';
+import { Button } from '@/supacharger/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/supacharger/components/ui/card';
 
 const dependencyGroups = [
   {

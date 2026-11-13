@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { useMessages } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 import { ApplicationErrorContent } from './application-error-content';
 import { resolveApplicationErrorCopy } from './application-error-copy';

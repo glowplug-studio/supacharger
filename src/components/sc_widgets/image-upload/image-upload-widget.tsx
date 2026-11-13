@@ -3,9 +3,9 @@
 import { type ChangeEvent, type DragEvent, useRef, useState } from 'react';
 import { ImageIcon, LoaderCircle, Trash2, Upload } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/supacharger/components/ui/button';
+import { Input } from '@/supacharger/components/ui/input';
+import { Progress } from '@/supacharger/components/ui/progress';
 import type { ImageUploadProgress } from '@/supacharger/media/upload-image';
 import { cn } from '@/utils/cn';
 

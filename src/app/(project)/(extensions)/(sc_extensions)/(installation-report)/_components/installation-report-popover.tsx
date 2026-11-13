@@ -3,12 +3,12 @@
 import { type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Input } from '@/components/ui/input';
 import InstallationAvatar from '@/supacharger/assets/svgr/brand/supacharger-installation-avatar.svg';
 import {
   ClipboardCopyButtonBase,
   type ClipboardCopyButtonMessages,
 } from '@/supacharger/components/buttons/clipboard-copy-button';
+import { Input } from '@/supacharger/components/ui/input';
 
 import type { InstallationChecklistReport } from '../_lib/checklist';
 import type { InstallationConfigReportItem } from '../_lib/config-report';

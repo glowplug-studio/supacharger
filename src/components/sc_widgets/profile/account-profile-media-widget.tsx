@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
-import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
 import { publishAccountSummaryChanged } from '@/supacharger/account/account-summary-events';
 import type { AccountProfileMediaProps } from '@/supacharger/account/settings/account-settings-contract';
 import { showActionToast } from '@/supacharger/components/notifications/action-toast';
+import { Button } from '@/supacharger/components/ui/button';
 import type { ImageUploadProgress } from '@/supacharger/media/upload-image';
 import { schemaName } from '@/supacharger/namespace';
 

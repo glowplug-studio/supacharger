@@ -14,7 +14,7 @@ import {
   Wrench,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/supacharger/components/ui/button';
 
 import englishMessages from '../../../messages/en.json';
 import packageJson from '../../../package.json';

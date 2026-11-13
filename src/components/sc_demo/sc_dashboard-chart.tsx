@@ -4,9 +4,9 @@ import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/supacharger/components/ui/card';
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/supacharger/components/ui/chart';
+import { Tabs, TabsList, TabsTrigger } from '@/supacharger/components/ui/tabs';
 
 const chartData = [
   { date: '2026-05-26', desktop: 186, mobile: 104 },

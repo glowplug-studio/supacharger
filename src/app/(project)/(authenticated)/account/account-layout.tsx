@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import { getTabIdFromPath } from '@/app/(project)/(authenticated)/account/account-menu';
-import { Separator } from '@/components/ui/seperator';
-import { TabMenu } from '@/components/ui/tab-menu';
+import { Separator } from '@/supacharger/components/ui/seperator';
+import { TabMenu } from '@/supacharger/components/ui/tab-menu';
 
 export function AccountLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations('AccountTabs');

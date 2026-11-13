@@ -6,6 +6,8 @@ The complete local Setup Wizard and Setup Core procedure lives in [first-install
 
 The [remote bootstrap](https://app.specdrive.dev/agents/setup-supacharger.md) only obtains Core, saves the local checkpoint immediately and installs/loads `general/handhold-me`. Project dependencies, local services, MCP connections, application configuration and verification belong to the local checklist. The human installs system prerequisites manually.
 
+During local Setup Wizard, run `npm run setup:ui` after installing dependencies. Interactive CLI dependency installation runs it automatically. The step adds missing Base UI starter components to the developer-owned `src/components/ui/` folder.
+
 Read the installed `AGENTS.md` and handhold-me `SKILL.md`. If the skill is absent, save the checkpoint first, then use `supacharger skills install general/handhold-me`. A failed skill installation must not lose local history.
 
 The sibling [first-install-handhold-me-core.md](../reports/sc-install/first-install-handhold-me-core.md) is **DO NOT EDIT**, refreshed by the Core CLI. Compare it after updates and deliberately merge relevant changes into unfinished live work; never overwrite completed evidence or project decisions. Preserve any older named active record rather than creating competing histories.

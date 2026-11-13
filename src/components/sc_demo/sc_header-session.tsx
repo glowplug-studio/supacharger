@@ -7,8 +7,8 @@ import { useTranslations } from 'next-intl';
 import { BarChart3, FolderKanban, Inbox, LayoutDashboard, ListChecks, Menu, Users } from 'lucide-react';
 
 import SCAccountMenu from '@/components/sc_demo/sc_account-menu';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Button } from '@/supacharger/components/ui/button';
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/supacharger/components/ui/sheet';
 import { cn } from '@/utils/cn';
 
 import SCSiteLogo from './sc_site-logo';
@@ -78,16 +78,18 @@ export function SCHeaderSession() {
             <SCAccountMenu />
           </div>
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button
-                aria-label={tSession('openNavigation')}
-                className='border-border size-10 rounded-sm shadow-none xl:hidden'
-                size='icon'
-                variant='outline'
-              >
-                <Menu aria-hidden='true' className='size-5' />
-              </Button>
-            </SheetTrigger>
+            <SheetTrigger
+              render={
+                <Button
+                  aria-label={tSession('openNavigation')}
+                  className='border-border size-10 rounded-sm shadow-none xl:hidden'
+                  size='icon'
+                  variant='outline'
+                >
+                  <Menu aria-hidden='true' className='size-5' />
+                </Button>
+              }
+            />
             <SheetContent
               className='bg-background text-foreground border-border flex w-[min(90vw,22rem)] flex-col p-0'
               side='right'
@@ -99,32 +101,40 @@ export function SCHeaderSession() {
               </SheetHeader>
               <nav aria-label={tSession('navigationMenu')} className='flex flex-1 flex-col gap-1 overflow-y-auto p-4'>
                 {routeLinks.map((link) => (
-                  <SheetClose asChild key={link.href}>
-                    <Link className='hover:bg-accent rounded-sm px-3 py-2.5 text-sm font-medium' href={link.href}>
-                      {link.label}
-                    </Link>
-                  </SheetClose>
+                  <SheetClose
+                    key={link.href}
+                    render={
+                      <Link className='hover:bg-accent rounded-sm px-3 py-2.5 text-sm font-medium' href={link.href}>
+                        {link.label}
+                      </Link>
+                    }
+                  />
                 ))}
                 <div className='bg-border my-2 h-px' />
-                <SheetClose asChild>
-                  <Link
-                    className='hover:bg-accent flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm font-medium'
-                    href='/#inbox'
-                  >
-                    <Inbox aria-hidden='true' className='size-4' />
-                    {t('inbox')}
-                  </Link>
-                </SheetClose>
-                {dashboardLinks.map(({ href, icon: Icon, key }) => (
-                  <SheetClose asChild key={key}>
+                <SheetClose
+                  render={
                     <Link
                       className='hover:bg-accent flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm font-medium'
-                      href={href}
+                      href='/#inbox'
                     >
-                      <Icon aria-hidden='true' className='size-4' />
-                      {t(key)}
+                      <Inbox aria-hidden='true' className='size-4' />
+                      {t('inbox')}
                     </Link>
-                  </SheetClose>
+                  }
+                />
+                {dashboardLinks.map(({ href, icon: Icon, key }) => (
+                  <SheetClose
+                    key={key}
+                    render={
+                      <Link
+                        className='hover:bg-accent flex items-center gap-2 rounded-sm px-3 py-2.5 text-sm font-medium'
+                        href={href}
+                      >
+                        <Icon aria-hidden='true' className='size-4' />
+                        {t(key)}
+                      </Link>
+                    }
+                  />
                 ))}
               </nav>
               <div className='border-border border-t p-4'>

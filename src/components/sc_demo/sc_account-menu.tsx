@@ -5,7 +5,9 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { CircleHelp, CreditCard, LogOut, Monitor, Moon, Settings, Sun, User } from 'lucide-react';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAccountSummary } from '@/supacharger/account/use-account-summary';
+import LogoutButton from '@/supacharger/components/buttons/logout-button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/supacharger/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +16,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useAccountSummary } from '@/supacharger/account/use-account-summary';
-import LogoutButton from '@/supacharger/components/buttons/logout-button';
+} from '@/supacharger/components/ui/dropdown-menu';
 import { cn } from '@/utils/cn';
 
 type AccountMenuTrigger = 'avatar' | 'wide';
@@ -40,73 +40,86 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          aria-label={tMenu('userMenu', { name: displayName })}
-          className={cn(
-            'focus-visible:ring-ring inline-flex items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-            trigger === 'wide'
-              ? 'border-border bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:text-foreground group-data-[collapsible=icon]:hover:bg-accent w-full gap-3 border p-1 pr-3 text-left group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0'
-              : 'hover:bg-accent p-1',
-          )}
-          type='button'
-        >
-          <Avatar className='border-border size-9 shrink-0 border'>
-            <AvatarImage alt={displayName} src={summary?.avatarUrl ?? undefined} />
-            <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          {trigger === 'wide' ? (
-            <span className='min-w-0 flex-1 group-data-[collapsible=icon]:hidden'>
-              <span className='block truncate text-sm font-medium'>{displayName}</span>
-              {subtitle ? <span className='block truncate text-xs opacity-65'>{subtitle}</span> : null}
-            </span>
-          ) : null}
-        </button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <button
+            aria-label={tMenu('userMenu', { name: displayName })}
+            className={cn(
+              'focus-visible:ring-ring inline-flex items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+              trigger === 'wide'
+                ? 'border-border bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground group-data-[collapsible=icon]:text-foreground group-data-[collapsible=icon]:hover:bg-accent w-full gap-3 border p-1 pr-3 text-left group-data-[collapsible=icon]:size-9 group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:border-transparent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:p-0'
+                : 'hover:bg-accent p-1',
+            )}
+            type='button'
+          >
+            <Avatar className='border-border size-9 shrink-0 border'>
+              <AvatarImage alt={displayName} src={summary?.avatarUrl ?? undefined} />
+              <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            {trigger === 'wide' ? (
+              <span className='min-w-0 flex-1 group-data-[collapsible=icon]:hidden'>
+                <span className='block truncate text-sm font-medium'>{displayName}</span>
+                {subtitle ? <span className='block truncate text-xs opacity-65'>{subtitle}</span> : null}
+              </span>
+            ) : null}
+          </button>
+        }
+      />
 
       <DropdownMenuContent
         align='end'
         className='border-border bg-popover text-popover-foreground w-72 overflow-hidden rounded-sm border p-0 shadow-2xl'
         sideOffset={8}
       >
-        <DropdownMenuLabel className='bg-muted p-0 font-normal'>
-          <Link className='hover:bg-accent flex items-center gap-3 px-4 py-3 transition-colors' href={profileHref}>
-            <Avatar className='border-border size-10 shrink-0 border'>
-              <AvatarImage alt={displayName} src={summary?.avatarUrl ?? undefined} />
-              <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <span className='min-w-0'>
-              <span className='text-foreground block truncate text-sm font-semibold'>{displayName}</span>
-              {subtitle ? (
-                <span className='text-muted-foreground mt-0.5 block truncate text-xs font-normal'>{subtitle}</span>
-              ) : null}
-            </span>
-          </Link>
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className='bg-muted p-0 font-normal'>
+            <Link className='hover:bg-accent flex items-center gap-3 px-4 py-3 transition-colors' href={profileHref}>
+              <Avatar className='border-border size-10 shrink-0 border'>
+                <AvatarImage alt={displayName} src={summary?.avatarUrl ?? undefined} />
+                <AvatarFallback className='bg-primary text-primary-foreground text-xs font-semibold'>
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <span className='min-w-0'>
+                <span className='text-foreground block truncate text-sm font-semibold'>{displayName}</span>
+                {subtitle ? (
+                  <span className='text-muted-foreground mt-0.5 block truncate text-xs font-normal'>{subtitle}</span>
+                ) : null}
+              </span>
+            </Link>
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
 
         <DropdownMenuGroup className='space-y-0.5 p-1.5'>
-          <DropdownMenuItem asChild className={menuItemClassName}>
-            <Link href={profileHref}>
-              <User aria-hidden='true' />
-              {tAccount('viewProfile')}
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className={menuItemClassName}>
-            <Link href='/account'>
-              <Settings aria-hidden='true' />
-              {tAccount('accountSettings')}
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className={menuItemClassName}>
-            <Link href='/account/billing'>
-              <CreditCard aria-hidden='true' />
-              {tAccount('billing')}
-            </Link>
-          </DropdownMenuItem>
+          <DropdownMenuItem
+            className={menuItemClassName}
+            render={
+              <Link href={profileHref}>
+                <User aria-hidden='true' />
+                {tAccount('viewProfile')}
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            className={menuItemClassName}
+            render={
+              <Link href='/account'>
+                <Settings aria-hidden='true' />
+                {tAccount('accountSettings')}
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            className={menuItemClassName}
+            render={
+              <Link href='/account/billing'>
+                <CreditCard aria-hidden='true' />
+                {tAccount('billing')}
+              </Link>
+            }
+          />
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className='bg-border m-0' />
@@ -142,21 +155,26 @@ export default function SCAccountMenu({ trigger = 'avatar' }: { trigger?: Accoun
 
         <DropdownMenuSeparator className='bg-border m-0' />
         <DropdownMenuGroup className='p-1.5'>
-          <DropdownMenuItem asChild className={menuItemClassName}>
-            <Link href='/features/whats-included'>
-              <CircleHelp aria-hidden='true' />
-              {tAccount('help')}
-            </Link>
-          </DropdownMenuItem>
+          <DropdownMenuItem
+            className={menuItemClassName}
+            render={
+              <Link href='/features/whats-included'>
+                <CircleHelp aria-hidden='true' />
+                {tAccount('help')}
+              </Link>
+            }
+          />
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className='bg-border m-0' />
-        <DropdownMenuItem asChild>
-          <LogoutButton className={cn(menuItemClassName, 'm-1.5 w-[calc(100%-0.75rem)] text-left')}>
-            <LogOut aria-hidden='true' />
-            {tAuthTerms('logOut')}
-          </LogoutButton>
-        </DropdownMenuItem>
+        <DropdownMenuItem
+          render={
+            <LogoutButton className={cn(menuItemClassName, 'm-1.5 w-[calc(100%-0.75rem)] text-left')}>
+              <LogOut aria-hidden='true' />
+              {tAuthTerms('logOut')}
+            </LogoutButton>
+          }
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );

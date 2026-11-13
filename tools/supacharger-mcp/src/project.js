@@ -96,7 +96,7 @@ export function classifyPath(inputPath) {
   }
 
   if (relativePath === 'test' || relativePath.startsWith('test/')) {
-    return { ownership: 'developer-owned', guidance: 'Do not create or restore application tests; Supacharger Core does not install, generate or run them.' };
+    return { ownership: 'developer-owned', guidance: 'Supacharger Core does not install, generate or run application tests. Create or change project-owned tests only when the human explicitly requests them.' };
   }
 
   if (relativePath.startsWith('tools/supacharger-extensions/')) {

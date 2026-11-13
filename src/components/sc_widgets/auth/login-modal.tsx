@@ -2,6 +2,8 @@
 
 import type { ReactElement } from 'react';
 
+import { AuthEntry } from '@/supacharger/components/forms/auth-entry';
+import type { AuthMode } from '@/supacharger/components/forms/login-user-form';
 import {
   Dialog,
   DialogContent,
@@ -9,9 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { AuthEntry } from '@/supacharger/components/forms/auth-entry';
-import type { AuthMode } from '@/supacharger/components/forms/login-user-form';
+} from '@/supacharger/components/ui/dialog';
 
 /** Editable authentication presentation; access checks remain on the server. */
 export function LoginModal({
@@ -29,13 +29,13 @@ export function LoginModal({
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger render={trigger} />
       <DialogContent
         motion='fade'
-        className='sc-login-demo-modal max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto rounded-2xl bg-background p-0'
+        className='sc-login-demo-modal bg-background max-h-[90dvh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto rounded-2xl p-0'
       >
         <div className='grid min-h-[38rem] md:grid-cols-[0.8fr_1.2fr]'>
-          <aside className='relative hidden overflow-hidden bg-muted md:block'>
+          <aside className='bg-muted relative hidden overflow-hidden md:block'>
             <div
               className='absolute inset-3 rounded-xl bg-cover bg-center'
               style={{

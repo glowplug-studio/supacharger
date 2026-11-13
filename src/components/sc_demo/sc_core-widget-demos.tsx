@@ -25,8 +25,11 @@ import { ErrorPagePreviewButton } from '@/components/sc_widgets/error-page/error
 import { FileUploadWidget } from '@/components/sc_widgets/file-upload/file-upload-widget';
 import { ImageUploadWidget } from '@/components/sc_widgets/image-upload/image-upload-widget';
 import { DemoConfettiToggle } from '@/components/sc_widgets/paywall/demo-confetti';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { SC_CONFIG } from '@/supacharger.config';
+import { ClipboardCopyButton } from '@/supacharger/components/buttons/clipboard-copy-button';
+import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+import { Alert, AlertDescription } from '@/supacharger/components/ui/alert';
+import { Button } from '@/supacharger/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -35,13 +38,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { Switch } from '@/components/ui/switch';
-import { SC_CONFIG } from '@/supacharger.config';
-import { ClipboardCopyButton } from '@/supacharger/components/buttons/clipboard-copy-button';
-import { resolveToastOptions } from '@/supacharger/components/notifications/toast-options';
+} from '@/supacharger/components/ui/dialog';
+import { Input } from '@/supacharger/components/ui/input';
+import { LoadingSpinner } from '@/supacharger/components/ui/loading-spinner';
+import { Switch } from '@/supacharger/components/ui/switch';
 
 import type { ImageCrop } from '../../../supabase/functions/_shared/image-target-contract';
 
@@ -165,34 +165,40 @@ function ModalDemo({
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button className='w-full rounded-lg' type='button' variant='outline'>
-          <PanelsTopLeft aria-hidden='true' className='size-4' />
-          {openLabel}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button className='w-full rounded-lg' type='button' variant='outline'>
+            <PanelsTopLeft aria-hidden='true' className='size-4' />
+            {openLabel}
+          </Button>
+        }
+      />
       <DialogContent className='gap-0 overflow-hidden rounded-lg p-0' motion='fade'>
         <DialogHeader className='border-border border-b p-6 pr-12'>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <DialogDescription className='p-6'>{description}</DialogDescription>
         <div className='border-border flex items-center justify-between border-t p-4'>
-          <DialogClose asChild>
-            <Button
-              className='rounded-lg text-red-600 hover:text-red-600 dark:text-red-400 dark:hover:text-red-400'
-              type='button'
-              variant='ghost'
-            >
-              <X aria-hidden='true' className='size-4' />
-              {cancelLabel}
-            </Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button className='rounded-lg' type='button'>
-              <Check aria-hidden='true' className='size-4' />
-              {doneLabel}
-            </Button>
-          </DialogClose>
+          <DialogClose
+            render={
+              <Button
+                className='rounded-lg text-red-600 hover:text-red-600 dark:text-red-400 dark:hover:text-red-400'
+                type='button'
+                variant='ghost'
+              >
+                <X aria-hidden='true' className='size-4' />
+                {cancelLabel}
+              </Button>
+            }
+          />
+          <DialogClose
+            render={
+              <Button className='rounded-lg' type='button'>
+                <Check aria-hidden='true' className='size-4' />
+                {doneLabel}
+              </Button>
+            }
+          />
         </div>
       </DialogContent>
     </Dialog>
@@ -319,11 +325,13 @@ function ExitIntentDemo({
                     <ArrowRight aria-hidden='true' className='size-4' />
                   </Link>
                 </Button>
-                <DialogClose asChild>
-                  <Button className='mt-3 w-full rounded-lg' type='button' variant='ghost'>
-                    {dismissLabel}
-                  </Button>
-                </DialogClose>
+                <DialogClose
+                  render={
+                    <Button className='mt-3 w-full rounded-lg' type='button' variant='ghost'>
+                      {dismissLabel}
+                    </Button>
+                  }
+                />
               </div>
             </div>
           </div>
