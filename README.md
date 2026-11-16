@@ -1,2 +1,2 @@
-# supacharger-demo
-Clone fo the main Supacharger project for demo.supacharger.dev 
+# supacharger
+Clean repo will take stripped back demo sauce.
